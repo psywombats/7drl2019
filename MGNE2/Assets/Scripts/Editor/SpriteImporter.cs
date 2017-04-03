@@ -14,10 +14,10 @@ internal sealed class SpriteImporter : AssetPostprocessor {
         { 2, "Right" },
     };
     private static readonly Dictionary<int, string> FacingNames = new Dictionary<int, string> {
-        { 0, "North" },
-        { 1, "East" },
-        { 2, "South" },
-        { 3, "West" },
+        { 0, "West" },
+        { 1, "South" },
+        { 2, "East" },
+        { 3, "North" },
     };
 
     private void OnPreprocessTexture() {
@@ -50,5 +50,11 @@ internal sealed class SpriteImporter : AssetPostprocessor {
                 importer.spriteImportMode = SpriteImportMode.Single;
             }
         }
+    }
+
+    // in the postprocessor so that hopefully we can create animations from processed textures by now
+    private void OnPostprocessTexture(Texture2D texture) {
+        string path = assetPath;
+        TextureImporter importer = (TextureImporter)assetImporter;
     }
 }
