@@ -1,0 +1,23 @@
+# Compiled source #
+###################
+
+# OS garbage #
+##############
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+
+# Unity garbage #
+#################
+MGNE2/Library/*
+MGNE2/Temp/*
+
+# Visual Studio garbage #
+#########################
+*.sln
+MGNE2/.vs/*
