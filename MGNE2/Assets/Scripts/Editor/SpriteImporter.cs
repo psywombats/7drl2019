@@ -62,16 +62,52 @@ internal sealed class SpriteImporter : AssetPostprocessor {
 
         if (path.Contains("Charas")) {
             AssetDatabase.CreateFolder("Assets/Resources/Animations/Charas/Facings", name);
-
+            
+            Sprite[] sprites = Resources.LoadAll<Sprite>(texture.name);
             for (int i = 0; i < 4; i += 1) {
                 AnimationClip anim = new AnimationClip();
-                //AnimationUtility
+                
+                EditorCurveBinding binding = new EditorCurveBinding();
+                binding.path = "";
+                binding.propertyName = "m_Sprite";
+                binding.type = typeof(SpriteRenderer);
+                
+                List<ObjectReferenceKeyframe> keyframes = new List<ObjectReferenceKeyframe>();
+                int off = 0;
+                // indices seem mangled here, not sure why
+                switch (i) {
+                    case 0:     off = 3;    break;
+                    case 1:     off = 2;    break;
+                    case 2:     off = 0;    break;
+                    case 3:     off = 1;    break;
+                }
+                keyframes.Add(CreateKeyframe(0.00f, sprites[off * 3 + 1]));
+                keyframes.Add(CreateKeyframe(0.25f, sprites[off * 3 + 0]));
+                keyframes.Add(CreateKeyframe(0.50f, sprites[off * 3 + 1]));
+                keyframes.Add(CreateKeyframe(0.75f, sprites[off * 3 + 2]));
 
+                AnimationUtility.SetObjectReferenceCurve(anim, binding, keyframes.ToArray());
                 AssetDatabase.CreateAsset(anim, "Assets/Resources/Animations/Charas/Facings/" + name + "/" + name + FacingNames[i] + ".anim");
             }
 
             AnimatorOverrideController controller = new AnimatorOverrideController();
+            controller.runtimeAnimatorController = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>("Assets/Resources/Animations/Charas/CharaController.controller");
+            List<AnimationClipPair> clips = new List<AnimationClipPair>();
+            for (int i = 0; i < 4; i += 1) {
+                AnimationClipPair clip = new AnimationClipPair();
+                clip.originalClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/Resources/Animations/Charas/Facings/Alex/Alex" + FacingNames[i] + ".anim");
+                clip.overrideClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/Resources/Animations/Charas/Facings/" + name + "/" + name + FacingNames[i] + ".anim");
+                clips.Add(clip);
+            }
+            controller.clips = clips.ToArray();
             AssetDatabase.CreateAsset(controller, "Assets/Resources/Animations/Charas/Instances/" + name + ".overrideController");
         }
+    }
+
+    private ObjectReferenceKeyframe CreateKeyframe(float time, Sprite sprite) {
+        ObjectReferenceKeyframe keyframe = new ObjectReferenceKeyframe();
+        keyframe.time = time;
+        keyframe.value = sprite;
+        return keyframe;
     }
 }
