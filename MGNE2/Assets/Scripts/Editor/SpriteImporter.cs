@@ -22,7 +22,7 @@ internal sealed class SpriteImporter : AssetPostprocessor {
 
     private void OnPreprocessTexture() {
         string path = assetPath;
-        
+
         if (path.Contains("Sprites")) {
             TextureImporter importer = (TextureImporter)assetImporter;
             importer.filterMode = FilterMode.Point;
@@ -55,6 +55,23 @@ internal sealed class SpriteImporter : AssetPostprocessor {
     // in the postprocessor so that hopefully we can create animations from processed textures by now
     private void OnPostprocessTexture(Texture2D texture) {
         string path = assetPath;
-        TextureImporter importer = (TextureImporter)assetImporter;
+        char[] splitters = { '/' };
+        string[] split = assetPath.Split(splitters);
+        string name = split[split.Length - 1];
+        name = name.Substring(0, name.IndexOf('.'));
+
+        if (path.Contains("Charas")) {
+            AssetDatabase.CreateFolder("Assets/Resources/Animations/Charas/Facings", name);
+
+            for (int i = 0; i < 4; i += 1) {
+                AnimationClip anim = new AnimationClip();
+                //AnimationUtility
+
+                AssetDatabase.CreateAsset(anim, "Assets/Resources/Animations/Charas/Facings/" + name + "/" + name + FacingNames[i] + ".anim");
+            }
+
+            AnimatorOverrideController controller = new AnimatorOverrideController();
+            AssetDatabase.CreateAsset(controller, "Assets/Resources/Animations/Charas/Instances/" + name + ".overrideController");
+        }
     }
 }
