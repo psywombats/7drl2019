@@ -181,7 +181,8 @@ namespace Tiled2Unity
                 AssignTagTo(child, goXml, importComponent);
 
                 // Does this game object have a layer?
-                AssignLayerTo(child, goXml, importComponent);
+                // MGNE: Disabled -- this likes to assign layers as if they were object types for some reason
+                // AssignLayerTo(child, goXml, importComponent);
 
                 // Are there any custom properties?
                 HandleCustomProperties(child, goXml, customImporters);
@@ -571,14 +572,15 @@ namespace Tiled2Unity
             var props = from p in goXml.Elements("Property")
                         select new { Name = p.Attribute("name").Value, Value = p.Attribute("value").Value };
 
-            if (props.Count() > 0)
-            {
+            // MGNE: removed check, we always want to do this
+            //if (props.Count() > 0)
+            //{
                 var dictionary = props.OrderBy(p => p.Name).ToDictionary(p => p.Name, p => p.Value);
                 foreach (ICustomTiledImporter importer in importers)
                 {
                     importer.HandleCustomProperties(gameObject, dictionary);
                 }
-            }
+            //}
         }
 
         private void CustomizePrefab(GameObject prefab, IList<ICustomTiledImporter> importers)

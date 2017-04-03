@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="15" tilewidth="16" tileheight="16" nextobjectid="36">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="15" tilewidth="16" tileheight="16" nextobjectid="37">
  <properties>
   <property name="battle_bgm" value="ffl1_battle"/>
   <property name="bgm" value="ffl1_overworld"/>
@@ -23,8 +23,8 @@
    eJxjYBgFo4B24AmUfjygrhgFwwUAABoEAcg=
   </data>
  </layer>
- <objectgroup name="Object Layer 1">
-  <object id="35" name="TestEvent" type="Object" x="80" y="112" width="16" height="16">
+ <objectgroup name="Object Layer 1" offsetx="80" offsety="0">
+  <object id="35" name="TestEvent" type="TestType" x="80" y="112" width="16" height="16">
    <properties>
     <property name="dummyKey" value="dummyVal"/>
    </properties>
