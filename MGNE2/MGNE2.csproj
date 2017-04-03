@@ -5,16 +5,16 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{3D294537-ADDE-8B0E-17D8-314428CFA284}</ProjectGuid>
+    <ProjectGuid>{9D9ACDCF-CB7F-F0F2-20F6-19E59E851BEC}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
+    <AssemblyName>Assembly-CSharp</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Unity Full v3.5</TargetFrameworkProfile>
+    <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
     <CompilerResponseFile></CompilerResponseFile>
-    <UnityProjectType>Editor:5</UnityProjectType>
+    <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.5.2f1</UnityVersion>
     <RootNamespace></RootNamespace>
@@ -52,88 +52,45 @@
     <Reference Include="UnityEngine">
       <HintPath>Library\UnityAssemblies\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor">
-      <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.Advertisements">
-      <HintPath>Library\UnityAssemblies\UnityEditor.Advertisements.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>Library\UnityAssemblies\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.EditorTestsRunner">
-      <HintPath>Library\UnityAssemblies\UnityEditor.EditorTestsRunner.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.UI">
-      <HintPath>Library\UnityAssemblies\UnityEditor.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Networking">
       <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.Networking">
-      <HintPath>Library\UnityAssemblies\UnityEditor.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.PlaymodeTestsRunner">
-      <HintPath>Library\UnityAssemblies\UnityEditor.PlaymodeTestsRunner.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.PlaymodeTestsRunner">
       <HintPath>Library\UnityAssemblies\UnityEngine.PlaymodeTestsRunner.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.TreeEditor">
-      <HintPath>Library\UnityAssemblies\UnityEditor.TreeEditor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Analytics">
       <HintPath>Library\UnityAssemblies\UnityEngine.Analytics.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.Analytics">
-      <HintPath>Library\UnityAssemblies\UnityEditor.Analytics.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.HoloLens">
-      <HintPath>Library\UnityAssemblies\UnityEditor.HoloLens.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.HoloLens">
       <HintPath>Library\UnityAssemblies\UnityEngine.HoloLens.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.VR">
-      <HintPath>Library\UnityAssemblies\UnityEditor.VR.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.VR">
       <HintPath>Library\UnityAssemblies\UnityEngine.VR.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.Graphs">
-      <HintPath>Library\UnityAssemblies\UnityEditor.Graphs.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.WindowsStandalone.Extensions">
-      <HintPath>Library\UnityAssemblies\UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
-      <HintPath>Library\UnityAssemblies\SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
+    <Reference Include="UnityEditor">
+      <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="MGNE2.csproj">
-      <Project>{9D9ACDCF-CB7F-F0F2-20F6-19E59E851BEC}</Project>
-      <Name>MGNE2</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Assets\Scripts\Editor\SpriteImporter.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\CustomTiledImporterAttribute.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ICustomTiledImporter.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportTiled2Unity.Material.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportTiled2Unity.Mesh.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportTiled2Unity.Prefab.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportTiled2Unity.Texture.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportTiled2Unity.Xml.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportTiled2Unity.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportUtils.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\SortingLayerExposedEditor.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\SpriteDepthInMapEditor.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\Tiled2UnityMenuItems.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\TiledAssetPostProcessor.cs" />
+    <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\CircleObject.cs" />
+    <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\GroupLayer.cs" />
+    <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\ImportBehaviour.cs" />
+    <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\Layer.cs" />
+    <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\ObjectLayer.cs" />
+    <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\PolygonObject.cs" />
+    <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\PolylineObject.cs" />
+    <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\RectangleObject.cs" />
+    <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\SortingLayerExposed.cs" />
+    <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\SpriteDepthInMap.cs" />
+    <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\TileAnimator.cs" />
+    <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\TileLayer.cs" />
+    <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\TileObject.cs" />
+    <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\TiledInitialShaderProperties.cs" />
+    <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\TiledMap.cs" />
+    <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\TmxObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Tiled2Unity\Imported\Test.tiled2unity.xml" />

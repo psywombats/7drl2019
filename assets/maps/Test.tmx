@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="15" tilewidth="16" tileheight="16" nextobjectid="36">
+ <properties>
+  <property name="battle_bgm" value="ffl1_battle"/>
+  <property name="bgm" value="ffl1_overworld"/>
+  <property name="name" value="saga testmap"/>
+ </properties>
+ <tileset firstgid="1" source="tilesets/lower.tsx"/>
+ <tileset firstgid="176" source="tilesets/upper.tsx"/>
+ <layer name="Tile Layer 1" width="20" height="15">
+  <properties>
+   <property name="z" value="0"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJyTYWBgkKEy5qEShpknTCUMMy8MirmIxA1YcCMR4UCM2YxImFD4LYHSq6E0NvNA+t2gmFD4LYHSq6E0seYxkhB2xJpHrpn4zEM20xqNxhdv+MzD5U586ZiQedjMxJeOiTGP2DDFlv7wmUeKHdQuV0AYAPlzGw8=
+  </data>
+ </layer>
+ <layer name="Tile Layer 2" width="20" height="15">
+  <properties>
+   <property name="z" value=".5"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo4B24AmUfjygrhgFwwUAABoEAcg=
+  </data>
+ </layer>
+ <objectgroup name="Object Layer 1">
+  <object id="35" name="TestEvent" type="Object" x="80" y="112" width="16" height="16">
+   <properties>
+    <property name="dummyKey" value="dummyVal"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <layer name="Tile Layer 3" width="20" height="15">
+  <properties>
+   <property name="z" value="1.5"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFowABbg+0A0bBKMADAEOuANw=
+  </data>
+ </layer>
+</map>
