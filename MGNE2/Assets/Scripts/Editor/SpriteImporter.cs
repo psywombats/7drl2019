@@ -22,6 +22,7 @@ internal sealed class SpriteImporter : AssetPostprocessor {
 
     private void OnPreprocessTexture() {
         string path = assetPath;
+        string name = NameFromPath(path);
 
         if (path.Contains("Sprites")) {
             TextureImporter importer = (TextureImporter)assetImporter;
@@ -40,7 +41,7 @@ internal sealed class SpriteImporter : AssetPostprocessor {
                         data.rect = new Rect(x * CharaWidth, y * CharaHeight, CharaWidth, CharaHeight);
                         data.alignment = (int)SpriteAlignment.Custom;
                         data.border = new Vector4(0, 0, 0, 0);
-                        data.name = importer.name + FacingNames[y] + StepNames[x];
+                        data.name = name + FacingNames[y] + StepNames[x];
                         data.pivot = new Vector2(CharaWidth / 2, CharaHeight / 4);
                         spritesheet.Add(data);
                     }
@@ -55,10 +56,7 @@ internal sealed class SpriteImporter : AssetPostprocessor {
     // in the postprocessor so that hopefully we can create animations from processed textures by now
     private void OnPostprocessTexture(Texture2D texture) {
         string path = assetPath;
-        char[] splitters = { '/' };
-        string[] split = assetPath.Split(splitters);
-        string name = split[split.Length - 1];
-        name = name.Substring(0, name.IndexOf('.'));
+        string name = NameFromPath(path);
 
         if (path.Contains("Charas")) {
             AssetDatabase.CreateFolder("Assets/Resources/Animations/Charas/Facings", name);
@@ -109,5 +107,13 @@ internal sealed class SpriteImporter : AssetPostprocessor {
         keyframe.time = time;
         keyframe.value = sprite;
         return keyframe;
+    }
+
+    private string NameFromPath(string path) {
+        char[] splitters = { '/' };
+        string[] split = assetPath.Split(splitters);
+        string name = split[split.Length - 1];
+        name = name.Substring(0, name.IndexOf('.'));
+        return name;
     }
 }

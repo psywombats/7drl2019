@@ -36,6 +36,7 @@ public class InputManager : MonoBehaviour {
         keybinds[Command.Cancel] = new List<KeyCode>(new[] { KeyCode.Escape, KeyCode.B, KeyCode.X });
 
         listeners = new List<InputListener>();
+        holdStartTimes = new Dictionary<Command, float>();
     }
 
     public void Update() {

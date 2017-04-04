@@ -77,6 +77,8 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\IO\InputListener.cs" />
     <Compile Include="Assets\Scripts\IO\InputManager.cs" />
+    <Compile Include="Assets\Scripts\Map\AvatarEvent.cs" />
+    <Compile Include="Assets\Scripts\Map\CharaAnimator.cs" />
     <Compile Include="Assets\Scripts\Map\Map.cs" />
     <Compile Include="Assets\Scripts\Map\MapEvent.cs" />
     <Compile Include="Assets\Scripts\Map\TiledInstantiated.cs" />
