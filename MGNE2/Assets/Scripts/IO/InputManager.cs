@@ -48,13 +48,16 @@ public class InputManager : MonoBehaviour {
             foreach (Command command in System.Enum.GetValues(typeof(Command))) {
                 foreach (KeyCode code in keybinds[command]) {
                     if (Input.GetKeyDown(code)) {
-                        holdStartTimes[command] = Time.time;
                         endProcessing |= listener.OnCommand(command, Event.Down);
                     }
                     if (Input.GetKeyUp(code)) {
                         endProcessing |= listener.OnCommand(command, Event.Up);
+                        holdStartTimes.Remove(command);
                     }
                     if (Input.GetKey(code)) {
+                        if (!holdStartTimes.ContainsKey(command)) {
+                            holdStartTimes[command] = Time.time;
+                        }
                         endProcessing |= listener.OnCommand(command, Event.Hold);
                         if (Time.time - holdStartTimes[command] > KeyRepeatSeconds) {
                             endProcessing |= listener.OnCommand(command, Event.Repeat);
