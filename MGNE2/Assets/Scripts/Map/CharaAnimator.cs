@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(CharaEvent))]
 public class CharaAnimator : MonoBehaviour {
 
     public bool AlwaysAnimates = false;
 
-    private Animator Appearance {
-        get { return GetComponent<Animator>(); }
-    }
+    private Animator Appearance { get { return GetComponent<Animator>(); } }
 
     private Vector2 lastPosition;
-    private Vector2 lastDelta;
 
     public void Start() {
         lastPosition = new Vector2();
@@ -21,6 +19,15 @@ public class CharaAnimator : MonoBehaviour {
         } else {
             StopAnimation();
         }
+
+        GetComponent<Dispatch>().RegisterListener(CharaEvent.FaceEvent, (object payload) => {
+            foreach (OrthoDir otherDir in System.Enum.GetValues(typeof(OrthoDir))) {
+                Appearance.ResetTrigger(otherDir.TriggerName());
+            }
+            OrthoDir dir = (OrthoDir)payload;
+            Appearance.SetTrigger(dir.TriggerName());
+            Appearance.Play(Appearance.GetCurrentAnimatorStateInfo(0).fullPathHash, -1, 0.0f);
+        });
     }
 
     public void Update() {
@@ -39,15 +46,7 @@ public class CharaAnimator : MonoBehaviour {
             }
         }
 
-        if (AnimationPlaying()) {
-            if (lastDelta.normalized != delta.normalized) {
-                OrthoDir dir = OrthoDirExtensions.directionOfPx(delta);
-                Appearance.SetTrigger(dir.TriggerName());
-            }
-        }
-
         lastPosition = position;
-        lastDelta = delta;
     }
 
     private void StartAnimation() {

@@ -3,11 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(MapEvent))]
-[RequireComponent(typeof(CharaAnimator))]
+[RequireComponent(typeof(CharaEvent))]
 public class AvatarEvent : MonoBehaviour, InputListener {
 
-    private MapEvent Event { get { return GetComponent<MapEvent>(); } }
+    private CharaEvent Chara { get { return GetComponent<CharaEvent>(); } }
 
     public void Start() {
         Global.Instance().input.PushListener(this);
@@ -17,16 +16,16 @@ public class AvatarEvent : MonoBehaviour, InputListener {
         if (eventType == InputManager.Event.Hold) {
             switch (command) {
                 case InputManager.Command.Up:
-                    Event.Step(OrthoDir.North);
-                    return true;
-                case InputManager.Command.Right:
-                    Event.Step(OrthoDir.East);
+                    Chara.Step(OrthoDir.North);
                     return true;
                 case InputManager.Command.Down:
-                    Event.Step(OrthoDir.South);
+                    Chara.Step(OrthoDir.South);
+                    return true;
+                case InputManager.Command.Right:
+                    Chara.Step(OrthoDir.East);
                     return true;
                 case InputManager.Command.Left:
-                    Event.Step(OrthoDir.West);
+                    Chara.Step(OrthoDir.West);
                     return true;
                 default:
                     return false;

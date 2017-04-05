@@ -33,7 +33,7 @@ public class OrthoDirAttribute : Attribute {
 
 public static class OrthoDirExtensions {
 
-    public static OrthoDir directionOf(Vector2 vector) {
+    public static OrthoDir DirectionOf(Vector2 vector) {
         if (Mathf.Abs(vector.x) > Mathf.Abs(vector.y)) {
             return ((vector.x > 0) ^ (OrthoDir.East.X() > 0)) ? OrthoDir.West : OrthoDir.East;
         } else {
@@ -41,7 +41,7 @@ public static class OrthoDirExtensions {
         }
     }
 
-    public static OrthoDir directionOfPx(Vector2 vector) {
+    public static OrthoDir DirectionOfPx(Vector2 vector) {
         if (Mathf.Abs(vector.x) > Mathf.Abs(vector.y)) {
             return ((vector.x > 0) ^ (OrthoDir.East.PxX() > 0)) ? OrthoDir.West : OrthoDir.East;
         } else {

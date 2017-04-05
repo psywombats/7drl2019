@@ -80,11 +80,13 @@
     <Compile Include="Assets\Scripts\IO\InputManager.cs" />
     <Compile Include="Assets\Scripts\Map\AvatarEvent.cs" />
     <Compile Include="Assets\Scripts\Map\CharaAnimator.cs" />
+    <Compile Include="Assets\Scripts\Map\CharaEvent.cs" />
     <Compile Include="Assets\Scripts\Map\Map.cs" />
     <Compile Include="Assets\Scripts\Map\MapEvent.cs" />
     <Compile Include="Assets\Scripts\Map\OrthoDir.cs" />
     <Compile Include="Assets\Scripts\Map\TiledInstantiated.cs" />
     <Compile Include="Assets\Scripts\Util\CoUtils.cs" />
+    <Compile Include="Assets\Scripts\Util\Dispatch.cs" />
     <Compile Include="Assets\Scripts\Util\EnumExtensions.cs" />
     <Compile Include="Assets\Scripts\Util\IntVector2.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\CircleObject.cs" />
