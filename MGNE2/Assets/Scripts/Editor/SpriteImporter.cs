@@ -59,11 +59,16 @@ internal sealed class SpriteImporter : AssetPostprocessor {
         string name = NameFromPath(path);
 
         if (path.Contains("Charas")) {
-            AssetDatabase.CreateFolder("Assets/Resources/Animations/Charas/Facings", name);
+            if (!AssetDatabase.IsValidFolder("Assets/Resources/Animations/Charas/Facings/" + name)) {
+                AssetDatabase.CreateFolder("Assets/Resources/Animations/Charas/Facings", name);
+            }
             
             Sprite[] sprites = Resources.LoadAll<Sprite>(texture.name);
             for (int i = 0; i < 4; i += 1) {
                 AnimationClip anim = new AnimationClip();
+                AnimationClipSettings info = new AnimationClipSettings();
+                info.loopTime = true;
+                AnimationUtility.SetAnimationClipSettings(anim, info);
                 
                 EditorCurveBinding binding = new EditorCurveBinding();
                 binding.path = "";
@@ -81,8 +86,9 @@ internal sealed class SpriteImporter : AssetPostprocessor {
                 }
                 keyframes.Add(CreateKeyframe(0.00f, sprites[off * 3 + 1]));
                 keyframes.Add(CreateKeyframe(0.25f, sprites[off * 3 + 0]));
-                keyframes.Add(CreateKeyframe(0.50f, sprites[off * 3 + 1]));
-                keyframes.Add(CreateKeyframe(0.75f, sprites[off * 3 + 2]));
+                keyframes.Add(CreateKeyframe(0.50f, sprites[off * 3 + 2]));
+                keyframes.Add(CreateKeyframe(0.75f, sprites[off * 3 + 0]));
+                keyframes.Add(CreateKeyframe(1.00f, sprites[off * 3 + 1]));
 
                 AnimationUtility.SetObjectReferenceCurve(anim, binding, keyframes.ToArray());
                 string facingPath = "Assets/Resources/Animations/Charas/Facings/" + name + "/" + name + FacingNames[i] + ".anim";
