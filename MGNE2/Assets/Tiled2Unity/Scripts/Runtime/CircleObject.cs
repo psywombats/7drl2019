@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Tiled2Unity
 {
-    public class CircleObject : TmxObject
+    public class CircleObject : RuntimeTmxObject
     {
     }
 }

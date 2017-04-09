@@ -37,7 +37,7 @@ public class MapEvent : TiledInstantiated {
         Position = new IntVector2(0, 0);
         RectangleObject rect = GetComponent<RectangleObject>();
         if (rect != null) {
-            Position.Set((int)rect.TmxPosition.x / Map.TileWidthPx, (int)(Parent.HeightPx - rect.TmxPosition.y - Map.TileHeightPx) / Map.TileHeightPx);
+            Position.Set((int)rect.TmxPosition.x / Map.TileWidthPx, (int)rect.TmxPosition.y / Map.TileHeightPx);
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Tiled2Unity
 {
-    public class PolylineObject : TmxObject
+    public class PolylineObject : RuntimeTmxObject
     {
     }
 }

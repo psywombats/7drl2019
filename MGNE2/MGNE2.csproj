@@ -89,6 +89,7 @@
     <Compile Include="Assets\Scripts\Util\Dispatch.cs" />
     <Compile Include="Assets\Scripts\Util\EnumExtensions.cs" />
     <Compile Include="Assets\Scripts\Util\IntVector2.cs" />
+    <Compile Include="Assets\Tiled2Unity\Scripts\Generic\SerializableDictionary.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\CircleObject.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\GroupLayer.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\ImportBehaviour.cs" />
@@ -104,6 +105,8 @@
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\TileObject.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\TiledInitialShaderProperties.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\TiledMap.cs" />
+    <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\TiledProperty.cs" />
+    <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\Tileset.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\TmxObject.cs" />
   </ItemGroup>
   <ItemGroup>

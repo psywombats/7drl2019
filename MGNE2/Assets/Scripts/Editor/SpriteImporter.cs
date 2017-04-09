@@ -42,7 +42,7 @@ internal sealed class SpriteImporter : AssetPostprocessor {
                         data.alignment = (int)SpriteAlignment.Custom;
                         data.border = new Vector4(0, 0, 0, 0);
                         data.name = name + FacingNames[y] + StepNames[x];
-                        data.pivot = new Vector2(CharaWidth / 2, CharaHeight / 4);
+                        data.pivot = new Vector2(4.0f / (float)CharaWidth, 0.0f);
                         spritesheet.Add(data);
                     }
                 }
@@ -85,7 +85,9 @@ internal sealed class SpriteImporter : AssetPostprocessor {
                 keyframes.Add(CreateKeyframe(0.75f, sprites[off * 3 + 2]));
 
                 AnimationUtility.SetObjectReferenceCurve(anim, binding, keyframes.ToArray());
-                AssetDatabase.CreateAsset(anim, "Assets/Resources/Animations/Charas/Facings/" + name + "/" + name + FacingNames[i] + ".anim");
+                string facingPath = "Assets/Resources/Animations/Charas/Facings/" + name + "/" + name + FacingNames[i] + ".anim";
+                AssetDatabase.DeleteAsset(facingPath);
+                AssetDatabase.CreateAsset(anim, facingPath);
             }
 
             AnimatorOverrideController controller = new AnimatorOverrideController();
@@ -93,12 +95,14 @@ internal sealed class SpriteImporter : AssetPostprocessor {
             List<AnimationClipPair> clips = new List<AnimationClipPair>();
             for (int i = 0; i < 4; i += 1) {
                 AnimationClipPair clip = new AnimationClipPair();
-                clip.originalClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/Resources/Animations/Charas/Facings/Alex/Alex" + FacingNames[i] + ".anim");
+                clip.originalClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/Resources/Animations/Charas/Facings/Placeholder/Placeholder" + FacingNames[i] + ".anim");
                 clip.overrideClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/Resources/Animations/Charas/Facings/" + name + "/" + name + FacingNames[i] + ".anim");
                 clips.Add(clip);
             }
             controller.clips = clips.ToArray();
-            AssetDatabase.CreateAsset(controller, "Assets/Resources/Animations/Charas/Instances/" + name + ".overrideController");
+            string overridePath = "Assets/Resources/Animations/Charas/Instances/" + name + ".overrideController";
+            AssetDatabase.DeleteAsset(overridePath);
+            AssetDatabase.CreateAsset(controller, overridePath);
         }
     }
 

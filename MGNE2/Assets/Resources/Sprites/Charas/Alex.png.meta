@@ -1,21 +1,21 @@
 fileFormatVersion: 2
-guid: 4c08acde0cad2cd42ab6c2944abe3ff4
-timeCreated: 1491207620
+guid: b0f33c5899f274a438bdb5549afa16da
+timeCreated: 1491708171
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: WestLeft
-    21300002: WestCenter
-    21300004: WestRight
-    21300006: SouthLeft
-    21300008: SouthCenter
-    21300010: SouthRight
-    21300012: EastLeft
-    21300014: EastCenter
-    21300016: EastRight
-    21300018: NorthLeft
-    21300020: NorthCenter
-    21300022: NorthRight
+    21300000: AlexWestLeft
+    21300002: AlexWestCenter
+    21300004: AlexWestRight
+    21300006: AlexSouthLeft
+    21300008: AlexSouthCenter
+    21300010: AlexSouthRight
+    21300012: AlexEastLeft
+    21300014: AlexEastCenter
+    21300016: AlexEastRight
+    21300018: AlexNorthLeft
+    21300020: AlexNorthCenter
+    21300022: AlexNorthRight
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -74,7 +74,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: WestLeft
+      name: AlexWestLeft
       rect:
         serializedVersion: 2
         x: 0
@@ -82,12 +82,12 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 12, y: 8}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: WestCenter
+      name: AlexWestCenter
       rect:
         serializedVersion: 2
         x: 24
@@ -95,12 +95,12 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 12, y: 8}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: WestRight
+      name: AlexWestRight
       rect:
         serializedVersion: 2
         x: 48
@@ -108,12 +108,12 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 12, y: 8}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: SouthLeft
+      name: AlexSouthLeft
       rect:
         serializedVersion: 2
         x: 0
@@ -121,12 +121,12 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 12, y: 8}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: SouthCenter
+      name: AlexSouthCenter
       rect:
         serializedVersion: 2
         x: 24
@@ -134,12 +134,12 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 12, y: 8}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: SouthRight
+      name: AlexSouthRight
       rect:
         serializedVersion: 2
         x: 48
@@ -147,12 +147,12 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 12, y: 8}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: EastLeft
+      name: AlexEastLeft
       rect:
         serializedVersion: 2
         x: 0
@@ -160,12 +160,12 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 12, y: 8}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: EastCenter
+      name: AlexEastCenter
       rect:
         serializedVersion: 2
         x: 24
@@ -173,12 +173,12 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 12, y: 8}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: EastRight
+      name: AlexEastRight
       rect:
         serializedVersion: 2
         x: 48
@@ -186,12 +186,12 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 12, y: 8}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: NorthLeft
+      name: AlexNorthLeft
       rect:
         serializedVersion: 2
         x: 0
@@ -199,12 +199,12 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 12, y: 8}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: NorthCenter
+      name: AlexNorthCenter
       rect:
         serializedVersion: 2
         x: 24
@@ -212,12 +212,12 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 12, y: 8}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: NorthRight
+      name: AlexNorthRight
       rect:
         serializedVersion: 2
         x: 48
@@ -225,7 +225,7 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 12, y: 8}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1

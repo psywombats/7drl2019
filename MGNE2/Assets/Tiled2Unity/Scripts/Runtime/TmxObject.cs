@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Tiled2Unity
 {
     // Represents an object within an Object Layer. Contains common object data as it is represented in the TMX file (before scaling and other transformations are applied).
-    public class TmxObject : MonoBehaviour
+    public class RuntimeTmxObject : MonoBehaviour
     {
         [Header("Tmx Object Properties (Raw Data)")]
 

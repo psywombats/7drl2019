@@ -50,6 +50,12 @@ namespace Tiled2Unity
                 return true;
             }
 
+            // *.tmx *.tsx files are always supported by this processor
+            if (assetPath.EndsWith(".tmx", StringComparison.InvariantCultureIgnoreCase) || assetPath.EndsWith(".tsx", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return true;
+            }
+
             // All other files can only use this post processor if their import was requested by an ImportBehaviour
             return ImportBehaviour.IsAssetBeingImportedByTiled2Unity(assetPath);
 #endif
@@ -101,6 +107,16 @@ namespace Tiled2Unity
                         // A prefab was imported. Once all prefabs are imported then the import is complete.
                         t2uImporter.PrefabImported(imported);
                     }
+                    else if (t2uImporter.IsTiled2UnityTmx())
+                    {
+                        // A TMX - let's kick off an autobuild
+                        t2uImporter.TmxImported(imported);
+                    }
+                    else if (t2uImporter.IsTiled2UnityTsx())
+                    {
+                        // A tileset - let's make that available for terrain lookups
+                        t2uImporter.TsxImported(imported);
+                    }
                 }
 #endif
             }
@@ -135,10 +151,6 @@ namespace Tiled2Unity
             // We will create and assign our own materials.
             // This gives us more control over their construction.
             modelImporter.importMaterials = false;
-
-#if UNITY_5_6_OR_NEWER
-            // Note: could do unoptimize mesh here with 5.6 or newer
-#endif
         }
 
         private void OnPostprocessModel(GameObject gameObject)

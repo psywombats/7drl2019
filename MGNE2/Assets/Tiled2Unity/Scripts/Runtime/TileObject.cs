@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Tiled2Unity
 {
-    public class TileObject : Tiled2Unity.TmxObject
+    public class TileObject : Tiled2Unity.RuntimeTmxObject
     {
         [Header("Tmx Tile Object Properties (Raw Data)")]
         public bool TmxFlippingHorizontal;

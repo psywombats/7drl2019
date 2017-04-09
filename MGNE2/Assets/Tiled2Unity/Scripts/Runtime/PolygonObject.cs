@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Tiled2Unity
 {
-    public class PolygonObject : TmxObject
+    public class PolygonObject : RuntimeTmxObject
     {
     }
 }

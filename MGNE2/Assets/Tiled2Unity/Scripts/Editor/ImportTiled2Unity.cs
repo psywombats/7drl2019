@@ -21,16 +21,18 @@ namespace Tiled2Unity
             this.fullPathToFile = System.IO.Path.GetFullPath(file);
 
             // Discover the root of the Tiled2Unity scripts and assets
-            this.pathToTiled2UnityRoot = System.IO.Path.GetDirectoryName(this.fullPathToFile);
-            int index = this.pathToTiled2UnityRoot.LastIndexOf("Tiled2Unity", StringComparison.InvariantCultureIgnoreCase);
-            if (index == -1)
-            {
-                Debug.LogError(String.Format("There is an error with your Tiled2Unity install. Could not find Tiled2Unity folder in {0}", file));
-            }
-            else
-            {
-                this.pathToTiled2UnityRoot = this.pathToTiled2UnityRoot.Remove(index + "Tiled2Unity".Length);
-            }
+            // Hardcoded for now
+            pathToTiled2UnityRoot = Application.dataPath + "/Tiled2Unity";
+            //this.pathToTiled2UnityRoot = System.IO.Path.GetDirectoryName(this.fullPathToFile);
+            //int index = this.pathToTiled2UnityRoot.LastIndexOf("Tiled2Unity", StringComparison.InvariantCultureIgnoreCase);
+            //if (index == -1)
+            //{
+            //    Debug.LogError(String.Format("There is an error with your Tiled2Unity install. Could not find Tiled2Unity folder in {0}", file));
+            //}
+            //else
+            //{
+            //    this.pathToTiled2UnityRoot = this.pathToTiled2UnityRoot.Remove(index + "Tiled2Unity".Length);
+            //}
 
             this.fullPathToFile = this.fullPathToFile.Replace(System.IO.Path.DirectorySeparatorChar, '/');
             this.pathToTiled2UnityRoot = this.pathToTiled2UnityRoot.Replace(System.IO.Path.DirectorySeparatorChar, '/');
@@ -71,6 +73,18 @@ namespace Tiled2Unity
             bool startsWith = this.fullPathToFile.Contains("/Tiled2Unity/Prefabs/");
             bool endsWith = this.fullPathToFile.EndsWith(".prefab");
             return startsWith && endsWith;
+        }
+
+        public bool IsTiled2UnityTmx()
+        {
+            bool endsWith = this.fullPathToFile.EndsWith(".tmx");
+            return endsWith;
+        }
+
+        public bool IsTiled2UnityTsx()
+        {
+            bool endsWith = this.fullPathToFile.EndsWith(".tsx");
+            return endsWith;
         }
 
         public string GetMeshAssetPath(string file)

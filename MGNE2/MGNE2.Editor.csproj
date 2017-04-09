@@ -112,6 +112,9 @@
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>Library\UnityAssemblies\SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
+    <Reference Include="System.Drawing">
+      <HintPath>Assets\Tiled2Unity\Scripts\Editor\System\DLL\System.Drawing.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="MGNE2.csproj">
@@ -129,11 +132,14 @@
     <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportTiled2Unity.Mesh.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportTiled2Unity.Prefab.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportTiled2Unity.Texture.cs" />
+    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportTiled2Unity.Tsx.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportTiled2Unity.Xml.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportTiled2Unity.cs" />
+    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportTiled2Unity.tmx.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportUtils.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Editor\SortingLayerExposedEditor.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Editor\SpriteDepthInMapEditor.cs" />
+    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\Tiled2UnityLite.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Editor\Tiled2UnityMenuItems.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Editor\TiledAssetPostProcessor.cs" />
   </ItemGroup>
