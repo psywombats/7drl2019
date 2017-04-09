@@ -2227,6 +2227,8 @@ namespace Tiled2Unity
             if (node.Visible == false)
                 return;
 
+            xml.SetAttributeValue("sortingOrder", node.GetSortingOrder());
+
             // What type of node are we dealing with?
             if (node is TmxGroupLayer)
             {
@@ -13916,6 +13918,8 @@ namespace Tiled2Unity
             string tilesetName = TmxHelper.GetAttributeAsString(elemTileset, "name");
 
             Logger.WriteLine("Parse internal tileset '{0}' (gid = {1}) ...", tilesetName, firstId);
+
+            TilesetFirstGids[firstId] = tilesetName;
 
             int tileWidth = TmxHelper.GetAttributeAsInt(elemTileset, "tilewidth");
             int tileHeight = TmxHelper.GetAttributeAsInt(elemTileset, "tileheight");

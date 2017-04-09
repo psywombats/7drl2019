@@ -17,6 +17,7 @@ namespace Tiled2Unity
 
             args.Insert(0, tmxPath);
             args.Insert(1, Application.dataPath + "/Tiled2Unity");
+            args.Insert(2, "--depth-buffer");
 
             Tiled2UnityLite.Run(args.ToArray());
 

@@ -11,5 +11,6 @@ namespace Tiled2Unity
     public abstract class Layer : MonoBehaviour
     {
         public Vector2 Offset;
+        public Dictionary<string, TiledProperty> properties;
     }
 }
