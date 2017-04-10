@@ -80,15 +80,19 @@ namespace Tiled2Unity
                 return null;
             }
             int tileId = layer.TerrainIds[y * NumTilesWide + x];
-            Tileset tileset = GetTilesetForTileId(tileId);
-            return tileset.PropertyForTile(tileId, propertyName);
+            if (tileId <= 0)
+            {
+                return null;
+            }
+            LinkedTileset tileset = GetTilesetForTileId(tileId);
+            return tileset.tileset.PropertyForTile(tileId - tileset.firstGid, propertyName);
         }
 
-        public Tileset GetTilesetForTileId(int tileId)
+        public LinkedTileset GetTilesetForTileId(int tileId)
         {
             // really that should be a dictionary return type
             int bestRelativeGid = int.MaxValue;
-            Tileset bestTileset = null;
+            LinkedTileset bestTileset = null;
             foreach (LinkedTileset tileset in Tilesets)
             {
                 int relativeGid = tileId - tileset.firstGid;
@@ -96,7 +100,7 @@ namespace Tiled2Unity
                 {
                     continue;
                 }
-                bestTileset = tileset.tileset;
+                bestTileset = tileset;
                 bestRelativeGid = relativeGid;
             }
             return bestTileset;

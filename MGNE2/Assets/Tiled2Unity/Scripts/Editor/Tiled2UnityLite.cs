@@ -2846,9 +2846,9 @@ namespace Tiled2Unity
         private string CreateTerrainDataForLayer(TmxLayer layer)
         {
             StringBuilder result = new StringBuilder();
-            for (int x = 0; x < layer.Width; x += 1)
+            for (int y = 0; y < layer.Height; y += 1)
             {
-                for (int y = 0; y < layer.Height; y += 1)
+                for (int x = 0; x < layer.Width; x += 1)
                 {
                     uint terrainId = layer.GetTileIdAt(x, y);
                     result.Append(terrainId);

@@ -30,6 +30,6 @@ public class Map : TiledInstantiated {
     public bool PassableAt(TileLayer layer, IntVector2 loc) {
         TiledMap tiledMap = GetComponent<TiledMap>();
         TiledProperty property = tiledMap.GetPropertyForTile("x", layer, loc.x, loc.y);
-        return (property == null) ? true : !property.GetBoolValue();
+        return (property == null) ? true : (property.GetStringValue() == "false");
     }
 }
