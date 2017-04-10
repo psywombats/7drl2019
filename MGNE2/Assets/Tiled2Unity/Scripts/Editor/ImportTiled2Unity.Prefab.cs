@@ -634,9 +634,9 @@ namespace Tiled2Unity
             return instances.ToList();
         }
 
-        private LinkedTilesets ConstructTilesets(XElement xml, Tiled2Unity.ImportBehaviour importComponent)
+        private List<LinkedTileset> ConstructTilesets(XElement xml, Tiled2Unity.ImportBehaviour importComponent)
         {
-            LinkedTilesets tilesets = new LinkedTilesets();
+            List<LinkedTileset> tilesets = new List<LinkedTileset>();
 
             foreach (XElement tilesetXml in xml.Descendants("TilesetFirstGid"))
             {
@@ -649,7 +649,10 @@ namespace Tiled2Unity
                 string tilesetPath = tilesetsDir + "/Tilesets/" + tilesetName + ".asset";
                 Tileset tileset = AssetDatabase.LoadAssetAtPath<Tileset>(tilesetPath);
 
-                tilesets[firstGid] = tileset;
+                LinkedTileset linkedTileset = new LinkedTileset();
+                linkedTileset.tileset = tileset;
+                linkedTileset.firstGid = firstGid;
+                tilesets.Add(linkedTileset);
             }
 
             return tilesets;

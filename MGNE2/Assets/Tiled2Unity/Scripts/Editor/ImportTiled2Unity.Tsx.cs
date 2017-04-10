@@ -15,8 +15,8 @@ namespace Tiled2Unity
             string assetPath = "Assets/Tiled2Unity/Tilesets/" + tilesetName + ".asset";
 
             Tileset tileset = ScriptableObject.CreateInstance<Tileset>();
-            tileset.TilesetName = tilesetName;
-            tileset.Properties = new TilesetProperties();
+            tileset.tilesetName = tilesetName;
+            tileset.properties = new List<TileProperties>();
             XDocument document = XDocument.Load(tsxPath);
             XElement tilesetXml = document.Element("tileset");
 
@@ -25,15 +25,16 @@ namespace Tiled2Unity
                 XElement propertiesXml = tileXml.Element("properties");
                 if (propertiesXml != null)
                 {
-                    int id = int.Parse(tileXml.Attribute("id").Value);
-                    List<TiledProperty> properties = new List<TiledProperty>();
-                    tileset.Properties[id] = properties;
+                    TileProperties tileProperties = new TileProperties();
+                    tileset.properties.Add(tileProperties);
+                    tileProperties.tileId = int.Parse(tileXml.Attribute("id").Value);
+                    tileProperties.properties = new List<TiledProperty>();
                     foreach (XElement propertyXml in propertiesXml.Descendants("property"))
                     {
                         TiledProperty property = new TiledProperty();
-                        properties.Add(property);
-                        property.Key = propertyXml.Attribute("name").Value;
-                        property.Value = propertyXml.Attribute("value").Value;
+                        tileProperties.properties.Add(property);
+                        property.key = propertyXml.Attribute("name").Value;
+                        property.value = propertyXml.Attribute("value").Value;
                     }
                 }
             }

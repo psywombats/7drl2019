@@ -7,33 +7,33 @@ namespace Tiled2Unity
     [System.Serializable]
     public class TiledProperty : System.Object
     {
-        public string Key;
-        public string Value;
+        public string key;
+        public string value;
 
         public bool GetBoolValue()
         {
-            return Value.Length > 0 && Value != "false";
+            return value.Length > 0 && value != "false";
         }
 
         public int GetIntValue()
         {
-            return int.Parse(Value);
+            return int.Parse(value);
         }
 
         public float GetFloatValue()
         {
-            return float.Parse(Value);
+            return float.Parse(value);
         }
 
         public string GetStringValue()
         {
-            return Value;
+            return value;
         }
 
         public Color GetColorValue()
         {
             Color color = Color.cyan;
-            ColorUtility.TryParseHtmlString(Value, out color);
+            ColorUtility.TryParseHtmlString(value, out color);
             return color;
         } 
     }

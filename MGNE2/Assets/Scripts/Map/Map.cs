@@ -26,4 +26,10 @@ public class Map : TiledInstantiated {
         Size = new IntVector2(tiled.NumTilesWide, tiled.NumTilesHigh);
         SizePx = IntVector2.Scale(Size, TileSizePx);
     }
+
+    public bool PassableAt(TileLayer layer, IntVector2 loc) {
+        TiledMap tiledMap = GetComponent<TiledMap>();
+        TiledProperty property = tiledMap.GetPropertyForTile("x", layer, loc.x, loc.y);
+        return (property == null) ? true : !property.GetBoolValue();
+    }
 }

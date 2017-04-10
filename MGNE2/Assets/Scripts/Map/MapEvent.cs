@@ -59,9 +59,19 @@ public class MapEvent : TiledInstantiated {
 
     public void OnValidate() {
         Vector2 transform = Map.TileSizePx;
-        transform.x *= (OrthoDir.East.X() != OrthoDir.East.PxX()) ? -1 : 1;
-        transform.y *= (OrthoDir.North.Y() != OrthoDir.North.PxY()) ? -1 : 1;
+        if (OrthoDir.East.X() != OrthoDir.East.PxX()) {
+            transform.x = transform.x * -1;
+        }
+        if (OrthoDir.North.Y() != OrthoDir.North.PxY()) {
+            transform.y = transform.y * -1;
+        }
         PositionPx = Vector2.Scale(Position, transform);
+        if (OrthoDir.East.X() != OrthoDir.East.PxX()) {
+            PositionPx = new Vector2(PositionPx.x - Map.TileWidthPx, PositionPx.y);
+        }
+        if (OrthoDir.North.Y() != OrthoDir.North.PxY()) {
+            PositionPx = new Vector2(PositionPx.x, PositionPx.y - Map.TileHeightPx);
+        }
         SetDepth();
     }
 

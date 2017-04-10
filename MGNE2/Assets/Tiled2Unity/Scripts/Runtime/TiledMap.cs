@@ -7,9 +7,12 @@ using UnityEngine;
 
 namespace Tiled2Unity
 {
-    // first gid -> tileset
-    [Serializable]
-    public class LinkedTilesets : SerializableDictionary<int, Tileset> { }
+    [System.Serializable]
+    public class LinkedTileset : System.Object
+    {
+        public int firstGid;
+        public Tileset tileset;
+    }
 
     public class TiledMap : MonoBehaviour
     {
@@ -54,7 +57,7 @@ namespace Tiled2Unity
         public Color BackgroundColor = Color.black;
 
         // All tilesets referenced by this map
-        public LinkedTilesets Tilesets;
+        public List<LinkedTileset> Tilesets;
 
         public Tiled2Unity.Layer GetTileLayerNamed(string layerName)
         {
@@ -70,36 +73,33 @@ namespace Tiled2Unity
             return null;
         }
 
-        public TiledProperty GetPropertyForTile(string propertyName, TileLayer layer, uint x, uint y)
+        public TiledProperty GetPropertyForTile(string propertyName, TileLayer layer, int x, int y)
         {
-            int tileId = layer.TerrainIds[y * NumTilesWide + x];
-            List<TiledProperty> properties = GetPropertiesForTileId(tileId);
-            foreach (TiledProperty property in properties)
+            if (x < 0 || y < 0 || x >= NumTilesWide || y >= NumTilesHigh)
             {
-                if (property.Key == propertyName)
-                {
-                    return property;
-                }
+                return null;
             }
-            return null;
+            int tileId = layer.TerrainIds[y * NumTilesWide + x];
+            Tileset tileset = GetTilesetForTileId(tileId);
+            return tileset.PropertyForTile(tileId, propertyName);
         }
 
-        public List<TiledProperty> GetPropertiesForTileId(int tileId)
+        public Tileset GetTilesetForTileId(int tileId)
         {
             // really that should be a dictionary return type
-            foreach (KeyValuePair<int, Tileset> tilesetPair in Tilesets)
+            int bestRelativeGid = int.MaxValue;
+            Tileset bestTileset = null;
+            foreach (LinkedTileset tileset in Tilesets)
             {
-                int relativeGid = tileId - tilesetPair.Key;
-                if (relativeGid < 0)
+                int relativeGid = tileId - tileset.firstGid;
+                if (relativeGid < 0 || relativeGid > bestRelativeGid)
                 {
                     continue;
                 }
-                if (tilesetPair.Value.Properties.ContainsKey(relativeGid))
-                {
-                    return tilesetPair.Value.Properties[relativeGid];
-                }
+                bestTileset = tileset.tileset;
+                bestRelativeGid = relativeGid;
             }
-            return new List<TiledProperty>();
+            return bestTileset;
         }
 
         public float GetMapWidthInPixelsScaled()

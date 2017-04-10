@@ -13,19 +13,22 @@ public class AvatarEvent : MonoBehaviour, InputListener {
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
+        if (Chara.Tracking) {
+            return true;
+        }
         if (eventType == InputManager.Event.Hold) {
             switch (command) {
                 case InputManager.Command.Up:
-                    Chara.Step(OrthoDir.North);
+                    TryStep(OrthoDir.North);
                     return true;
                 case InputManager.Command.Down:
-                    Chara.Step(OrthoDir.South);
+                    TryStep(OrthoDir.South);
                     return true;
                 case InputManager.Command.Right:
-                    Chara.Step(OrthoDir.East);
+                    TryStep(OrthoDir.East);
                     return true;
                 case InputManager.Command.Left:
-                    Chara.Step(OrthoDir.West);
+                    TryStep(OrthoDir.West);
                     return true;
                 default:
                     return false;
@@ -34,5 +37,17 @@ public class AvatarEvent : MonoBehaviour, InputListener {
         } else {
             return false;
         }
+    }
+
+    public bool TryStep(OrthoDir dir) {
+        IntVector2 target = Chara.Event.Position + dir.XY();
+
+        if (Chara.PassableAt(target)) {
+            Chara.Step(dir);
+        } else {
+            Chara.Facing = dir;
+        }
+
+        return true;
     }
 }

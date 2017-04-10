@@ -89,7 +89,6 @@
     <Compile Include="Assets\Scripts\Util\Dispatch.cs" />
     <Compile Include="Assets\Scripts\Util\EnumExtensions.cs" />
     <Compile Include="Assets\Scripts\Util\IntVector2.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Generic\SerializableDictionary.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\CircleObject.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\GroupLayer.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\ImportBehaviour.cs" />
