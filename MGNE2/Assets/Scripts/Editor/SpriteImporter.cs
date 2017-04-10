@@ -62,28 +62,33 @@ internal sealed class SpriteImporter : AssetPostprocessor {
             if (!AssetDatabase.IsValidFolder("Assets/Resources/Animations/Charas/Facings/" + name)) {
                 AssetDatabase.CreateFolder("Assets/Resources/Animations/Charas/Facings", name);
             }
-            
+
+            // Some settings
+            EditorCurveBinding binding = new EditorCurveBinding();
+            binding.path = "";
+            binding.propertyName = "m_Sprite";
+            binding.type = typeof(SpriteRenderer);
+            AnimationClipSettings info = new AnimationClipSettings();
+            info.loopTime = true;
+
             Sprite[] sprites = Resources.LoadAll<Sprite>(texture.name);
             for (int i = 0; i < 4; i += 1) {
+
+                // indices seem mangled here, not sure why
+                int off = 0;
+               
+                switch (i) {
+                    case 0: off = 3; break;
+                    case 1: off = 2; break;
+                    case 2: off = 0; break;
+                    case 3: off = 1; break;
+                }
+
+                // first up - walking animation
                 AnimationClip anim = new AnimationClip();
-                AnimationClipSettings info = new AnimationClipSettings();
-                info.loopTime = true;
                 AnimationUtility.SetAnimationClipSettings(anim, info);
                 
-                EditorCurveBinding binding = new EditorCurveBinding();
-                binding.path = "";
-                binding.propertyName = "m_Sprite";
-                binding.type = typeof(SpriteRenderer);
-                
                 List<ObjectReferenceKeyframe> keyframes = new List<ObjectReferenceKeyframe>();
-                int off = 0;
-                // indices seem mangled here, not sure why
-                switch (i) {
-                    case 0:     off = 3;    break;
-                    case 1:     off = 2;    break;
-                    case 2:     off = 0;    break;
-                    case 3:     off = 1;    break;
-                }
                 keyframes.Add(CreateKeyframe(0.00f, sprites[off * 3 + 1]));
                 keyframes.Add(CreateKeyframe(0.25f, sprites[off * 3 + 0]));
                 keyframes.Add(CreateKeyframe(0.50f, sprites[off * 3 + 2]));
@@ -92,6 +97,17 @@ internal sealed class SpriteImporter : AssetPostprocessor {
 
                 AnimationUtility.SetObjectReferenceCurve(anim, binding, keyframes.ToArray());
                 string facingPath = "Assets/Resources/Animations/Charas/Facings/" + name + "/" + name + FacingNames[i] + ".anim";
+                AssetDatabase.DeleteAsset(facingPath);
+                AssetDatabase.CreateAsset(anim, facingPath);
+
+                // next up - idle animation
+                anim = new AnimationClip();
+                AnimationUtility.SetAnimationClipSettings(anim, info);
+
+                keyframes = new List<ObjectReferenceKeyframe>();
+                keyframes.Add(CreateKeyframe(0.00f, sprites[off * 3]));
+                AnimationUtility.SetObjectReferenceCurve(anim, binding, keyframes.ToArray());
+                facingPath = "Assets/Resources/Animations/Charas/Facings/" + name + "/" + name + FacingNames[i] + "Idle.anim";
                 AssetDatabase.DeleteAsset(facingPath);
                 AssetDatabase.CreateAsset(anim, facingPath);
             }

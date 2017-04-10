@@ -32,8 +32,8 @@ public class Dispatch : MonoBehaviour {
     }
 
     public void Signal(string eventName, object payload) {
-        HashSet<Action<object>> eventListeners = listeners[eventName];
-        if (eventListeners != null) {
+        if (listeners.ContainsKey(eventName)) {
+            HashSet<Action<object>> eventListeners = listeners[eventName];
             foreach (Action<object> listener in eventListeners) {
                 listener(payload);
             }

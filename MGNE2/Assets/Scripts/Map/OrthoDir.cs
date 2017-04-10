@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum OrthoDir {
-    [OrthoDirAttribute(0, 1, 0, -1, "stepNorth")] North,
-    [OrthoDirAttribute(1, 0, 1, 0, "stepEast")] East,
-    [OrthoDirAttribute(0, -1, 0, 1, "stepSouth")] South,
-    [OrthoDirAttribute(-1, 0, -1, 0, "stepWest")] West,
+    [OrthoDirAttribute(0, 1, 0, -1,     0)] North,
+    [OrthoDirAttribute(1, 0, 1, 0,      1)] East,
+    [OrthoDirAttribute(0, -1, 0, 1,     2)] South,
+    [OrthoDirAttribute(-1, 0, -1, 0,    3)] West,
 }
 
 public class OrthoDirAttribute : Attribute {
@@ -22,12 +22,12 @@ public class OrthoDirAttribute : Attribute {
     public int PxX { get { return PxXY.x; } }
     public int PxY { get { return PxXY.y; } }
 
-    public string TriggerName { get; private set; }
+    public int Ordinal { get; private set; }
 
-    internal OrthoDirAttribute(int pxDX, int pxDY, int dx, int dy, string triggerName) {
+    internal OrthoDirAttribute(int pxDX, int pxDY, int dx, int dy, int ordinal) {
         this.XY = new IntVector2(dx, dy);
         this.PxXY = new IntVector2(pxDX, pxDY);
-        this.TriggerName = triggerName;
+        this.Ordinal = ordinal;
     }
 }
 
@@ -57,7 +57,7 @@ public static class OrthoDirExtensions {
     public static int PxY(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().PxY; }
     public static IntVector2 PxXY(this OrthoDir dir) { return new IntVector2(dir.PxX(), dir.PxY()); }
 
-    public static string TriggerName(this OrthoDir dir) {
-        return dir.GetAttribute<OrthoDirAttribute>().TriggerName;
+    public static int Ordinal(this OrthoDir dir) {
+        return dir.GetAttribute<OrthoDirAttribute>().Ordinal;
     }
 }

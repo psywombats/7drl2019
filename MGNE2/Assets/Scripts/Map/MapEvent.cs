@@ -83,9 +83,8 @@ public class MapEvent : TiledInstantiated {
         if (Parent != null) {
             for (int i = 0; i < Parent.transform.childCount; i += 1) {
                 if (Layer == Parent.transform.GetChild(i).gameObject.GetComponent<ObjectLayer>()) {
-                    Rect mapRect = Parent.GetComponent<TiledMap>().GetMapRect();
-                    float depthPerLayer = -1 * Map.TileHeightPx / mapRect.height;
-                    float z = (PositionPx.y / mapRect.height) + (depthPerLayer * i);
+                    float depthPerLayer = -1.0f;
+                    float z = depthPerLayer * ((float)Position.y / (float)Parent.Height) + (depthPerLayer * (float)i);
                     gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, z);
                 }
             }

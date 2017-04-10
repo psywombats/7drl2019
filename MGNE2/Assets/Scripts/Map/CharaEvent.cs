@@ -62,7 +62,6 @@ public class CharaEvent : MonoBehaviour {
             if (loc.x < 0 || loc.x >= Event.Parent.Width || loc.y < 0 || loc.y >= Event.Parent.Height) {
                 return false;
             }
-            int tileId = layer.TerrainIds[loc.y * Event.Parent.Width + loc.x];
             if (layer != null) {
                 if (!Event.Parent.PassableAt(layer, loc)) {
                     return false;
