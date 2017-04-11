@@ -21,7 +21,7 @@ public class CharaAnimator : MonoBehaviour {
         Vector2 position = gameObject.transform.position;
         Vector2 delta = position - lastPosition;
 
-        bool stepping = AlwaysAnimates || delta.sqrMagnitude > 0;
+        bool stepping = AlwaysAnimates || delta.sqrMagnitude > 0 || GetComponent<CharaEvent>().Tracking;
         Appearance.SetBool("stepping", stepping);
         Appearance.SetInteger("dir", GetComponent<CharaEvent>().Facing.Ordinal());
 

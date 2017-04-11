@@ -124,6 +124,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Editor\ClipInfo.cs" />
+    <Compile Include="Assets\Scripts\Editor\MapCameraEditor.cs" />
     <Compile Include="Assets\Scripts\Editor\SpriteImporter.cs" />
     <Compile Include="Assets\Scripts\Editor\TiledImporter.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Editor\CustomTiledImporterAttribute.cs" />

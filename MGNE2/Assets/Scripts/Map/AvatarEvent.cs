@@ -13,7 +13,7 @@ public class AvatarEvent : MonoBehaviour, InputListener {
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
-        if (Chara.tracking) {
+        if (Chara.Tracking) {
             return true;
         }
         if (eventType == InputManager.Event.Hold) {

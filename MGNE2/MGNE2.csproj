@@ -82,6 +82,7 @@
     <Compile Include="Assets\Scripts\Map\CharaAnimator.cs" />
     <Compile Include="Assets\Scripts\Map\CharaEvent.cs" />
     <Compile Include="Assets\Scripts\Map\Map.cs" />
+    <Compile Include="Assets\Scripts\Map\MapCamera.cs" />
     <Compile Include="Assets\Scripts\Map\MapEvent.cs" />
     <Compile Include="Assets\Scripts\Map\OrthoDir.cs" />
     <Compile Include="Assets\Scripts\Map\TiledInstantiated.cs" />

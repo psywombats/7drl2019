@@ -16,7 +16,6 @@ public class MapEvent : TiledInstantiated {
         set { gameObject.transform.position = new Vector3(value.x, value.y, gameObject.transform.position.z); }
     }
     public Vector2 TargetPosition { get; set; }
-    public Dispatch EventDispatch { get { return GetComponent<Dispatch>(); } }
 
     public Map Parent {
         get {
