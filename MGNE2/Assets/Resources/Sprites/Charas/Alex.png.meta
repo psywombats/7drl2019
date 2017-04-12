@@ -1,21 +1,21 @@
 fileFormatVersion: 2
-guid: d751e6d431aa8c049bc850ebabce1916
-timeCreated: 1491737289
+guid: 91132f0537866b640afe031d83981016
+timeCreated: 1491988395
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: PlaceholderWestLeft
-    21300002: PlaceholderWestCenter
-    21300004: PlaceholderWestRight
-    21300006: PlaceholderSouthLeft
-    21300008: PlaceholderSouthCenter
-    21300010: PlaceholderSouthRight
-    21300012: PlaceholderEastLeft
-    21300014: PlaceholderEastCenter
-    21300016: PlaceholderEastRight
-    21300018: PlaceholderNorthLeft
-    21300020: PlaceholderNorthCenter
-    21300022: PlaceholderNorthRight
+    21300000: AlexWestLeft
+    21300002: AlexWestCenter
+    21300004: AlexWestRight
+    21300006: AlexSouthLeft
+    21300008: AlexSouthCenter
+    21300010: AlexSouthRight
+    21300012: AlexEastLeft
+    21300014: AlexEastCenter
+    21300016: AlexEastRight
+    21300018: AlexNorthLeft
+    21300020: AlexNorthCenter
+    21300022: AlexNorthRight
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -82,7 +82,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PlaceholderWestLeft
+      name: AlexWestLeft
       rect:
         serializedVersion: 2
         x: 0
@@ -90,12 +90,12 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: -0.16666667, y: 0}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: PlaceholderWestCenter
+      name: AlexWestCenter
       rect:
         serializedVersion: 2
         x: 24
@@ -103,12 +103,12 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: -0.16666667, y: 0}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: PlaceholderWestRight
+      name: AlexWestRight
       rect:
         serializedVersion: 2
         x: 48
@@ -116,12 +116,12 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: -0.16666667, y: 0}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: PlaceholderSouthLeft
+      name: AlexSouthLeft
       rect:
         serializedVersion: 2
         x: 0
@@ -129,12 +129,12 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: -0.16666667, y: 0}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: PlaceholderSouthCenter
+      name: AlexSouthCenter
       rect:
         serializedVersion: 2
         x: 24
@@ -142,12 +142,12 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: -0.16666667, y: 0}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: PlaceholderSouthRight
+      name: AlexSouthRight
       rect:
         serializedVersion: 2
         x: 48
@@ -155,12 +155,12 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: -0.16666667, y: 0}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: PlaceholderEastLeft
+      name: AlexEastLeft
       rect:
         serializedVersion: 2
         x: 0
@@ -168,12 +168,12 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: -0.16666667, y: 0}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: PlaceholderEastCenter
+      name: AlexEastCenter
       rect:
         serializedVersion: 2
         x: 24
@@ -181,12 +181,12 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: -0.16666667, y: 0}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: PlaceholderEastRight
+      name: AlexEastRight
       rect:
         serializedVersion: 2
         x: 48
@@ -194,12 +194,12 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: -0.16666667, y: 0}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: PlaceholderNorthLeft
+      name: AlexNorthLeft
       rect:
         serializedVersion: 2
         x: 0
@@ -207,12 +207,12 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: -0.16666667, y: 0}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: PlaceholderNorthCenter
+      name: AlexNorthCenter
       rect:
         serializedVersion: 2
         x: 24
@@ -220,12 +220,12 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: -0.16666667, y: 0}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: PlaceholderNorthRight
+      name: AlexNorthRight
       rect:
         serializedVersion: 2
         x: 48
@@ -233,7 +233,7 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: -0.16666667, y: 0}
+      pivot: {x: 0.16666667, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1

@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using System.Reflection;
 
 internal sealed class SpriteImporter : AssetPostprocessor {
-
-    private static readonly int CharaWidth = 24;
-    private static readonly int CharaHeight = 32;
 
     private static readonly Dictionary<int, string> StepNames = new Dictionary<int, string> {
         { 0, "Left" },
@@ -20,7 +18,7 @@ internal sealed class SpriteImporter : AssetPostprocessor {
         { 3, "North" },
     };
 
-    private void OnPreprocessTexture() {
+    public void OnPreprocessTexture() {
         string path = assetPath;
         string name = NameFromPath(path);
 
@@ -31,18 +29,22 @@ internal sealed class SpriteImporter : AssetPostprocessor {
             importer.spritePixelsPerUnit = 1;
             importer.textureType = TextureImporterType.Sprite;
             if (path.Contains("Charas")) {
+                IntVector2 textureSize = GetPreprocessedImageSize();
+                int stepCount = textureSize.x == 32 ? 2 : 3;
+                int charaWidth = textureSize.x / stepCount;
+                int charaHeight = textureSize.y / 4;
                 importer.spriteImportMode = SpriteImportMode.Multiple;
-                importer.spritePivot = new Vector2(CharaWidth / 2, CharaHeight / 4);
-                importer.spritesheet = new SpriteMetaData[12];
+                importer.spritePivot = new Vector2(charaWidth / 2, Map.TileHeightPx / 2);
+                importer.spritesheet = new SpriteMetaData[stepCount * 4];
                 List<SpriteMetaData> spritesheet = new List<SpriteMetaData>();
                 for (int y = 0; y < 4; y += 1) {
-                    for (int x = 0; x < 3; x += 1) {
-                        SpriteMetaData data = importer.spritesheet[3 * y + x];
-                        data.rect = new Rect(x * CharaWidth, y * CharaHeight, CharaWidth, CharaHeight);
+                    for (int x = 0; x < stepCount; x += 1) {
+                        SpriteMetaData data = importer.spritesheet[stepCount * y + x];
+                        data.rect = new Rect(x * charaWidth, y * charaHeight, charaWidth, charaHeight);
                         data.alignment = (int)SpriteAlignment.Custom;
                         data.border = new Vector4(0, 0, 0, 0);
                         data.name = name + FacingNames[y] + StepNames[x];
-                        data.pivot = new Vector2(4.0f / (float)CharaWidth, 0.0f);
+                        data.pivot = new Vector2(((charaWidth - Map.TileWidthPx) / 2.0f) / (float)charaWidth, 0.0f);
                         spritesheet.Add(data);
                     }
                 }
@@ -53,8 +55,16 @@ internal sealed class SpriteImporter : AssetPostprocessor {
         }
     }
 
+    public static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths) {
+        foreach (string assetPath in importedAssets) {
+            if (assetPath.Contains("Sprites/Charas")) {
+                CreateAnimations(assetPath);
+            }
+        }
+    }
+
     // in the postprocessor so that hopefully we can create animations from processed textures by now
-    private void OnPostprocessTexture(Texture2D texture) {
+    public static void CreateAnimations(string assetPath) {
         string path = assetPath;
         string name = NameFromPath(path);
 
@@ -71,7 +81,12 @@ internal sealed class SpriteImporter : AssetPostprocessor {
             AnimationClipSettings info = new AnimationClipSettings();
             info.loopTime = true;
 
-            Sprite[] sprites = Resources.LoadAll<Sprite>(texture.name);
+            Object[] spriteObjects = AssetDatabase.LoadAllAssetRepresentationsAtPath(path);
+            List<Sprite> sprites = new List<Sprite>();
+            foreach (Object spriteObject in spriteObjects) {
+                sprites.Add((Sprite)spriteObject);
+            }
+            int stepCount = sprites.Count / 4;
             for (int i = 0; i < 4; i += 1) {
 
                 // indices seem mangled here, not sure why
@@ -89,11 +104,17 @@ internal sealed class SpriteImporter : AssetPostprocessor {
                 AnimationUtility.SetAnimationClipSettings(anim, info);
                 
                 List<ObjectReferenceKeyframe> keyframes = new List<ObjectReferenceKeyframe>();
-                keyframes.Add(CreateKeyframe(0.00f, sprites[off * 3 + 1]));
-                keyframes.Add(CreateKeyframe(0.25f, sprites[off * 3 + 0]));
-                keyframes.Add(CreateKeyframe(0.50f, sprites[off * 3 + 2]));
-                keyframes.Add(CreateKeyframe(0.75f, sprites[off * 3 + 0]));
-                keyframes.Add(CreateKeyframe(1.00f, sprites[off * 3 + 1]));
+                if (stepCount > 2) {
+                    keyframes.Add(CreateKeyframe(0.00f, sprites[off * stepCount + 1]));
+                    keyframes.Add(CreateKeyframe(0.25f, sprites[off * stepCount + 0]));
+                    keyframes.Add(CreateKeyframe(0.50f, sprites[off * stepCount + 2]));
+                    keyframes.Add(CreateKeyframe(0.75f, sprites[off * stepCount + 0]));
+                    keyframes.Add(CreateKeyframe(1.00f, sprites[off * stepCount + 1]));
+                } else {
+                    keyframes.Add(CreateKeyframe(0.00f, sprites[off * stepCount + 1]));
+                    keyframes.Add(CreateKeyframe(0.50f, sprites[off * stepCount + 0]));
+                    keyframes.Add(CreateKeyframe(1.00f, sprites[off * stepCount + 1]));
+                }
 
                 AnimationUtility.SetObjectReferenceCurve(anim, binding, keyframes.ToArray());
                 string facingPath = "Assets/Resources/Animations/Charas/Facings/" + name + "/" + name + FacingNames[i] + ".anim";
@@ -101,24 +122,37 @@ internal sealed class SpriteImporter : AssetPostprocessor {
                 AssetDatabase.CreateAsset(anim, facingPath);
 
                 // next up - idle animation
-                anim = new AnimationClip();
-                AnimationUtility.SetAnimationClipSettings(anim, info);
+                if (stepCount > 2) {
+                    anim = new AnimationClip();
+                    AnimationUtility.SetAnimationClipSettings(anim, info);
 
-                keyframes = new List<ObjectReferenceKeyframe>();
-                keyframes.Add(CreateKeyframe(0.00f, sprites[off * 3]));
-                AnimationUtility.SetObjectReferenceCurve(anim, binding, keyframes.ToArray());
-                facingPath = "Assets/Resources/Animations/Charas/Facings/" + name + "/" + name + FacingNames[i] + "Idle.anim";
-                AssetDatabase.DeleteAsset(facingPath);
-                AssetDatabase.CreateAsset(anim, facingPath);
+                    keyframes = new List<ObjectReferenceKeyframe>();
+                    keyframes.Add(CreateKeyframe(0.00f, sprites[off * stepCount]));
+                    AnimationUtility.SetObjectReferenceCurve(anim, binding, keyframes.ToArray());
+                    facingPath = "Assets/Resources/Animations/Charas/Facings/" + name + "/" + name + FacingNames[i] + "Idle.anim";
+                    AssetDatabase.DeleteAsset(facingPath);
+                    AssetDatabase.CreateAsset(anim, facingPath);
+                }
             }
 
             AnimatorOverrideController controller = new AnimatorOverrideController();
             controller.runtimeAnimatorController = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>("Assets/Resources/Animations/Charas/CharaController.controller");
             List<AnimationClipPair> clips = new List<AnimationClipPair>();
+            string facingsDir = "Assets/Resources/Animations/Charas/Facings/";
             for (int i = 0; i < 4; i += 1) {
                 AnimationClipPair clip = new AnimationClipPair();
-                clip.originalClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/Resources/Animations/Charas/Facings/Placeholder/Placeholder" + FacingNames[i] + ".anim");
-                clip.overrideClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/Resources/Animations/Charas/Facings/" + name + "/" + name + FacingNames[i] + ".anim");
+                clip.originalClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + "Placeholder/Placeholder" + FacingNames[i] + ".anim");
+                clip.overrideClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + name + "/" + name + FacingNames[i] + ".anim");
+                clips.Add(clip);
+            }
+            for (int i = 0; i < 4; i += 1) {
+                AnimationClipPair clip = new AnimationClipPair();
+                clip.originalClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + "Placeholder/Placeholder" + FacingNames[i] + "Idle.anim");
+                if (stepCount > 2) {
+                    clip.overrideClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + name + "/" + name + FacingNames[i] + "Idle.anim");
+                } else {
+                    clip.overrideClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + name + "/" + name + FacingNames[i] + ".anim");
+                }
                 clips.Add(clip);
             }
             controller.clips = clips.ToArray();
@@ -128,18 +162,32 @@ internal sealed class SpriteImporter : AssetPostprocessor {
         }
     }
 
-    private ObjectReferenceKeyframe CreateKeyframe(float time, Sprite sprite) {
+    private static ObjectReferenceKeyframe CreateKeyframe(float time, Sprite sprite) {
         ObjectReferenceKeyframe keyframe = new ObjectReferenceKeyframe();
         keyframe.time = time;
         keyframe.value = sprite;
         return keyframe;
     }
 
-    private string NameFromPath(string path) {
+    private static string NameFromPath(string path) {
         char[] splitters = { '/' };
-        string[] split = assetPath.Split(splitters);
+        string[] split = path.Split(splitters);
         string name = split[split.Length - 1];
         name = name.Substring(0, name.IndexOf('.'));
         return name;
     }
+
+    private IntVector2 GetPreprocessedImageSize() {
+        TextureImporter importer = AssetImporter.GetAtPath(assetPath) as TextureImporter;
+
+        if (importer != null) {
+            object[] args = new object[2] { 0, 0 };
+            MethodInfo mi = typeof(TextureImporter).GetMethod("GetWidthAndHeight", BindingFlags.NonPublic | BindingFlags.Instance);
+            mi.Invoke(importer, args);
+            return new IntVector2((int)args[0], (int)args[1]);
+        }
+
+        return new IntVector2(0, 0);
+    }
+
 }

@@ -14,14 +14,13 @@ public class MapEvent : TiledInstantiated {
 
     public IntVector2 Position;
 
+    public string LuaCondition;
+
     [TextArea(3, 6)]
     public string LuaOnInteract;
 
     [TextArea(3, 6)]
     public string LuaOnCollide;
-
-    [TextArea(2, 2)]
-    public string LuaCondition;
 
     // Properties
 

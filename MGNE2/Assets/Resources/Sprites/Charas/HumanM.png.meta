@@ -1,21 +1,17 @@
 fileFormatVersion: 2
-guid: d751e6d431aa8c049bc850ebabce1916
-timeCreated: 1491737289
+guid: f264e45e34202da47a4b1d24b8f4fb13
+timeCreated: 1491986661
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: PlaceholderWestLeft
-    21300002: PlaceholderWestCenter
-    21300004: PlaceholderWestRight
-    21300006: PlaceholderSouthLeft
-    21300008: PlaceholderSouthCenter
-    21300010: PlaceholderSouthRight
-    21300012: PlaceholderEastLeft
-    21300014: PlaceholderEastCenter
-    21300016: PlaceholderEastRight
-    21300018: PlaceholderNorthLeft
-    21300020: PlaceholderNorthCenter
-    21300022: PlaceholderNorthRight
+    21300000: HumanMWestLeft
+    21300002: HumanMWestCenter
+    21300004: HumanMSouthLeft
+    21300006: HumanMSouthCenter
+    21300008: HumanMEastLeft
+    21300010: HumanMEastCenter
+    21300012: HumanMNorthLeft
+    21300014: HumanMNorthCenter
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -50,7 +46,7 @@ TextureImporter:
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
-  spritePivot: {x: 12, y: 8}
+  spritePivot: {x: 8, y: 8}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 1
   alphaUsage: 1
@@ -82,158 +78,106 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PlaceholderWestLeft
+      name: HumanMWestLeft
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 24
-        height: 32
+        width: 16
+        height: 16
       alignment: 9
-      pivot: {x: -0.16666667, y: 0}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: PlaceholderWestCenter
+      name: HumanMWestCenter
       rect:
         serializedVersion: 2
-        x: 24
+        x: 16
         y: 0
-        width: 24
-        height: 32
+        width: 16
+        height: 16
       alignment: 9
-      pivot: {x: -0.16666667, y: 0}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: PlaceholderWestRight
+      name: HumanMSouthLeft
       rect:
         serializedVersion: 2
-        x: 48
-        y: 0
-        width: 24
-        height: 32
+        x: 0
+        y: 16
+        width: 16
+        height: 16
       alignment: 9
-      pivot: {x: -0.16666667, y: 0}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: PlaceholderSouthLeft
+      name: HumanMSouthCenter
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 16
+        width: 16
+        height: 16
+      alignment: 9
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: HumanMEastLeft
       rect:
         serializedVersion: 2
         x: 0
         y: 32
-        width: 24
-        height: 32
+        width: 16
+        height: 16
       alignment: 9
-      pivot: {x: -0.16666667, y: 0}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: PlaceholderSouthCenter
+      name: HumanMEastCenter
       rect:
         serializedVersion: 2
-        x: 24
+        x: 16
         y: 32
-        width: 24
-        height: 32
+        width: 16
+        height: 16
       alignment: 9
-      pivot: {x: -0.16666667, y: 0}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: PlaceholderSouthRight
-      rect:
-        serializedVersion: 2
-        x: 48
-        y: 32
-        width: 24
-        height: 32
-      alignment: 9
-      pivot: {x: -0.16666667, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: -1
-    - serializedVersion: 2
-      name: PlaceholderEastLeft
+      name: HumanMNorthLeft
       rect:
         serializedVersion: 2
         x: 0
-        y: 64
-        width: 24
-        height: 32
+        y: 48
+        width: 16
+        height: 16
       alignment: 9
-      pivot: {x: -0.16666667, y: 0}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: PlaceholderEastCenter
+      name: HumanMNorthCenter
       rect:
         serializedVersion: 2
-        x: 24
-        y: 64
-        width: 24
-        height: 32
+        x: 16
+        y: 48
+        width: 16
+        height: 16
       alignment: 9
-      pivot: {x: -0.16666667, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: -1
-    - serializedVersion: 2
-      name: PlaceholderEastRight
-      rect:
-        serializedVersion: 2
-        x: 48
-        y: 64
-        width: 24
-        height: 32
-      alignment: 9
-      pivot: {x: -0.16666667, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: -1
-    - serializedVersion: 2
-      name: PlaceholderNorthLeft
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 96
-        width: 24
-        height: 32
-      alignment: 9
-      pivot: {x: -0.16666667, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: -1
-    - serializedVersion: 2
-      name: PlaceholderNorthCenter
-      rect:
-        serializedVersion: 2
-        x: 24
-        y: 96
-        width: 24
-        height: 32
-      alignment: 9
-      pivot: {x: -0.16666667, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: -1
-    - serializedVersion: 2
-      name: PlaceholderNorthRight
-      rect:
-        serializedVersion: 2
-        x: 48
-        y: 96
-        width: 24
-        height: 32
-      alignment: 9
-      pivot: {x: -0.16666667, y: 0}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
