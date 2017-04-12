@@ -27,9 +27,21 @@ public class Map : TiledInstantiated {
         SizePx = IntVector2.Scale(Size, TileSizePx);
     }
 
-    public bool PassableAt(TileLayer layer, IntVector2 loc) {
+    public bool IsChipPassableAt(TileLayer layer, IntVector2 loc) {
         TiledMap tiledMap = GetComponent<TiledMap>();
         TiledProperty property = tiledMap.GetPropertyForTile("x", layer, loc.x, loc.y);
         return (property == null) ? true : (property.GetStringValue() == "false");
+    }
+
+    // careful, this implementation is straight from MGNE
+    // it's efficiency is questionable, to say the least, and it only supports 1x1 events
+    public List<MapEvent> GetEventsAt(ObjectLayer layer, IntVector2 loc) {
+        List<MapEvent> events = new List<MapEvent>();
+        foreach (MapEvent mapEvent in layer.gameObject.GetComponentsInChildren<MapEvent>()) {
+            if (mapEvent.Position == loc) {
+                events.Add(mapEvent);
+            }
+        }
+        return events;
     }
 }

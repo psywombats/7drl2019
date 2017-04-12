@@ -6,14 +6,12 @@ using UnityEngine;
 [RequireComponent(typeof(CharaEvent))]
 public class AvatarEvent : MonoBehaviour, InputListener {
 
-    private CharaEvent Chara { get { return GetComponent<CharaEvent>(); } }
-
     public void Start() {
         Global.Instance().input.PushListener(this);
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
-        if (Chara.Tracking) {
+        if (GetComponent<CharaEvent>().Tracking) {
             return true;
         }
         if (eventType == InputManager.Event.Hold) {
@@ -40,12 +38,12 @@ public class AvatarEvent : MonoBehaviour, InputListener {
     }
 
     public bool TryStep(OrthoDir dir) {
-        IntVector2 target = Chara.Event.Position + dir.XY();
+        IntVector2 target = GetComponent<MapEvent>().Position + dir.XY();
 
-        if (Chara.PassableAt(target)) {
-            Chara.Step(dir);
+        if (GetComponent<CharaEvent>().IsPassableAt(target)) {
+            GetComponent<CharaEvent>().Step(dir);
         } else {
-            Chara.Facing = dir;
+            GetComponent<CharaEvent>().Facing = dir;
         }
 
         return true;

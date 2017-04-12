@@ -10,7 +10,21 @@ using UnityEngine;
  [RequireComponent(typeof(Dispatch))]
 public class MapEvent : TiledInstantiated {
 
+    // Editor properties
+
     public IntVector2 Position;
+
+    [TextArea(3, 6)]
+    public string LuaOnInteract;
+
+    [TextArea(3, 6)]
+    public string LuaOnCollide;
+
+    [TextArea(2, 2)]
+    public string LuaCondition;
+
+    // Properties
+
     public Vector2 PositionPx {
         get { return new Vector2(gameObject.transform.position.x, gameObject.transform.position.y); }
         set { gameObject.transform.position = new Vector3(value.x, value.y, gameObject.transform.position.z); }
@@ -88,5 +102,10 @@ public class MapEvent : TiledInstantiated {
                 }
             }
         }
+    }
+
+    public bool IsPassableBy(CharaEvent chara) {
+        // right now all non-chara events are passable
+        return GetComponent<CharaEvent>() == null;
     }
 }
