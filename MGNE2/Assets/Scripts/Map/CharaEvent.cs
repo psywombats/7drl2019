@@ -8,6 +8,9 @@ public class CharaEvent : MonoBehaviour {
 
     public static readonly string FaceEvent = "eventFace";
 
+    private static readonly string PropertySprite = "sprite";
+    private static readonly string PropertyFacing = "face";
+
     // Editor
     public float PixelsPerSecond = 36.0f;
 
@@ -45,6 +48,15 @@ public class CharaEvent : MonoBehaviour {
             if (position2 == mapEvent.TargetPosition) {
                 Tracking = false;
             }
+        }
+    }
+
+    public void Populate(IDictionary<string, string> properties) {
+        if (properties.ContainsKey(PropertyFacing)) {
+            Facing = OrthoDirExtensions.Parse(properties[PropertyFacing]);
+        }
+        if (properties.ContainsKey(PropertySprite)) {
+            gameObject.AddComponent<CharaAnimator>().Populate(properties[PropertySprite]);
         }
     }
 

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 4/12/2017 12:01:42 AM-->
+<!--Last exported: 4/13/2017 2:58:49 AM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="lower2" />
   <AssignMaterial mesh="mesh_0002" material="lower2" />
@@ -58,9 +58,10 @@
     </GameObject>
     <GameObject name="Object Layer 1" x="0" y="0" z="-0.13333334">
       <ObjectLayer offsetX="0" offsetY="0" color="#ff808080" />
-      <GameObject name="TestEvent" x="32" y="-192" rotation="0" layer="">
-        <Property name="dummyKey" value="dummyVal" />
-        <RectangleObjectComponent tmx-object-id="35" tmx-object-name="TestEvent" tmx-object-type="" tmx-object-x="32" tmx-object-y="192" tmx-object-width="16" tmx-object-height="16" tmx-object-rotation="0" />
+      <GameObject name="TestEvent" x="192" y="-144" rotation="0">
+        <Property name="face" value="west" />
+        <Property name="sprite" value="HumanM" />
+        <RectangleObjectComponent tmx-object-id="35" tmx-object-name="TestEvent" tmx-object-type="Character" tmx-object-x="192" tmx-object-y="144" tmx-object-width="16" tmx-object-height="16" tmx-object-rotation="0" />
         <BoxCollider2D width="16" height="16" />
       </GameObject>
     </GameObject>

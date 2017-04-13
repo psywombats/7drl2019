@@ -10,6 +10,12 @@ using UnityEngine;
  [RequireComponent(typeof(Dispatch))]
 public class MapEvent : TiledInstantiated {
 
+    private static readonly string PropertyCondition = "condition";
+    private static readonly string PropertyInteract = "onInteract";
+    private static readonly string PropertyCollide = "onCollide";
+
+    private static string TypeChara = "Character";
+
     // Editor properties
 
     public IntVector2 Position;
@@ -64,6 +70,22 @@ public class MapEvent : TiledInstantiated {
         RectangleObject rect = GetComponent<RectangleObject>();
         if (rect != null) {
             Position.Set((int)rect.TmxPosition.x / Map.TileWidthPx, (int)rect.TmxPosition.y / Map.TileHeightPx);
+        }
+
+        // lua junk
+        if (properties.ContainsKey(PropertyCondition)) {
+            LuaCondition = properties[PropertyCondition];
+        }
+        if (properties.ContainsKey(PropertyCollide)) {
+            LuaOnCollide = properties[PropertyCollide];
+        }
+        if (properties.ContainsKey(PropertyInteract)) {
+            LuaOnInteract = properties[PropertyInteract];
+        }
+
+        // type assignment
+        if (GetComponent<RuntimeTmxObject>().TmxType == TypeChara) {
+            gameObject.AddComponent<CharaEvent>().Populate(properties);
         }
 
         SetDepth();

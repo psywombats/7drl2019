@@ -2388,7 +2388,8 @@ namespace Tiled2Unity
                 // If we're not using a unity:layer override and there is an Object Type to go with this object then use it
                 if (String.IsNullOrEmpty(objectGroup.UnityLayerOverrideName))
                 {
-                    xmlObject.SetAttributeValue("layer", tmxObject.Type);
+                    // why would we /ever/ do this, christ
+                    //xmlObject.SetAttributeValue("layer", tmxObject.Type);
                 }
 
                 XElement objElement = null;

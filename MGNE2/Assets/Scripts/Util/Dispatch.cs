@@ -32,6 +32,10 @@ public class Dispatch : MonoBehaviour {
     }
 
     public void Signal(string eventName, object payload) {
+        if (listeners == null) {
+            // can happen in the editor, not an error case
+            return;
+        }
         if (listeners.ContainsKey(eventName)) {
             HashSet<Action<object>> eventListeners = listeners[eventName];
             foreach (Action<object> listener in eventListeners) {

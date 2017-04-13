@@ -24,9 +24,10 @@
   </data>
  </layer>
  <objectgroup name="Object Layer 1">
-  <object id="35" name="TestEvent" x="32" y="192" width="16" height="16">
+  <object id="35" name="TestEvent" type="Character" x="192" y="144" width="16" height="16">
    <properties>
-    <property name="dummyKey" value="dummyVal"/>
+    <property name="face" value="west"/>
+    <property name="sprite" value="HumanM"/>
    </properties>
   </object>
  </objectgroup>

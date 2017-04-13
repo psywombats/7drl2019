@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum OrthoDir {
-    [OrthoDirAttribute(0, 1, 0, -1,     0)] North,
-    [OrthoDirAttribute(1, 0, 1, 0,      1)] East,
-    [OrthoDirAttribute(0, -1, 0, 1,     2)] South,
-    [OrthoDirAttribute(-1, 0, -1, 0,    3)] West,
+    [OrthoDirAttribute("North",     0, 1, 0, -1,     0)] North,
+    [OrthoDirAttribute("East",      1, 0, 1, 0,      1)] East,
+    [OrthoDirAttribute("South",     0, -1, 0, 1,     2)] South,
+    [OrthoDirAttribute("West",      -1, 0, -1, 0,    3)] West,
 }
 
 public class OrthoDirAttribute : Attribute {
@@ -23,11 +23,13 @@ public class OrthoDirAttribute : Attribute {
     public int PxY { get { return PxXY.y; } }
 
     public int Ordinal { get; private set; }
+    public string DirectionName { get; private set; }
 
-    internal OrthoDirAttribute(int pxDX, int pxDY, int dx, int dy, int ordinal) {
+    internal OrthoDirAttribute(string directionName, int pxDX, int pxDY, int dx, int dy, int ordinal) {
         this.XY = new IntVector2(dx, dy);
         this.PxXY = new IntVector2(pxDX, pxDY);
         this.Ordinal = ordinal;
+        this.DirectionName = directionName;
     }
 }
 
@@ -49,6 +51,17 @@ public static class OrthoDirExtensions {
         }
     }
 
+    public static OrthoDir Parse(string directionName) {
+        foreach (OrthoDir dir in System.Enum.GetValues(typeof(OrthoDir))) {
+            if (dir.DirectionName().ToLower() == directionName.ToLower()) {
+                return dir;
+            }
+        }
+
+        // TODO: assert
+        return OrthoDir.North;
+    }
+
     public static int X(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().X; }
     public static int Y(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().Y; }
     public static IntVector2 XY(this OrthoDir dir) { return new IntVector2(dir.X(), dir.Y()); }
@@ -57,7 +70,6 @@ public static class OrthoDirExtensions {
     public static int PxY(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().PxY; }
     public static IntVector2 PxXY(this OrthoDir dir) { return new IntVector2(dir.PxX(), dir.PxY()); }
 
-    public static int Ordinal(this OrthoDir dir) {
-        return dir.GetAttribute<OrthoDirAttribute>().Ordinal;
-    }
+    public static int Ordinal(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().Ordinal; }
+    public static string DirectionName(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().DirectionName; }
 }
