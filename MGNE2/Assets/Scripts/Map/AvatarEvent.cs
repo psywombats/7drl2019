@@ -44,6 +44,10 @@ public class AvatarEvent : MonoBehaviour, InputListener {
             GetComponent<CharaEvent>().Step(dir);
         } else {
             GetComponent<CharaEvent>().Facing = dir;
+            MapEvent targetEvent = GetComponent<MapEvent>().Parent.GetEventAt(GetComponent<MapEvent>().Layer, target);
+            if (targetEvent != null) {
+                targetEvent.OnCollide(this);
+            }
         }
 
         return true;

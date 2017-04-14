@@ -6,6 +6,7 @@ public class Global : MonoBehaviour {
     private static Global instance;
     
     public InputManager input;
+    public LuaInterpreter lua;
 
     public static Global Instance() {
         if (instance == null) {
@@ -23,5 +24,6 @@ public class Global : MonoBehaviour {
 
     private void InstantiateManagers() {
         input = gameObject.AddComponent<InputManager>();
+        lua = gameObject.AddComponent<LuaInterpreter>();
     }
 }

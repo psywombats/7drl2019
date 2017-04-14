@@ -117,6 +117,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="MGNE2.Plugins.csproj">
+      <Project>{0577CAA5-C687-5934-A85A-68D4AC87F513}</Project>
+      <Name>MGNE2.Plugins</Name>
+    </ProjectReference>
     <ProjectReference Include="MGNE2.csproj">
       <Project>{9D9ACDCF-CB7F-F0F2-20F6-19E59E851BEC}</Project>
       <Name>MGNE2</Name>
