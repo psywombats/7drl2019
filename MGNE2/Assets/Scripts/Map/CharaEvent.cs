@@ -13,6 +13,7 @@ public class CharaEvent : MonoBehaviour {
 
     // Editor
     public float PixelsPerSecond = 36.0f;
+    public OrthoDir InitialFacing;
 
     // Public
     public Map Parent { get { return GetComponent<MapEvent>().Parent; } }
@@ -36,6 +37,7 @@ public class CharaEvent : MonoBehaviour {
 
     public void Start() {
         movementSlop = new Vector2(0.0f, 0.0f);
+        Facing = InitialFacing;
     }
 
     public void Update() {
@@ -53,7 +55,8 @@ public class CharaEvent : MonoBehaviour {
 
     public void Populate(IDictionary<string, string> properties) {
         if (properties.ContainsKey(PropertyFacing)) {
-            Facing = OrthoDirExtensions.Parse(properties[PropertyFacing]);
+            InitialFacing = OrthoDirExtensions.Parse(properties[PropertyFacing]);
+            Facing = InitialFacing;
         }
         if (properties.ContainsKey(PropertySprite)) {
             gameObject.AddComponent<CharaAnimator>().Populate(properties[PropertySprite]);

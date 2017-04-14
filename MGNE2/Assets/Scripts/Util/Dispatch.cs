@@ -9,6 +9,7 @@ using System;
  * that callback can be triggered by passing the event name. Make sure to unsubscribe
  * when the object is destroyed.
  */
+ [HideInInspector]
 public class Dispatch : MonoBehaviour {
 
     private Dictionary<string, HashSet<Action<object>>> listeners;
