@@ -5,8 +5,9 @@ public class Global : MonoBehaviour {
 
     private static Global instance;
     
-    public InputManager input;
-    public LuaInterpreter lua;
+    public InputManager Input { get; set; }
+    public LuaInterpreter Lua { get; set; }
+    public MapManager Maps { get; set; }
 
     public static Global Instance() {
         if (instance == null) {
@@ -23,7 +24,8 @@ public class Global : MonoBehaviour {
     }
 
     private void InstantiateManagers() {
-        input = gameObject.AddComponent<InputManager>();
-        lua = gameObject.AddComponent<LuaInterpreter>();
+        Input = gameObject.AddComponent<InputManager>();
+        Lua = gameObject.AddComponent<LuaInterpreter>();
+        Maps = gameObject.AddComponent<MapManager>();
     }
 }

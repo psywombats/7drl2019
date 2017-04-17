@@ -13,6 +13,7 @@ public class LuaInterpreter : MonoBehaviour {
 
         // function definitions!
         globalContext.Globals["debugLog"] = (Action<DynValue>)DebugLog;
+        globalContext.Globals["teleport"] = (Action<DynValue, DynValue, DynValue>)Teleport;
     }
 
     // generates a lua script object from the specified lua guts
@@ -28,5 +29,9 @@ public class LuaInterpreter : MonoBehaviour {
 
     private static void DebugLog(DynValue message) {
         Debug.Log(message.CastToString());
+    }
+
+    private static void Teleport(DynValue mapName, DynValue x, DynValue y) {
+        Global.Instance().Maps.Teleport(mapName.String, new IntVector2((int)x.Number, (int)y.Number));
     }
 }

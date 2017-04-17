@@ -13,6 +13,6 @@ public class LuaChunk {
     }
 
     public DynValue Run() {
-        return Global.Instance().lua.Run(function);
+        return Global.Instance().Lua.Run(function);
     }
 }

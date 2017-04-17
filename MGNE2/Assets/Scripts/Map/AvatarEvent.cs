@@ -7,7 +7,7 @@ using UnityEngine;
 public class AvatarEvent : MonoBehaviour, InputListener {
 
     public void Start() {
-        Global.Instance().input.PushListener(this);
+        Global.Instance().Input.PushListener(this);
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
@@ -39,21 +39,21 @@ public class AvatarEvent : MonoBehaviour, InputListener {
 
     public bool TryStep(OrthoDir dir) {
         IntVector2 target = GetComponent<MapEvent>().Position + dir.XY();
+        GetComponent<CharaEvent>().Facing = dir;
+        MapEvent targetEvent = GetComponent<MapEvent>().Parent.GetEventAt(GetComponent<MapEvent>().Layer, target);
 
         if (GetComponent<CharaEvent>().IsPassableAt(target)) {
-            GetComponent<CharaEvent>().Step(dir);
+            GetComponent<CharaEvent>().Step(dir, () => {
+                if (targetEvent != null) {
+                    targetEvent.OnCollide(this);
+                }
+            });
         } else {
-            GetComponent<CharaEvent>().Facing = dir;
-            MapEvent targetEvent = GetComponent<MapEvent>().Parent.GetEventAt(GetComponent<MapEvent>().Layer, target);
             if (targetEvent != null) {
                 targetEvent.OnCollide(this);
             }
         }
 
         return true;
-    }
-
-    public void Teleport(string mapName, IntVector2 location) {
-        
     }
 }

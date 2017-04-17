@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Tiled2Unity;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 /**
  * The generic "thing on the map" class for MGNE2. Usually comes from Tiled.
@@ -34,7 +35,6 @@ public class MapEvent : TiledInstantiated {
         get { return new Vector2(gameObject.transform.position.x, gameObject.transform.position.y); }
         set { gameObject.transform.position = new Vector3(value.x, value.y, gameObject.transform.position.z); }
     }
-    public Vector2 TargetPosition { get; set; }
 
     public Map Parent {
         get {
@@ -61,6 +61,18 @@ public class MapEvent : TiledInstantiated {
                 }
             } while (parent.transform.parent != null);
             return null;
+        }
+    }
+
+    public int LayerIndex {
+        get {
+            for (int thisLayerIndex = 0; thisLayerIndex < Parent.transform.childCount; thisLayerIndex += 1) {
+                if (Parent.transform.GetChild(thisLayerIndex).gameObject.GetComponent<ObjectLayer>() == Layer) {
+                    return thisLayerIndex;
+                }
+            }
+            Assert.IsTrue(false);
+            return -1;
         }
     }
 
@@ -158,11 +170,16 @@ public class MapEvent : TiledInstantiated {
         }
     }
 
+    public void SetLocation(IntVector2 location) {
+        Position = location;
+        OnValidate();
+    }
+
     private LuaChunk ParseScript(string lua) {
         if (lua == null || lua.Length == 0) {
             return null;
         } else {
-            LuaChunk chunk = Global.Instance().lua.CreateChunk(lua);
+            LuaChunk chunk = Global.Instance().Lua.CreateChunk(lua);
             return chunk;
         }
     }

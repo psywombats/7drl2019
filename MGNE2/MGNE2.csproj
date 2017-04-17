@@ -92,6 +92,7 @@
     <Compile Include="Assets\Scripts\Map\Map.cs" />
     <Compile Include="Assets\Scripts\Map\MapCamera.cs" />
     <Compile Include="Assets\Scripts\Map\MapEvent.cs" />
+    <Compile Include="Assets\Scripts\Map\MapManager.cs" />
     <Compile Include="Assets\Scripts\Map\OrthoDir.cs" />
     <Compile Include="Assets\Scripts\Map\TiledInstantiated.cs" />
     <Compile Include="Assets\Scripts\Util\CoUtils.cs" />
@@ -119,6 +120,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Tiled2Unity\Imported\Test\Testmap01.tiled2unity.xml" />
+    <None Include="Assets\Tiled2Unity\Imported\Test\Testmap02.tiled2unity.xml" />
     <None Include="Assets\Tiled2Unity\Imported\_ReadMe.txt" />
     <None Include="Assets\Tiled2Unity\License.txt" />
     <None Include="Assets\Tiled2Unity\Materials\_ReadMe.txt" />

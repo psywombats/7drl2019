@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Tiled2Unity;
 using UnityEngine;
+using System;
 
 [RequireComponent(typeof(MapEvent))]
 public class CharaEvent : MonoBehaviour {
@@ -18,6 +19,7 @@ public class CharaEvent : MonoBehaviour {
     // Public
     public Map Parent { get { return GetComponent<MapEvent>().Parent; } }
     public ObjectLayer Layer { get { return GetComponent<MapEvent>().Layer; } }
+    public Vector2 TargetPosition { get; set; }
 
     private OrthoDir facing;
     public OrthoDir Facing {
@@ -34,6 +36,7 @@ public class CharaEvent : MonoBehaviour {
 
     // Private
     private Vector2 movementSlop;
+    private Action onDestinationReached;
 
     public void Start() {
         movementSlop = new Vector2(0.0f, 0.0f);
@@ -43,12 +46,17 @@ public class CharaEvent : MonoBehaviour {
     public void Update() {
         MapEvent mapEvent = GetComponent<MapEvent>();
         if (Tracking) {
-            mapEvent.PositionPx = Vector2.MoveTowards((mapEvent.PositionPx + movementSlop), mapEvent.TargetPosition, PixelsPerSecond * Time.deltaTime);
+            mapEvent.PositionPx = Vector2.MoveTowards((mapEvent.PositionPx + movementSlop), TargetPosition, PixelsPerSecond * Time.deltaTime);
             movementSlop.Set(mapEvent.PositionPx.x - (float)Mathf.Floor(mapEvent.PositionPx.x), mapEvent.PositionPx.y - (float)Mathf.Floor(mapEvent.PositionPx.y));
             mapEvent.PositionPx = mapEvent.PositionPx - movementSlop;
             Vector2 position2 = mapEvent.PositionPx;
-            if (position2 == mapEvent.TargetPosition) {
+            if (position2 == TargetPosition) {
                 Tracking = false;
+                if (onDestinationReached != null) {
+                    Action toExecute = onDestinationReached;
+                    onDestinationReached = null;
+                    toExecute();
+                }
             }
         }
     }
@@ -63,25 +71,23 @@ public class CharaEvent : MonoBehaviour {
         }
     }
 
-    public void Step(OrthoDir dir) {
+    public void Step(OrthoDir dir, Action onFinish = null) {
         if (!Tracking) {
             MapEvent mapEvent = GetComponent<MapEvent>();
             Tracking = true;
             mapEvent.Position += dir.XY();
-            mapEvent.TargetPosition = mapEvent.PositionPx + Vector2.Scale(dir.PxXY(), Map.TileSizePx);
-            Facing = OrthoDirExtensions.DirectionOfPx(mapEvent.TargetPosition - mapEvent.PositionPx);
+            TargetPosition = mapEvent.PositionPx + Vector2.Scale(dir.PxXY(), Map.TileSizePx);
+            Facing = OrthoDirExtensions.DirectionOfPx(TargetPosition - mapEvent.PositionPx);
+            if (onFinish != null) {
+                onDestinationReached = onFinish;
+            }
         }
     }
 
     // checks if the given location is passable for this character
     // takes into account both chip and event
     public bool IsPassableAt(IntVector2 loc) {
-        int thisLayerIndex;
-        for (thisLayerIndex = 0; thisLayerIndex < Parent.transform.childCount; thisLayerIndex += 1) {
-            if (Parent.transform.GetChild(thisLayerIndex).gameObject.GetComponent<ObjectLayer>() == Layer) {
-                break;
-            }
-        }
+        int thisLayerIndex = GetComponent<MapEvent>().LayerIndex;
 
         foreach (MapEvent mapEvent in Parent.GetEventsAt(Layer, loc)) {
             if (!mapEvent.IsPassableBy(this)) {

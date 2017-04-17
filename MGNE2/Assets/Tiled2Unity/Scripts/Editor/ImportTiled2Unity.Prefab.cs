@@ -575,6 +575,7 @@ namespace Tiled2Unity
                 map.MapHeightInPixels = ImportUtils.GetAttributeAsInt(goXml, "mapHeightInPixels");
                 map.BackgroundColor = ImportUtils.GetAttributeAsColor(goXml, "backgroundColor", Color.black);
                 map.Tilesets = ConstructTilesets(goXml, importComponent);
+                map.ResourcePath = ImportUtils.GetAttributeAsString(goXml, "resourcePath", "");
             }
             catch
             {
@@ -645,7 +646,7 @@ namespace Tiled2Unity
                 // unfortunately we lose directory info here
                 string tilesetName = tilesetXml.Attribute("tilesetName").Value;
                 string xmlDir = importComponent.Tiled2UnityXmlPath.Substring(0, importComponent.Tiled2UnityXmlPath.LastIndexOf('/'));
-                string tilesetsDir = xmlDir.Substring(0, xmlDir.LastIndexOf('/'));
+                string tilesetsDir = xmlDir.Substring(0, xmlDir.LastIndexOf("/Imported/"));
                 string tilesetPath = tilesetsDir + "/Tilesets/" + tilesetName + ".asset";
                 Tileset tileset = AssetDatabase.LoadAssetAtPath<Tileset>(tilesetPath);
 

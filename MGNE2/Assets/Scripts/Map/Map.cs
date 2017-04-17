@@ -7,6 +7,7 @@ using UnityEngine;
 /**
  * MGNE's big map class, now in MGNE2. Converted from Tiled.
  */
+ [RequireComponent(typeof(TiledMap))]
 public class Map : TiledInstantiated {
 
     public static readonly IntVector2 TileSizePx = new IntVector2(16, 16);
@@ -20,6 +21,9 @@ public class Map : TiledInstantiated {
     public IntVector2 SizePx;
     public int WidthPx { get { return SizePx.x; } }
     public int HeightPx { get { return SizePx.y; } }
+
+    public String ResourcePath { get { return GetComponent<TiledMap>().ResourcePath; } }
+    public String FullName { get { return ResourcePath + "/" + gameObject.name; } }
 
     public override void Populate(IDictionary<string, string> properties) {
         TiledMap tiled = GetComponent<TiledMap>();
@@ -53,5 +57,9 @@ public class Map : TiledInstantiated {
         } else {
             return null;
         }
+    }
+
+    public Layer LayerAtIndex(int layerIndex) {
+        return transform.GetChild(layerIndex).GetComponent<Layer>();
     }
 }

@@ -59,6 +59,9 @@ namespace Tiled2Unity
         // All tilesets referenced by this map
         public List<LinkedTileset> Tilesets;
 
+        // Subfolder, essentially
+        public string ResourcePath;
+
         public Tiled2Unity.Layer GetTileLayerNamed(string layerName)
         {
             foreach (Transform childTransform in transform)
