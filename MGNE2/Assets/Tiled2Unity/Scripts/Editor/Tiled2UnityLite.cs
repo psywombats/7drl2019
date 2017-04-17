@@ -741,6 +741,7 @@ namespace Tiled2Unity
 
             NDesk.Options.OptionSet options = new NDesk.Options.OptionSet()
             {
+                { "p|parent-directory=", "Will export to this subdirectory of Imported", p => Tiled2Unity.Settings.ParentDirectory = !String.IsNullOrEmpty(p) ? p : "" },
                 { "o|object-type-xml=", "Supply an Object Type XML file for types and their properties", o => Tiled2Unity.Settings.ObjectTypeXml = !String.IsNullOrEmpty(o) ? Path.GetFullPath(o) : "" },
                 { "s|scale=", "Scale the output vertices by a value.\nA value of 0.01 is popular for many Unity projects that use 'Pixels Per Unit' of 100 for sprites.\nDefault is 1 (no scaling).", s => Tiled2Unity.Settings.Scale = ParseFloatDefault(s, 1.0f) },
                 { "c|convex", "Limit polygon colliders to be convex with no holes. Increases the number of polygon colliders in export. Can be overriden on map or layer basis with unity:convex property.", c => Tiled2Unity.Settings.PreferConvexPolygons = true },
@@ -1055,6 +1056,7 @@ namespace Tiled2Unity
 
         public static readonly float DefaultTexelBias = 8192.0f;
         public static float TexelBias = DefaultTexelBias;
+        public static string ParentDirectory = "";
 
         // If we're automatically opening, exporting, and closing then there are some code paths we don't want to take
         public static bool IsAutoExporting = false;
@@ -1544,7 +1546,7 @@ namespace Tiled2Unity
             }
 
             // Save the file (which is importing it into Unity)
-            string pathToSave = Path.Combine(exportDir, fileToSave);
+            string pathToSave = Path.Combine(Path.Combine(exportDir, Settings.ParentDirectory), fileToSave);
             Logger.WriteLine("Exporting to: {0}", pathToSave);
             doc.Save(pathToSave);
             Logger.WriteSuccess("Succesfully exported: {0}\n  Vertex Scale = {1}\n  Object Type Xml = {2}",
@@ -2548,6 +2550,9 @@ namespace Tiled2Unity
             // Some users may want resource prefabs to be saved to a particular path
             {
                 string unityResourcePath = properties.GetPropertyValueAsString("unity:resourcePath", "");
+                if (unityResourcePath.Length == 0 && context == PrefabContext.Root) {
+                    unityResourcePath = Settings.ParentDirectory;
+                }
                 if (!String.IsNullOrEmpty(unityResourcePath))
                 {
                     if (context != PrefabContext.Root)

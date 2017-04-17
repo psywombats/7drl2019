@@ -5,8 +5,8 @@
   <property name="bgm" value="ffl1_overworld"/>
   <property name="name" value="saga testmap"/>
  </properties>
- <tileset firstgid="1" source="tilesets/lower.tsx"/>
- <tileset firstgid="176" source="tilesets/upper.tsx"/>
+ <tileset firstgid="1" source="../tilesets/lower.tsx"/>
+ <tileset firstgid="176" source="../tilesets/upper.tsx"/>
  <layer name="Tile Layer 1" width="20" height="15">
   <properties>
    <property name="z" value="0"/>

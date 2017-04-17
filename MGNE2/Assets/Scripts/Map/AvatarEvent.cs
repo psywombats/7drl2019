@@ -52,4 +52,8 @@ public class AvatarEvent : MonoBehaviour, InputListener {
 
         return true;
     }
+
+    public void Teleport(string mapName, IntVector2 location) {
+        
+    }
 }
