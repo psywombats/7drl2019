@@ -34,4 +34,12 @@ public class LuaInterpreter : MonoBehaviour {
     private static void Teleport(DynValue mapName, DynValue x, DynValue y) {
         Global.Instance().Maps.Teleport(mapName.String, new IntVector2((int)x.Number, (int)y.Number));
     }
+
+    private static void Speak(DynValue text) {
+        Textbox textbox = Textbox.GetInstance();
+        textbox.enabled = true;
+        CoUtils.RunWithCallack(Textbox.GetInstance().ShowText(text.String), Global.Instance().Lua, () => {
+
+        });
+    }
 }

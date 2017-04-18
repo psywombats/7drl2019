@@ -22,7 +22,7 @@ internal sealed class SpriteImporter : AssetPostprocessor {
         string path = assetPath;
         string name = NameFromPath(path);
 
-        if (path.Contains("Sprites")) {
+        if (path.Contains("Sprites") || path.Contains("UI")) {
             TextureImporter importer = (TextureImporter)assetImporter;
             importer.filterMode = FilterMode.Point;
             importer.textureCompression = TextureImporterCompression.Uncompressed;

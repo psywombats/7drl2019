@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: b019968f7b4f6e047a87dd927b32fadf
+timeCreated: 1492499083
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Cirno
+  fontNames:
+  - Cirno
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

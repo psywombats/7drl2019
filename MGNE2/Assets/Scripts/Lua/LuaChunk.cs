@@ -12,7 +12,11 @@ public class LuaChunk {
         this.function = scriptFunction;
     }
 
-    public DynValue Run() {
+    public DynValue Evaluate() {
         return Global.Instance().Lua.Run(function);
+    }
+
+    public void Run() {
+        Global.Instance().Lua.RunScript(function);
     }
 }
