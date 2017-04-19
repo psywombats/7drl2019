@@ -15,7 +15,7 @@ public class MapEvent : TiledInstantiated {
     private static readonly string PropertyInteract = "onInteract";
     private static readonly string PropertyCollide = "onCollide";
 
-    private static string TypeChara = "Character";
+    private static readonly string TypeChara = "Character";
 
     // Editor properties
 
@@ -78,9 +78,9 @@ public class MapEvent : TiledInstantiated {
 
     // Private
 
-    private LuaChunk scriptCollide;
-    private LuaChunk scriptInteract;
-    private LuaChunk scriptCondition;
+    private LuaScript scriptCollide;
+    private LuaScript scriptInteract;
+    private LuaCondition scriptCondition;
 
     public override void Populate(IDictionary<string, string> properties) {
         gameObject.AddComponent<Dispatch>();
@@ -112,7 +112,7 @@ public class MapEvent : TiledInstantiated {
     public void Start() {
         scriptCollide = ParseScript(LuaOnCollide);
         scriptInteract = ParseScript(LuaOnInteract);
-        scriptCondition = ParseScript(LuaCondition);
+        scriptCondition = ParseCondition(LuaCondition);
     }
 
     public void Update() {
@@ -158,7 +158,10 @@ public class MapEvent : TiledInstantiated {
     // before the step if impassable, after if passable
     public void OnCollide(AvatarEvent avatar) {
         if (scriptCollide != null) {
-            scriptCollide.Run();
+            Global.Instance().Maps.Avatar.InputPaused = true;
+            scriptCollide.Run(() => {
+                Global.Instance().Maps.Avatar.InputPaused = false;
+            });
         }
     }
 
@@ -166,7 +169,10 @@ public class MapEvent : TiledInstantiated {
     // facing us if impassable, on top of us if passable
     public void OnInteract(Avatar avatar) {
         if (scriptInteract != null) {
-            scriptInteract.Run();
+            Global.Instance().Maps.Avatar.InputPaused = true;
+            scriptInteract.Run(() => {
+                Global.Instance().Maps.Avatar.InputPaused = false;
+            });
         }
     }
 
@@ -175,12 +181,19 @@ public class MapEvent : TiledInstantiated {
         OnValidate();
     }
 
-    private LuaChunk ParseScript(string lua) {
+    private LuaScript ParseScript(string lua) {
         if (lua == null || lua.Length == 0) {
             return null;
         } else {
-            LuaChunk chunk = Global.Instance().Lua.CreateChunk(lua);
-            return chunk;
+            return Global.Instance().Lua.CreateScript(lua);
+        }
+    }
+
+    private LuaCondition ParseCondition(string lua) {
+        if (lua == null || lua.Length == 0) {
+            return null;
+        } else {
+            return Global.Instance().Lua.CreateCondition(lua);
         }
     }
 }

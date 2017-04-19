@@ -78,4 +78,15 @@ public class InputManager : MonoBehaviour {
     public void RemoveListener(InputListener listener) {
         listeners.Remove(listener);
     }
+
+    public IEnumerator AwaitConfirm() {
+        while (true) {
+            foreach (KeyCode code in keybinds[Command.Confirm]) {
+                if (Input.GetKeyDown(code)) {
+                    yield break;
+                }
+            }
+            yield return null;
+        }
+    }
 }

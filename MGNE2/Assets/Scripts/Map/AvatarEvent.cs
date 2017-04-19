@@ -6,12 +6,14 @@ using UnityEngine;
 [RequireComponent(typeof(CharaEvent))]
 public class AvatarEvent : MonoBehaviour, InputListener {
 
+    public bool InputPaused { get; set; }
+
     public void Start() {
         Global.Instance().Input.PushListener(this);
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
-        if (GetComponent<CharaEvent>().Tracking) {
+        if (GetComponent<CharaEvent>().Tracking || InputPaused) {
             return true;
         }
         if (eventType == InputManager.Event.Hold) {

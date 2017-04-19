@@ -5,24 +5,18 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.Assertions;
 
+[RequireComponent(typeof(CanvasGroup))]
 public class Textbox : MonoBehaviour {
     
     private const float CharacterDelay = (1.0f / 100.0f);
     
     public Image backer;
     public Text textbox;
-    public Image advancePrompt;
+
+    public bool ActivelyShowingText { get; private set; }
+    public bool Visible { get { return GetComponent<CanvasGroup>().alpha == 1.0f; } }
     
     private string fullText;
-
-    public float Height {
-        get { return GetComponent<RectTransform>().rect.height; }
-    }
-
-    private float AdvancePromptAlpha {
-        get { return advancePrompt.GetComponent<CanvasRenderer>().GetAlpha(); }
-        set { advancePrompt.GetComponent<CanvasRenderer>().SetAlpha(value); }
-    }
 
     public void OnEnable() {
         Clear();
@@ -36,16 +30,12 @@ public class Textbox : MonoBehaviour {
         return FindObjectOfType<Textbox>();
     }
 
-    public void FadeAdvancePrompt(bool fadeIn) {
-        if (advancePrompt != null) {
-            // transitions?
-            advancePrompt.CrossFadeAlpha(fadeIn ? 1.0f : 0.0f, 0, false);
-        }
-    }
-
     public IEnumerator ShowText(string text) {
+        ActivelyShowingText = true;
+        if (!Visible) {
+            yield return TransitionIn();
+        }
         fullText = text;
-        FadeAdvancePrompt(false);
         for (int i = 0; i <= fullText.Length; i += 1) {
             textbox.text = fullText.Substring(0, i);
             textbox.text += "<color=#00000000>";
@@ -54,7 +44,29 @@ public class Textbox : MonoBehaviour {
             yield return new WaitForSeconds(CharacterDelay);
         }
         textbox.text = fullText;
-        
-        FadeAdvancePrompt(true);
+        yield return Global.Instance().Input.AwaitConfirm();
+        ActivelyShowingText = false;
+    }
+
+    public IEnumerator TransitionIn() {
+        // placeholder
+        while (GetComponent<CanvasGroup>().alpha < 1.0f) {
+            GetComponent<CanvasGroup>().alpha += Time.deltaTime / 0.5f;
+            if (GetComponent<CanvasGroup>().alpha > 1.0f) {
+                GetComponent<CanvasGroup>().alpha = 1.0f;
+            }
+            yield return null;
+        }
+    }
+
+    public IEnumerator TransitionOut() {
+        // placeholder
+        while (GetComponent<CanvasGroup>().alpha > 0.0f) {
+            GetComponent<CanvasGroup>().alpha -= Time.deltaTime / 0.5f;
+            if (GetComponent<CanvasGroup>().alpha < 0.0f) {
+                GetComponent<CanvasGroup>().alpha = 0.0f;
+            }
+            yield return null;
+        }
     }
 }

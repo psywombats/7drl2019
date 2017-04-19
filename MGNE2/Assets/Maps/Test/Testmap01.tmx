@@ -27,6 +27,10 @@
   <object id="35" name="TestEvent" type="Character" x="192" y="144" width="16" height="16">
    <properties>
     <property name="face" value="west"/>
+    <property name="onCollide">speakLine('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.')
+debugLog('Hi mom!')
+wait(2.0)
+debugLog('Hello again')</property>
     <property name="sprite" value="HumanM"/>
    </properties>
   </object>
