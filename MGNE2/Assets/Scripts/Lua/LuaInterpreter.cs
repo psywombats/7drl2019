@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 using MoonSharp.Interpreter;
 using System;
 using System.IO;
@@ -10,18 +11,21 @@ public class LuaInterpreter : MonoBehaviour {
     private static readonly string DefinesPath = "Assets/Resources/Scenes/Defines.lua";
 
     private Script globalContext;
+
+    private MoonSharp.Interpreter.Coroutine activeScript;
+    private int blockingRoutines;
     
     public void Awake() {
         globalContext = new Script();
 
         // immediate functions
         globalContext.Globals["debugLog"] = (Action<DynValue>)DebugLog;
-        globalContext.Globals["teleport"] = (Action<DynValue, DynValue, DynValue>)Teleport;
 
         // routines
-        globalContext.Globals["cs_speak"] = (Func<DynValue, IEnumerator>)Speak;
-        globalContext.Globals["cs_hideText"] = (Func<IEnumerator>)HideText;
-        globalContext.Globals["cs_wait"] = (Func<DynValue, IEnumerator>)Wait;
+        globalContext.Globals["cs_teleport"] = (Action<DynValue, DynValue, DynValue>)Teleport;
+        globalContext.Globals["cs_showText"] = (Action<DynValue>)ShowText;
+        globalContext.Globals["cs_hideTextbox"] = (Action)HideTextbox;
+        globalContext.Globals["cs_wait"] = (Action<DynValue>)Wait;
 
         // global defines lua-side
         StreamReader reader = new StreamReader(DefinesPath);
@@ -47,33 +51,30 @@ public class LuaInterpreter : MonoBehaviour {
 
     // executes asynchronously, for cutscenes
     public void RunScript(DynValue function, Action callback = null) {
-        StartCoroutine(CoUtils.RunWithCallback(RunRoutine(function), this, () => {
+        StartCoroutine(CoUtils.RunWithCallback(ScriptRoutine(function), this, () => {
             if (callback != null) {
                 callback();
             }
         }));
     }
 
-    private IEnumerator RunRoutine(DynValue function) {
-        DynValue coroutine = globalContext.CreateCoroutine(function);
-        while (coroutine.Coroutine.State != CoroutineState.Dead) {
-            coroutine.Coroutine.Resume();
+    private IEnumerator ScriptRoutine(DynValue function) {
+        Assert.IsNull(activeScript);
+        activeScript = globalContext.CreateCoroutine(function).Coroutine;
+        activeScript.Resume();
+        while (activeScript.State != CoroutineState.Dead) {
             yield return null;
         }
     }
 
-    private IEnumerator InstancedWaitForRoutine(IEnumerator routine) {
-        bool finished = false;
-        StartCoroutine(CoUtils.RunWithCallback(routine, this, () => {
-            finished = true;
+    private static void RunRoutineFromLua(IEnumerator routine) {
+        Global.Instance().Lua.blockingRoutines += 1;
+        Global.Instance().Lua.StartCoroutine(CoUtils.RunWithCallback(routine, Global.Instance().Lua, () => {
+            Global.Instance().Lua.blockingRoutines -= 1;
+            if (Global.Instance().Lua.blockingRoutines == 0) {
+                Global.Instance().Lua.activeScript.Resume();
+            }
         }));
-        while (!finished) {
-            yield return null;
-        }
-    }
-
-    private static IEnumerator WaitForRoutine(IEnumerator routine) {
-        return Global.Instance().Lua.InstancedWaitForRoutine(routine);
     }
 
     private static void DebugLog(DynValue message) {
@@ -81,22 +82,18 @@ public class LuaInterpreter : MonoBehaviour {
     }
 
     private static void Teleport(DynValue mapName, DynValue x, DynValue y) {
-        Global.Instance().Maps.Teleport(mapName.String, new IntVector2((int)x.Number, (int)y.Number));
+        RunRoutineFromLua(Global.Instance().Maps.TeleportRoutine(mapName.String, new IntVector2((int)x.Number, (int)y.Number)));
     }
 
-    private static IEnumerator Speak(DynValue text) {
-        return WaitForRoutine(Textbox.GetInstance().ShowText(text.String));
+    private static void ShowText(DynValue text) {
+        RunRoutineFromLua(Textbox.GetInstance().ShowText(text.String));
     }
 
-    private static IEnumerator HideText() {
-        return Textbox.GetInstance().TransitionOut();
+    private static void HideTextbox() {
+        RunRoutineFromLua(Textbox.GetInstance().TransitionOut());
     }
 
-    private static IEnumerator Wait(DynValue seconds) {
-        return WaitForRoutine(UnityWait((float)seconds.Number));
-    }
-
-    private static IEnumerator UnityWait(float seconds) {
-        yield return new WaitForSeconds(seconds);
+    private static void Wait(DynValue seconds) {
+        RunRoutineFromLua(CoUtils.Wait((float)seconds.Number));
     }
 }

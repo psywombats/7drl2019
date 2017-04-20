@@ -28,10 +28,15 @@ public class MapManager : MonoBehaviour {
             return avatar;
         }
     }
+
+    public IEnumerator TeleportRoutine(string mapName, IntVector2 location) {
+        RawTeleport(mapName, location);
+        yield return null;
+    }
     
     // map path is accepted either as a relative map name "Testmap01" or full path "Test/Testmap01"
     // the .tmx or whatever extension is not needed
-    public void Teleport(string mapName, IntVector2 location) {
+    private void RawTeleport(string mapName, IntVector2 location) {
         Assert.IsNotNull(ActiveMap);
         string localPath = ActiveMap.ResourcePath + "/" + mapName;
         GameObject newMapObject = Resources.Load<GameObject>(localPath);
@@ -41,10 +46,10 @@ public class MapManager : MonoBehaviour {
         Assert.IsNotNull(newMapObject);
         GameObject newMapInstace = Instantiate(newMapObject);
 
-        Teleport(newMapInstace.GetComponent<Map>(), location);
+        RawTeleport(newMapInstace.GetComponent<Map>(), location);
     }
 
-    public void Teleport(Map map, IntVector2 location) {
+    private void RawTeleport(Map map, IntVector2 location) {
         Assert.IsNotNull(ActiveMap);
         Assert.IsNotNull(Avatar);
 

@@ -25,4 +25,8 @@ public class CoUtils {
         yield return runner.StartCoroutine(coroutine);
         toRun();
     }
+
+    public static IEnumerator Wait(float seconds) {
+        yield return new WaitForSeconds(seconds);
+    }
 }

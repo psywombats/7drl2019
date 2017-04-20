@@ -1,25 +1,26 @@
 -- global defines for coroutines mostly
 
-function runRoutine (routine)
-    debugLog('runRoutine')
-    local active = coroutine.running()
-    for dummy in routine do
-        coroutine.yield(active)
-    end
-end
-
-function speak (line)
-    debugLog('speak')
-    runRoutine(cs_speak(line))
-end
-
-function speakLine (line)
-    debugLog('speakLine')
-    runRoutine(cs_speak(line))
-    debugLog('speakLine2')
-    runRoutine(cs_hideText())
+function await ()
+    coroutine.yield()
 end
 
 function wait (seconds)
-    runRoutine(cs_wait(seconds))
+    cs_wait(seconds)
+    await()
+end
+
+function speak (line)
+    cs_showText(line)
+    await()
+end
+
+function speakLine (line)
+    speak(line)
+    cs_hideTextbox()
+    await()
+end
+
+function teleport (mapName, x, y)
+    cs_teleport(mapName, x, y)
+    await()
 end
