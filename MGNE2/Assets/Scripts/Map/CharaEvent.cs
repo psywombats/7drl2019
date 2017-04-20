@@ -87,6 +87,10 @@ public class CharaEvent : MonoBehaviour {
     // checks if the given location is passable for this character
     // takes into account both chip and event
     public bool IsPassableAt(IntVector2 loc) {
+        if (!GetComponent<MapEvent>().SwitchEnabled) {
+            return true;
+        }
+
         int thisLayerIndex = GetComponent<MapEvent>().LayerIndex;
 
         foreach (MapEvent mapEvent in Parent.GetEventsAt(Layer, loc)) {

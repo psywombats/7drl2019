@@ -11,6 +11,8 @@ using UnityEngine.Assertions;
  [RequireComponent(typeof(Dispatch))]
 public class MapEvent : TiledInstantiated {
 
+    public static readonly string EventEnabled = "enabled";
+
     private static readonly string PropertyCondition = "condition";
     private static readonly string PropertyInteract = "onInteract";
     private static readonly string PropertyCollide = "onCollide";
@@ -76,6 +78,19 @@ public class MapEvent : TiledInstantiated {
         }
     }
 
+    private bool switchEnabled;
+    public bool SwitchEnabled {
+        get {
+            return switchEnabled;
+        }
+        set {
+            if (value != enabled) {
+                GetComponent<Dispatch>().Signal(EventEnabled, value);
+            }
+            switchEnabled = value;
+        }
+    }
+
     // Private
 
     private LuaScript scriptCollide;
@@ -113,6 +128,7 @@ public class MapEvent : TiledInstantiated {
         scriptCollide = ParseScript(LuaOnCollide);
         scriptInteract = ParseScript(LuaOnInteract);
         scriptCondition = ParseCondition(LuaCondition);
+        CheckEnabled();
     }
 
     public void Update() {
@@ -149,6 +165,10 @@ public class MapEvent : TiledInstantiated {
         }
     }
 
+    public void CheckEnabled() {
+        SwitchEnabled = (scriptCondition == null) ? true : scriptCondition.Evaluate().Boolean;
+    }
+
     public bool IsPassableBy(CharaEvent chara) {
         // right now all non-chara events are passable
         return GetComponent<CharaEvent>() == null;
@@ -157,6 +177,9 @@ public class MapEvent : TiledInstantiated {
     // called when the avatar stumbles into us
     // before the step if impassable, after if passable
     public void OnCollide(AvatarEvent avatar) {
+        if (!SwitchEnabled) {
+            return;
+        }
         if (scriptCollide != null) {
             Global.Instance().Maps.Avatar.InputPaused = true;
             scriptCollide.Run(() => {
@@ -168,6 +191,9 @@ public class MapEvent : TiledInstantiated {
     // called when the avatar stumbles into us
     // facing us if impassable, on top of us if passable
     public void OnInteract(Avatar avatar) {
+        if (!SwitchEnabled) {
+            return;
+        }
         if (scriptInteract != null) {
             Global.Instance().Maps.Avatar.InputPaused = true;
             scriptInteract.Run(() => {

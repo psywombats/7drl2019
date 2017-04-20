@@ -14,6 +14,11 @@ public class CharaAnimator : MonoBehaviour {
 
     public void Start() {
         lastPosition = gameObject.transform.position;
+
+        GetComponent<Dispatch>().RegisterListener(MapEvent.EventEnabled, (object payload) => {
+            bool enabled = (bool)payload;
+            GetComponent<SpriteRenderer>().enabled = enabled;
+        });
     }
 
     public void Update() {

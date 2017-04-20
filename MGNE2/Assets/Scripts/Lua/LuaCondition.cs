@@ -13,7 +13,7 @@ public class LuaCondition {
         this.function = scriptFunction;
     }
 
-    public void Evaluate() {
-        Global.Instance().Lua.Evaluate(function);
+    public DynValue Evaluate() {
+        return Global.Instance().Lua.Evaluate(function);
     }
 }
