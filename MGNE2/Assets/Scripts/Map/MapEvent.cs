@@ -33,6 +33,8 @@ public class MapEvent : TiledInstantiated {
 
     // Properties
 
+    public LuaRepresentation LuaObject { get; private set; }
+
     public Vector2 PositionPx {
         get { return new Vector2(gameObject.transform.position.x, gameObject.transform.position.y); }
         set { gameObject.transform.position = new Vector3(value.x, value.y, gameObject.transform.position.z); }
@@ -91,12 +93,6 @@ public class MapEvent : TiledInstantiated {
         }
     }
 
-    // Private
-
-    private LuaScript scriptCollide;
-    private LuaScript scriptInteract;
-    private LuaCondition scriptCondition;
-
     public override void Populate(IDictionary<string, string> properties) {
         gameObject.AddComponent<Dispatch>();
         Position = new IntVector2(0, 0);
@@ -125,14 +121,17 @@ public class MapEvent : TiledInstantiated {
     }
 
     public void Start() {
-        scriptCollide = ParseScript(LuaOnCollide);
-        scriptInteract = ParseScript(LuaOnInteract);
-        scriptCondition = ParseCondition(LuaCondition);
+        LuaObject = Global.Instance().Lua.CreateObject();
+        LuaObject.Set(PropertyCollide, LuaOnCollide);
+        LuaObject.Set(PropertyInteract, LuaOnInteract);
+        LuaObject.Set(PropertyCondition, LuaCondition);
+
         CheckEnabled();
     }
 
     public void Update() {
         SetDepth();
+        CheckEnabled();
     }
 
     public void OnValidate() {
@@ -166,7 +165,7 @@ public class MapEvent : TiledInstantiated {
     }
 
     public void CheckEnabled() {
-        SwitchEnabled = (scriptCondition == null) ? true : scriptCondition.Evaluate().Boolean;
+        SwitchEnabled = LuaObject.EvaluateBool(PropertyCondition, true);
     }
 
     public bool IsPassableBy(CharaEvent chara) {
@@ -177,28 +176,16 @@ public class MapEvent : TiledInstantiated {
     // called when the avatar stumbles into us
     // before the step if impassable, after if passable
     public void OnCollide(AvatarEvent avatar) {
-        if (!SwitchEnabled) {
-            return;
-        }
-        if (scriptCollide != null) {
-            Global.Instance().Maps.Avatar.InputPaused = true;
-            scriptCollide.Run(() => {
-                Global.Instance().Maps.Avatar.InputPaused = false;
-            });
+        if (SwitchEnabled) {
+            LuaObject.Run(PropertyCollide);
         }
     }
 
     // called when the avatar stumbles into us
     // facing us if impassable, on top of us if passable
     public void OnInteract(Avatar avatar) {
-        if (!SwitchEnabled) {
-            return;
-        }
-        if (scriptInteract != null) {
-            Global.Instance().Maps.Avatar.InputPaused = true;
-            scriptInteract.Run(() => {
-                Global.Instance().Maps.Avatar.InputPaused = false;
-            });
+        if (SwitchEnabled) {
+            LuaObject.Run(PropertyInteract);
         }
     }
 

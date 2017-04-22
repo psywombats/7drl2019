@@ -28,9 +28,7 @@
    <properties>
     <property name="face" value="west"/>
     <property name="onCollide">speakLine('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.')
-debugLog('Hi mom!')
-wait(2.0)
-debugLog('Hello again')</property>
+debugLog('Hi mom!')</property>
     <property name="sprite" value="HumanM"/>
    </properties>
   </object>

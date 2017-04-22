@@ -33,15 +33,21 @@ public class LuaInterpreter : MonoBehaviour {
         reader.Close();
     }
 
-    // generates a lua script object from the specified lua guts
+    // generates a lua script object from the specified lua guts, can be run as a process
     public LuaScript CreateScript(string luaScript) {
         luaScript = "return function()\n" + luaScript;
         luaScript = luaScript + "\nend";
         return new LuaScript(globalContext.DoString(luaScript));
     }
 
+    // meant to be evaluated synchronously
     public LuaCondition CreateCondition(string luaScript) {
         return new LuaCondition(globalContext.LoadString(luaScript));
+    }
+
+    // creates an empty table as the lua representation of some c# object
+    public LuaRepresentation CreateObject() {
+        return new LuaRepresentation(globalContext.DoString("return {}"));
     }
 
     // evaluates a lua function in the global context
@@ -51,11 +57,18 @@ public class LuaInterpreter : MonoBehaviour {
 
     // executes asynchronously, for cutscenes
     public void RunScript(DynValue function, Action callback = null) {
+        Global.Instance().Maps.Avatar.InputPaused = true;
         StartCoroutine(CoUtils.RunWithCallback(ScriptRoutine(function), this, () => {
+            Global.Instance().Maps.Avatar.InputPaused = false;
+            activeScript = null;
             if (callback != null) {
                 callback();
             }
         }));
+    }
+
+    public DynValue Load(string luaChunk) {
+        return globalContext.LoadString(luaChunk);
     }
 
     private IEnumerator ScriptRoutine(DynValue function) {
