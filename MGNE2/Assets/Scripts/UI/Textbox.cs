@@ -12,8 +12,7 @@ public class Textbox : MonoBehaviour, InputListener {
     
     public Image backer;
     public Text textbox;
-
-    public bool ActivelyShowingText { get; private set; }
+    
     public bool Visible { get { return GetComponent<CanvasGroup>().alpha == 1.0f; } }
     
     private string fullText;
@@ -32,7 +31,7 @@ public class Textbox : MonoBehaviour, InputListener {
     }
 
     public IEnumerator ShowText(string text) {
-        ActivelyShowingText = true;
+        Clear();
         hurried = false;
         Global.Instance().Input.PushListener(this);
         if (!Visible) {
@@ -51,14 +50,15 @@ public class Textbox : MonoBehaviour, InputListener {
         }
         textbox.text = fullText;
         yield return Global.Instance().Input.AwaitConfirm();
-        ActivelyShowingText = false;
         Global.Instance().Input.RemoveListener(this);
     }
 
     public IEnumerator TransitionIn() {
+        Clear();
+
         // placeholder
         while (GetComponent<CanvasGroup>().alpha < 1.0f) {
-            GetComponent<CanvasGroup>().alpha += Time.deltaTime / 0.5f;
+            GetComponent<CanvasGroup>().alpha += Time.deltaTime / 0.25f;
             if (GetComponent<CanvasGroup>().alpha > 1.0f) {
                 GetComponent<CanvasGroup>().alpha = 1.0f;
             }
@@ -69,7 +69,7 @@ public class Textbox : MonoBehaviour, InputListener {
     public IEnumerator TransitionOut() {
         // placeholder
         while (GetComponent<CanvasGroup>().alpha > 0.0f) {
-            GetComponent<CanvasGroup>().alpha -= Time.deltaTime / 0.5f;
+            GetComponent<CanvasGroup>().alpha -= Time.deltaTime / 0.25f;
             if (GetComponent<CanvasGroup>().alpha < 0.0f) {
                 GetComponent<CanvasGroup>().alpha = 0.0f;
             }

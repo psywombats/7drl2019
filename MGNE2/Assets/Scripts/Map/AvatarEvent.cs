@@ -30,6 +30,9 @@ public class AvatarEvent : MonoBehaviour, InputListener {
                 case InputManager.Command.Left:
                     TryStep(OrthoDir.West);
                     return true;
+                case InputManager.Command.Confirm:
+                    Interact();
+                    return true;
                 default:
                     return false;
 
@@ -39,23 +42,52 @@ public class AvatarEvent : MonoBehaviour, InputListener {
         }
     }
 
+    public void Interact() {
+        IntVector2 target = GetComponent<MapEvent>().Position + GetComponent<CharaEvent>().Facing.XY();
+        List<MapEvent> targetEvents = GetComponent<MapEvent>().Parent.GetEventsAt(GetComponent<MapEvent>().Layer, target);
+        foreach (MapEvent tryTarget in targetEvents) {
+            if (!tryTarget.IsPassableBy(GetComponent<CharaEvent>())) {
+                tryTarget.OnInteract(this);
+                return;
+            }
+        }
+
+        target = GetComponent<MapEvent>().Position;
+        targetEvents = GetComponent<MapEvent>().Parent.GetEventsAt(GetComponent<MapEvent>().Layer, target);
+        foreach (MapEvent tryTarget in targetEvents) {
+            if (tryTarget.IsPassableBy(GetComponent<CharaEvent>())) {
+                tryTarget.OnInteract(this);
+                return;
+            }
+        }
+    }
+
     public bool TryStep(OrthoDir dir) {
         IntVector2 target = GetComponent<MapEvent>().Position + dir.XY();
         GetComponent<CharaEvent>().Facing = dir;
-        MapEvent targetEvent = GetComponent<MapEvent>().Parent.GetEventAt(GetComponent<MapEvent>().Layer, target);
+        List<MapEvent> targetEvents = GetComponent<MapEvent>().Parent.GetEventsAt(GetComponent<MapEvent>().Layer, target);
 
-        if (GetComponent<CharaEvent>().IsPassableAt(target)) {
+        List<MapEvent> toCollide = new List<MapEvent>();
+        bool passable = true;
+        foreach (MapEvent targetEvent in targetEvents) {
+            toCollide.Add(targetEvent);
+            if (!GetComponent<CharaEvent>().IsPassableAt(target)) {
+                passable = false;
+            }
+        }
+
+        if (passable) {
             GetComponent<CharaEvent>().Step(dir, () => {
-                if (targetEvent != null) {
+                foreach (MapEvent targetEvent in toCollide) {
                     targetEvent.OnCollide(this);
                 }
             });
         } else {
-            if (targetEvent != null) {
+            foreach (MapEvent targetEvent in toCollide) {
                 targetEvent.OnCollide(this);
             }
         }
-
+        
         return true;
     }
 }

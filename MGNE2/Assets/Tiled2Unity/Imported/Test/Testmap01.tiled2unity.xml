@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 4/21/2017 11:10:31 PM-->
+<!--Last exported: 4/22/2017 4:28:24 PM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="lower2" />
   <AssignMaterial mesh="mesh_0002" material="lower2" />
@@ -58,6 +58,22 @@
     </GameObject>
     <GameObject name="Object Layer 1" x="0" y="0" z="-0.13333334">
       <ObjectLayer offsetX="0" offsetY="0" color="#ff808080" />
+      <GameObject name="TestEvent" x="144" y="-80" rotation="0">
+        <Property name="face" value="west" />
+        <Property name="onInteract" value="speakLine('test_switch is now TRUE')&#xA;setSwitch('test_switch', true)" />
+        <Property name="show" value="return not getSwitch('test_switch')" />
+        <Property name="sprite" value="HumanM" />
+        <RectangleObjectComponent tmx-object-id="42" tmx-object-name="TestEvent" tmx-object-type="Character" tmx-object-x="144" tmx-object-y="80" tmx-object-width="16" tmx-object-height="16" tmx-object-rotation="0" />
+        <BoxCollider2D width="16" height="16" />
+      </GameObject>
+      <GameObject name="TestEvent" x="144" y="-80" rotation="0">
+        <Property name="face" value="east" />
+        <Property name="onInteract" value="speakLine('I will turn the test_switch back off now')&#xA;setSwitch('test_switch', false)" />
+        <Property name="show" value="return getSwitch('test_switch')" />
+        <Property name="sprite" value="HumanM" />
+        <RectangleObjectComponent tmx-object-id="43" tmx-object-name="TestEvent" tmx-object-type="Character" tmx-object-x="144" tmx-object-y="80" tmx-object-width="16" tmx-object-height="16" tmx-object-rotation="0" />
+        <BoxCollider2D width="16" height="16" />
+      </GameObject>
       <GameObject name="tele" x="304" y="-128" rotation="0">
         <Property name="onCollide" value="teleport('Testmap02', 1, 7)" />
         <RectangleObjectComponent tmx-object-id="37" tmx-object-name="tele" tmx-object-type="Event" tmx-object-x="304" tmx-object-y="128" tmx-object-width="16" tmx-object-height="16" tmx-object-rotation="0" />

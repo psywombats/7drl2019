@@ -10,11 +10,13 @@ public class Memory {
     public List<bool> switchValues;
 
     // meta info
+    public int saveVersion;
     public double savedAt;
 
-    public Memory() {
+    public Memory(MemoryManager manager) {
         switchKeys = new List<string>();
         switchValues = new List<bool>();
-        savedAt = Global.Instance().Memory.CurrentTimestamp();
+        savedAt = manager.CurrentTimestamp();
+        saveVersion = MemoryManager.CurrentSaveVersion;
     }
 }

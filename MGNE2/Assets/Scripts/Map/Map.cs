@@ -49,16 +49,6 @@ public class Map : TiledInstantiated {
         return events;
     }
 
-    // just returns the first found
-    public MapEvent GetEventAt(ObjectLayer layer, IntVector2 loc) {
-        List<MapEvent> events = GetEventsAt(layer, loc);
-        if (events.Count > 0) {
-            return events[0];
-        } else {
-            return null;
-        }
-    }
-
     public Layer LayerAtIndex(int layerIndex) {
         return transform.GetChild(layerIndex).GetComponent<Layer>();
     }

@@ -20,6 +20,8 @@ public class LuaInterpreter : MonoBehaviour {
 
         // immediate functions
         globalContext.Globals["debugLog"] = (Action<DynValue>)DebugLog;
+        globalContext.Globals["getSwitch"] = (Func<DynValue, DynValue>)GetSwitch;
+        globalContext.Globals["setSwitch"] = (Action<DynValue, DynValue>)SetSwitch;
 
         // routines
         globalContext.Globals["cs_teleport"] = (Action<DynValue, DynValue, DynValue>)Teleport;
@@ -90,8 +92,21 @@ public class LuaInterpreter : MonoBehaviour {
         }));
     }
 
+    private static DynValue Marshal(object toMarshal) {
+        return DynValue.FromObject(Global.Instance().Lua.globalContext, toMarshal);
+    }
+
     private static void DebugLog(DynValue message) {
         Debug.Log(message.CastToString());
+    }
+
+    private static DynValue GetSwitch(DynValue switchName) {
+        bool value = Global.Instance().Memory.GetSwitch(switchName.String);
+        return Marshal(value);
+    }
+
+    private static void SetSwitch(DynValue switchName, DynValue value) {
+        Global.Instance().Memory.SetSwitch(switchName.String, value.Boolean);
     }
 
     private static void Teleport(DynValue mapName, DynValue x, DynValue y) {

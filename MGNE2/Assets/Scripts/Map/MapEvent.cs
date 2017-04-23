@@ -13,7 +13,7 @@ public class MapEvent : TiledInstantiated {
 
     public static readonly string EventEnabled = "enabled";
 
-    private static readonly string PropertyCondition = "condition";
+    private static readonly string PropertyCondition = "show";
     private static readonly string PropertyInteract = "onInteract";
     private static readonly string PropertyCollide = "onCollide";
 
@@ -80,13 +80,13 @@ public class MapEvent : TiledInstantiated {
         }
     }
 
-    private bool switchEnabled;
+    private bool switchEnabled = true;
     public bool SwitchEnabled {
         get {
             return switchEnabled;
         }
         set {
-            if (value != enabled) {
+            if (value != switchEnabled) {
                 GetComponent<Dispatch>().Signal(EventEnabled, value);
             }
             switchEnabled = value;
@@ -170,7 +170,7 @@ public class MapEvent : TiledInstantiated {
 
     public bool IsPassableBy(CharaEvent chara) {
         // right now all non-chara events are passable
-        return GetComponent<CharaEvent>() == null;
+        return GetComponent<CharaEvent>() == null || !SwitchEnabled;
     }
 
     // called when the avatar stumbles into us
@@ -183,7 +183,7 @@ public class MapEvent : TiledInstantiated {
 
     // called when the avatar stumbles into us
     // facing us if impassable, on top of us if passable
-    public void OnInteract(Avatar avatar) {
+    public void OnInteract(AvatarEvent avatar) {
         if (SwitchEnabled) {
             LuaObject.Run(PropertyInteract);
         }
