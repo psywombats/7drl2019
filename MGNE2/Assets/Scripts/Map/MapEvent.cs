@@ -33,7 +33,7 @@ public class MapEvent : TiledInstantiated {
 
     // Properties
 
-    public LuaRepresentation LuaObject { get; private set; }
+    public LuaMapEvent LuaObject { get; private set; }
 
     public Vector2 PositionPx {
         get { return new Vector2(gameObject.transform.position.x, gameObject.transform.position.y); }
@@ -121,7 +121,7 @@ public class MapEvent : TiledInstantiated {
     }
 
     public void Start() {
-        LuaObject = Global.Instance().Lua.CreateObject();
+        LuaObject = Global.Instance().Lua.CreateEvent(this);
         LuaObject.Set(PropertyCollide, LuaOnCollide);
         LuaObject.Set(PropertyInteract, LuaOnInteract);
         LuaObject.Set(PropertyCondition, LuaCondition);
@@ -166,6 +166,10 @@ public class MapEvent : TiledInstantiated {
 
     public void CheckEnabled() {
         SwitchEnabled = LuaObject.EvaluateBool(PropertyCondition, true);
+    }
+
+    public OrthoDir DirectionTo(MapEvent other) {
+        return OrthoDirExtensions.DirectionOf(other.Position - Position);
     }
 
     public bool IsPassableBy(CharaEvent chara) {

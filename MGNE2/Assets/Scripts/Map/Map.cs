@@ -53,6 +53,17 @@ public class Map : TiledInstantiated {
         return transform.GetChild(layerIndex).GetComponent<Layer>();
     }
 
+    public MapEvent GetEventNamed(string eventName) {
+        foreach (ObjectLayer layer in GetComponentsInChildren<ObjectLayer>()) {
+            foreach (MapEvent mapEvent in layer.GetComponentsInChildren<MapEvent>()) {
+                if (mapEvent.name == eventName) {
+                    return mapEvent;
+                }
+            }
+        }
+        return null;
+    }
+
     // returns a list of coordinates to step to with the last one being the destination, or null if no path
     public List<IntVector2> FindPath(CharaEvent actor, IntVector2 to) {
         HashSet<IntVector2> visited = new HashSet<IntVector2>();

@@ -8,11 +8,7 @@ public class MapCamera : MonoBehaviour {
     public MapEvent Target;
     
     public void Update() {
-        if (Target != null) {
-            StartCoroutine(CoUtils.RunAfterDelay(0.0f, () => {
-                ManualUpdate();
-            }));
-        }
+        //ManualUpdate();
     }
 
     public void ManualUpdate() {

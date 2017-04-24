@@ -17,22 +17,28 @@ public class LuaInterpreter : MonoBehaviour {
     
     public void Awake() {
         globalContext = new Script();
+        UserData.RegisterAssembly();
 
         // immediate functions
         globalContext.Globals["debugLog"] = (Action<DynValue>)DebugLog;
         globalContext.Globals["getSwitch"] = (Func<DynValue, DynValue>)GetSwitch;
         globalContext.Globals["setSwitch"] = (Action<DynValue, DynValue>)SetSwitch;
+        globalContext.Globals["eventNamed"] = (Func<DynValue, DynValue>)EventNamed;
 
         // routines
-        globalContext.Globals["cs_teleport"] = (Action<DynValue, DynValue, DynValue>)Teleport;
-        globalContext.Globals["cs_showText"] = (Action<DynValue>)ShowText;
-        globalContext.Globals["cs_hideTextbox"] = (Action)HideTextbox;
-        globalContext.Globals["cs_wait"] = (Action<DynValue>)Wait;
+        globalContext.Globals["teleport"] = (Action<DynValue, DynValue, DynValue>)Teleport;
+        globalContext.Globals["speak"] = (Action<DynValue>)ShowText;
+        globalContext.Globals["hideTextbox"] = (Action)HideTextbox;
+        globalContext.Globals["wait"] = (Action<DynValue>)Wait;
 
         // global defines lua-side
         StreamReader reader = new StreamReader(DefinesPath);
         globalContext.DoStream(reader.BaseStream);
         reader.Close();
+    }
+
+    public void RegisterAvatar(AvatarEvent avatar) {
+        globalContext.Globals["avatar"] = avatar.GetComponent<MapEvent>().LuaObject;
     }
 
     // generates a lua script object from the specified lua guts, can be run as a process
@@ -48,8 +54,8 @@ public class LuaInterpreter : MonoBehaviour {
     }
 
     // creates an empty table as the lua representation of some c# object
-    public LuaRepresentation CreateObject() {
-        return new LuaRepresentation(globalContext.DoString("return {}"));
+    public LuaMapEvent CreateEvent(MapEvent mapEvent) {
+        return new LuaMapEvent(globalContext.DoString("return {}"), mapEvent);
     }
 
     // evaluates a lua function in the global context
@@ -69,8 +75,26 @@ public class LuaInterpreter : MonoBehaviour {
         }));
     }
 
+    // hang on to a chunk of lua to run later
     public DynValue Load(string luaChunk) {
         return globalContext.LoadString(luaChunk);
+    }
+
+    // call a coroutine from lua code
+    // any coroutines invoked by proxy objects need to run here
+    public void RunRoutineFromLua(IEnumerator routine, bool wait = true) {
+        Assert.IsNotNull(activeScript);
+        blockingRoutines += 1;
+        StartCoroutine(CoUtils.RunWithCallback(routine, Global.Instance().Lua, () => {
+            blockingRoutines -= 1;
+            if (blockingRoutines == 0) {
+                activeScript.Resume();
+            }
+        }));
+        if (wait) {
+            DynValue function = globalContext.LoadString("return await()");
+            globalContext.Call(function);
+        }
     }
 
     private IEnumerator ScriptRoutine(DynValue function) {
@@ -80,16 +104,6 @@ public class LuaInterpreter : MonoBehaviour {
         while (activeScript.State != CoroutineState.Dead) {
             yield return null;
         }
-    }
-
-    private static void RunRoutineFromLua(IEnumerator routine) {
-        Global.Instance().Lua.blockingRoutines += 1;
-        Global.Instance().Lua.StartCoroutine(CoUtils.RunWithCallback(routine, Global.Instance().Lua, () => {
-            Global.Instance().Lua.blockingRoutines -= 1;
-            if (Global.Instance().Lua.blockingRoutines == 0) {
-                Global.Instance().Lua.activeScript.Resume();
-            }
-        }));
     }
 
     private static DynValue Marshal(object toMarshal) {
@@ -105,23 +119,36 @@ public class LuaInterpreter : MonoBehaviour {
         return Marshal(value);
     }
 
+    private static DynValue EventNamed(DynValue eventName) {
+        MapEvent mapEvent = Global.Instance().Maps.ActiveMap.GetEventNamed(eventName.String);
+        if (mapEvent == null) {
+            return DynValue.Nil;
+        } else {
+            return mapEvent.LuaObject.LuaValue;
+        }
+    }
+
     private static void SetSwitch(DynValue switchName, DynValue value) {
         Global.Instance().Memory.SetSwitch(switchName.String, value.Boolean);
     }
 
+    private static void RunStaticRoutineFromLua(IEnumerator routine) {
+        Global.Instance().Lua.RunRoutineFromLua(routine);
+    }
+
     private static void Teleport(DynValue mapName, DynValue x, DynValue y) {
-        RunRoutineFromLua(Global.Instance().Maps.TeleportRoutine(mapName.String, new IntVector2((int)x.Number, (int)y.Number)));
+        RunStaticRoutineFromLua(Global.Instance().Maps.TeleportRoutine(mapName.String, new IntVector2((int)x.Number, (int)y.Number)));
     }
 
     private static void ShowText(DynValue text) {
-        RunRoutineFromLua(Textbox.GetInstance().ShowText(text.String));
+        RunStaticRoutineFromLua(Textbox.GetInstance().ShowText(text.String));
     }
 
     private static void HideTextbox() {
-        RunRoutineFromLua(Textbox.GetInstance().TransitionOut());
+        RunStaticRoutineFromLua(Textbox.GetInstance().TransitionOut());
     }
 
     private static void Wait(DynValue seconds) {
-        RunRoutineFromLua(CoUtils.Wait((float)seconds.Number));
+        RunStaticRoutineFromLua(CoUtils.Wait((float)seconds.Number));
     }
 }

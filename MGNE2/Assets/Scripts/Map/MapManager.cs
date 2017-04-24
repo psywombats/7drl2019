@@ -29,6 +29,16 @@ public class MapManager : MonoBehaviour {
         }
     }
 
+    private MapCamera mapCamera;
+    public MapCamera Camera {
+        get {
+            if (mapCamera == null) {
+                mapCamera = FindObjectOfType<MapCamera>();
+            }
+            return mapCamera;
+        }
+    }
+
     public IEnumerator TeleportRoutine(string mapName, IntVector2 location) {
         RawTeleport(mapName, location);
         yield return null;

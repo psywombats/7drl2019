@@ -10,6 +10,7 @@ public class AvatarEvent : MonoBehaviour, InputListener {
 
     public void Start() {
         Global.Instance().Input.PushListener(this);
+        Global.Instance().Lua.RegisterAvatar(this);
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
@@ -77,11 +78,11 @@ public class AvatarEvent : MonoBehaviour, InputListener {
         }
 
         if (passable) {
-            GetComponent<CharaEvent>().Step(dir, () => {
+            StartCoroutine(CoUtils.RunWithCallback(GetComponent<CharaEvent>().StepRoutine(dir), this, () => {
                 foreach (MapEvent targetEvent in toCollide) {
                     targetEvent.OnCollide(this);
                 }
-            });
+            }));
         } else {
             foreach (MapEvent targetEvent in toCollide) {
                 targetEvent.OnCollide(this);

@@ -86,7 +86,7 @@
     <Compile Include="Assets\Scripts\IO\InputManager.cs" />
     <Compile Include="Assets\Scripts\Lua\LuaCondition.cs" />
     <Compile Include="Assets\Scripts\Lua\LuaInterpreter.cs" />
-    <Compile Include="Assets\Scripts\Lua\LuaRepresentation.cs" />
+    <Compile Include="Assets\Scripts\Lua\LuaMapEvent.cs" />
     <Compile Include="Assets\Scripts\Lua\LuaScript.cs" />
     <Compile Include="Assets\Scripts\Map\AvatarEvent.cs" />
     <Compile Include="Assets\Scripts\Map\CharaAnimator.cs" />

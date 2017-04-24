@@ -36,29 +36,10 @@ public class CharaEvent : MonoBehaviour {
 
     // Private
     private Vector2 movementSlop;
-    private Action onDestinationReached;
 
     public void Start() {
         movementSlop = new Vector2(0.0f, 0.0f);
         Facing = InitialFacing;
-    }
-
-    public void Update() {
-        MapEvent mapEvent = GetComponent<MapEvent>();
-        if (Tracking) {
-            mapEvent.PositionPx = Vector2.MoveTowards((mapEvent.PositionPx + movementSlop), TargetPosition, PixelsPerSecond * Time.deltaTime);
-            movementSlop.Set(mapEvent.PositionPx.x - (float)Mathf.Floor(mapEvent.PositionPx.x), mapEvent.PositionPx.y - (float)Mathf.Floor(mapEvent.PositionPx.y));
-            mapEvent.PositionPx = mapEvent.PositionPx - movementSlop;
-            Vector2 position2 = mapEvent.PositionPx;
-            if (position2 == TargetPosition) {
-                Tracking = false;
-                if (onDestinationReached != null) {
-                    Action toExecute = onDestinationReached;
-                    onDestinationReached = null;
-                    toExecute();
-                }
-            }
-        }
     }
 
     public void Populate(IDictionary<string, string> properties) {
@@ -68,35 +49,6 @@ public class CharaEvent : MonoBehaviour {
         }
         if (properties.ContainsKey(PropertySprite)) {
             gameObject.AddComponent<CharaAnimator>().Populate(properties[PropertySprite]);
-        }
-    }
-
-    public void Step(OrthoDir dir, Action onFinish = null) {
-        if (!Tracking) {
-            MapEvent mapEvent = GetComponent<MapEvent>();
-            Tracking = true;
-            mapEvent.Position += dir.XY();
-            TargetPosition = mapEvent.PositionPx + Vector2.Scale(dir.PxXY(), Map.TileSizePx);
-            Facing = OrthoDirExtensions.DirectionOfPx(TargetPosition - mapEvent.PositionPx);
-            if (onFinish != null) {
-                onDestinationReached = onFinish;
-            }
-        }
-    }
-
-    // the quintessential A* method
-    public void PathTo(IntVector2 location, Action onFinish = null) {
-        List<IntVector2> path = Parent.FindPath(this, location);
-        if (path == null) {
-            if (onFinish != null) {
-                onFinish();
-            }
-        } else {
-            StartCoroutine(CoUtils.RunWithCallback(PathRoutine(path), this, () => {
-                if (onFinish != null) {
-                    onFinish();
-                }
-            });
         }
     }
 
@@ -130,15 +82,48 @@ public class CharaEvent : MonoBehaviour {
         return true;
     }
 
-    private IEnumerator PathRoutine(List<IntVector2> path) {
-        foreach (IntVector2 target in path) {
-            bool pathing = true;
-            Step(OrthoDirExtensions.DirectionOf(target - GetComponent<MapEvent>().Position), () => {
-                pathing = false;
-            });
-            while (pathing) {
+    public IEnumerator StepRoutine(OrthoDir dir) {
+        if (Tracking) {
+            yield break;
+        }
+        Tracking = true;
+
+        MapEvent mapEvent = GetComponent<MapEvent>();
+        mapEvent.Position += dir.XY();
+        TargetPosition = mapEvent.PositionPx + Vector2.Scale(dir.PxXY(), Map.TileSizePx);
+        Facing = OrthoDirExtensions.DirectionOfPx(TargetPosition - mapEvent.PositionPx);
+
+        while (true) {
+            mapEvent.PositionPx = Vector2.MoveTowards((mapEvent.PositionPx + movementSlop), TargetPosition, PixelsPerSecond * Time.deltaTime);
+            movementSlop.Set(mapEvent.PositionPx.x - (float)Mathf.Floor(mapEvent.PositionPx.x), mapEvent.PositionPx.y - (float)Mathf.Floor(mapEvent.PositionPx.y));
+            mapEvent.PositionPx = mapEvent.PositionPx - movementSlop;
+
+            if (Global.Instance().Maps.Camera.Target == GetComponent<MapEvent>()) {
+                Global.Instance().Maps.Camera.ManualUpdate();
+            }
+
+            if (mapEvent.PositionPx == TargetPosition) {
+                Tracking = false;
+                break;
+            } else {
                 yield return null;
             }
+        }
+    }
+
+    public IEnumerator StepMultiRoutine(OrthoDir dir, int count) {
+        for (int i = 0; i < count; i += 1) {
+            yield return StartCoroutine(StepRoutine(dir));
+        }
+    }
+
+    public IEnumerator PathToRoutine(IntVector2 location) {
+        List<IntVector2> path = Parent.FindPath(this, location);
+        if (path == null) {
+            yield break;
+        }
+        foreach (IntVector2 target in path) {
+            yield return StartCoroutine(StepRoutine(OrthoDirExtensions.DirectionOf(target - GetComponent<MapEvent>().Position)));
         }
     }
 }
