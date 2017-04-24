@@ -84,9 +84,25 @@ public class CharaEvent : MonoBehaviour {
         }
     }
 
+    // the quintessential A* method
+    public void PathTo(IntVector2 location, Action onFinish = null) {
+        List<IntVector2> path = Parent.FindPath(this, location);
+        if (path == null) {
+            if (onFinish != null) {
+                onFinish();
+            }
+        } else {
+            StartCoroutine(CoUtils.RunWithCallback(PathRoutine(path), this, () => {
+                if (onFinish != null) {
+                    onFinish();
+                }
+            });
+        }
+    }
+
     // checks if the given location is passable for this character
     // takes into account both chip and event
-    public bool IsPassableAt(IntVector2 loc) {
+    public bool CanPassAt(IntVector2 loc) {
         if (!GetComponent<MapEvent>().SwitchEnabled) {
             return true;
         }
@@ -112,5 +128,17 @@ public class CharaEvent : MonoBehaviour {
         }
 
         return true;
+    }
+
+    private IEnumerator PathRoutine(List<IntVector2> path) {
+        foreach (IntVector2 target in path) {
+            bool pathing = true;
+            Step(OrthoDirExtensions.DirectionOf(target - GetComponent<MapEvent>().Position), () => {
+                pathing = false;
+            });
+            while (pathing) {
+                yield return null;
+            }
+        }
     }
 }

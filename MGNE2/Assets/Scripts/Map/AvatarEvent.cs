@@ -71,7 +71,7 @@ public class AvatarEvent : MonoBehaviour, InputListener {
         bool passable = true;
         foreach (MapEvent targetEvent in targetEvents) {
             toCollide.Add(targetEvent);
-            if (!GetComponent<CharaEvent>().IsPassableAt(target)) {
+            if (!GetComponent<CharaEvent>().CanPassAt(target)) {
                 passable = false;
             }
         }

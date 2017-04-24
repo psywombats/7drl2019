@@ -28,6 +28,10 @@ public struct IntVector2 {
         return Vector2.Distance(a, b);
     }
 
+    public static int ManhattanDistance(IntVector2 a, IntVector2 b) {
+        return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
+    }
+
     public static float Dot(IntVector2 lhs, IntVector2 rhs) {
         return Vector2.Dot(lhs, rhs);
     }

@@ -52,4 +52,41 @@ public class Map : TiledInstantiated {
     public Layer LayerAtIndex(int layerIndex) {
         return transform.GetChild(layerIndex).GetComponent<Layer>();
     }
+
+    // returns a list of coordinates to step to with the last one being the destination, or null if no path
+    public List<IntVector2> FindPath(CharaEvent actor, IntVector2 to) {
+        HashSet<IntVector2> visited = new HashSet<IntVector2>();
+        List<List<IntVector2>> heads = new List<List<IntVector2>>();
+        List<IntVector2> firstHead = new List<IntVector2>();
+        firstHead.Add(actor.GetComponent<MapEvent>().Position);
+        heads.Add(firstHead);
+
+        while (heads.Count > 0) {
+            heads.Sort(delegate (List<IntVector2> pathA, List<IntVector2> pathB) {
+                int pathACost = pathA.Count + IntVector2.ManhattanDistance(pathA[pathA.Count - 1], to);
+                int pathBCost = pathB.Count + IntVector2.ManhattanDistance(pathB[pathB.Count - 1], to);
+                return pathACost.CompareTo(pathBCost);
+            });
+            List<IntVector2> head = heads[0];
+            heads.RemoveAt(0);
+            IntVector2 at = head[head.Count - 1];
+            visited.Add(at);
+
+            if (at == to) {
+                // trim to remove the current location from the beginning
+                return head.GetRange(1, head.Count - 1);
+            }
+
+            foreach (OrthoDir dir in Enum.GetValues(typeof(OrthoDir))) {
+                IntVector2 next = head[head.Count - 1] + dir.XY();
+                if (!visited.Contains(next) && actor.CanPassAt(next)) {
+                    List<IntVector2> newHead = new List<IntVector2>(head);
+                    newHead.Add(next);
+                    heads.Add(newHead);
+                }
+            }
+        }
+
+        return null;
+    }
 }
