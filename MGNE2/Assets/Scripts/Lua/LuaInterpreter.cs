@@ -27,6 +27,7 @@ public class LuaInterpreter : MonoBehaviour {
 
         // routines
         globalContext.Globals["cs_teleport"] = (Action<DynValue, DynValue, DynValue>)Teleport;
+        globalContext.Globals["cs_teleportTarget"] = (Action<DynValue, DynValue>)Teleport;
         globalContext.Globals["cs_showText"] = (Action<DynValue>)ShowText;
         globalContext.Globals["cs_hideTextbox"] = (Action)HideTextbox;
         globalContext.Globals["cs_wait"] = (Action<DynValue>)Wait;
@@ -134,6 +135,10 @@ public class LuaInterpreter : MonoBehaviour {
 
     private static void Teleport(DynValue mapName, DynValue x, DynValue y) {
         RunStaticRoutineFromLua(Global.Instance().Maps.TeleportRoutine(mapName.String, new IntVector2((int)x.Number, (int)y.Number)));
+    }
+
+    private static void Teleport(DynValue mapName, DynValue targetEventName) {
+        RunStaticRoutineFromLua(Global.Instance().Maps.TeleportRoutine(mapName.String, targetEventName.String));
     }
 
     private static void ShowText(DynValue text) {

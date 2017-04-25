@@ -43,20 +43,25 @@ public class MapManager : MonoBehaviour {
         RawTeleport(mapName, location);
         yield return null;
     }
+
+    public IEnumerator TeleportRoutine(string mapName, string targetEventName) {
+        RawTeleport(mapName, targetEventName);
+        yield return null;
+    }
     
     // map path is accepted either as a relative map name "Testmap01" or full path "Test/Testmap01"
     // the .tmx or whatever extension is not needed
     private void RawTeleport(string mapName, IntVector2 location) {
         Assert.IsNotNull(ActiveMap);
-        string localPath = ActiveMap.ResourcePath + "/" + mapName;
-        GameObject newMapObject = Resources.Load<GameObject>(localPath);
-        if (newMapObject == null) {
-            newMapObject = Resources.Load<GameObject>(mapName);
-        }
-        Assert.IsNotNull(newMapObject);
-        GameObject newMapInstace = Instantiate(newMapObject);
+        Map newMapInstance = InstantiateMap(mapName);
+        RawTeleport(newMapInstance, location);
+    }
 
-        RawTeleport(newMapInstace.GetComponent<Map>(), location);
+    private void RawTeleport(string mapName, string targetEventName) {
+        Assert.IsNotNull(ActiveMap);
+        Map newMapInstance = InstantiateMap(mapName);
+        MapEvent target = newMapInstance.GetEventNamed(targetEventName);
+        RawTeleport(newMapInstance, target.Position);
     }
 
     private void RawTeleport(Map map, IntVector2 location) {
@@ -71,5 +76,15 @@ public class MapManager : MonoBehaviour {
         GameObject.DestroyObject(ActiveMap.gameObject);
         ActiveMap = map;
         Avatar.GetComponent<MapEvent>().SetLocation(location);
+    }
+
+    private Map InstantiateMap(string mapName) {
+        string localPath = ActiveMap.ResourcePath + "/" + mapName;
+        GameObject newMapObject = Resources.Load<GameObject>(localPath);
+        if (newMapObject == null) {
+            newMapObject = Resources.Load<GameObject>(mapName);
+        }
+        Assert.IsNotNull(newMapObject);
+        return Instantiate(newMapObject).GetComponent<Map>();
     }
 }
