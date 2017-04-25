@@ -24,6 +24,7 @@ public class LuaInterpreter : MonoBehaviour {
         globalContext.Globals["getSwitch"] = (Func<DynValue, DynValue>)GetSwitch;
         globalContext.Globals["setSwitch"] = (Action<DynValue, DynValue>)SetSwitch;
         globalContext.Globals["eventNamed"] = (Func<DynValue, LuaMapEvent>)EventNamed;
+        globalContext.Globals["playSFX"] = (Action<DynValue>)PlaySFX;
 
         // routines
         globalContext.Globals["cs_teleport"] = (Action<DynValue, DynValue, DynValue>)Teleport;
@@ -116,6 +117,10 @@ public class LuaInterpreter : MonoBehaviour {
         return Marshal(value);
     }
 
+    private static void SetSwitch(DynValue switchName, DynValue value) {
+        Global.Instance().Memory.SetSwitch(switchName.String, value.Boolean);
+    }
+
     private static LuaMapEvent EventNamed(DynValue eventName) {
         MapEvent mapEvent = Global.Instance().Maps.ActiveMap.GetEventNamed(eventName.String);
         if (mapEvent == null) {
@@ -125,9 +130,11 @@ public class LuaInterpreter : MonoBehaviour {
         }
     }
 
-    private static void SetSwitch(DynValue switchName, DynValue value) {
-        Global.Instance().Memory.SetSwitch(switchName.String, value.Boolean);
+    private static void PlaySFX(DynValue sfxKey) {
+        Global.Instance().Audio.PlaySFX(sfxKey.String);
     }
+
+    // Routines
 
     private static void RunStaticRoutineFromLua(IEnumerator routine) {
         Global.Instance().Lua.RunRoutineFromLua(routine);

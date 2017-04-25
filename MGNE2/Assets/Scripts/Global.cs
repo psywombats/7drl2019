@@ -5,10 +5,21 @@ public class Global : MonoBehaviour {
 
     private static Global instance;
     
-    public InputManager Input { get; set; }
-    public LuaInterpreter Lua { get; set; }
-    public MapManager Maps { get; set; }
-    public MemoryManager Memory { get; set; }
+    public InputManager Input { get; private set; }
+    public LuaInterpreter Lua { get; private set; }
+    public MapManager Maps { get; private set; }
+    public MemoryManager Memory { get; private set; }
+    public AudioManager Audio { get; private set; }
+
+    private GlobalConfig config;
+    public GlobalConfig Config {
+        get {
+            if (config == null) {
+                config = GlobalConfig.GetInstance();
+            }
+            return config;
+        }
+    }
 
     public static Global Instance() {
         if (instance == null) {
@@ -29,5 +40,6 @@ public class Global : MonoBehaviour {
         Lua = gameObject.AddComponent<LuaInterpreter>();
         Maps = gameObject.AddComponent<MapManager>();
         Memory = gameObject.AddComponent<MemoryManager>();
+        Audio = gameObject.AddComponent<AudioManager>();
     }
 }

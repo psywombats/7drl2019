@@ -127,6 +127,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Editor\AudioImporter.cs" />
     <Compile Include="Assets\Scripts\Editor\ClipInfo.cs" />
     <Compile Include="Assets\Scripts\Editor\MapCameraEditor.cs" />
     <Compile Include="Assets\Scripts\Editor\SpriteImporter.cs" />
