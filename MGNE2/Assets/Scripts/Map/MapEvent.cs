@@ -126,6 +126,10 @@ public class MapEvent : TiledInstantiated {
         LuaObject.Set(PropertyInteract, LuaOnInteract);
         LuaObject.Set(PropertyCondition, LuaCondition);
 
+        if (GetComponent<AvatarEvent>() != null) {
+            Global.Instance().Lua.RegisterAvatar(GetComponent<AvatarEvent>());
+        }
+
         CheckEnabled();
     }
 
@@ -189,6 +193,9 @@ public class MapEvent : TiledInstantiated {
     // facing us if impassable, on top of us if passable
     public void OnInteract(AvatarEvent avatar) {
         if (SwitchEnabled) {
+            if (GetComponent<CharaEvent>() != null) {
+                GetComponent<CharaEvent>().Facing = DirectionTo(avatar.GetComponent<MapEvent>());
+            }
             LuaObject.Run(PropertyInteract);
         }
     }

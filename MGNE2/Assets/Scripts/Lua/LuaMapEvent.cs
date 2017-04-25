@@ -14,7 +14,6 @@ public class LuaMapEvent {
     public LuaMapEvent(DynValue value, MapEvent mapEvent) {
         this.LuaValue = value;
         this.mapEvent = mapEvent;
-        LuaValue.Table["proxy"] = this;
     }
 
     // meant to be called with the key/value of a lualike property on a Tiled object
@@ -68,15 +67,27 @@ public class LuaMapEvent {
         mapEvent.GetComponent<CharaEvent>().Facing = mapEvent.DirectionTo(other.mapEvent);
     }
 
-    public void pathTo(int x, int y) {
+    public int x() {
+        return mapEvent.Position.x;
+    }
+
+    public int y() {
+        return mapEvent.Position.y;
+    }
+
+    public void debuglog() {
+        Debug.Log("Debug: " + mapEvent.name);
+    }
+
+    public void cs_pathTo(int x, int y) {
         Global.Instance().Lua.RunRoutineFromLua(mapEvent.GetComponent<CharaEvent>().PathToRoutine(new IntVector2(x, y)));
     }
 
-    public void walk(string directionName, int count) {
+    public void cs_walk(string directionName, int count) {
         Global.Instance().Lua.RunRoutineFromLua(mapEvent.GetComponent<CharaEvent>().StepMultiRoutine(OrthoDirExtensions.Parse(directionName), count));
     }
 
-    public void step(string directionName) {
+    public void cs_step(string directionName) {
         Global.Instance().Lua.RunRoutineFromLua(mapEvent.GetComponent<CharaEvent>().StepRoutine(OrthoDirExtensions.Parse(directionName)));
     }
 }

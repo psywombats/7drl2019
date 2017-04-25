@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="15" tilewidth="16" tileheight="16" nextobjectid="44">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="15" tilewidth="16" tileheight="16" nextobjectid="46">
  <properties>
   <property name="battle_bgm" value="ffl1_battle"/>
   <property name="bgm" value="ffl1_overworld"/>
@@ -24,10 +24,10 @@
   </data>
  </layer>
  <objectgroup name="Object Layer 1">
-  <object id="35" name="TestEvent" type="Character" x="192" y="144" width="16" height="16">
+  <object id="35" name="TestEvent" type="Character" x="176" y="144" width="16" height="16">
    <properties>
     <property name="face" value="west"/>
-    <property name="onCollide">speakLine('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.')
+    <property name="onInteract">speakLine('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.')
 debugLog('Hi mom!')</property>
     <property name="sprite" value="HumanM"/>
    </properties>
@@ -52,6 +52,16 @@ setSwitch('test_switch', true)</property>
     <property name="onInteract">speakLine('I will turn the test_switch back off now')
 setSwitch('test_switch', false)</property>
     <property name="show" value="return getSwitch('test_switch')"/>
+    <property name="sprite" value="HumanM"/>
+   </properties>
+  </object>
+  <object id="44" name="target" type="Target" x="192" y="16" width="16" height="16"/>
+  <object id="45" name="TestEvent" type="Character" x="192" y="144" width="16" height="16">
+   <properties>
+    <property name="face" value="north"/>
+    <property name="onInteract">speakLine('Prepare to path to the target!!')
+debugLog('Get ready...')
+pathTo('target')</property>
     <property name="sprite" value="HumanM"/>
    </properties>
   </object>

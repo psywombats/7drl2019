@@ -10,7 +10,6 @@ public class AvatarEvent : MonoBehaviour, InputListener {
 
     public void Start() {
         Global.Instance().Input.PushListener(this);
-        Global.Instance().Lua.RegisterAvatar(this);
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
@@ -69,7 +68,7 @@ public class AvatarEvent : MonoBehaviour, InputListener {
         List<MapEvent> targetEvents = GetComponent<MapEvent>().Parent.GetEventsAt(GetComponent<MapEvent>().Layer, target);
 
         List<MapEvent> toCollide = new List<MapEvent>();
-        bool passable = true;
+        bool passable = GetComponent<CharaEvent>().CanPassAt(target);
         foreach (MapEvent targetEvent in targetEvents) {
             toCollide.Add(targetEvent);
             if (!GetComponent<CharaEvent>().CanPassAt(target)) {

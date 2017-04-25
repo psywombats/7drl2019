@@ -23,13 +23,13 @@ public class LuaInterpreter : MonoBehaviour {
         globalContext.Globals["debugLog"] = (Action<DynValue>)DebugLog;
         globalContext.Globals["getSwitch"] = (Func<DynValue, DynValue>)GetSwitch;
         globalContext.Globals["setSwitch"] = (Action<DynValue, DynValue>)SetSwitch;
-        globalContext.Globals["eventNamed"] = (Func<DynValue, DynValue>)EventNamed;
+        globalContext.Globals["eventNamed"] = (Func<DynValue, LuaMapEvent>)EventNamed;
 
         // routines
-        globalContext.Globals["teleport"] = (Action<DynValue, DynValue, DynValue>)Teleport;
-        globalContext.Globals["speak"] = (Action<DynValue>)ShowText;
-        globalContext.Globals["hideTextbox"] = (Action)HideTextbox;
-        globalContext.Globals["wait"] = (Action<DynValue>)Wait;
+        globalContext.Globals["cs_teleport"] = (Action<DynValue, DynValue, DynValue>)Teleport;
+        globalContext.Globals["cs_showText"] = (Action<DynValue>)ShowText;
+        globalContext.Globals["cs_hideTextbox"] = (Action)HideTextbox;
+        globalContext.Globals["cs_wait"] = (Action<DynValue>)Wait;
 
         // global defines lua-side
         StreamReader reader = new StreamReader(DefinesPath);
@@ -82,19 +82,15 @@ public class LuaInterpreter : MonoBehaviour {
 
     // call a coroutine from lua code
     // any coroutines invoked by proxy objects need to run here
-    public void RunRoutineFromLua(IEnumerator routine, bool wait = true) {
+    public void RunRoutineFromLua(IEnumerator routine) {
         Assert.IsNotNull(activeScript);
         blockingRoutines += 1;
         StartCoroutine(CoUtils.RunWithCallback(routine, Global.Instance().Lua, () => {
             blockingRoutines -= 1;
-            if (blockingRoutines == 0) {
+            if (blockingRoutines == 0 && activeScript != null) {
                 activeScript.Resume();
             }
         }));
-        if (wait) {
-            DynValue function = globalContext.LoadString("return await()");
-            globalContext.Call(function);
-        }
     }
 
     private IEnumerator ScriptRoutine(DynValue function) {
@@ -119,12 +115,12 @@ public class LuaInterpreter : MonoBehaviour {
         return Marshal(value);
     }
 
-    private static DynValue EventNamed(DynValue eventName) {
+    private static LuaMapEvent EventNamed(DynValue eventName) {
         MapEvent mapEvent = Global.Instance().Maps.ActiveMap.GetEventNamed(eventName.String);
         if (mapEvent == null) {
-            return DynValue.Nil;
+            return null;
         } else {
-            return mapEvent.LuaObject.LuaValue;
+            return mapEvent.LuaObject;
         }
     }
 
