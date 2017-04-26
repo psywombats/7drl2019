@@ -81,8 +81,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Audio\AudioKeyData.cs" />
     <Compile Include="Assets\Scripts\Audio\AudioManager.cs" />
-    <Compile Include="Assets\Scripts\Audio\SoundEffectData.cs" />
     <Compile Include="Assets\Scripts\Global.cs" />
     <Compile Include="Assets\Scripts\GlobalConfig.cs" />
     <Compile Include="Assets\Scripts\IO\InputListener.cs" />

@@ -25,6 +25,7 @@ public class LuaInterpreter : MonoBehaviour {
         globalContext.Globals["setSwitch"] = (Action<DynValue, DynValue>)SetSwitch;
         globalContext.Globals["eventNamed"] = (Func<DynValue, LuaMapEvent>)EventNamed;
         globalContext.Globals["playSFX"] = (Action<DynValue>)PlaySFX;
+        globalContext.Globals["playBGM"] = (Action<DynValue>)PlayBGM;
 
         // routines
         globalContext.Globals["cs_teleport"] = (Action<DynValue, DynValue, DynValue>)Teleport;
@@ -32,6 +33,7 @@ public class LuaInterpreter : MonoBehaviour {
         globalContext.Globals["cs_showText"] = (Action<DynValue>)ShowText;
         globalContext.Globals["cs_hideTextbox"] = (Action)HideTextbox;
         globalContext.Globals["cs_wait"] = (Action<DynValue>)Wait;
+        globalContext.Globals["cs_fadeOutBGM"] = (Action<DynValue>)FadeOutBGM;
 
         // global defines lua-side
         StreamReader reader = new StreamReader(DefinesPath);
@@ -134,6 +136,10 @@ public class LuaInterpreter : MonoBehaviour {
         Global.Instance().Audio.PlaySFX(sfxKey.String);
     }
 
+    private static void PlayBGM(DynValue bgmKey) {
+        Global.Instance().Audio.PlayBGM(bgmKey.String);
+    }
+
     // Routines
 
     private static void RunStaticRoutineFromLua(IEnumerator routine) {
@@ -158,5 +164,9 @@ public class LuaInterpreter : MonoBehaviour {
 
     private static void Wait(DynValue seconds) {
         RunStaticRoutineFromLua(CoUtils.Wait((float)seconds.Number));
+    }
+
+    private static void FadeOutBGM(DynValue seconds) {
+        RunStaticRoutineFromLua(Global.Instance().Audio.FadeOutRoutine((float)seconds.Number));
     }
 }

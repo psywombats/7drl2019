@@ -12,7 +12,8 @@ public class AudioImporter : AssetPostprocessor {
         if (assetPath.ToLower().Contains("bgm")) {
             importer.preloadAudioData = false;
             importer.loadInBackground = false;
-            settings.compressionFormat = AudioCompressionFormat.MP3;
+            settings.compressionFormat = AudioCompressionFormat.Vorbis;
+            settings.quality = 1;
             settings.loadType = AudioClipLoadType.Streaming;
         } else if (assetPath.ToLower().Contains("sfx")) {
             importer.preloadAudioData = true;

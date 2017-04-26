@@ -45,3 +45,8 @@ function walk(event, dir, count)
     event.cs_walk(dir, count)
     await()
 end
+
+function fadeOutBGM(seconds)
+    cs_fadeOutBGM(seconds)
+    await()
+end
