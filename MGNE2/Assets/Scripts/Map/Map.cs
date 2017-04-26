@@ -7,8 +7,10 @@ using UnityEngine;
 /**
  * MGNE's big map class, now in MGNE2. Converted from Tiled.
  */
- [RequireComponent(typeof(TiledMap))]
+[RequireComponent(typeof(TiledMap))]
 public class Map : TiledInstantiated {
+
+    private const string PropertyBGM = "bgm";
 
     public static readonly IntVector2 TileSizePx = new IntVector2(16, 16);
     public static int TileWidthPx { get { return (int)TileSizePx.x; } }
@@ -25,10 +27,17 @@ public class Map : TiledInstantiated {
     public String ResourcePath { get { return GetComponent<TiledMap>().ResourcePath; } }
     public String FullName { get { return ResourcePath + "/" + gameObject.name; } }
 
+    public string BGMKey { get; private set; }
+    public string InternalName { get { return GetComponent<TiledMap>().ResourcePath + "/" + GetComponent<TiledMap>().name; } }
+
     public override void Populate(IDictionary<string, string> properties) {
         TiledMap tiled = GetComponent<TiledMap>();
         Size = new IntVector2(tiled.NumTilesWide, tiled.NumTilesHigh);
         SizePx = IntVector2.Scale(Size, TileSizePx);
+
+        if (properties.ContainsKey(PropertyBGM)) {
+            BGMKey = properties[PropertyBGM];
+        }
     }
 
     public bool IsChipPassableAt(TileLayer layer, IntVector2 loc) {
@@ -62,6 +71,16 @@ public class Map : TiledInstantiated {
             }
         }
         return null;
+    }
+
+    public void OnTeleportTo() {
+        if (BGMKey != null) {
+            Global.Instance().Audio.PlayBGM(BGMKey);
+        }
+    }
+
+    public void OnTeleportAway() {
+
     }
 
     // returns a list of coordinates to step to with the last one being the destination, or null if no path

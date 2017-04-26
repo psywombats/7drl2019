@@ -73,8 +73,10 @@ public class MapManager : MonoBehaviour {
         Layer parentLayer = map.LayerAtIndex(layerIndex);
         Avatar.transform.parent = parentLayer.gameObject.transform;
 
+        ActiveMap.OnTeleportAway();
         GameObject.DestroyObject(ActiveMap.gameObject);
         ActiveMap = map;
+        ActiveMap.OnTeleportTo();
         Avatar.GetComponent<MapEvent>().SetLocation(location);
     }
 
