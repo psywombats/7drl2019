@@ -28,6 +28,10 @@ public class Global : MonoBehaviour {
             instance = globalObject.AddComponent<Global>();
             instance.InstantiateManagers();
         }
+
+        // this should be the only game/engine binding
+        GGlobal.Instance();
+
         return instance;
     }
 

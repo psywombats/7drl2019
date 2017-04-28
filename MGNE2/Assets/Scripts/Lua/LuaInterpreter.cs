@@ -10,61 +10,69 @@ public class LuaInterpreter : MonoBehaviour {
 
     private static readonly string DefinesPath = "Assets/Resources/Scenes/Defines.lua";
 
-    private Script globalContext;
+    public Script GlobalContext { get; private set; }
 
     private MoonSharp.Interpreter.Coroutine activeScript;
     private int blockingRoutines;
     
     public void Awake() {
-        globalContext = new Script();
+        GlobalContext = new Script();
         UserData.RegisterAssembly();
 
         // immediate functions
-        globalContext.Globals["debugLog"] = (Action<DynValue>)DebugLog;
-        globalContext.Globals["getSwitch"] = (Func<DynValue, DynValue>)GetSwitch;
-        globalContext.Globals["setSwitch"] = (Action<DynValue, DynValue>)SetSwitch;
-        globalContext.Globals["eventNamed"] = (Func<DynValue, LuaMapEvent>)EventNamed;
-        globalContext.Globals["playSFX"] = (Action<DynValue>)PlaySFX;
-        globalContext.Globals["playBGM"] = (Action<DynValue>)PlayBGM;
+        GlobalContext.Globals["debugLog"] = (Action<DynValue>)DebugLog;
+        GlobalContext.Globals["getSwitch"] = (Func<DynValue, DynValue>)GetSwitch;
+        GlobalContext.Globals["setSwitch"] = (Action<DynValue, DynValue>)SetSwitch;
+        GlobalContext.Globals["eventNamed"] = (Func<DynValue, LuaMapEvent>)EventNamed;
+        GlobalContext.Globals["playSFX"] = (Action<DynValue>)PlaySFX;
+        GlobalContext.Globals["playBGM"] = (Action<DynValue>)PlayBGM;
 
         // routines
-        globalContext.Globals["cs_teleport"] = (Action<DynValue, DynValue, DynValue>)Teleport;
-        globalContext.Globals["cs_teleportTarget"] = (Action<DynValue, DynValue>)Teleport;
-        globalContext.Globals["cs_showText"] = (Action<DynValue>)ShowText;
-        globalContext.Globals["cs_hideTextbox"] = (Action)HideTextbox;
-        globalContext.Globals["cs_wait"] = (Action<DynValue>)Wait;
-        globalContext.Globals["cs_fadeOutBGM"] = (Action<DynValue>)FadeOutBGM;
+        GlobalContext.Globals["cs_teleport"] = (Action<DynValue, DynValue, DynValue>)Teleport;
+        GlobalContext.Globals["cs_teleportTarget"] = (Action<DynValue, DynValue>)Teleport;
+        GlobalContext.Globals["cs_showText"] = (Action<DynValue>)ShowText;
+        GlobalContext.Globals["cs_hideTextbox"] = (Action)HideTextbox;
+        GlobalContext.Globals["cs_wait"] = (Action<DynValue>)Wait;
+        GlobalContext.Globals["cs_fadeOutBGM"] = (Action<DynValue>)FadeOutBGM;
 
         // global defines lua-side
+        LoadDefines(DefinesPath);
+    }
+
+    public void LoadDefines(string path) {
         StreamReader reader = new StreamReader(DefinesPath);
-        globalContext.DoStream(reader.BaseStream);
+        GlobalContext.DoStream(reader.BaseStream);
         reader.Close();
     }
 
+    public DynValue Marshal(object toMarshal) {
+        return DynValue.FromObject(GlobalContext, toMarshal);
+    }
+
     public void RegisterAvatar(AvatarEvent avatar) {
-        globalContext.Globals["avatar"] = avatar.GetComponent<MapEvent>().LuaObject;
+        GlobalContext.Globals["avatar"] = avatar.GetComponent<MapEvent>().LuaObject;
     }
 
     // generates a lua script object from the specified lua guts, can be run as a process
     public LuaScript CreateScript(string luaScript) {
         luaScript = "return function()\n" + luaScript;
         luaScript = luaScript + "\nend";
-        return new LuaScript(globalContext.DoString(luaScript));
+        return new LuaScript(GlobalContext.DoString(luaScript));
     }
 
     // meant to be evaluated synchronously
     public LuaCondition CreateCondition(string luaScript) {
-        return new LuaCondition(globalContext.LoadString(luaScript));
+        return new LuaCondition(GlobalContext.LoadString(luaScript));
     }
 
     // creates an empty table as the lua representation of some c# object
     public LuaMapEvent CreateEvent(MapEvent mapEvent) {
-        return new LuaMapEvent(globalContext.DoString("return {}"), mapEvent);
+        return new LuaMapEvent(GlobalContext.DoString("return {}"), mapEvent);
     }
 
     // evaluates a lua function in the global context
     public DynValue Evaluate(DynValue function) {
-        return globalContext.Call(function);
+        return GlobalContext.Call(function);
     }
 
     // executes asynchronously, for cutscenes
@@ -81,7 +89,7 @@ public class LuaInterpreter : MonoBehaviour {
 
     // hang on to a chunk of lua to run later
     public DynValue Load(string luaChunk) {
-        return globalContext.LoadString(luaChunk);
+        return GlobalContext.LoadString(luaChunk);
     }
 
     // call a coroutine from lua code
@@ -99,15 +107,11 @@ public class LuaInterpreter : MonoBehaviour {
 
     private IEnumerator ScriptRoutine(DynValue function) {
         Assert.IsNull(activeScript);
-        activeScript = globalContext.CreateCoroutine(function).Coroutine;
+        activeScript = GlobalContext.CreateCoroutine(function).Coroutine;
         activeScript.Resume();
         while (activeScript.State != CoroutineState.Dead) {
             yield return null;
         }
-    }
-
-    private static DynValue Marshal(object toMarshal) {
-        return DynValue.FromObject(Global.Instance().Lua.globalContext, toMarshal);
     }
 
     private static void DebugLog(DynValue message) {
@@ -116,7 +120,7 @@ public class LuaInterpreter : MonoBehaviour {
 
     private static DynValue GetSwitch(DynValue switchName) {
         bool value = Global.Instance().Memory.GetSwitch(switchName.String);
-        return Marshal(value);
+        return Global.Instance().Lua.Marshal(value);
     }
 
     private static void SetSwitch(DynValue switchName, DynValue value) {

@@ -83,6 +83,13 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Audio\AudioKeyData.cs" />
     <Compile Include="Assets\Scripts\Audio\AudioManager.cs" />
+    <Compile Include="Assets\Scripts\Game\GGlobal.cs" />
+    <Compile Include="Assets\Scripts\Game\GameLuaInterpretor.cs" />
+    <Compile Include="Assets\Scripts\GameData\ItemData.cs" />
+    <Compile Include="Assets\Scripts\GameRPG\HeroParty.cs" />
+    <Compile Include="Assets\Scripts\GameRPG\InventoryEntry.cs" />
+    <Compile Include="Assets\Scripts\GameRPG\Party.cs" />
+    <Compile Include="Assets\Scripts\GameRPG\PartyInventory.cs" />
     <Compile Include="Assets\Scripts\Global.cs" />
     <Compile Include="Assets\Scripts\GlobalConfig.cs" />
     <Compile Include="Assets\Scripts\IO\InputListener.cs" />

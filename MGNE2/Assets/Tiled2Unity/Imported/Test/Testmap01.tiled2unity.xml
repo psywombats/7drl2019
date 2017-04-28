@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 4/26/2017 1:04:17 AM-->
+<!--Last exported: 4/28/2017 3:34:00 AM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="lower2" />
   <AssignMaterial mesh="mesh_0002" material="lower2" />
@@ -60,6 +60,20 @@
       <ObjectLayer offsetX="0" offsetY="0" color="#ff808080" />
       <GameObject name="target" x="192" y="-16" rotation="0">
         <RectangleObjectComponent tmx-object-id="44" tmx-object-name="target" tmx-object-type="Target" tmx-object-x="192" tmx-object-y="16" tmx-object-width="16" tmx-object-height="16" tmx-object-rotation="0" />
+        <BoxCollider2D width="16" height="16" />
+      </GameObject>
+      <GameObject name="InventoryTest" x="288" y="-16" rotation="0">
+        <Property name="face" value="south" />
+        <Property name="onInteract" value="speakLine('You get 1 CurePotion!!')&#xA;addItem('ItemPotionCure')" />
+        <Property name="sprite" value="HumanM" />
+        <RectangleObjectComponent tmx-object-id="48" tmx-object-name="InventoryTest" tmx-object-type="Character" tmx-object-x="288" tmx-object-y="16" tmx-object-width="16" tmx-object-height="16" tmx-object-rotation="0" />
+        <BoxCollider2D width="16" height="16" />
+      </GameObject>
+      <GameObject name="InventoryTest" x="272" y="-16" rotation="0">
+        <Property name="face" value="south" />
+        <Property name="onInteract" value="if hasItem('ItemPotionCure') then&#xA;    speakLine('You lose one CurePotion :(')&#xA;    deductItem('ItemPotionCure')&#xA;else&#xA;    speakLine('You have no potions. Come back when you get some.')&#xA;end" />
+        <Property name="sprite" value="HumanM" />
+        <RectangleObjectComponent tmx-object-id="50" tmx-object-name="InventoryTest" tmx-object-type="Character" tmx-object-x="272" tmx-object-y="16" tmx-object-width="16" tmx-object-height="16" tmx-object-rotation="0" />
         <BoxCollider2D width="16" height="16" />
       </GameObject>
       <GameObject name="TestEvent" x="144" y="-80" rotation="0">

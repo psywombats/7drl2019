@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="15" tilewidth="16" tileheight="16" nextobjectid="48">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="15" tilewidth="16" tileheight="16" nextobjectid="51">
  <properties>
   <property name="battle_bgm" value="ffl1_battle"/>
   <property name="bgm" value="ffl1_overworld"/>
@@ -78,6 +78,26 @@ speakLine('hon honk')</property>
     <property name="face" value="north"/>
     <property name="onInteract">playBGM('ffl1')
 speakLine('muzak')</property>
+    <property name="sprite" value="HumanM"/>
+   </properties>
+  </object>
+  <object id="48" name="InventoryTest" type="Character" x="288" y="16" width="16" height="16">
+   <properties>
+    <property name="face" value="south"/>
+    <property name="onInteract">speakLine('You get 1 CurePotion!!')
+addItem('ItemPotionCure')</property>
+    <property name="sprite" value="HumanM"/>
+   </properties>
+  </object>
+  <object id="50" name="InventoryTest" type="Character" x="272" y="16" width="16" height="16">
+   <properties>
+    <property name="face" value="south"/>
+    <property name="onInteract">if hasItem('ItemPotionCure') then
+    speakLine('You lose one CurePotion :(')
+    deductItem('ItemPotionCure')
+else
+    speakLine('You have no potions. Come back when you get some.')
+end</property>
     <property name="sprite" value="HumanM"/>
    </properties>
   </object>
