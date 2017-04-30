@@ -90,6 +90,9 @@
     <Compile Include="Assets\Scripts\GameRPG\InventoryEntry.cs" />
     <Compile Include="Assets\Scripts\GameRPG\Party.cs" />
     <Compile Include="Assets\Scripts\GameRPG\PartyInventory.cs" />
+    <Compile Include="Assets\Scripts\GameUI\InventoryCategoryCell.cs" />
+    <Compile Include="Assets\Scripts\GameUI\InventoryItemCell.cs" />
+    <Compile Include="Assets\Scripts\GameUI\PartyInventoryScreen.cs" />
     <Compile Include="Assets\Scripts\Global.cs" />
     <Compile Include="Assets\Scripts\GlobalConfig.cs" />
     <Compile Include="Assets\Scripts\IO\InputListener.cs" />

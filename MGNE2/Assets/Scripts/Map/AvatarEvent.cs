@@ -33,6 +33,9 @@ public class AvatarEvent : MonoBehaviour, InputListener {
                 case InputManager.Command.Confirm:
                     Interact();
                     return true;
+                case InputManager.Command.Cancel:
+                    ShowMenu();
+                    return true;
                 default:
                     return false;
 
@@ -89,5 +92,9 @@ public class AvatarEvent : MonoBehaviour, InputListener {
         }
         
         return true;
+    }
+
+    public void ShowMenu() {
+        StartCoroutine(PartyInventoryScreen.GetInstance().TransitionIn());
     }
 }

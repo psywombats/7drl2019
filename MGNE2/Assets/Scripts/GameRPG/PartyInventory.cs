@@ -37,4 +37,12 @@ public class PartyInventory {
     public bool HasItem(ItemData item) {
         return itemsLookup.ContainsKey(item);
     }
+
+    public InventoryEntry ItemAtIndex(int index) {
+        return items[index];
+    }
+
+    public int ItemCount() {
+        return items.Count;
+    }
 }

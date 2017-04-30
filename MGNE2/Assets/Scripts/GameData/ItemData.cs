@@ -8,6 +8,7 @@ public class ItemData : ScriptableObject {
     public string Name;
     public Sprite IconBig;
     public Sprite IconSmall;
+    public string Description;
 
     public static ItemData ItemByName(string name) {
         return Resources.Load<ItemData>("Database/Items/" + name);

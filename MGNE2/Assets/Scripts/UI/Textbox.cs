@@ -14,7 +14,9 @@ public class Textbox : MonoBehaviour, InputListener {
     public Text textbox;
     
     public bool Visible { get { return GetComponent<CanvasGroup>().alpha == 1.0f; } }
-    
+
+    private static Textbox instance;
+
     private string fullText;
     private bool hurried;
 
@@ -27,7 +29,10 @@ public class Textbox : MonoBehaviour, InputListener {
     }
 
     public static Textbox GetInstance() {
-        return FindObjectOfType<Textbox>();
+        if (instance == null) {
+            instance = FindObjectOfType<Textbox>();
+        }
+        return instance;
     }
 
     public IEnumerator ShowText(string text) {
