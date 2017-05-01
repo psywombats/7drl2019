@@ -85,6 +85,7 @@
     <Compile Include="Assets\Scripts\Audio\AudioManager.cs" />
     <Compile Include="Assets\Scripts\Game\GGlobal.cs" />
     <Compile Include="Assets\Scripts\Game\GameLuaInterpretor.cs" />
+    <Compile Include="Assets\Scripts\GameData\ItemCategory.cs" />
     <Compile Include="Assets\Scripts\GameData\ItemData.cs" />
     <Compile Include="Assets\Scripts\GameRPG\HeroParty.cs" />
     <Compile Include="Assets\Scripts\GameRPG\InventoryEntry.cs" />

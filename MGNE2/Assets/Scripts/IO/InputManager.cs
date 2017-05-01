@@ -72,7 +72,7 @@ public class InputManager : MonoBehaviour {
     }
 
     public void PushListener(InputListener listener) {
-        listeners.Add(listener);
+        listeners.Insert(0, listener);
     }
 
     public void RemoveListener(InputListener listener) {

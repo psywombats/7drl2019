@@ -20,7 +20,7 @@ public class PartyInventoryScreen : MonoBehaviour, InputListener {
     private PartyInventory inventory;
     private int scrollOffset;
     private int cursorIndex;
-    private bool transitioningOut;
+    private bool transitioning;
 
     public static PartyInventoryScreen GetInstance() {
         if (instance == null) {
@@ -31,13 +31,19 @@ public class PartyInventoryScreen : MonoBehaviour, InputListener {
 
     public void Populate() {
         scrollOffset = 0;
+        cursorIndex = 0;
         inventory = GGlobal.Instance().Party.Inventory;
-        transitioningOut = false;
+        transitioning = false;
+        ItemDescription.text = "";
+        ImageIcon.sprite = null;
         DisplayInventory();
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
-        if (transitioningOut) {
+        if (transitioning) {
+            return true;
+        }
+        if (eventType != InputManager.Event.Down) {
             return true;
         }
         switch (command) {
@@ -60,20 +66,26 @@ public class PartyInventoryScreen : MonoBehaviour, InputListener {
     public void DisplayInventory() {
         for (int i = 0; i < InventoryCellCount; i += 1) {
             int index = scrollOffset + i;
-            InventoryItemCell cell = InventoryGroup.GetComponentsInChildren<InventoryItemCell>()[i];
+            InventoryItemCell cell = InventoryGroup.GetComponentsInChildren<InventoryItemCell>(true)[i];
             if (index < inventory.ItemCount()) {
-                cell.enabled = true;
+                cell.gameObject.SetActive(true);
                 InventoryEntry entry = inventory.ItemAtIndex(index);
-                cell.Populate(entry);
+                cell.Populate(entry, cursorIndex == i);
             } else {
-                cell.enabled = false;
+                cell.gameObject.SetActive(false);
             }
+        }
+        int selectedIndex = scrollOffset + cursorIndex;
+        if (selectedIndex < inventory.ItemCount()) {
+            InventoryEntry selectedEntry = inventory.ItemAtIndex(selectedIndex);
+            ItemDescription.text = selectedEntry.Item.Description;
         }
     }
 
     public IEnumerator TransitionIn() {
-        Populate();
+        transitioning = true;
 
+        Populate();
         Global.Instance().Input.PushListener(this);
 
         // placeholder
@@ -84,10 +96,12 @@ public class PartyInventoryScreen : MonoBehaviour, InputListener {
             }
             yield return null;
         }
+
+        transitioning = false;
     }
 
     public IEnumerator TransitionOut() {
-        transitioningOut = true;
+        transitioning = true;
 
         // placeholder
         while (GetComponent<CanvasGroup>().alpha > 0.0f) {
@@ -99,6 +113,7 @@ public class PartyInventoryScreen : MonoBehaviour, InputListener {
         }
 
         Global.Instance().Input.RemoveListener(this);
+        transitioning = false;
     }
 
     private void ShowEntry(InventoryEntry entry) {
@@ -109,8 +124,8 @@ public class PartyInventoryScreen : MonoBehaviour, InputListener {
     private void MoveCursor(int delta) {
         int index = cursorIndex + scrollOffset;
         if (index == 0 && delta < 0) {
-            cursorIndex = InventoryCellCount - 1;
-            scrollOffset = inventory.ItemCount() - (InventoryCellCount + 1);
+            cursorIndex = Mathf.Min(InventoryCellCount - 1, inventory.ItemCount() - 1);
+            scrollOffset = inventory.ItemCount() - InventoryCellCount;
             if (scrollOffset < 0) {
                 scrollOffset = 0;
             }
@@ -119,10 +134,10 @@ public class PartyInventoryScreen : MonoBehaviour, InputListener {
             cursorIndex = 0;
         } else {
             cursorIndex += delta;
-            if (delta > 0 && (cursorIndex == InventoryCellCount - 1) && scrollOffset + (InventoryCellCount - 1) < (inventory.ItemCount() - 2)) {
+            if (delta > 0 && (cursorIndex == InventoryCellCount - 1) && scrollOffset + (InventoryCellCount - 1) < (inventory.ItemCount() - 1)) {
                 scrollOffset += 1;
                 cursorIndex -= 1;
-            } else if (delta < 0 && cursorIndex == 0 && scrollOffset > 1) {
+            } else if (delta < 0 && cursorIndex == 0 && scrollOffset > 0) {
                 scrollOffset -= 1;
                 cursorIndex += 1;
             }
