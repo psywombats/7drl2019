@@ -45,4 +45,14 @@ public class PartyInventory {
     public int ItemCount() {
         return items.Count;
     }
+
+    public List<InventoryEntry> ItemsByCategory(ItemCategory category) {
+        List<InventoryEntry> matching = new List<InventoryEntry>();
+        foreach (InventoryEntry entry in items) {
+            if (entry.Item.category.Equals(category)) {
+                matching.Add(entry);
+            }
+        }
+        return matching;
+    }
 }
