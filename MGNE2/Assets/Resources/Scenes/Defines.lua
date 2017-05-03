@@ -9,13 +9,20 @@ function wait (seconds)
     await()
 end
 
-function speak (line)
-    cs_showText(line)
+function speak (name, line)
+    if (line == nil) then
+        showFace(nil)
+        cs_showText(name)
+    else
+        showFace(name)
+        cs_showText(line)
+    end
+
     await()
 end
 
-function speakLine (line)
-    speak(line)
+function speakLine (name, line)
+    speak(name, line)
     cs_hideTextbox()
     await()
 end

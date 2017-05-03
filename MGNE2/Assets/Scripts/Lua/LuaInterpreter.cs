@@ -26,6 +26,7 @@ public class LuaInterpreter : MonoBehaviour {
         GlobalContext.Globals["eventNamed"] = (Func<DynValue, LuaMapEvent>)EventNamed;
         GlobalContext.Globals["playSFX"] = (Action<DynValue>)PlaySFX;
         GlobalContext.Globals["playBGM"] = (Action<DynValue>)PlayBGM;
+        GlobalContext.Globals["showFace"] = (Action<DynValue>)ShowFace;
 
         // routines
         GlobalContext.Globals["cs_teleport"] = (Action<DynValue, DynValue, DynValue>)Teleport;
@@ -142,6 +143,14 @@ public class LuaInterpreter : MonoBehaviour {
 
     private static void PlayBGM(DynValue bgmKey) {
         Global.Instance().Audio.PlayBGM(bgmKey.String);
+    }
+
+    private static void ShowFace(DynValue faceFilename) {
+        if (faceFilename.IsNil()) {
+            Textbox.GetInstance().ShowFace(null);
+        } else {
+            Textbox.GetInstance().ShowFace(faceFilename.String);
+        }
     }
 
     // Routines

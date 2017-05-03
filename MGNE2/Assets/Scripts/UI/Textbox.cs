@@ -10,8 +10,10 @@ public class Textbox : MonoBehaviour, InputListener {
     
     private const float CharacterDelay = (1.0f / 100.0f);
     
-    public Image backer;
-    public Text textbox;
+    public Image Backer;
+    public Text TextboxNoFace;
+    public Text TextboxLeftFace;
+    public Image LeftFace;
     
     public bool Visible { get { return GetComponent<CanvasGroup>().alpha == 1.0f; } }
 
@@ -25,7 +27,7 @@ public class Textbox : MonoBehaviour, InputListener {
     }
 
     public void Clear() {
-        textbox.text = "";
+        SetText("");
     }
 
     public static Textbox GetInstance() {
@@ -33,6 +35,21 @@ public class Textbox : MonoBehaviour, InputListener {
             instance = FindObjectOfType<Textbox>();
         }
         return instance;
+    }
+
+    public void ShowFace(string filename) {
+        // maybe this should take a speaker hey
+        if (filename == null) {
+            TextboxNoFace.enabled = true;
+            LeftFace.enabled = false;
+            TextboxLeftFace.enabled = false;
+        } else {
+            TextboxNoFace.enabled = false;
+            LeftFace.enabled = true;
+            TextboxLeftFace.enabled = true;
+
+            LeftFace.sprite = Resources.Load<Sprite>("Sprites/Faces/" + filename);
+        }
     }
 
     public IEnumerator ShowText(string text) {
@@ -47,13 +64,14 @@ public class Textbox : MonoBehaviour, InputListener {
             if (hurried) {
                 break;
             }
-            textbox.text = fullText.Substring(0, i);
-            textbox.text += "<color=#00000000>";
-            textbox.text += fullText.Substring(i);
-            textbox.text += "</color>";
+            string shownText = fullText.Substring(0, i);
+            shownText += "<color=#00000000>";
+            shownText += fullText.Substring(i);
+            shownText += "</color>";
+            SetText(shownText);
             yield return new WaitForSeconds(CharacterDelay);
         }
-        textbox.text = fullText;
+        SetText(fullText);
         yield return Global.Instance().Input.AwaitConfirm();
         Global.Instance().Input.RemoveListener(this);
     }
@@ -87,5 +105,10 @@ public class Textbox : MonoBehaviour, InputListener {
             hurried = true;
         }
         return true;
+    }
+
+    private void SetText(string text) {
+        TextboxNoFace.text = text;
+        TextboxLeftFace.text = text;
     }
 }
