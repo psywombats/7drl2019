@@ -94,6 +94,7 @@
     <Compile Include="Assets\Scripts\GameUI\InventoryCategoryCell.cs" />
     <Compile Include="Assets\Scripts\GameUI\InventoryItemCell.cs" />
     <Compile Include="Assets\Scripts\GameUI\PartyInventoryScreen.cs" />
+    <Compile Include="Assets\Scripts\GameUI\TitleScreen.cs" />
     <Compile Include="Assets\Scripts\Global.cs" />
     <Compile Include="Assets\Scripts\GlobalConfig.cs" />
     <Compile Include="Assets\Scripts\IO\InputListener.cs" />
