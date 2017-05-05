@@ -2,11 +2,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class TitleScreen : MonoBehaviour, InputListener {
 
     public List<Image> Cursors;
+
+    private ColorEffect fader;
+    private ColorEffect Fader {
+        get {
+            if (fader == null) {
+                fader = FindObjectOfType<ColorEffect>();
+            }
+            return fader;
+        }
+    }
 
     private int cursorIndex;
 
@@ -54,6 +65,28 @@ public class TitleScreen : MonoBehaviour, InputListener {
     }
 
     private void Confirm() {
+        switch (cursorIndex) {
+            case 0:
+                NewGame();
+                break;
+            case 1:
+                LoadGame();
+                break;
+        }
+    }
 
+    private void NewGame() {
+        Global.Instance().Input.RemoveListener(this);
+        StartCoroutine(CoUtils.RunWithCallback(TransitionOutRoutine(), this, () => {
+            SceneManager.LoadScene("Scenes/Main", LoadSceneMode.Single);
+        }));
+    }
+
+    private void LoadGame() {
+
+    }
+
+    private IEnumerator TransitionOutRoutine() {
+        yield return StartCoroutine(Fader.ChangeColorRoutine(Color.black, 1.0f));
     }
 }
