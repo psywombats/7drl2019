@@ -99,6 +99,7 @@
     <Compile Include="Assets\Scripts\GlobalConfig.cs" />
     <Compile Include="Assets\Scripts\IO\InputListener.cs" />
     <Compile Include="Assets\Scripts\IO\InputManager.cs" />
+    <Compile Include="Assets\Scripts\ImageEffects\ColorEffect.cs" />
     <Compile Include="Assets\Scripts\Lua\LuaCondition.cs" />
     <Compile Include="Assets\Scripts\Lua\LuaInterpreter.cs" />
     <Compile Include="Assets\Scripts\Lua\LuaMapEvent.cs" />
@@ -140,6 +141,7 @@
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\TmxObject.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Scripts\Shaders\ColorEffectShader.shader" />
     <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
     <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\BlendModesOverlay.shader" />
     <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\BlurEffectConeTaps.shader" />
