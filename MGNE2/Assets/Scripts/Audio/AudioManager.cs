@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AudioManager : MonoBehaviour {
+public class AudioManager : MonoBehaviour, MemoryPopulater {
 
     private const string NoBGMKey = "none";
 
@@ -16,6 +17,8 @@ public class AudioManager : MonoBehaviour {
 
     public void Start() {
         // sound effects are loaded in the background via import settings
+
+        Global.Instance().Memory.RegisterMemoryPopulater(this);
 
         sfx = new Dictionary<string, AudioClip>();
         foreach (AudioKeyDataEntry entry in Global.Instance().Config.SoundEffects.data) {
@@ -66,6 +69,14 @@ public class AudioManager : MonoBehaviour {
             }
             yield return null;
         }
+    }
+
+    public void PopulateMemory(Memory memory) {
+        memory.bgmKey = CurrentBGMKey;
+    }
+
+    public void PopulateFromMemory(Memory memory) {
+        PlayBGM(memory.bgmKey);
     }
 
     private IEnumerator PlaySFXRoutine(AudioSource source, AudioClip clip) {

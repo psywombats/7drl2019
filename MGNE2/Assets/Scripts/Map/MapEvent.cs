@@ -203,6 +203,9 @@ public class MapEvent : TiledInstantiated {
     public void SetLocation(IntVector2 location) {
         Position = location;
         OnValidate();
+        if (Global.Instance().Maps.Camera.Target == this) {
+            Global.Instance().Maps.Camera.ManualUpdate();
+        }
     }
 
     private LuaScript ParseScript(string lua) {

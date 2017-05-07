@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CharaEvent))]
-public class AvatarEvent : MonoBehaviour, InputListener {
+public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
 
     public bool InputPaused { get; set; }
 
@@ -36,6 +36,9 @@ public class AvatarEvent : MonoBehaviour, InputListener {
                 case InputManager.Command.Cancel:
                     ShowMenu();
                     return true;
+                case InputManager.Command.Debug:
+                    Global.Instance().Memory.SaveToSlot(0);
+                    return true;
                 default:
                     return false;
 
@@ -45,7 +48,17 @@ public class AvatarEvent : MonoBehaviour, InputListener {
         }
     }
 
-    public void Interact() {
+    public void PopulateFromMemory(Memory memory) {
+        GetComponent<MapEvent>().SetLocation(memory.position);
+        GetComponent<CharaEvent>().Facing = memory.facing;
+    }
+
+    public void PopulateMemory(Memory memory) {
+        memory.position = GetComponent<MapEvent>().Position;
+        memory.facing = GetComponent<CharaEvent>().Facing;
+    }
+
+    private void Interact() {
         IntVector2 target = GetComponent<MapEvent>().Position + GetComponent<CharaEvent>().Facing.XY();
         List<MapEvent> targetEvents = GetComponent<MapEvent>().Parent.GetEventsAt(GetComponent<MapEvent>().Layer, target);
         foreach (MapEvent tryTarget in targetEvents) {
@@ -65,7 +78,7 @@ public class AvatarEvent : MonoBehaviour, InputListener {
         }
     }
 
-    public bool TryStep(OrthoDir dir) {
+    private bool TryStep(OrthoDir dir) {
         IntVector2 target = GetComponent<MapEvent>().Position + dir.XY();
         GetComponent<CharaEvent>().Facing = dir;
         List<MapEvent> targetEvents = GetComponent<MapEvent>().Parent.GetEventsAt(GetComponent<MapEvent>().Layer, target);
@@ -94,7 +107,7 @@ public class AvatarEvent : MonoBehaviour, InputListener {
         return true;
     }
 
-    public void ShowMenu() {
+    private void ShowMenu() {
         StartCoroutine(PartyInventoryScreen.GetInstance().TransitionIn());
     }
 }

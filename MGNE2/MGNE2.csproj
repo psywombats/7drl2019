@@ -115,6 +115,7 @@
     <Compile Include="Assets\Scripts\Map\TiledInstantiated.cs" />
     <Compile Include="Assets\Scripts\Serialization\Memory.cs" />
     <Compile Include="Assets\Scripts\Serialization\MemoryManager.cs" />
+    <Compile Include="Assets\Scripts\Serialization\MemoryPopulater.cs" />
     <Compile Include="Assets\Scripts\Serialization\SystemMemory.cs" />
     <Compile Include="Assets\Scripts\UI\Textbox.cs" />
     <Compile Include="Assets\Scripts\Util\CoUtils.cs" />

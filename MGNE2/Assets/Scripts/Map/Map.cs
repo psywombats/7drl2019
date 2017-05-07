@@ -24,11 +24,17 @@ public class Map : TiledInstantiated {
     public int WidthPx { get { return SizePx.x; } }
     public int HeightPx { get { return SizePx.y; } }
 
-    public String ResourcePath { get { return GetComponent<TiledMap>().ResourcePath; } }
-    public String FullName { get { return ResourcePath + "/" + gameObject.name; } }
-
     public string BGMKey { get; private set; }
-    public string InternalName { get { return GetComponent<TiledMap>().ResourcePath + "/" + GetComponent<TiledMap>().name; } }
+    public String ResourcePath { get { return GetComponent<TiledMap>().ResourcePath; } }
+    public string FullName {
+        get {
+            string name = gameObject.name;
+            if (name.EndsWith("(Clone)")) {
+                name = name.Substring(0, name.Length - "(Clone)".Length);
+            }
+            return ResourcePath + "/" + name;
+        }
+    }
 
     public override void Populate(IDictionary<string, string> properties) {
         TiledMap tiled = GetComponent<TiledMap>();
@@ -60,6 +66,10 @@ public class Map : TiledInstantiated {
 
     public Layer LayerAtIndex(int layerIndex) {
         return transform.GetChild(layerIndex).GetComponent<Layer>();
+    }
+
+    public ObjectLayer LowestObjectLayer() {
+        return GetComponentsInChildren<ObjectLayer>()[0];
     }
 
     public MapEvent GetEventNamed(string eventName) {

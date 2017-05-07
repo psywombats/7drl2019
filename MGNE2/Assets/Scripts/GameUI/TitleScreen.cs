@@ -58,7 +58,7 @@ public class TitleScreen : MonoBehaviour, InputListener {
         cursorIndex += delta;
         if (cursorIndex < 0) {
             cursorIndex = Cursors.Count;
-        } else if (cursorIndex >= Cursors.Count) {
+        } else if (cursorIndex > Cursors.Count) {
             cursorIndex = 0;
         }
         UpdateDisplay();
@@ -83,7 +83,12 @@ public class TitleScreen : MonoBehaviour, InputListener {
     }
 
     private void LoadGame() {
-
+        StartCoroutine(CoUtils.RunWithCallback(TransitionOutRoutine(), this, () => {
+            SceneManager.LoadScene("Scenes/Main", LoadSceneMode.Single);
+            Global.Instance().Memory.StartCoroutine(CoUtils.RunAfterDelay(0.0f, () => {
+                Global.Instance().Memory.LoadMemory(Global.Instance().Memory.GetMemoryForSlot(0));
+            }));
+        }));
     }
 
     private IEnumerator TransitionOutRoutine() {

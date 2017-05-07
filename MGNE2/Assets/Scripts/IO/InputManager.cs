@@ -11,6 +11,7 @@ public class InputManager : MonoBehaviour {
         Down,
         Confirm,
         Cancel,
+        Debug,
     };
 
     public enum Event {
@@ -34,6 +35,7 @@ public class InputManager : MonoBehaviour {
         keybinds[Command.Down] = new List<KeyCode>(new[] { KeyCode.DownArrow, KeyCode.S, KeyCode.Keypad2 });
         keybinds[Command.Confirm] = new List<KeyCode>(new[] { KeyCode.Space, KeyCode.Z, KeyCode.Return });
         keybinds[Command.Cancel] = new List<KeyCode>(new[] { KeyCode.Escape, KeyCode.B, KeyCode.X });
+        keybinds[Command.Debug] = new List<KeyCode>(new[] { KeyCode.F9 });
 
         listeners = new List<InputListener>();
         holdStartTimes = new Dictionary<Command, float>();

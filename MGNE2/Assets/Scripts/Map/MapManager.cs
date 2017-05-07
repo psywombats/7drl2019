@@ -1,10 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Tiled2Unity;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-public class MapManager : MonoBehaviour {
+public class MapManager : MonoBehaviour, MemoryPopulater {
 
     private Map activeMap;
     public Map ActiveMap {
@@ -37,6 +38,25 @@ public class MapManager : MonoBehaviour {
             }
             return mapCamera;
         }
+    }
+
+    public void Start() {
+        Global.Instance().Memory.RegisterMemoryPopulater(this);
+    }
+
+    public void PopulateMemory(Memory memory) {
+        Avatar.PopulateMemory(memory);
+        memory.mapName = ActiveMap.FullName;
+    }
+
+    public void PopulateFromMemory(Memory memory) {
+        avatar = Instantiate<GameObject>(Resources.Load<GameObject>("Prefabs/Avatar")).GetComponent<AvatarEvent>();
+        ActiveMap = InstantiateMap(memory.mapName);
+        Avatar.transform.parent = ActiveMap.LowestObjectLayer().transform;
+        Avatar.PopulateFromMemory(memory);
+        ActiveMap.OnTeleportTo();
+        Camera.Target = Avatar.GetComponent<MapEvent>();
+        Camera.ManualUpdate();
     }
 
     public IEnumerator TeleportRoutine(string mapName, IntVector2 location) {
@@ -81,8 +101,11 @@ public class MapManager : MonoBehaviour {
     }
 
     private Map InstantiateMap(string mapName) {
-        string localPath = ActiveMap.ResourcePath + "/" + mapName;
-        GameObject newMapObject = Resources.Load<GameObject>(localPath);
+        GameObject newMapObject = null;
+        if (ActiveMap != null) {
+            string localPath = ActiveMap.ResourcePath + "/" + mapName;
+            newMapObject = Resources.Load<GameObject>(localPath);
+        }
         if (newMapObject == null) {
             newMapObject = Resources.Load<GameObject>(mapName);
         }
