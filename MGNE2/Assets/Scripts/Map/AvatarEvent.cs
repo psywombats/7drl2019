@@ -6,10 +6,16 @@ using UnityEngine;
 [RequireComponent(typeof(CharaEvent))]
 public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
 
-    public bool InputPaused { get; set; }
+    private int pauseCount;
+    public bool InputPaused {
+        get {
+            return pauseCount > 0;
+        }
+    }
 
     public void Start() {
         Global.Instance().Input.PushListener(this);
+        pauseCount = 0;
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
@@ -20,16 +26,16 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
             switch (command) {
                 case InputManager.Command.Up:
                     TryStep(OrthoDir.North);
-                    return true;
+                    return false;
                 case InputManager.Command.Down:
                     TryStep(OrthoDir.South);
-                    return true;
+                    return false;
                 case InputManager.Command.Right:
                     TryStep(OrthoDir.East);
-                    return true;
+                    return false;
                 case InputManager.Command.Left:
                     TryStep(OrthoDir.West);
-                    return true;
+                    return false;
                 case InputManager.Command.Confirm:
                     Interact();
                     return true;
@@ -56,6 +62,14 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
     public void PopulateMemory(Memory memory) {
         memory.position = GetComponent<MapEvent>().Position;
         memory.facing = GetComponent<CharaEvent>().Facing;
+    }
+
+    public void PauseInput() {
+        pauseCount += 1;
+    }
+
+    public void UnpauseInput() {
+        pauseCount -= 1;
     }
 
     private void Interact() {

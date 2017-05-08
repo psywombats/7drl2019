@@ -60,13 +60,15 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
     }
 
     public IEnumerator TeleportRoutine(string mapName, IntVector2 location) {
+        yield return StartCoroutine(TeleportOutRoutine());
         RawTeleport(mapName, location);
-        yield return null;
+        yield return StartCoroutine(TeleportInRoutine());
     }
 
     public IEnumerator TeleportRoutine(string mapName, string targetEventName) {
+        yield return StartCoroutine(TeleportOutRoutine());
         RawTeleport(mapName, targetEventName);
-        yield return null;
+        yield return StartCoroutine(TeleportInRoutine());
     }
     
     // map path is accepted either as a relative map name "Testmap01" or full path "Test/Testmap01"
@@ -111,5 +113,15 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
         }
         Assert.IsNotNull(newMapObject);
         return Instantiate(newMapObject).GetComponent<Map>();
+    }
+
+    private IEnumerator TeleportOutRoutine() {
+        Avatar.PauseInput();
+        yield return StartCoroutine(Camera.GetComponent<ColorEffect>().FadeRoutine(Color.black, 0.3f));
+    }
+
+    private IEnumerator TeleportInRoutine() {
+        yield return StartCoroutine(Camera.GetComponent<ColorEffect>().FadeRoutine(Color.white, 0.3f));
+        Avatar.UnpauseInput();
     }
 }

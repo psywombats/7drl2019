@@ -92,6 +92,6 @@ public class TitleScreen : MonoBehaviour, InputListener {
     }
 
     private IEnumerator TransitionOutRoutine() {
-        yield return StartCoroutine(Fader.ChangeColorRoutine(Color.black, 1.0f));
+        yield return StartCoroutine(Fader.FadeRoutine(Color.black, 1.0f));
     }
 }
