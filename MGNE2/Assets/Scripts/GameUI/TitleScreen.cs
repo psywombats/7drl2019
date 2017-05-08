@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class TitleScreen : MonoBehaviour, InputListener {
 
+    private const float FadeSeconds = 0.6f;
+
     public List<Image> Cursors;
 
     private ColorEffect fader;
@@ -79,19 +81,28 @@ public class TitleScreen : MonoBehaviour, InputListener {
         Global.Instance().Input.RemoveListener(this);
         StartCoroutine(CoUtils.RunWithCallback(TransitionOutRoutine(), this, () => {
             SceneManager.LoadScene("Scenes/Main", LoadSceneMode.Single);
+            Global.Instance().Memory.StartCoroutine(CoUtils.RunAfterDelay(0.0f, () => {
+                Global.Instance().Maps.Camera.GetComponent<ColorEffect>().SetColor(Color.black);
+                IEnumerator routine = Global.Instance().Maps.Camera.GetComponent<ColorEffect>().FadeRoutine(Color.white, FadeSeconds);
+                Global.Instance().Memory.StartCoroutine(routine);
+            }));
         }));
     }
 
     private void LoadGame() {
+        Global.Instance().Input.RemoveListener(this);
         StartCoroutine(CoUtils.RunWithCallback(TransitionOutRoutine(), this, () => {
             SceneManager.LoadScene("Scenes/Main", LoadSceneMode.Single);
             Global.Instance().Memory.StartCoroutine(CoUtils.RunAfterDelay(0.0f, () => {
+                Global.Instance().Maps.Camera.GetComponent<ColorEffect>().SetColor(Color.black);
                 Global.Instance().Memory.LoadMemory(Global.Instance().Memory.GetMemoryForSlot(0));
+                IEnumerator routine = Global.Instance().Maps.Camera.GetComponent<ColorEffect>().FadeRoutine(Color.white, FadeSeconds);
+                Global.Instance().Memory.StartCoroutine(routine);
             }));
         }));
     }
 
     private IEnumerator TransitionOutRoutine() {
-        yield return StartCoroutine(Fader.FadeRoutine(Color.black, 1.0f));
+        yield return StartCoroutine(Fader.FadeRoutine(Color.black, FadeSeconds));
     }
 }

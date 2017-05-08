@@ -24,7 +24,8 @@ public class Global : MonoBehaviour {
     public static Global Instance() {
         if (instance == null) {
             GameObject globalObject = new GameObject();
-            globalObject.hideFlags = HideFlags.HideAndDontSave;
+            // debug-ish and we don't serialize scenes
+            // globalObject.hideFlags = HideFlags.HideAndDontSave;
             instance = globalObject.AddComponent<Global>();
             instance.InstantiateManagers();
         }

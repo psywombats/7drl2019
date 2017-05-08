@@ -13,6 +13,10 @@ public class ColorEffect : ImageEffectBase {
         Graphics.Blit(source, destination, material);
     }
 
+    public void SetColor(Color newColor) {
+        color = newColor;
+    }
+
     public IEnumerator FadeRoutine(Color target, float seconds) {
         Color original = color;
         for (float elapsed = 0; elapsed < seconds; elapsed += Time.deltaTime) {
