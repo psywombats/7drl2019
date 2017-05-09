@@ -52,12 +52,12 @@ public class Map : TiledInstantiated {
         return (property == null) ? true : (property.GetStringValue() == "false");
     }
 
-    // careful, this implementation is straight from MGNE
-    // it's efficiency is questionable, to say the least, and it only supports 1x1 events
+    // careful, this implementation is straight from MGNE, it's efficiency is questionable, to say the least
+    // it does support bigger than 1*1 events though
     public List<MapEvent> GetEventsAt(ObjectLayer layer, IntVector2 loc) {
         List<MapEvent> events = new List<MapEvent>();
         foreach (MapEvent mapEvent in layer.gameObject.GetComponentsInChildren<MapEvent>()) {
-            if (mapEvent.Position == loc) {
+            if (mapEvent.ContainsPosition(loc)) {
                 events.Add(mapEvent);
             }
         }

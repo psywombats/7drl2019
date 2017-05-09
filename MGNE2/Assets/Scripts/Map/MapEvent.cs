@@ -181,6 +181,17 @@ public class MapEvent : TiledInstantiated {
         return GetComponent<CharaEvent>() == null || !SwitchEnabled;
     }
 
+    public bool ContainsPosition(IntVector2 loc) {
+        if (GetComponent<RectangleObject>() == null) {
+            return loc == Position;
+        }
+        IntVector2 pos1 = Position;
+        IntVector2 pos2 = Position;
+        pos2.x += (int)((GetComponent<RectangleObject>().TmxSize.x / Map.TileWidthPx) - 1);
+        pos2.y += (int)((GetComponent<RectangleObject>().TmxSize.y / Map.TileHeightPx) - 1);
+        return loc.x >= pos1.x && loc.x <= pos2.x && loc.y >= pos1.y && loc.y <= pos2.y;
+    }
+
     // called when the avatar stumbles into us
     // before the step if impassable, after if passable
     public void OnCollide(AvatarEvent avatar) {

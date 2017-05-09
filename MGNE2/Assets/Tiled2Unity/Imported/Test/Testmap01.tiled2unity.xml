@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 5/2/2017 11:32:15 PM-->
+<!--Last exported: 5/8/2017 11:22:59 PM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="lower2" />
   <AssignMaterial mesh="mesh_0002" material="lower2" />
@@ -100,8 +100,12 @@
         <BoxCollider2D width="16" height="16" />
       </GameObject>
       <GameObject name="tele" x="304" y="-128" rotation="0">
-        <Property name="onCollide" value="teleport('Testmap02', 1, 7)" />
+        <Property name="onCollide" value="teleportCoords('Testmap02', 1, 7)" />
         <RectangleObjectComponent tmx-object-id="37" tmx-object-name="tele" tmx-object-type="Event" tmx-object-x="304" tmx-object-y="128" tmx-object-width="16" tmx-object-height="16" tmx-object-rotation="0" />
+        <BoxCollider2D width="16" height="16" />
+      </GameObject>
+      <GameObject name="door" x="288" y="-128" rotation="0">
+        <RectangleObjectComponent tmx-object-id="53" tmx-object-name="door" tmx-object-type="Target" tmx-object-x="288" tmx-object-y="128" tmx-object-width="16" tmx-object-height="16" tmx-object-rotation="0" />
         <BoxCollider2D width="16" height="16" />
       </GameObject>
       <GameObject name="TestEvent" x="176" y="-144" rotation="0">

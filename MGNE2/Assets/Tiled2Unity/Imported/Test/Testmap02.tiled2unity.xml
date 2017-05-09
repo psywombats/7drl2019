@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 4/17/2017 12:00:47 AM-->
+<!--Last exported: 5/8/2017 11:12:17 PM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="lower2" />
   <Prefab name="Testmap02" orientation="Orthogonal" staggerAxis="Y" staggerIndex="Odd" hexSideLength="0" numLayers="3" numTilesWide="20" numTilesHigh="15" tileWidth="16" tileHeight="16" exportScale="1" mapWidthInPixels="320" mapHeightInPixels="240" backgroundColor="#808080" resourcePath="Test" sortingOrder="2">
@@ -23,6 +23,11 @@
     </GameObject>
     <GameObject name="Object Layer 1" x="0" y="0" z="-0.13333334">
       <ObjectLayer offsetX="0" offsetY="0" color="#ff808080" />
+      <GameObject name="tele" x="0" y="-112" rotation="0">
+        <Property name="onCollide" value="teleport('Testmap01', 'door')" />
+        <RectangleObjectComponent tmx-object-id="37" tmx-object-name="tele" tmx-object-type="Event" tmx-object-x="0" tmx-object-y="112" tmx-object-width="16" tmx-object-height="32" tmx-object-rotation="0" />
+        <BoxCollider2D width="16" height="32" />
+      </GameObject>
     </GameObject>
     <GameObject name="Tile Layer 3" x="0" y="0" z="-0.200000018">
       <TileLayer opacity="1" offsetX="0" offsetY="0" />

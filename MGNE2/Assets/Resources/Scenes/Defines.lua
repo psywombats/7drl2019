@@ -4,12 +4,12 @@ function await ()
     coroutine.yield()
 end
 
-function wait (seconds)
+function wait(seconds)
     cs_wait(seconds)
     await()
 end
 
-function speak (name, line)
+function speak(name, line)
     if (line == nil) then
         showFace(nil)
         cs_showText(name)
@@ -21,18 +21,23 @@ function speak (name, line)
     await()
 end
 
-function speakLine (name, line)
+function speakLine(name, line)
     speak(name, line)
     cs_hideTextbox()
     await()
 end
 
-function teleport (mapName, x, y)
-    cs_teleport(mapName, x, y)
+function teleportCoords(mapName, x, y)
+    cs_teleportCoords(mapName, x, y)
     await()
 end
 
-function pathTo(event, eventName)
+function teleport(mapName, eventName)
+    cs_teleport(mapName, eventName)
+    await()
+end
+
+function pathEventTo(event, eventName)
     local target = eventNamed(eventName)
     event.cs_pathTo(target)
     await()

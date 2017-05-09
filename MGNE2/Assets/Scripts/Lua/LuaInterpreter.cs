@@ -29,8 +29,8 @@ public class LuaInterpreter : MonoBehaviour {
         GlobalContext.Globals["showFace"] = (Action<DynValue>)ShowFace;
 
         // routines
-        GlobalContext.Globals["cs_teleport"] = (Action<DynValue, DynValue, DynValue>)Teleport;
-        GlobalContext.Globals["cs_teleportTarget"] = (Action<DynValue, DynValue>)Teleport;
+        GlobalContext.Globals["cs_teleportCoords"] = (Action<DynValue, DynValue, DynValue>)Teleport;
+        GlobalContext.Globals["cs_teleport"] = (Action<DynValue, DynValue>)Teleport;
         GlobalContext.Globals["cs_showText"] = (Action<DynValue>)ShowText;
         GlobalContext.Globals["cs_hideTextbox"] = (Action)HideTextbox;
         GlobalContext.Globals["cs_wait"] = (Action<DynValue>)Wait;

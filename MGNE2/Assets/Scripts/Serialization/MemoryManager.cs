@@ -71,6 +71,11 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
         }
     }
 
+    public bool AnyMemoriesExist() {
+        // sort of a todo
+        return GetMemoryForSlot(0) != null;
+    }
+
     public void SaveSystemMemory() {
 
         // constants we keep track of

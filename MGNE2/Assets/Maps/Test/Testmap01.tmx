@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="15" tilewidth="16" tileheight="16" nextobjectid="53">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="15" tilewidth="16" tileheight="16" nextobjectid="56">
  <properties>
   <property name="battle_bgm" value="ffl1_battle"/>
   <property name="bgm" value="ffl1_overworld"/>
@@ -34,7 +34,7 @@ debugLog('Hi mom!')</property>
   </object>
   <object id="37" name="tele" type="Event" x="304" y="128" width="16" height="16">
    <properties>
-    <property name="onCollide" value="teleport('Testmap02', 1, 7)"/>
+    <property name="onCollide" value="teleportCoords('Testmap02', 1, 7)"/>
    </properties>
   </object>
   <object id="42" name="TestEvent" type="Character" x="144" y="80" width="16" height="16">
@@ -125,6 +125,7 @@ addItem('TestItem 10')</property>
     <property name="sprite" value="HumanM"/>
    </properties>
   </object>
+  <object id="53" name="door" type="Target" x="288" y="128" width="16" height="16"/>
  </objectgroup>
  <layer name="Tile Layer 3" width="20" height="15">
   <properties>

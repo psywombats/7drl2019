@@ -24,7 +24,7 @@ public class TitleScreen : MonoBehaviour, InputListener {
     private int cursorIndex;
 
     public void Start() {
-        cursorIndex = 0;
+        cursorIndex = (Global.Instance().Memory.AnyMemoriesExist()) ? 1 : 0;
         UpdateDisplay();
         Global.Instance().Input.PushListener(this);
     }
