@@ -11,11 +11,13 @@ using UnityEngine.Assertions;
  [RequireComponent(typeof(Dispatch))]
 public class MapEvent : TiledInstantiated {
 
-    public static readonly string EventEnabled = "enabled";
+    public const string EventEnabled = "enabled";
+    public const string EventCollide = "collide";
+    public const string EventInteract = "interact";
 
-    private static readonly string PropertyCondition = "show";
-    private static readonly string PropertyInteract = "onInteract";
-    private static readonly string PropertyCollide = "onCollide";
+    private const string PropertyCondition = "show";
+    private const string PropertyInteract = "onInteract";
+    private const string PropertyCollide = "onCollide";
 
     private static readonly string TypeChara = "Character";
 
@@ -130,6 +132,13 @@ public class MapEvent : TiledInstantiated {
             Global.Instance().Lua.RegisterAvatar(GetComponent<AvatarEvent>());
         }
 
+        GetComponent<Dispatch>().RegisterListener(EventCollide, (object payload) => {
+            OnCollide((AvatarEvent)payload);
+        });
+        GetComponent<Dispatch>().RegisterListener(EventInteract, (object payload) => {
+            OnInteract((AvatarEvent)payload);
+        });
+
         CheckEnabled();
     }
 
@@ -192,31 +201,27 @@ public class MapEvent : TiledInstantiated {
         return loc.x >= pos1.x && loc.x <= pos2.x && loc.y >= pos1.y && loc.y <= pos2.y;
     }
 
-    // called when the avatar stumbles into us
-    // before the step if impassable, after if passable
-    public void OnCollide(AvatarEvent avatar) {
-        if (SwitchEnabled) {
-            LuaObject.Run(PropertyCollide);
-        }
-    }
-
-    // called when the avatar stumbles into us
-    // facing us if impassable, on top of us if passable
-    public void OnInteract(AvatarEvent avatar) {
-        if (SwitchEnabled) {
-            if (GetComponent<CharaEvent>() != null) {
-                GetComponent<CharaEvent>().Facing = DirectionTo(avatar.GetComponent<MapEvent>());
-            }
-            LuaObject.Run(PropertyInteract);
-        }
-    }
-
     public void SetLocation(IntVector2 location) {
         Position = location;
         OnValidate();
         if (Global.Instance().Maps.Camera.Target == this) {
             Global.Instance().Maps.Camera.ManualUpdate();
         }
+    }
+
+    // called when the avatar stumbles into us
+    // before the step if impassable, after if passable
+    private void OnCollide(AvatarEvent avatar) {
+        LuaObject.Run(PropertyCollide);
+    }
+
+    // called when the avatar stumbles into us
+    // facing us if impassable, on top of us if passable
+    private void OnInteract(AvatarEvent avatar) {
+        if (GetComponent<CharaEvent>() != null) {
+            GetComponent<CharaEvent>().Facing = DirectionTo(avatar.GetComponent<MapEvent>());
+        }
+        LuaObject.Run(PropertyInteract);
     }
 
     private LuaScript ParseScript(string lua) {

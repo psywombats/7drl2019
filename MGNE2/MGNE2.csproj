@@ -87,6 +87,7 @@
     <Compile Include="Assets\Scripts\Game\GameLuaInterpretor.cs" />
     <Compile Include="Assets\Scripts\GameData\ItemCategory.cs" />
     <Compile Include="Assets\Scripts\GameData\ItemData.cs" />
+    <Compile Include="Assets\Scripts\GameEvents\ChestEvent.cs" />
     <Compile Include="Assets\Scripts\GameRPG\HeroParty.cs" />
     <Compile Include="Assets\Scripts\GameRPG\InventoryEntry.cs" />
     <Compile Include="Assets\Scripts\GameRPG\Party.cs" />

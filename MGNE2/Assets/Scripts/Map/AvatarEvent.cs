@@ -76,8 +76,8 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
         IntVector2 target = GetComponent<MapEvent>().Position + GetComponent<CharaEvent>().Facing.XY();
         List<MapEvent> targetEvents = GetComponent<MapEvent>().Parent.GetEventsAt(GetComponent<MapEvent>().Layer, target);
         foreach (MapEvent tryTarget in targetEvents) {
-            if (!tryTarget.IsPassableBy(GetComponent<CharaEvent>())) {
-                tryTarget.OnInteract(this);
+            if (tryTarget.SwitchEnabled && !tryTarget.IsPassableBy(GetComponent<CharaEvent>())) {
+                tryTarget.GetComponent<Dispatch>().Signal(MapEvent.EventInteract, this);
                 return;
             }
         }
@@ -85,8 +85,8 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
         target = GetComponent<MapEvent>().Position;
         targetEvents = GetComponent<MapEvent>().Parent.GetEventsAt(GetComponent<MapEvent>().Layer, target);
         foreach (MapEvent tryTarget in targetEvents) {
-            if (tryTarget.IsPassableBy(GetComponent<CharaEvent>())) {
-                tryTarget.OnInteract(this);
+            if (tryTarget.SwitchEnabled && tryTarget.IsPassableBy(GetComponent<CharaEvent>())) {
+                tryTarget.GetComponent<Dispatch>().Signal(MapEvent.EventInteract, this);
                 return;
             }
         }
@@ -109,12 +109,16 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
         if (passable) {
             StartCoroutine(CoUtils.RunWithCallback(GetComponent<CharaEvent>().StepRoutine(dir), this, () => {
                 foreach (MapEvent targetEvent in toCollide) {
-                    targetEvent.OnCollide(this);
+                    if (targetEvent.SwitchEnabled) {
+                        targetEvent.GetComponent<Dispatch>().Signal(MapEvent.EventCollide, this);
+                    }
                 }
             }));
         } else {
             foreach (MapEvent targetEvent in toCollide) {
-                targetEvent.OnCollide(this);
+                if (targetEvent.SwitchEnabled) {
+                    targetEvent.GetComponent<Dispatch>().Signal(MapEvent.EventCollide, this);
+                }
             }
         }
         

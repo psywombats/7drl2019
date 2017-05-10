@@ -8,7 +8,7 @@ using System;
 public class TiledImporter : ICustomTiledImporter {
 
     // Property handling and custom object assignment
-    public void HandleCustomProperties(UnityEngine.GameObject prefab, IDictionary<string, string> props) {
+    virtual public void HandleCustomProperties(UnityEngine.GameObject prefab, IDictionary<string, string> props) {
         if (prefab.GetComponent<TiledMap>() != null) {
             Populate<Map>(prefab, props);
         } else if (prefab.GetComponent<RuntimeTmxObject>() != null) {
@@ -20,7 +20,7 @@ public class TiledImporter : ICustomTiledImporter {
         // nothing for now
     }
 
-    private void Populate<T>(GameObject prefab, IDictionary<string, string> props) where T : TiledInstantiated {
+    protected void Populate<T>(GameObject prefab, IDictionary<string, string> props) where T : TiledInstantiated {
         prefab.AddComponent<T>();
         T component = prefab.GetComponent<T>();
         component.Populate(props);
