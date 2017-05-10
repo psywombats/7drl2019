@@ -108,6 +108,7 @@
     <Compile Include="Assets\Scripts\Map\AvatarEvent.cs" />
     <Compile Include="Assets\Scripts\Map\CharaAnimator.cs" />
     <Compile Include="Assets\Scripts\Map\CharaEvent.cs" />
+    <Compile Include="Assets\Scripts\Map\EventAppearance.cs" />
     <Compile Include="Assets\Scripts\Map\Map.cs" />
     <Compile Include="Assets\Scripts\Map\MapCamera.cs" />
     <Compile Include="Assets\Scripts\Map\MapEvent.cs" />

@@ -76,6 +76,14 @@ public class Textbox : MonoBehaviour, InputListener {
         Global.Instance().Input.RemoveListener(this);
     }
 
+    public IEnumerator ShowSystemText(string text) {
+        Global.Instance().Maps.Avatar.PauseInput();
+        ShowFace(null);
+        yield return ShowText(text);
+        yield return StartCoroutine(TransitionOut());
+        Global.Instance().Maps.Avatar.UnpauseInput();
+    }
+
     public IEnumerator TransitionIn() {
         Clear();
 

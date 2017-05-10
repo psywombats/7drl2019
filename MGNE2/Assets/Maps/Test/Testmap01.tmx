@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="15" tilewidth="16" tileheight="16" nextobjectid="56">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="15" tilewidth="16" tileheight="16" nextobjectid="57">
  <properties>
   <property name="battle_bgm" value="ffl1_battle"/>
   <property name="bgm" value="ffl1_overworld"/>
@@ -126,6 +126,11 @@ addItem('TestItem 10')</property>
    </properties>
   </object>
   <object id="53" name="door" type="Target" x="288" y="128" width="16" height="16"/>
+  <object id="56" name="chest" type="Chest" x="240" y="16" width="16" height="16">
+   <properties>
+    <property name="item" value="ItemPotionCure"/>
+   </properties>
+  </object>
  </objectgroup>
  <layer name="Tile Layer 3" width="20" height="15">
   <properties>

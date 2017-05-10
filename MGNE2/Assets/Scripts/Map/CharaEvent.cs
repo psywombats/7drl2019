@@ -50,6 +50,7 @@ public class CharaEvent : MonoBehaviour {
         if (properties.ContainsKey(PropertySprite)) {
             gameObject.AddComponent<CharaAnimator>().Populate(properties[PropertySprite]);
         }
+        GetComponent<MapEvent>().Passable = false;
     }
 
     // checks if the given location is passable for this character

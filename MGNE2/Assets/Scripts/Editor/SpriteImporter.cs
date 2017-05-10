@@ -49,6 +49,12 @@ internal sealed class SpriteImporter : AssetPostprocessor {
                     }
                 }
                 importer.spritesheet = spritesheet.ToArray();
+            } else if (path.Contains("Events")) {
+                TextureImporterSettings texSettings = new TextureImporterSettings();
+                importer.ReadTextureSettings(texSettings);
+                texSettings.spriteAlignment = (int)SpriteAlignment.Custom;
+                importer.SetTextureSettings(texSettings);
+                importer.spritePivot = new Vector2(0.0f, 0.0f);
             } else {
                 importer.spriteImportMode = SpriteImportMode.Single;
             }

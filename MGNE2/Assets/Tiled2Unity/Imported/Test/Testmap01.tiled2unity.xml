@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 5/8/2017 11:22:59 PM-->
+<!--Last exported: 5/10/2017 12:45:07 AM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="lower2" />
   <AssignMaterial mesh="mesh_0002" material="lower2" />
@@ -81,6 +81,11 @@
         <Property name="onInteract" value="speakLine('Adding a zillion items...')&#xA;addItem('TestItem 1')&#xA;addItem('TestItem 2')&#xA;addItem('TestItem 3')&#xA;addItem('TestItem 4')&#xA;addItem('TestItem 5')&#xA;addItem('TestItem 6')&#xA;addItem('TestItem 7')&#xA;addItem('TestItem 8')&#xA;addItem('TestItem 9')&#xA;addItem('TestItem 10')" />
         <Property name="sprite" value="HumanM" />
         <RectangleObjectComponent tmx-object-id="51" tmx-object-name="InventoryTest" tmx-object-type="Character" tmx-object-x="256" tmx-object-y="16" tmx-object-width="16" tmx-object-height="16" tmx-object-rotation="0" />
+        <BoxCollider2D width="16" height="16" />
+      </GameObject>
+      <GameObject name="chest" x="240" y="-16" rotation="0">
+        <Property name="item" value="ItemPotionCure" />
+        <RectangleObjectComponent tmx-object-id="56" tmx-object-name="chest" tmx-object-type="Chest" tmx-object-x="240" tmx-object-y="16" tmx-object-width="16" tmx-object-height="16" tmx-object-rotation="0" />
         <BoxCollider2D width="16" height="16" />
       </GameObject>
       <GameObject name="TestEvent" x="144" y="-80" rotation="0">

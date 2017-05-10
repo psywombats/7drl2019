@@ -21,7 +21,9 @@ public class TiledImporter : ICustomTiledImporter {
     }
 
     protected void Populate<T>(GameObject prefab, IDictionary<string, string> props) where T : TiledInstantiated {
-        prefab.AddComponent<T>();
+        if (prefab.GetComponent<T>() == null) {
+            prefab.AddComponent<T>();
+        }
         T component = prefab.GetComponent<T>();
         component.Populate(props);
     }

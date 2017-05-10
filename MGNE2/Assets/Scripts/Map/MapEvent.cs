@@ -24,14 +24,11 @@ public class MapEvent : TiledInstantiated {
     // Editor properties
 
     public IntVector2 Position;
+    public bool Passable = true;
 
     public string LuaCondition;
-
-    [TextArea(3, 6)]
-    public string LuaOnInteract;
-
-    [TextArea(3, 6)]
-    public string LuaOnCollide;
+    [TextArea(3, 6)] public string LuaOnInteract;
+    [TextArea(3, 6)] public string LuaOnCollide;
 
     // Properties
 
@@ -186,8 +183,7 @@ public class MapEvent : TiledInstantiated {
     }
 
     public bool IsPassableBy(CharaEvent chara) {
-        // right now all non-chara events are passable
-        return GetComponent<CharaEvent>() == null || !SwitchEnabled;
+        return Passable || !SwitchEnabled;
     }
 
     public bool ContainsPosition(IntVector2 loc) {
