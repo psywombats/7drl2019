@@ -120,6 +120,7 @@
     <Compile Include="Assets\Scripts\Serialization\MemoryPopulater.cs" />
     <Compile Include="Assets\Scripts\Serialization\SystemMemory.cs" />
     <Compile Include="Assets\Scripts\UI\Textbox.cs" />
+    <Compile Include="Assets\Scripts\UI\UISprite.cs" />
     <Compile Include="Assets\Scripts\Util\CoUtils.cs" />
     <Compile Include="Assets\Scripts\Util\Dispatch.cs" />
     <Compile Include="Assets\Scripts\Util\EnumExtensions.cs" />
