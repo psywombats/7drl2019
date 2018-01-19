@@ -143,25 +143,24 @@ internal sealed class SpriteImporter : AssetPostprocessor {
 
             AnimatorOverrideController controller = new AnimatorOverrideController();
             controller.runtimeAnimatorController = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>("Assets/Resources/Animations/Charas/CharaController.controller");
-            List<AnimationClipPair> clips = new List<AnimationClipPair>();
+            List<KeyValuePair<AnimationClip, AnimationClip>> clips = new List<KeyValuePair<AnimationClip, AnimationClip>>();
             string facingsDir = "Assets/Resources/Animations/Charas/Facings/";
             for (int i = 0; i < 4; i += 1) {
-                AnimationClipPair clip = new AnimationClipPair();
-                clip.originalClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + "Placeholder/Placeholder" + FacingNames[i] + ".anim");
-                clip.overrideClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + name + "/" + name + FacingNames[i] + ".anim");
-                clips.Add(clip);
+                AnimationClip original = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + "Placeholder/Placeholder" + FacingNames[i] + ".anim");
+                AnimationClip newClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + name + "/" + name + FacingNames[i] + ".anim");
+                clips.Add(new KeyValuePair<AnimationClip, AnimationClip>(original, newClip));
             }
             for (int i = 0; i < 4; i += 1) {
-                AnimationClipPair clip = new AnimationClipPair();
-                clip.originalClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + "Placeholder/Placeholder" + FacingNames[i] + "Idle.anim");
+                AnimationClip newClip;
+                AnimationClip original = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + "Placeholder/Placeholder" + FacingNames[i] + "Idle.anim");
                 if (stepCount > 2) {
-                    clip.overrideClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + name + "/" + name + FacingNames[i] + "Idle.anim");
+                    newClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + name + "/" + name + FacingNames[i] + "Idle.anim");
                 } else {
-                    clip.overrideClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + name + "/" + name + FacingNames[i] + ".anim");
+                    newClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + name + "/" + name + FacingNames[i] + ".anim");
                 }
-                clips.Add(clip);
+                clips.Add(new KeyValuePair<AnimationClip, AnimationClip>(original, newClip));
             }
-            controller.clips = clips.ToArray();
+            controller.ApplyOverrides(clips);
             string overridePath = "Assets/Resources/Animations/Charas/Instances/" + name + ".overrideController";
             AssetDatabase.DeleteAsset(overridePath);
             AssetDatabase.CreateAsset(controller, overridePath);
