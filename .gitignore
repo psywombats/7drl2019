@@ -14,10 +14,10 @@ Thumbs.db
 
 # Unity garbage #
 #################
-MGNE2/Library/*
-MGNE2/Temp/*
+erebus/Library/*
+erebus/Temp/*
 
 # Visual Studio garbage #
 #########################
 *.sln
-MGNE2/.vs/*
+erebus/.vs/*
