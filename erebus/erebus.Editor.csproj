@@ -160,6 +160,7 @@
     <None Include="Assets\Shaders\BitShader.shader" />
     <None Include="Assets\Shaders\ColorEffectShader.shader" />
     <None Include="Assets\Shaders\GlitchShader.shader" />
+    <None Include="Assets\Shaders\PulseCenterShader.shader" />
     <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
     <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\BlendModesOverlay.shader" />
     <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\BlurEffectConeTaps.shader" />

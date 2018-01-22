@@ -94,6 +94,7 @@
         [MaterialToggle] _SColorStatic("Scanline static", Range(0, 1)) = 0.0
         
         [Space(25)][MaterialToggle] _CClampEnabled(" === Color Channel Clamping === ", Float) = 0.0
+		_CClampBrightness("Pre-brightness boost",  Range(-1, 1)) = 0.0
         [MaterialToggle] _CClampBlack("Always include true black/white", Float) = 1.0
         _CClampR("R shades allowed",  Range(0, 1)) = 1.0
         _CClampG("G shades allowed",  Range(0, 1)) = 1.0
@@ -104,6 +105,12 @@
         _CClampJitterR("R colors jitter power",  Range(0, 1)) = 0.0
         _CClampJitterG("G colors jitter power",  Range(0, 1)) = 0.0
         _CClampJitterB("B colors jitter power",  Range(0, 1)) = 0.0
+
+		[Space(25)][MaterialToggle] _PEdgeEnabled(" === Pulsing Edge === ", Float) = 0.0
+		_PEdgeDuration("Duration",  Range(0.1, 10)) = 0.5
+        _PEdgeDepthMin("Depth Min",  Range(0, 1)) = 0.0
+		_PEdgeDepthMax("Depth Max",  Range(0, 1)) = 0.5
+		_PEdgePower("Power",  Range(0, 1)) = 1.0
     }
     
 	SubShader {
@@ -226,6 +233,13 @@
             float _CClampJitterR;
             float _CClampJitterG;
             float _CClampJitterB;
+			float _CClampBrightness;
+
+			float _PEdgeEnabled;
+			float _PEdgeDepthMin;
+			float _PEdgeDuration;
+			float _PEdgeDepthMax;
+			float _PEdgePower;
             
 			#pragma vertex vert
 			#pragma fragment frag
@@ -423,7 +437,7 @@
 
 #if ETC1_EXTERNAL_ALPHA
 				// get the color from an external texture (usecase: Alpha support for ETC1 on android)
-				color.a = tex2D (_AlphaTex, uv).r;
+				//color.a = tex2D (_AlphaTex, uv).r;
 #endif //ETC1_EXTERNAL_ALPHA
 
 				return color;
@@ -658,6 +672,21 @@
                         }
                     }
                 }
+
+				// pulsing edge
+				if (_PEdgeEnabled > 0.0) {
+					float dx = xy[0] - .5;
+					float dy = xy[1] - .5;
+					float dist = dx * dx + dy * dy;
+					float offset = dist + _PEdgeDepthMin + (_PEdgeDepthMax - _PEdgeDepthMin) * ((.5 + sin(t / _PEdgeDuration)) / 2.0);
+					offset = offset * _PEdgePower;
+					c[0] -= offset;
+					c[1] -= offset;
+					c[2] -= offset;
+					c[0] = clamp(c[0], 0.0, 1.0);
+					c[1] = clamp(c[1], 0.0, 1.0);
+					c[2] = clamp(c[2], 0.0, 1.0);
+				}
                 
                 // scanline recolorations
                 if (_SColorEnabled > 0.0 && (!_SColorExcludeAlpha || (c.a > 0.01))) {
@@ -704,9 +733,9 @@
                     float shadesR = _CClampR + jitter(cubicEase(_CClampJitterR, 1.0), fixed2(t, 10.0));
                     float shadesG = _CClampG + jitter(cubicEase(_CClampJitterG, 1.0), fixed2(t, 20.0));
                     float shadesB = _CClampB + jitter(cubicEase(_CClampJitterB, 1.0), fixed2(t, 30.0));
-                    c[0] = clampShade(c[0], shadesR, _CClampDither > 0.0, _CClampDitherVary > 0.0, seed);
-                    c[1] = clampShade(c[1], shadesG, _CClampDither > 0.0, _CClampDitherVary > 0.0, seed);
-                    c[2] = clampShade(c[2], shadesB, _CClampDither > 0.0, _CClampDitherVary > 0.0, seed);
+                    c[0] = clampShade(c[0] + _CClampBrightness, shadesR, _CClampDither > 0.0, _CClampDitherVary > 0.0, seed);
+                    c[1] = clampShade(c[1] + _CClampBrightness, shadesG, _CClampDither > 0.0, _CClampDitherVary > 0.0, seed);
+                    c[2] = clampShade(c[2] + _CClampBrightness, shadesB, _CClampDither > 0.0, _CClampDitherVary > 0.0, seed);
                 }
                 
                 // static frames
