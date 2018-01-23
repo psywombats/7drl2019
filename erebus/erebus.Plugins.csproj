@@ -459,6 +459,7 @@
     <None Include="Assets\Standard Assets\Effects\ToonShading\Shaders\ToonLitOutline.shader" />
     <None Include="Assets\Tiled2Unity\Imported\Test\Testmap01.tiled2unity.xml" />
     <None Include="Assets\Tiled2Unity\Imported\Test\Testmap02.tiled2unity.xml" />
+    <None Include="Assets\Tiled2Unity\Imported\Test\battle_mockup.tiled2unity.xml" />
     <None Include="Assets\Tiled2Unity\Imported\_ReadMe.txt" />
     <None Include="Assets\Tiled2Unity\License.txt" />
     <None Include="Assets\Tiled2Unity\Materials\_ReadMe.txt" />
