@@ -142,6 +142,7 @@
     <None Include="Assets\Shaders\AutomataShader.shader" />
     <None Include="Assets\Shaders\BitShader.shader" />
     <None Include="Assets\Shaders\ColorEffectShader.shader" />
+    <None Include="Assets\Shaders\DungeonTexture.shader" />
     <None Include="Assets\Shaders\GlitchShader.shader" />
     <None Include="Assets\Shaders\PulseCenterShader.shader" />
     <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
