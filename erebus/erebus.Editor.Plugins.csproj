@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{F713AE90-6220-75E5-0EFC-97AFB8AD6823}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AssemblyName>Assembly-CSharp-Editor-firstpass.dll</AssemblyName>
+    <AssemblyName>Assembly-CSharp-Editor-firstpass</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
@@ -139,12 +139,13 @@
     <Compile Include="Assets\Standard Assets\Editor\ImageEffects\VignetteAndChromaticAberrationEditor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Shaders\AutomataShader.shader" />
-    <None Include="Assets\Shaders\BitShader.shader" />
-    <None Include="Assets\Shaders\ColorEffectShader.shader" />
-    <None Include="Assets\Shaders\DungeonTexture.shader" />
-    <None Include="Assets\Shaders\GlitchShader.shader" />
-    <None Include="Assets\Shaders\PulseCenterShader.shader" />
+    <None Include="Assets\Resources\Shaders\AutomataShader.shader" />
+    <None Include="Assets\Resources\Shaders\BitShader.shader" />
+    <None Include="Assets\Resources\Shaders\ColorEffectShader.shader" />
+    <None Include="Assets\Resources\Shaders\DungeonDeferred.shader" />
+    <None Include="Assets\Resources\Shaders\DungeonTexture.shader" />
+    <None Include="Assets\Resources\Shaders\GlitchShader.shader" />
+    <None Include="Assets\Resources\Shaders\PulseCenterShader.shader" />
     <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
     <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\BlendModesOverlay.shader" />
     <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\BlurEffectConeTaps.shader" />
@@ -222,6 +223,7 @@
     <None Include="Assets\Standard Assets\Effects\ToonShading\Shaders\ToonBasicOutline.shader" />
     <None Include="Assets\Standard Assets\Effects\ToonShading\Shaders\ToonLit.shader" />
     <None Include="Assets\Standard Assets\Effects\ToonShading\Shaders\ToonLitOutline.shader" />
+    <None Include="Assets\Tiled2Unity\Imported\Test\3D\corridor.tiled2unity.xml" />
     <None Include="Assets\Tiled2Unity\Imported\Test\Testmap01.tiled2unity.xml" />
     <None Include="Assets\Tiled2Unity\Imported\Test\Testmap02.tiled2unity.xml" />
     <None Include="Assets\Tiled2Unity\Imported\Test\battle_mockup.tiled2unity.xml" />

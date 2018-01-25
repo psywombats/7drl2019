@@ -11,6 +11,9 @@ public class TiledImporter : ICustomTiledImporter {
     virtual public void HandleCustomProperties(UnityEngine.GameObject prefab, IDictionary<string, string> props) {
         if (prefab.GetComponent<TiledMap>() != null) {
             Populate<Map>(prefab, props);
+            if (props["3d"] != null) {
+                Populate<Map3D>(prefab, props);
+            }
         } else if (prefab.GetComponent<RuntimeTmxObject>() != null) {
             Populate<MapEvent>(prefab, props);
         }

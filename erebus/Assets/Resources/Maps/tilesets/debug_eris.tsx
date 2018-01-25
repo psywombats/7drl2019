@@ -355,16 +355,19 @@
  </tile>
  <tile id="109" terrain=",8,,">
   <properties>
+   <property name="wall3d" value="93,77"/>
    <property name="x" value=""/>
   </properties>
  </tile>
  <tile id="110" terrain="8,8,,">
   <properties>
+   <property name="wall3d" value="94,78"/>
    <property name="x" value=""/>
   </properties>
  </tile>
  <tile id="111" terrain="8,,,">
   <properties>
+   <property name="wall3d" value="95,79"/>
    <property name="x" value=""/>
   </properties>
  </tile>
