@@ -8,24 +8,13 @@ using UnityEngine;
  * 3D map class for Tiled maps that get converted into dungeon crawl style scenes
  */
 [RequireComponent(typeof(TiledMap))]
-public class Map3D : TiledInstantiated {
+public class Layer3D : TiledInstantiated {
 
     public override void Populate(IDictionary<string, string> properties) {
-        TiledMap tiledMap = GetComponent<TiledMap>();
-        Map map = GetComponent<Map>();
-        for (int i = 0; i < tiledMap.NumLayers; i += 1) {
-            Layer layer = map.LayerAtIndex(i);
-            if (layer.properties[@"wall"] != null) {
-                BuildWallsForLayer((TileLayer)layer);
-            }
-        }
-    }
-
-    private void BuildWallsForLayer(TileLayer layer) {
-        TiledMap tiledMap = GetComponent<TiledMap>();
+        TiledMap tiledMap = transform.parent.GetComponentInParent<TiledMap>();
         for (int x = 0; x < tiledMap.NumTilesWide; x += 1) {
             for (int y = 0; y < tiledMap.NumTilesHigh; y += 1) {
-                TiledProperty wallSeqProperty = tiledMap.GetPropertyForTile("wall", layer, x, y);
+                TiledProperty wallSeqProperty = tiledMap.GetPropertyForTile("wall3d", GetComponent<TileLayer>(), x, y);
                 if (wallSeqProperty == null) {
                     continue;
                 }
@@ -34,17 +23,20 @@ public class Map3D : TiledInstantiated {
                 string[] splitSeq = wallSeq.Split(new Char[] { ',' });
 
                 List<int> tileIds = new List<int>();
-                int nativeTileId = layer.TerrainIds[x + y * tiledMap.NumTilesWide];
+                int nativeTileId = GetComponent<TileLayer>().TerrainIds[x + y * tiledMap.NumTilesWide];
                 foreach (string stringId in splitSeq) {
                     tileIds.Add(int.Parse(stringId));
                 }
 
                 LinkedTileset linkedTileset = tiledMap.GetTilesetForTileId(nativeTileId);
-                Material textureAtlas = Resources.Load<Material>("Materials/" + linkedTileset.tileset.name);
                 tileIds.Insert(0, nativeTileId - linkedTileset.firstGid);
-                
-                foreach (int tileId in tileIds) {
-
+                for (int z = 0; z < tileIds.Count; z += 1) {
+                    GameObject wallChunk = Instantiate<GameObject>(Resources.Load<GameObject>("Map3D/WallChunk"));
+                    wallChunk.transform.parent = gameObject.transform;
+                    Wall3D wall = wallChunk.GetComponent<Wall3D>();
+                    foreach (TileMeshRenderer side in wall.GetAllSides()) {
+                        side.AssignTileId(tiledMap, linkedTileset.tileset, tileIds[z]);
+                    }
                 }
             }
         }

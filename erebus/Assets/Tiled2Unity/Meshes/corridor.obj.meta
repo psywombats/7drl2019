@@ -6,7 +6,13 @@ ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
+    100002: mesh_0001
     400000: //RootNode
+    400002: mesh_0001
+    2300000: mesh_0001
+    3300000: mesh_0001
+    4300000: mesh_0001
+    11400000: mesh_0001
   materials:
     importMaterials: 0
     materialName: 0

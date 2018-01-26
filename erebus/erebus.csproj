@@ -119,7 +119,7 @@
     <Compile Include="Assets\Scripts\Map\CharaEvent.cs" />
     <Compile Include="Assets\Scripts\Map\EventAppearance.cs" />
     <Compile Include="Assets\Scripts\Map\Map.cs" />
-    <Compile Include="Assets\Scripts\Map\Map3D\Map3D.cs" />
+    <Compile Include="Assets\Scripts\Map\Map3D\Layer3D.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\TileMeshRenderer.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\Wall3D.cs" />
     <Compile Include="Assets\Scripts\Map\MapCamera.cs" />

@@ -11,7 +11,7 @@ namespace Tiled2Unity
         public void TsxImported(string tsxPath)
         {
             // hardcoded asset path? blah
-            string tilesetName = tsxPath.Substring(tsxPath.LastIndexOf('/') + 1, tsxPath.Length - tsxPath.LastIndexOf(".tsx") + 1);
+            string tilesetName = tsxPath.Substring(tsxPath.LastIndexOf('/') + 1, tsxPath.LastIndexOf(".tsx") - tsxPath.LastIndexOf('/') - 1);
             string assetPath = "Assets/Tiled2Unity/Tilesets/" + tilesetName + ".asset";
 
             Tileset tileset = ScriptableObject.CreateInstance<Tileset>();
