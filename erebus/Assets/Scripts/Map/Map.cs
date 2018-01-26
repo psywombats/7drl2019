@@ -72,6 +72,10 @@ public class Map : TiledInstantiated {
         return GetComponentsInChildren<ObjectLayer>()[0];
     }
 
+    public TileLayer TileLayerAtIndex(int layerIndex) {
+        return GetComponentsInChildren<TileLayer>()[layerIndex];
+    }
+
     public MapEvent GetEventNamed(string eventName) {
         foreach (ObjectLayer layer in GetComponentsInChildren<ObjectLayer>()) {
             foreach (MapEvent mapEvent in layer.GetComponentsInChildren<MapEvent>()) {

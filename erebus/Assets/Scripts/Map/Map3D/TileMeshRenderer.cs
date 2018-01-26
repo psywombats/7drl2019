@@ -7,6 +7,11 @@ using Tiled2Unity;
 public class TileMeshRenderer : MonoBehaviour {
 
     public void AssignTileId(TiledMap map, int tileId) {
+        LinkedTileset linkedTileset = map.GetTilesetForTileId(tileId);
+        Tileset tileset = linkedTileset.tileset;
 
+        int width = map.gameObject.GetComponent<Map>().WidthPx;
+        int realGid = tileId = linkedTileset.firstGid;
+        
     }
 }
