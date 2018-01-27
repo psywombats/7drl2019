@@ -10,8 +10,11 @@ public class TileMeshRenderer : MonoBehaviour {
         Material textureAtlas = Resources.Load<Material>("Materials/" + tileset.name);
         GetComponent<MeshRenderer>().material = textureAtlas;
 
+        int tilesetRows = textureAtlas.mainTexture.width / map.TileWidth;
+        
+        Mesh mesh = GetComponent<MeshFilter>().mesh;
         List<Vector2> uvs = new List<Vector2>();
-        GetComponent<MeshFilter>().mesh.GetUVs(0, uvs);
-        GetComponent<MeshFilter>().mesh.SetUVs(0, uvs);
+        mesh.GetUVs(tilesetRows, uvs);
+        mesh.SetUVs(0, uvs);
     }
 }
