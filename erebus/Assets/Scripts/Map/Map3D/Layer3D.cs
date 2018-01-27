@@ -33,6 +33,8 @@ public class Layer3D : TiledInstantiated {
                 for (int z = 0; z < tileIds.Count; z += 1) {
                     GameObject wallChunk = Instantiate<GameObject>(Resources.Load<GameObject>("Prefabs/Map3D/WallChunk"));
                     wallChunk.transform.parent = gameObject.transform;
+                    wallChunk.transform.position = new Vector3(x, y, z);
+
                     Wall3D wall = wallChunk.GetComponent<Wall3D>();
                     foreach (TileMeshRenderer side in wall.GetAllSides()) {
                         side.AssignTileId(tiledMap, linkedTileset.tileset, tileIds[z]);

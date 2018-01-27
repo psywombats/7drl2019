@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 1/27/2018 4:07:40 AM-->
+<!--Last exported: 1/27/2018 2:27:53 PM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="debug_eris" />
   <Prefab name="corridor" orientation="Orthogonal" staggerAxis="Y" staggerIndex="Odd" hexSideLength="0" numLayers="1" numTilesWide="20" numTilesHigh="15" tileWidth="16" tileHeight="16" exportScale="1" mapWidthInPixels="320" mapHeightInPixels="240" backgroundColor="#808080" resourcePath="Test/3D" sortingOrder="0">
