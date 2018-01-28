@@ -335,6 +335,7 @@
     <Compile Include="Assets\Plugins\MoonSharp\Interpreter\Tree\Statements\ReturnStatement.cs" />
     <Compile Include="Assets\Plugins\MoonSharp\Interpreter\Tree\Statements\ScopeBlockStatement.cs" />
     <Compile Include="Assets\Plugins\MoonSharp\Interpreter\Tree\Statements\WhileStatement.cs" />
+    <Compile Include="Assets\Plugins\ObjExporter.cs" />
     <Compile Include="Assets\Standard Assets\Effects\ImageEffects\Scripts\Antialiasing.cs" />
     <Compile Include="Assets\Standard Assets\Effects\ImageEffects\Scripts\Bloom.cs" />
     <Compile Include="Assets\Standard Assets\Effects\ImageEffects\Scripts\BloomAndFlares.cs" />

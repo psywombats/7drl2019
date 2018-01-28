@@ -11,17 +11,29 @@ public class TileMeshRenderer : MonoBehaviour {
         Material textureAtlas = AssetDatabase.LoadAssetAtPath<Material>("Assets/Tiled2Unity/Materials/" + tileset.name + ".mat");
         GetComponent<MeshRenderer>().material = textureAtlas;
 
-        int tilesetRows = textureAtlas.mainTexture.width / map.TileWidth;
-        int tilesetCols = textureAtlas.mainTexture.height / map.TileHeight;
-        int col = tileId % tilesetRows;
-        int row = (tileId - col) / tilesetRows;
-        
-        Mesh mesh = GetComponent<MeshFilter>().mesh;
-        List<Vector2> uvs = new List<Vector2>();
-        uvs.Add(new Vector2((float)(row + 0) / (float)tilesetRows, (float)(col + 0) / (float)tilesetCols));
-        uvs.Add(new Vector2((float)(row + 1) / (float)tilesetRows, (float)(col + 1) / (float)tilesetCols));
-        uvs.Add(new Vector2((float)(row + 1) / (float)tilesetRows, (float)(col + 0) / (float)tilesetCols));
-        uvs.Add(new Vector2((float)(row + 0) / (float)tilesetRows, (float)(col + 0) / (float)tilesetCols));
-        mesh.SetUVs(0, uvs);
+        string meshPath = "Assets/Resources/Meshes/Map3D/" + tileset.name + tileId.ToString() + ".obj";
+        Object[] assets = AssetDatabase.LoadAllAssetsAtPath(meshPath);
+        Mesh tileMesh;
+        if (assets.Length == 0) {
+            tileMesh = Mesh.Instantiate<Mesh>(GetComponent<MeshFilter>().sharedMesh);
+            tileMesh.name = tileId.ToString();
+
+            int tilesetRows = textureAtlas.mainTexture.width / map.TileWidth;
+            int tilesetCols = textureAtlas.mainTexture.height / map.TileHeight;
+            int col = tileId % tilesetRows;
+            int row = (tileId - col) / tilesetRows;
+            
+            List<Vector2> uvs = new List<Vector2>();
+            uvs.Add(new Vector2((float)(row + 0) / (float)tilesetRows, (float)(col + 0) / (float)tilesetCols));
+            uvs.Add(new Vector2((float)(row + 1) / (float)tilesetRows, (float)(col + 1) / (float)tilesetCols));
+            uvs.Add(new Vector2((float)(row + 1) / (float)tilesetRows, (float)(col + 0) / (float)tilesetCols));
+            uvs.Add(new Vector2((float)(row + 0) / (float)tilesetRows, (float)(col + 0) / (float)tilesetCols));
+            tileMesh.SetUVs(0, uvs);
+            
+            ObjExporter.MeshToFile(GetComponent<MeshFilter>(), meshPath);
+        } else {
+            tileMesh = (Mesh)assets[0];
+        }
+        GetComponent<MeshFilter>().mesh = tileMesh;
     }
 }
