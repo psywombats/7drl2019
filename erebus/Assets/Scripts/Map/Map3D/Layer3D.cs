@@ -10,7 +10,12 @@ using UnityEngine;
 [RequireComponent(typeof(TiledMap))]
 public class Layer3D : TiledInstantiated {
 
+    public GameObject transformChild;
+
     public override void Populate(IDictionary<string, string> properties) {
+        transformChild = new GameObject("Wall3D");
+        transformChild.transform.parent = transform.parent;
+
         TiledMap tiledMap = transform.parent.GetComponentInParent<TiledMap>();
         for (int x = 0; x < tiledMap.NumTilesWide; x += 1) {
             for (int y = 0; y < tiledMap.NumTilesHigh; y += 1) {
@@ -32,9 +37,9 @@ public class Layer3D : TiledInstantiated {
                 tileIds.Insert(0, nativeTileId - linkedTileset.firstGid);
                 for (int z = 0; z < tileIds.Count; z += 1) {
                     GameObject wallChunk = Instantiate<GameObject>(Resources.Load<GameObject>("Prefabs/Map3D/WallChunk"));
-                    wallChunk.transform.parent = gameObject.transform;
-                    wallChunk.transform.position = new Vector3(x, y, z);
-
+                    wallChunk.transform.parent = transformChild.transform;
+                    wallChunk.transform.position = new Vector3(x, z, -1 * y - 1);
+                    
                     Wall3D wall = wallChunk.GetComponent<Wall3D>();
                     foreach (TileMeshRenderer side in wall.GetAllSides()) {
                         side.AssignTileId(tiledMap, linkedTileset.tileset, tileIds[z]);

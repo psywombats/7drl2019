@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 using Tiled2Unity;
 using System;
 
@@ -21,7 +22,11 @@ public class TiledImporter : ICustomTiledImporter {
     }
 
     public void CustomizePrefab(GameObject prefab) {
-        // nothing for now
+        foreach (Transform child in prefab.transform) {
+            if (child.gameObject.GetComponent<Layer3D>() != null) {
+                child.gameObject.transform.localEulerAngles = new Vector3(90.0f, 0.0f, 0.0f);
+            }
+        }
     }
 
     protected void Populate<T>(GameObject prefab, IDictionary<string, string> props) where T : TiledInstantiated {

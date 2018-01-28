@@ -160,6 +160,7 @@
     <None Include="Assets\Resources\Shaders\AutomataShader.shader" />
     <None Include="Assets\Resources\Shaders\BitShader.shader" />
     <None Include="Assets\Resources\Shaders\ColorEffectShader.shader" />
+    <None Include="Assets\Resources\Shaders\DiffuseDepthSprite.shader" />
     <None Include="Assets\Resources\Shaders\DungeonDeferred.shader" />
     <None Include="Assets\Resources\Shaders\DungeonTexture.shader" />
     <None Include="Assets\Resources\Shaders\GlitchShader.shader" />

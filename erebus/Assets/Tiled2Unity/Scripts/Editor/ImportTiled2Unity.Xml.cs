@@ -108,6 +108,9 @@ namespace Tiled2Unity
                 keyColor = ImportUtils.GetAttributeAsColor(xml, "alphaColorKey");
                 shaderName += " Color Key";
             }
+            
+            // HAHA PSYCHE we're overriding this for erebus
+            shaderName = "Erebus/DiffuseDepthCutout";
 
             // Try creating the material with the right shader. Fall back to the built-in Sprites/Default shader if there's a problem.
             UnityEngine.Material material = null;

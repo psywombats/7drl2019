@@ -345,6 +345,7 @@
  </tile>
  <tile id="107" terrain="7,7,,">
   <properties>
+   <property name="wall3d" value="91,75"/>
    <property name="x" value=""/>
   </properties>
  </tile>
