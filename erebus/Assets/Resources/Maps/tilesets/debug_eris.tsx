@@ -195,16 +195,19 @@
  </tile>
  <tile id="77" terrain=",,,8">
   <properties>
+   <property name="prefab" value="WallSideLight"/>
    <property name="x" value=""/>
   </properties>
  </tile>
  <tile id="78" terrain=",,8,8">
   <properties>
+   <property name="prefab" value="WallSideLight"/>
    <property name="x" value=""/>
   </properties>
  </tile>
  <tile id="79" terrain=",,8,">
   <properties>
+   <property name="prefab" value="WallSideLight"/>
    <property name="x" value=""/>
   </properties>
  </tile>
@@ -552,6 +555,16 @@
    <property name="x" value=""/>
   </properties>
  </tile>
+ <tile id="154">
+  <properties>
+   <property name="prefab" value="WallSideLight"/>
+  </properties>
+ </tile>
+ <tile id="155">
+  <properties>
+   <property name="prefab" value="WallSideLight"/>
+  </properties>
+ </tile>
  <tile id="157" terrain="3,5,3,5"/>
  <tile id="158" terrain="5,5,5,5"/>
  <tile id="159" terrain="5,3,5,3"/>
@@ -626,6 +639,16 @@
  <tile id="184" terrain="6,,,">
   <properties>
    <property name="x" value=""/>
+  </properties>
+ </tile>
+ <tile id="186">
+  <properties>
+   <property name="wall3d" value="170,154"/>
+  </properties>
+ </tile>
+ <tile id="187">
+  <properties>
+   <property name="wall3d" value="171,155"/>
   </properties>
  </tile>
  <tile id="222">

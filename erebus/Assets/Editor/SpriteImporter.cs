@@ -22,11 +22,13 @@ internal sealed class SpriteImporter : AssetPostprocessor {
         string path = assetPath;
         string name = NameFromPath(path);
 
-        if (path.Contains("Sprites") || path.Contains("UI")) {
+        if (path.Contains("Sprites") || path.Contains("UI") || path.Contains("tilesets")) {
             TextureImporter importer = (TextureImporter)assetImporter;
             importer.filterMode = FilterMode.Point;
             importer.textureCompression = TextureImporterCompression.Uncompressed;
-            importer.spritePixelsPerUnit = 16;
+            if (path.Contains("Sprites")) {
+                importer.spritePixelsPerUnit = 16;
+            }
             importer.textureType = TextureImporterType.Sprite;
             if (path.Contains("Charas")) {
                 IntVector2 textureSize = GetPreprocessedImageSize();

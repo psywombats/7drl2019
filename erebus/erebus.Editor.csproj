@@ -135,6 +135,7 @@
     <Compile Include="Assets\Editor\ClipInfo.cs" />
     <Compile Include="Assets\Editor\FontImporter.cs" />
     <Compile Include="Assets\Editor\GameEventImporter.cs" />
+    <Compile Include="Assets\Editor\InstanceMultiControllerEditor.cs" />
     <Compile Include="Assets\Editor\MapCameraEditor.cs" />
     <Compile Include="Assets\Editor\SpriteImporter.cs" />
     <Compile Include="Assets\Editor\TiledImporter.cs" />

@@ -25,6 +25,8 @@ public class TiledImporter : ICustomTiledImporter {
         foreach (Transform child in prefab.transform) {
             if (child.gameObject.GetComponent<Layer3D>() != null) {
                 child.gameObject.transform.localEulerAngles = new Vector3(90.0f, 0.0f, 0.0f);
+                Vector3 oldPosition = child.gameObject.transform.position;
+                child.gameObject.transform.position = new Vector3(oldPosition.x, child.GetComponent<Layer3D>().Z, oldPosition.z);
             }
         }
     }
