@@ -1,45 +1,21 @@
 fileFormatVersion: 2
-guid: 91132f0537866b640afe031d83981016
-timeCreated: 1517221228
+guid: b2f42cf59b5a51a4e8e21b4aed9b528b
+timeCreated: 1517217662
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: AlexNorthLeft
-    21300002: AlexNorthCenter
-    21300004: AlexNorthRight
-    21300006: AlexEastLeft
-    21300008: AlexEastCenter
-    21300010: AlexEastRight
-    21300012: AlexSouthLeft
-    21300014: AlexSouthCenter
-    21300016: AlexSouthRight
-    21300018: AlexWestLeft
-    21300020: AlexWestCenter
-    21300022: AlexWestRight
-    21300024: AlexaNorthLeft
-    21300026: AlexaNorthCenter
-    21300028: AlexaNorthRight
-    21300030: AlexaEastLeft
-    21300032: AlexaEastCenter
-    21300034: AlexaEastRight
-    21300036: AlexaSouthLeft
-    21300038: AlexaSouthCenter
-    21300040: AlexaSouthRight
-    21300042: AlexaWestLeft
-    21300044: AlexaWestCenter
-    21300046: AlexaWestRight
-    21300048: AlexNorthaLeft
-    21300050: AlexNorthaCenter
-    21300052: AlexNorthaRight
-    21300054: AlexEastaLeft
-    21300056: AlexEastaCenter
-    21300058: AlexEastaRight
-    21300060: AlexSouthaLeft
-    21300062: AlexSouthaCenter
-    21300064: AlexSouthaRight
-    21300066: AlexWestaLeft
-    21300068: AlexWestaCenter
-    21300070: AlexWestaRight
+    21300000: NaomiWestLeft
+    21300002: NaomiWestCenter
+    21300004: NaomiWestRight
+    21300006: NaomiSouthLeft
+    21300008: NaomiSouthCenter
+    21300010: NaomiSouthRight
+    21300012: NaomiEastLeft
+    21300014: NaomiEastCenter
+    21300016: NaomiEastRight
+    21300018: NaomiNorthLeft
+    21300020: NaomiNorthCenter
+    21300022: NaomiNorthRight
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -74,9 +50,9 @@ TextureImporter:
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
-  spritePivot: {x: 12, y: 8}
+  spritePivot: {x: 16, y: 8}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spritePixelsToUnits: 24
+  spritePixelsToUnits: 32
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
@@ -106,158 +82,158 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: AlexWestaLeft
+      name: NaomiNorthLeft
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 24
-        height: 32
+        width: 32
+        height: 48
       alignment: 9
-      pivot: {x: 0.16666667, y: 0}
+      pivot: {x: 0.25, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: AlexWestaCenter
+      name: NaomiNorthCenter
       rect:
         serializedVersion: 2
-        x: 24
+        x: 32
         y: 0
-        width: 24
-        height: 32
+        width: 32
+        height: 48
       alignment: 9
-      pivot: {x: 0.16666667, y: 0}
+      pivot: {x: 0.25, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: AlexWestaRight
+      name: NaomiNorthRight
       rect:
         serializedVersion: 2
-        x: 48
+        x: 64
         y: 0
-        width: 24
-        height: 32
+        width: 32
+        height: 48
       alignment: 9
-      pivot: {x: 0.16666667, y: 0}
+      pivot: {x: 0.25, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: AlexSouthaLeft
+      name: NaomiEastLeft
       rect:
         serializedVersion: 2
         x: 0
-        y: 32
-        width: 24
-        height: 32
+        y: 48
+        width: 32
+        height: 48
       alignment: 9
-      pivot: {x: 0.16666667, y: 0}
+      pivot: {x: 0.25, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: AlexSouthaCenter
+      name: NaomiEastCenter
       rect:
         serializedVersion: 2
-        x: 24
-        y: 32
-        width: 24
-        height: 32
+        x: 32
+        y: 48
+        width: 32
+        height: 48
       alignment: 9
-      pivot: {x: 0.16666667, y: 0}
+      pivot: {x: 0.25, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: AlexSouthaRight
+      name: NaomiEastRight
       rect:
         serializedVersion: 2
-        x: 48
-        y: 32
-        width: 24
-        height: 32
+        x: 64
+        y: 48
+        width: 32
+        height: 48
       alignment: 9
-      pivot: {x: 0.16666667, y: 0}
+      pivot: {x: 0.25, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: AlexEastaLeft
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 64
-        width: 24
-        height: 32
-      alignment: 9
-      pivot: {x: 0.16666667, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: -1
-    - serializedVersion: 2
-      name: AlexEastaCenter
-      rect:
-        serializedVersion: 2
-        x: 24
-        y: 64
-        width: 24
-        height: 32
-      alignment: 9
-      pivot: {x: 0.16666667, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: -1
-    - serializedVersion: 2
-      name: AlexEastaRight
-      rect:
-        serializedVersion: 2
-        x: 48
-        y: 64
-        width: 24
-        height: 32
-      alignment: 9
-      pivot: {x: 0.16666667, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: -1
-    - serializedVersion: 2
-      name: AlexNorthaLeft
+      name: NaomiWestLeft
       rect:
         serializedVersion: 2
         x: 0
         y: 96
-        width: 24
-        height: 32
+        width: 32
+        height: 48
       alignment: 9
-      pivot: {x: 0.16666667, y: 0}
+      pivot: {x: 0.25, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: AlexNorthaCenter
+      name: NaomiWestCenter
       rect:
         serializedVersion: 2
-        x: 24
+        x: 32
         y: 96
-        width: 24
-        height: 32
+        width: 32
+        height: 48
       alignment: 9
-      pivot: {x: 0.16666667, y: 0}
+      pivot: {x: 0.25, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: AlexNorthaRight
+      name: NaomiWestRight
       rect:
         serializedVersion: 2
-        x: 48
+        x: 64
         y: 96
-        width: 24
-        height: 32
+        width: 32
+        height: 48
       alignment: 9
-      pivot: {x: 0.16666667, y: 0}
+      pivot: {x: 0.25, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: NaomiSouthLeft
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 144
+        width: 32
+        height: 48
+      alignment: 9
+      pivot: {x: 0.25, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: NaomiSouthCenter
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 144
+        width: 32
+        height: 48
+      alignment: 9
+      pivot: {x: 0.25, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: NaomiSouthRight
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 144
+        width: 32
+        height: 48
+      alignment: 9
+      pivot: {x: 0.25, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1

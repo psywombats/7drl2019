@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
-public class MapCamera : MonoBehaviour {
+public class Map2DCamera : MonoBehaviour {
 
     public MapEvent Target;
     

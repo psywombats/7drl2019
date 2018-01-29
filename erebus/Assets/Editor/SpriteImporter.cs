@@ -11,11 +11,18 @@ internal sealed class SpriteImporter : AssetPostprocessor {
         { 1, "Center" },
         { 2, "Right" },
     };
-    private static readonly Dictionary<int, string> FacingNames = new Dictionary<int, string> {
-        { 0, "West" },
-        { 1, "South" },
-        { 2, "East" },
+    private static readonly Dictionary<int, string> FacingNames2K = new Dictionary<int, string> {
         { 3, "North" },
+        { 2, "East" },
+        { 1, "South" },
+        { 0, "West" },
+    };
+
+    private static readonly Dictionary<int, string> FacingNamesVX = new Dictionary<int, string> {
+        { 3, "South" },
+        { 2, "West" },
+        { 1, "East" },
+        { 0, "North" },
     };
 
     public void OnPreprocessTexture() {
@@ -35,17 +42,19 @@ internal sealed class SpriteImporter : AssetPostprocessor {
                 int stepCount = textureSize.x == 32 ? 2 : 3;
                 int charaWidth = textureSize.x / stepCount;
                 int charaHeight = textureSize.y / 4;
+                importer.spritePixelsPerUnit = charaWidth;
                 importer.spriteImportMode = SpriteImportMode.Multiple;
                 importer.spritePivot = new Vector2(charaWidth / 2, Map.TileHeightPx / 2);
                 importer.spritesheet = new SpriteMetaData[stepCount * 4];
                 List<SpriteMetaData> spritesheet = new List<SpriteMetaData>();
+                Dictionary<int, string> facingNames = charaWidth >= 32 ? FacingNamesVX : FacingNames2K;
                 for (int y = 0; y < 4; y += 1) {
                     for (int x = 0; x < stepCount; x += 1) {
                         SpriteMetaData data = importer.spritesheet[stepCount * y + x];
                         data.rect = new Rect(x * charaWidth, y * charaHeight, charaWidth, charaHeight);
                         data.alignment = (int)SpriteAlignment.Custom;
                         data.border = new Vector4(0, 0, 0, 0);
-                        data.name = name + FacingNames[y] + StepNames[x];
+                        data.name = name + facingNames[y] + StepNames[x];
                         data.pivot = new Vector2(((charaWidth - Map.TileWidthPx) / 2.0f) / (float)charaWidth, 0.0f);
                         spritesheet.Add(data);
                     }
@@ -90,22 +99,15 @@ internal sealed class SpriteImporter : AssetPostprocessor {
             info.loopTime = true;
 
             Object[] spriteObjects = AssetDatabase.LoadAllAssetRepresentationsAtPath(path);
-            List<Sprite> sprites = new List<Sprite>();
+            Dictionary<string, Sprite> sprites = new Dictionary<string, Sprite>();
             foreach (Object spriteObject in spriteObjects) {
-                sprites.Add((Sprite)spriteObject);
+                Sprite sprite = (Sprite)spriteObject;
+                sprites[sprite.name] = sprite;
             }
-            int stepCount = sprites.Count / 4;
-            for (int i = 0; i < 4; i += 1) {
 
-                // indices seem mangled here, not sure why
-                int off = 0;
-               
-                switch (i) {
-                    case 0: off = 3; break;
-                    case 1: off = 2; break;
-                    case 2: off = 0; break;
-                    case 3: off = 1; break;
-                }
+            int stepCount = sprites.Count / 4;
+
+            foreach(OrthoDir dir in System.Enum.GetValues(typeof(OrthoDir))) {
 
                 // first up - walking animation
                 AnimationClip anim = new AnimationClip();
@@ -113,19 +115,19 @@ internal sealed class SpriteImporter : AssetPostprocessor {
                 
                 List<ObjectReferenceKeyframe> keyframes = new List<ObjectReferenceKeyframe>();
                 if (stepCount > 2) {
-                    keyframes.Add(CreateKeyframe(0.00f, sprites[off * stepCount + 1]));
-                    keyframes.Add(CreateKeyframe(0.25f, sprites[off * stepCount + 0]));
-                    keyframes.Add(CreateKeyframe(0.50f, sprites[off * stepCount + 2]));
-                    keyframes.Add(CreateKeyframe(0.75f, sprites[off * stepCount + 0]));
-                    keyframes.Add(CreateKeyframe(1.00f, sprites[off * stepCount + 1]));
+                    keyframes.Add(CreateKeyframe(0.00f, sprites[name + dir.DirectionName() + StepNames[1]]));
+                    keyframes.Add(CreateKeyframe(0.25f, sprites[name + dir.DirectionName() + StepNames[0]]));
+                    keyframes.Add(CreateKeyframe(0.50f, sprites[name + dir.DirectionName() + StepNames[2]]));
+                    keyframes.Add(CreateKeyframe(0.75f, sprites[name + dir.DirectionName() + StepNames[0]]));
+                    keyframes.Add(CreateKeyframe(1.00f, sprites[name + dir.DirectionName() + StepNames[1]]));
                 } else {
-                    keyframes.Add(CreateKeyframe(0.00f, sprites[off * stepCount + 1]));
-                    keyframes.Add(CreateKeyframe(0.50f, sprites[off * stepCount + 0]));
-                    keyframes.Add(CreateKeyframe(1.00f, sprites[off * stepCount + 1]));
+                    keyframes.Add(CreateKeyframe(0.00f, sprites[name + dir.DirectionName() + StepNames[1]]));
+                    keyframes.Add(CreateKeyframe(0.50f, sprites[name + dir.DirectionName() + StepNames[0]]));
+                    keyframes.Add(CreateKeyframe(1.00f, sprites[name + dir.DirectionName() + StepNames[1]]));
                 }
 
                 AnimationUtility.SetObjectReferenceCurve(anim, binding, keyframes.ToArray());
-                string facingPath = "Assets/Resources/Animations/Charas/Facings/" + name + "/" + name + FacingNames[i] + ".anim";
+                string facingPath = "Assets/Resources/Animations/Charas/Facings/" + name + "/" + name + dir.DirectionName() + ".anim";
                 AssetDatabase.DeleteAsset(facingPath);
                 AssetDatabase.CreateAsset(anim, facingPath);
 
@@ -135,9 +137,9 @@ internal sealed class SpriteImporter : AssetPostprocessor {
                     AnimationUtility.SetAnimationClipSettings(anim, info);
 
                     keyframes = new List<ObjectReferenceKeyframe>();
-                    keyframes.Add(CreateKeyframe(0.00f, sprites[off * stepCount]));
+                    keyframes.Add(CreateKeyframe(0.00f, sprites[name + dir.DirectionName() + StepNames[0]]));
                     AnimationUtility.SetObjectReferenceCurve(anim, binding, keyframes.ToArray());
-                    facingPath = "Assets/Resources/Animations/Charas/Facings/" + name + "/" + name + FacingNames[i] + "Idle.anim";
+                    facingPath = "Assets/Resources/Animations/Charas/Facings/" + name + "/" + name + dir.DirectionName() + "Idle.anim";
                     AssetDatabase.DeleteAsset(facingPath);
                     AssetDatabase.CreateAsset(anim, facingPath);
                 }
@@ -147,18 +149,18 @@ internal sealed class SpriteImporter : AssetPostprocessor {
             controller.runtimeAnimatorController = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>("Assets/Resources/Animations/Charas/CharaController.controller");
             List<KeyValuePair<AnimationClip, AnimationClip>> clips = new List<KeyValuePair<AnimationClip, AnimationClip>>();
             string facingsDir = "Assets/Resources/Animations/Charas/Facings/";
-            for (int i = 0; i < 4; i += 1) {
-                AnimationClip original = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + "Placeholder/Placeholder" + FacingNames[i] + ".anim");
-                AnimationClip newClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + name + "/" + name + FacingNames[i] + ".anim");
+            foreach (OrthoDir dir in System.Enum.GetValues(typeof(OrthoDir))) {
+                AnimationClip original = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + "Placeholder/Placeholder" + dir.DirectionName() + ".anim");
+                AnimationClip newClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + name + "/" + name + dir.DirectionName() + ".anim");
                 clips.Add(new KeyValuePair<AnimationClip, AnimationClip>(original, newClip));
             }
-            for (int i = 0; i < 4; i += 1) {
+            foreach (OrthoDir dir in System.Enum.GetValues(typeof(OrthoDir))) {
                 AnimationClip newClip;
-                AnimationClip original = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + "Placeholder/Placeholder" + FacingNames[i] + "Idle.anim");
+                AnimationClip original = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + "Placeholder/Placeholder" + dir.DirectionName() + "Idle.anim");
                 if (stepCount > 2) {
-                    newClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + name + "/" + name + FacingNames[i] + "Idle.anim");
+                    newClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + name + "/" + name + dir.DirectionName() + "Idle.anim");
                 } else {
-                    newClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + name + "/" + name + FacingNames[i] + ".anim");
+                    newClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(facingsDir + name + "/" + name + dir.DirectionName() + ".anim");
                 }
                 clips.Add(new KeyValuePair<AnimationClip, AnimationClip>(original, newClip));
             }

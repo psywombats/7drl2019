@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(MapCamera))]
+[CustomEditor(typeof(Map2DCamera))]
 public class MapCameraEditor : Editor {
 
     public override void OnInspectorGUI() {
         DrawDefaultInspector();
 
-        MapCamera camera = (MapCamera)target;
+        Map2DCamera camera = (Map2DCamera)target;
         if (GUILayout.Button("Attach and Center")) {
             AvatarEvent avatar = GameObject.FindObjectOfType<AvatarEvent>();
             if (avatar != null) {

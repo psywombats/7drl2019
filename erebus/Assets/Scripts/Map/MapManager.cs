@@ -30,11 +30,11 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
         }
     }
 
-    private MapCamera mapCamera;
-    public MapCamera Camera {
+    private Map2DCamera mapCamera;
+    public Map2DCamera Camera {
         get {
             if (mapCamera == null) {
-                mapCamera = FindObjectOfType<MapCamera>();
+                mapCamera = FindObjectOfType<Map2DCamera>();
             }
             return mapCamera;
         }
