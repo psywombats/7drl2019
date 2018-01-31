@@ -5,25 +5,31 @@ using UnityEngine;
 
 public class MapEvent2D : MapEvent {
 
-    public Vector2 PositionPx {
+    public Vector2 PositionPx2D {
         get { return new Vector2(gameObject.transform.position.x, gameObject.transform.position.y); }
         private set { gameObject.transform.position = new Vector3(value.x, value.y, gameObject.transform.position.z); }
     }
 
+    public override Vector3 CalculateOffsetPositionPx(OrthoDir dir) {
+        // likely incorrect given our new px/screen
+        return PositionPx + dir.Px2D() * Map.TileSizePx;
+    }
+
     protected override void SetScreenPositionToMatchTilePosition() {
-        Vector2 transform = Map.TileSizePx;
-        if (OrthoDir.East.X() != OrthoDir.East.PxX()) {
+        // this is probably not correct with our new screenspace measurements
+        Vector2 transform = new Vector2(Map.TileSizePx, Map.TileSizePx);
+        if (OrthoDir.East.X() != OrthoDir.East.Px2DX()) {
             transform.x = transform.x * -1;
         }
-        if (OrthoDir.North.Y() != OrthoDir.North.PxY()) {
+        if (OrthoDir.North.Y() != OrthoDir.North.Px2DY()) {
             transform.y = transform.y * -1;
         }
-        PositionPx = Vector2.Scale(Position, transform);
-        if (OrthoDir.East.X() != OrthoDir.East.PxX()) {
-            PositionPx = new Vector2(PositionPx.x - Map.TileWidthPx, PositionPx.y);
+        PositionPx2D = Vector2.Scale(Position, transform);
+        if (OrthoDir.East.X() != OrthoDir.East.Px2DX()) {
+            PositionPx2D = new Vector2(PositionPx.x - Map.TileSizePx, PositionPx.y);
         }
-        if (OrthoDir.North.Y() != OrthoDir.North.PxY()) {
-            PositionPx = new Vector2(PositionPx.x, PositionPx.y - Map.TileHeightPx);
+        if (OrthoDir.North.Y() != OrthoDir.North.Px2DY()) {
+            PositionPx2D = new Vector2(PositionPx.x, PositionPx.y - Map.TileSizePx);
         }
     }
 

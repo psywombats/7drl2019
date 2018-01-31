@@ -4,6 +4,10 @@ using Tiled2Unity;
 using UnityEngine;
 using System;
 
+/**
+ * For our purposes, a CharaEvent is anything that's going to be moving around the map
+ * or has a physical appearance. For parallel process or whatevers, they won't have this.
+ */
 [RequireComponent(typeof(MapEvent))]
 public class CharaEvent : MonoBehaviour {
 
@@ -13,13 +17,13 @@ public class CharaEvent : MonoBehaviour {
     private static readonly string PropertyFacing = "face";
 
     // Editor
-    public float PixelsPerSecond = 36.0f;
+    public float TilesPerSecond = 2.0f;
     public OrthoDir InitialFacing;
 
     // Public
     public Map Parent { get { return GetComponent<MapEvent>().Parent; } }
     public ObjectLayer Layer { get { return GetComponent<MapEvent>().Layer; } }
-    public Vector2 TargetPosition { get; set; }
+    public Vector3 TargetPositionPx { get; set; }
 
     private OrthoDir facing;
     public OrthoDir Facing {
@@ -35,10 +39,10 @@ public class CharaEvent : MonoBehaviour {
     public bool Tracking { get; private set; }
 
     // Private
-    private Vector2 movementSlop;
+    private Vector3 movementSlop;
 
     public void Start() {
-        movementSlop = new Vector2(0.0f, 0.0f);
+        movementSlop = new Vector3();
         Facing = InitialFacing;
     }
 
@@ -89,21 +93,23 @@ public class CharaEvent : MonoBehaviour {
         }
         Tracking = true;
 
-        MapEvent2D mapEvent = GetComponent<MapEvent2D>();
+        MapEvent mapEvent = GetComponent<MapEvent>();
         mapEvent.Position += dir.XY();
-        TargetPosition = mapEvent.PositionPx + Vector2.Scale(dir.PxXY(), Map.TileSizePx);
-        Facing = OrthoDirExtensions.DirectionOfPx(TargetPosition - mapEvent.PositionPx);
+        TargetPositionPx = mapEvent.CalculateOffsetPositionPx(dir);
+        Facing = dir;
 
         while (true) {
-            mapEvent.PositionPx = Vector2.MoveTowards((mapEvent.PositionPx + movementSlop), TargetPosition, PixelsPerSecond * Time.deltaTime);
-            movementSlop.Set(mapEvent.PositionPx.x - (float)Mathf.Floor(mapEvent.PositionPx.x), mapEvent.PositionPx.y - (float)Mathf.Floor(mapEvent.PositionPx.y));
+            mapEvent.PositionPx = Vector3.MoveTowards((mapEvent.PositionPx + movementSlop), TargetPositionPx, TilesPerSecond * Time.deltaTime);
+            movementSlop.Set   (mapEvent.PositionPx.x - (float)Mathf.Floor(mapEvent.PositionPx.x),
+                                mapEvent.PositionPx.y - (float)Mathf.Floor(mapEvent.PositionPx.y),
+                                mapEvent.PositionPx.z - (float)Mathf.Floor(mapEvent.PositionPx.z));
             mapEvent.PositionPx = mapEvent.PositionPx - movementSlop;
 
             if (Global.Instance().Maps.Camera.Target == GetComponent<MapEvent>()) {
                 Global.Instance().Maps.Camera.ManualUpdate();
             }
 
-            if (mapEvent.PositionPx == TargetPosition) {
+            if (mapEvent.PositionPx == TargetPositionPx) {
                 Tracking = false;
                 break;
             } else {

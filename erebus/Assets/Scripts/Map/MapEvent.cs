@@ -34,6 +34,11 @@ public abstract class MapEvent : TiledInstantiated {
 
     public LuaMapEvent LuaObject { get; private set; }
 
+    public Vector3 PositionPx {
+        get { return transform.localPosition; }
+        set { gameObject.transform.localPosition = PositionPx; }
+    }
+
     public Map Parent {
         get {
             GameObject parent = gameObject;
@@ -87,12 +92,19 @@ public abstract class MapEvent : TiledInstantiated {
         }
     }
 
+    // public abstract
+
+    // if we moved in this direction, where in screenspace would we end up?
+    public abstract Vector3 CalculateOffsetPositionPx(OrthoDir dir);
+
+    // public
+
     public override void Populate(IDictionary<string, string> properties) {
         gameObject.AddComponent<Dispatch>();
         Position = new IntVector2(0, 0);
         RectangleObject rect = GetComponent<RectangleObject>();
         if (rect != null) {
-            Position.Set((int)rect.TmxPosition.x / Map.TileWidthPx, (int)rect.TmxPosition.y / Map.TileHeightPx);
+            Position.Set((int)rect.TmxPosition.x / Map.TileSizePx, (int)rect.TmxPosition.y / Map.TileSizePx);
         }
 
         // lua junk
@@ -162,8 +174,8 @@ public abstract class MapEvent : TiledInstantiated {
         }
         IntVector2 pos1 = Position;
         IntVector2 pos2 = Position;
-        pos2.x += (int)((GetComponent<RectangleObject>().TmxSize.x / Map.TileWidthPx) - 1);
-        pos2.y += (int)((GetComponent<RectangleObject>().TmxSize.y / Map.TileHeightPx) - 1);
+        pos2.x += (int)((GetComponent<RectangleObject>().TmxSize.x / Map.TileSizePx) - 1);
+        pos2.y += (int)((GetComponent<RectangleObject>().TmxSize.y / Map.TileSizePx) - 1);
         return loc.x >= pos1.x && loc.x <= pos2.x && loc.y >= pos1.y && loc.y <= pos2.y;
     }
 

@@ -12,17 +12,11 @@ public class Map : TiledInstantiated {
 
     private const string PropertyBGM = "bgm";
 
-    public static readonly IntVector2 TileSizePx = new IntVector2(16, 16);
-    public static int TileWidthPx { get { return (int)TileSizePx.x; } }
-    public static int TileHeightPx { get { return (int)TileSizePx.y; } }
+    public static readonly int TileSizePx = 16;
 
     public IntVector2 Size;
     public int Width { get { return Size.x; } }
     public int Height { get { return Size.y; } }
-
-    public IntVector2 SizePx;
-    public int WidthPx { get { return SizePx.x; } }
-    public int HeightPx { get { return SizePx.y; } }
 
     public string BGMKey { get; private set; }
     public String ResourcePath { get { return GetComponent<TiledMap>().ResourcePath; } }
@@ -39,7 +33,6 @@ public class Map : TiledInstantiated {
     public override void Populate(IDictionary<string, string> properties) {
         TiledMap tiled = GetComponent<TiledMap>();
         Size = new IntVector2(tiled.NumTilesWide, tiled.NumTilesHigh);
-        SizePx = IntVector2.Scale(Size, TileSizePx);
 
         if (properties.ContainsKey(PropertyBGM)) {
             BGMKey = properties[PropertyBGM];

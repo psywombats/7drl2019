@@ -14,7 +14,7 @@ public class Map2DCamera : MonoBehaviour {
     public void ManualUpdate() {
         Vector3 targetPos = Target.transform.position;
         Vector3 oldPos = GetComponent<Camera>().transform.position;
-        Vector3 newPos = new Vector3(targetPos.x + Map.TileWidthPx / 2 * OrthoDir.North.Y(), targetPos.y + Map.TileHeightPx / 2 * OrthoDir.East.X(), oldPos.z);
+        Vector3 newPos = new Vector3(targetPos.x + Map.TileSizePx / 2 * OrthoDir.North.Y(), targetPos.y + Map.TileSizePx / 2 * OrthoDir.East.X(), oldPos.z);
         GetComponent<Camera>().transform.position = newPos;
     }
 }
