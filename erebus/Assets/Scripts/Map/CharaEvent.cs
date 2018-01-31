@@ -38,11 +38,7 @@ public class CharaEvent : MonoBehaviour {
 
     public bool Tracking { get; private set; }
 
-    // Private
-    private Vector3 movementSlop;
-
     public void Start() {
-        movementSlop = new Vector3();
         Facing = InitialFacing;
     }
 
@@ -99,15 +95,12 @@ public class CharaEvent : MonoBehaviour {
         Facing = dir;
 
         while (true) {
-            mapEvent.PositionPx = Vector3.MoveTowards((mapEvent.PositionPx + movementSlop), TargetPositionPx, TilesPerSecond * Time.deltaTime);
-            movementSlop.Set   (mapEvent.PositionPx.x - (float)Mathf.Floor(mapEvent.PositionPx.x),
-                                mapEvent.PositionPx.y - (float)Mathf.Floor(mapEvent.PositionPx.y),
-                                mapEvent.PositionPx.z - (float)Mathf.Floor(mapEvent.PositionPx.z));
-            mapEvent.PositionPx = mapEvent.PositionPx - movementSlop;
+            mapEvent.PositionPx = Vector3.MoveTowards(mapEvent.PositionPx, TargetPositionPx, TilesPerSecond * Time.deltaTime);
 
-            if (Global.Instance().Maps.Camera.Target == GetComponent<MapEvent>()) {
-                Global.Instance().Maps.Camera.ManualUpdate();
-            }
+            // I think we actually want to handle this via prefabs now
+            //if (Global.Instance().Maps.Camera.Target == GetComponent<MapEvent>()) {
+            //    Global.Instance().Maps.Camera.ManualUpdate();
+            //}
 
             if (mapEvent.PositionPx == TargetPositionPx) {
                 Tracking = false;

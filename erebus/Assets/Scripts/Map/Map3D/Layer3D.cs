@@ -15,7 +15,7 @@ public class Layer3D : TiledInstantiated {
 
     public override void Populate(IDictionary<string, string> properties) {
         transformChild = new GameObject("Wall3D");
-        transformChild.transform.parent = transform.parent;
+        transformChild.transform.parent = transform;
 
         Z = properties.ContainsKey("z") ? float.Parse(properties["z"]) : 0.0f;
 
@@ -55,5 +55,7 @@ public class Layer3D : TiledInstantiated {
                 }
             }
         }
+
+        transformChild.transform.localEulerAngles = new Vector3(270.0f, 0.0f, 0.0f);
     }
 }

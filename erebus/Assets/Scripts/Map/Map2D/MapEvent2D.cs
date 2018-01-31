@@ -11,8 +11,7 @@ public class MapEvent2D : MapEvent {
     }
 
     public override Vector3 CalculateOffsetPositionPx(OrthoDir dir) {
-        // likely incorrect given our new px/screen
-        return PositionPx + dir.Px2D() * Map.TileSizePx;
+        throw new System.NotImplementedException();
     }
 
     protected override void SetScreenPositionToMatchTilePosition() {

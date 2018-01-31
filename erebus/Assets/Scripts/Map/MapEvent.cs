@@ -36,7 +36,7 @@ public abstract class MapEvent : TiledInstantiated {
 
     public Vector3 PositionPx {
         get { return transform.localPosition; }
-        set { gameObject.transform.localPosition = PositionPx; }
+        set { transform.localPosition = value; }
     }
 
     public Map Parent {

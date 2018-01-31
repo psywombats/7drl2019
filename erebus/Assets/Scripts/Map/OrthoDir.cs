@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum OrthoDir {
-    [OrthoDirAttribute("North",     0,  1,  0,      0,  0, -1,      0, -1,      0)] North,
-    [OrthoDirAttribute("East",      1,  0,  0,     -1,  0,  0,      1,  0,      1)] East,
-    [OrthoDirAttribute("South",     0, -1,  0,      0,  0,  1,      0,  1,      2)] South,
-    [OrthoDirAttribute("West",     -1,  0,  0,      1,  0, -1,     -1,  0,      3)] West,
+    [OrthoDirAttribute("North",     0,  1,  0,      0,  0,  1,      0, -1,      0)] North,
+    [OrthoDirAttribute("East",      1,  0,  0,      1,  0,  0,      1,  0,      1)] East,
+    [OrthoDirAttribute("South",     0, -1,  0,      0,  0, -1,      0,  1,      2)] South,
+    [OrthoDirAttribute("West",     -1,  0,  0,      -1, 0,  0,     -1,  0,      3)] West,
 }
 
 public class OrthoDirAttribute : Attribute {
@@ -94,7 +94,7 @@ public static class OrthoDirExtensions {
 
     public static int Px3DX(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().Px3DX; }
     public static int Px3DY(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().Px3DY; }
-    public static int Px3DZ(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().Px3DY; }
+    public static int Px3DZ(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().Px3DZ; }
     public static IntVector3 Px3D(this OrthoDir dir) { return new IntVector3(dir.Px3DX(), dir.Px3DY(), dir.Px3DZ()); }
 
     public static int Ordinal(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().Ordinal; }

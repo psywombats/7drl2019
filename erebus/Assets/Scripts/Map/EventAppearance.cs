@@ -6,8 +6,10 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class EventAppearance : MonoBehaviour {
 
+    public MapEvent ParentEvent;
+
     public void Start() {
-        GetComponent<Dispatch>().RegisterListener(MapEvent.EventEnabled, (object payload) => {
+        Parent().GetComponent<Dispatch>().RegisterListener(MapEvent.EventEnabled, (object payload) => {
             bool enabled = (bool)payload;
             GetComponent<SpriteRenderer>().enabled = enabled;
         });
@@ -26,5 +28,9 @@ public class EventAppearance : MonoBehaviour {
 
     public void SetAppearance(Sprite sprite) {
         GetComponent<SpriteRenderer>().sprite = sprite;
+    }
+
+    private GameObject Parent() {
+        return ParentEvent == null ? transform.parent.gameObject : ParentEvent.gameObject;
     }
 }

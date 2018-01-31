@@ -7,6 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class CharaAnimator : MonoBehaviour {
 
+    public MapEvent ParentEvent;
     public bool AlwaysAnimates = false;
 
     private Vector2 lastPosition;
@@ -14,8 +15,8 @@ public class CharaAnimator : MonoBehaviour {
     public void Start() {
         lastPosition = gameObject.transform.position;
 
-        if (GetComponent<CharaEvent>() != null) {
-            GetComponent<Dispatch>().RegisterListener(MapEvent.EventEnabled, (object payload) => {
+        if (Parent().GetComponent<CharaEvent>() != null) {
+            Parent().GetComponent<Dispatch>().RegisterListener(MapEvent.EventEnabled, (object payload) => {
                 bool enabled = (bool)payload;
                 GetComponent<SpriteRenderer>().enabled = enabled;
             });
@@ -23,13 +24,13 @@ public class CharaAnimator : MonoBehaviour {
     }
 
     public void Update() {
-        if (GetComponent<CharaEvent>() != null) {
-            Vector2 position = gameObject.transform.position;
+        if (Parent().GetComponent<CharaEvent>() != null) {
+            Vector2 position = Parent().transform.position;
             Vector2 delta = position - lastPosition;
 
-            bool stepping = AlwaysAnimates || delta.sqrMagnitude > 0 || GetComponent<CharaEvent>().Tracking;
+            bool stepping = AlwaysAnimates || delta.sqrMagnitude > 0 || Parent().GetComponent<CharaEvent>().Tracking;
             GetComponent<Animator>().SetBool("stepping", stepping);
-            GetComponent<Animator>().SetInteger("dir", GetComponent<CharaEvent>().Facing.Ordinal());
+            GetComponent<Animator>().SetInteger("dir", Parent().GetComponent<CharaEvent>().Facing.Ordinal());
 
             lastPosition = position;
         } else {
@@ -51,6 +52,10 @@ public class CharaAnimator : MonoBehaviour {
                 break;
             }
         }
+    }
+
+    private GameObject Parent() {
+        return ParentEvent == null ? transform.parent.gameObject : ParentEvent.gameObject;
     }
 
     private void UpdatePositionMemory() {
