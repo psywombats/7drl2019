@@ -89,7 +89,7 @@ public class CharaEvent : MonoBehaviour {
         }
         Tracking = true;
 
-        MapEvent mapEvent = GetComponent<MapEvent>();
+        MapEvent2D mapEvent = GetComponent<MapEvent2D>();
         mapEvent.Position += dir.XY();
         TargetPosition = mapEvent.PositionPx + Vector2.Scale(dir.PxXY(), Map.TileSizePx);
         Facing = OrthoDirExtensions.DirectionOfPx(TargetPosition - mapEvent.PositionPx);

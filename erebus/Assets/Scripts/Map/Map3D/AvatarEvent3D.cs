@@ -2,6 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Avatar3D : MonoBehaviour {
+public class AvatarEvent3D : AvatarEvent {
 
 }

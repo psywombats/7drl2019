@@ -119,9 +119,11 @@
     <Compile Include="Assets\Scripts\Map\EventAppearance.cs" />
     <Compile Include="Assets\Scripts\Map\Map.cs" />
     <Compile Include="Assets\Scripts\Map\Map2D\AvatarEvent.cs" />
+    <Compile Include="Assets\Scripts\Map\Map2D\MapEvent2D.cs" />
     <Compile Include="Assets\Scripts\Map\Map2DCamera.cs" />
-    <Compile Include="Assets\Scripts\Map\Map3D\Avatar3D.cs" />
+    <Compile Include="Assets\Scripts\Map\Map3D\AvatarEvent3D.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\Layer3D.cs" />
+    <Compile Include="Assets\Scripts\Map\Map3D\MapEvent3D.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\TileMeshRenderer.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\Wall3D.cs" />
     <Compile Include="Assets\Scripts\Map\MapEvent.cs" />
