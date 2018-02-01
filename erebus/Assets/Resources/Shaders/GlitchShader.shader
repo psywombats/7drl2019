@@ -114,20 +114,13 @@
     }
     
 	SubShader {
-		Tags { 
-			"Queue"="Transparent" 
-			"IgnoreProjector"="True" 
-			"RenderType"="Transparent" 
-			"PreviewType"="Plane"
-			"CanUseSpriteAtlas"="True"
-		}
-
-		Cull Off
-		Lighting Off
-		ZWrite Off
-		Blend One OneMinusSrcAlpha
 
 		Pass {
+            ZTest Always
+            Cull Off
+            ZWrite Off
+        
+        
             CGPROGRAM
             
             float _Elapsed;
@@ -245,7 +238,6 @@
 			#pragma fragment frag
 			#pragma target 3.0
 			#pragma multi_compile _ PIXELSNAP_ON
-			#pragma multi_compile _ ETC1_EXTERNAL_ALPHA
 			#include "UnityCG.cginc"
 			
 			struct appdata_t {
@@ -513,7 +505,7 @@
                 }
                 
                 fixed4 c = SampleSpriteTexture(xy) * IN.color;
-				c.rgb *= c.a;
+				//c.rgb *= c.a;
                 
                 // rectangular displacement
                 if (_RDispEnabled > 0.0) {
@@ -757,6 +749,7 @@
                     }
                 }
                 
+                c.a = 1.0f;
 				return c;
 			}
 		ENDCG
