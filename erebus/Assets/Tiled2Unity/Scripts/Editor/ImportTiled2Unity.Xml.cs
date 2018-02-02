@@ -110,7 +110,7 @@ namespace Tiled2Unity
             }
             
             // HAHA PSYCHE we're overriding this for erebus
-            shaderName = "Erebus/DiffuseDepthCutout";
+            shaderName = "Erebus/GlitchDiffuseShader";
 
             // Try creating the material with the right shader. Fall back to the built-in Sprites/Default shader if there's a problem.
             UnityEngine.Material material = null;

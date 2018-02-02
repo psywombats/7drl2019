@@ -1,9 +1,6 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-Shader "Erebus/DiffuseDepthCutout"
-{
-    Properties
-    {
+Shader "Erebus/DiffuseDepthCutout" {
+    
+    Properties {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
         _Color ("Tint", Color) = (1,1,1,1)
         [MaterialToggle] PixelSnap ("Pixel snap", Float) = 0
@@ -14,10 +11,9 @@ Shader "Erebus/DiffuseDepthCutout"
         _Cutoff("Base Alpha cutoff", Range(0,.9)) = .5 
     }
 
-    SubShader
-    {
-        Tags
-        {
+    SubShader {
+    
+        Tags {
             "Queue"="Transparent"
             "IgnoreProjector"="True"
             "RenderType"="TransparentCutout"
@@ -35,14 +31,12 @@ Shader "Erebus/DiffuseDepthCutout"
         #pragma multi_compile _ ETC1_EXTERNAL_ALPHA
         #include "UnitySprites.cginc"
 
-        struct Input
-        {
+        struct Input {
             float2 uv_MainTex;
             fixed4 color;
         };
 
-        void vert (inout appdata_full v, out Input o)
-        {
+        void vert(inout appdata_full v, out Input o) {
             v.vertex.xy *= _Flip.xy;
 
             #if defined(PIXELSNAP_ON)
@@ -53,8 +47,7 @@ Shader "Erebus/DiffuseDepthCutout"
             o.color = v.color * _Color * _RendererColor;
         }
 
-        void surf (Input IN, inout SurfaceOutput o)
-        {
+        void surf(Input IN, inout SurfaceOutput o) {
             fixed4 c = SampleSpriteTexture (IN.uv_MainTex) * IN.color;
             o.Albedo = c.rgb * c.a;
             o.Alpha = c.a;
