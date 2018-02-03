@@ -41,6 +41,13 @@ public class AudioManager : MonoBehaviour, MemoryPopulater {
         CurrentBGMKey = NoBGMKey;
     }
 
+    public void Update() {
+        PlayBGM("wavetest");
+        if (GetComponent<WaveSource>() == null) {
+            gameObject.AddComponent<WaveSource>();
+        }
+    }
+
     public void PlaySFX(string key) {
         AudioClip clip = sfx[key];
         StartCoroutine(PlaySFXRoutine(sfxSource, clip));
@@ -58,6 +65,14 @@ public class AudioManager : MonoBehaviour, MemoryPopulater {
                 bgmSource.Play();
             }
         }
+    }
+
+    public AudioClip BGMClip() {
+        return bgmSource.clip;
+    }
+
+    public WaveSource GetWaveSource() {
+        return GetComponent<WaveSource>();
     }
 
     public IEnumerator FadeOutRoutine(float durationSeconds) {

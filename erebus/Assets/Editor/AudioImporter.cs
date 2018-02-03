@@ -14,7 +14,7 @@ public class AudioImporter : AssetPostprocessor {
             importer.loadInBackground = false;
             settings.compressionFormat = AudioCompressionFormat.Vorbis;
             settings.quality = 1;
-            settings.loadType = AudioClipLoadType.Streaming;
+            //settings.loadType = AudioClipLoadType.Streaming;
         } else if (assetPath.ToLower().Contains("sfx")) {
             importer.preloadAudioData = true;
             importer.loadInBackground = true;
