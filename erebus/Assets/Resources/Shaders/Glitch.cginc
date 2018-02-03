@@ -1,10 +1,15 @@
 #ifndef __GLITCH_CGINC_INCLUDED__
+// Upgrade NOTE: excluded shader from DX11, OpenGL ES 2.0 because it uses unsized arrays
+#pragma exclude_renderers d3d11 gles
 #define __GLITCH_CGINC_INCLUDED__
 
 #include "UnityShaderVariables.cginc"
 #include "UnitySprites.cginc"
 
 float _Elapsed;
+
+float _Wave[512];
+int _WaveSamples;
 
 float _HDispEnabled;
 float _HDispChance;
@@ -110,6 +115,7 @@ float _CClampJitterB;
 float _CClampBrightness;
 
 float _PEdgeEnabled;
+float _PEdgeUseWaveSource;
 float _PEdgeDepthMin;
 float _PEdgeDuration;
 float _PEdgeDepthMax;
@@ -511,11 +517,19 @@ fixed4 glitchFragFromCoords(float2 xy, float4 pxXY) {
         float dx = sampleX - .5;
         float dy = sampleY - .5;
         float dist = dx * dx + dy * dy;
-        float offset = dist + _PEdgeDepthMin + (_PEdgeDepthMax - _PEdgeDepthMin) * ((.5 + sin(t / _PEdgeDuration)) / 2.0);
-        offset = offset * _PEdgePower;
-        c[0] -= offset;
-        c[1] -= offset;
-        c[2] -= offset;
+        float offset = dist;
+        if (_PEdgeUseWaveSource > 0.0) {
+            float angle = ((atan2(dy, dx) / (3.141)) + 1.0) / 2.0;
+            int sampleNumber = floor(angle * (float)_WaveSamples);
+            offset = ((_Wave[sampleNumber] + 1.0) / 2.0);
+        }
+        if (_PEdgeDuration > 0.0) {
+            //offset *= ((sin(t / cubicEase(_PEdgeDuration, 10.0)) + 1.0) / 2.0);
+        }
+        offset *= cubicEase(_PEdgePower, 1.0);
+        c[0] += offset;
+        c[1] += offset;
+        c[2] += offset;
         c[0] = clamp(c[0], 0.0, 1.0);
         c[1] = clamp(c[1], 0.0, 1.0);
         c[2] = clamp(c[2], 0.0, 1.0);

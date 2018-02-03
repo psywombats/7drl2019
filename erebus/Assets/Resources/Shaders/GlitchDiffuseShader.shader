@@ -114,7 +114,8 @@
         _CClampJitterB("B colors jitter power",  Range(0, 1)) = 0.0
 
         [Space(25)][MaterialToggle] _PEdgeEnabled(" === Pulsing Edge === ", Float) = 0.0
-        _PEdgeDuration("Duration",  Range(0.1, 10)) = 0.5
+        [MaterialToggle] _PEdgeUseWaveSource("Use wave source", Float) = 0.0
+        _PEdgeDuration("Duration",  Range(0, 10)) = 0.5
         _PEdgeDepthMin("Depth Min",  Range(0, 1)) = 0.0
         _PEdgeDepthMax("Depth Max",  Range(0, 1)) = 0.5
         _PEdgePower("Power",  Range(0, 1)) = 1.0

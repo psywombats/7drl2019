@@ -7,6 +7,7 @@ using UnityStandardAssets.ImageEffects;
 public class GlitchImageEffect : MonoBehaviour {
 
     public Material material;
+    public bool UseWaveSource;
 
     private float elapsedSeconds;
 
@@ -23,5 +24,9 @@ public class GlitchImageEffect : MonoBehaviour {
 
     private void AssignCommonShaderVariables() {
         material.SetFloat("_Elapsed", elapsedSeconds);
+        if (UseWaveSource && Global.Instance().Audio.GetWaveSource() != null) {
+            material.SetFloatArray("_Wave", Global.Instance().Audio.GetWaveSource().GetSamples());
+            material.SetInt("_WaveSamples", Global.Instance().Audio.GetWaveSource().GetSamples().Length);
+        }
     }
 }

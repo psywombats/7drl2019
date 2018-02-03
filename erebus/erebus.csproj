@@ -86,7 +86,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Audio\AudioKeyData.cs" />
     <Compile Include="Assets\Scripts\Audio\AudioManager.cs" />
-    <Compile Include="Assets\Scripts\Audio\BGMWaveSource.cs" />
+    <Compile Include="Assets\Scripts\Audio\WaveSource.cs" />
     <Compile Include="Assets\Scripts\Game\GGlobal.cs" />
     <Compile Include="Assets\Scripts\Game\GameLuaInterpretor.cs" />
     <Compile Include="Assets\Scripts\GameData\ItemCategory.cs" />

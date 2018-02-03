@@ -7,6 +7,7 @@ public class GlitchBehavior : MonoBehaviour {
     public Shader shader;
     
     private Material material;
+    public bool UseWaveSource;
     private float elapsedSeconds;
 
     public void Awake() {
@@ -25,5 +26,9 @@ public class GlitchBehavior : MonoBehaviour {
 
     private void AssignCommonShaderVariables() {
         material.SetFloat("_Elapsed", elapsedSeconds);
+        if (UseWaveSource && Global.Instance().Audio.GetWaveSource() != null) {
+            material.SetFloatArray("_Wave", Global.Instance().Audio.GetWaveSource().GetSamples());
+            material.SetInt("_WaveSamples", Global.Instance().Audio.GetWaveSource().GetSamples().Length);
+        }
     }
 }
