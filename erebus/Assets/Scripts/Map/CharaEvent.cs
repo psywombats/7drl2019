@@ -98,9 +98,9 @@ public class CharaEvent : MonoBehaviour {
             mapEvent.PositionPx = Vector3.MoveTowards(mapEvent.PositionPx, TargetPositionPx, TilesPerSecond * Time.deltaTime);
 
             // I think we actually want to handle this via prefabs now
-            //if (Global.Instance().Maps.Camera.Target == GetComponent<MapEvent>()) {
-            //    Global.Instance().Maps.Camera.ManualUpdate();
-            //}
+            if (Global.Instance().Maps.Camera.Target == GetComponent<MapEvent>()) {
+                Global.Instance().Maps.Camera.ManualUpdate();
+            }
 
             if (mapEvent.PositionPx == TargetPositionPx) {
                 Tracking = false;

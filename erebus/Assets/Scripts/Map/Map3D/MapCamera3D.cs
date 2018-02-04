@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Map3DCamera : MonoBehaviour {
+public class MapCamera3D : MapCamera {
 
     public bool FixedZ;
 
@@ -12,7 +12,8 @@ public class Map3DCamera : MonoBehaviour {
         lastFixedZ = transform.position.z;
     }
 
-    public void Update() {
+    public override void ManualUpdate() {
+        base.ManualUpdate();
         if (FixedZ) {
             transform.position = new Vector3(transform.position.x, transform.position.y, lastFixedZ);
         }

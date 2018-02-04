@@ -120,14 +120,15 @@
     <Compile Include="Assets\Scripts\Map\EventAppearance.cs" />
     <Compile Include="Assets\Scripts\Map\Map.cs" />
     <Compile Include="Assets\Scripts\Map\Map2D\AvatarEvent.cs" />
-    <Compile Include="Assets\Scripts\Map\Map2D\Map2DCamera.cs" />
+    <Compile Include="Assets\Scripts\Map\Map2D\MapCamera2D.cs" />
     <Compile Include="Assets\Scripts\Map\Map2D\MapEvent2D.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\AvatarEvent3D.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\Layer3D.cs" />
-    <Compile Include="Assets\Scripts\Map\Map3D\Map3DCamera.cs" />
+    <Compile Include="Assets\Scripts\Map\Map3D\MapCamera3D.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\MapEvent3D.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\TileMeshRenderer.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\Wall3D.cs" />
+    <Compile Include="Assets\Scripts\Map\MapCamera.cs" />
     <Compile Include="Assets\Scripts\Map\MapEvent.cs" />
     <Compile Include="Assets\Scripts\Map\MapManager.cs" />
     <Compile Include="Assets\Scripts\Map\OrthoDir.cs" />

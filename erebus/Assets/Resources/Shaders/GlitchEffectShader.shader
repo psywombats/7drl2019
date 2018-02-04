@@ -112,6 +112,7 @@
         _PEdgeDepthMin("Depth Min",  Range(0, 1)) = 0.0
         _PEdgeDepthMax("Depth Max",  Range(0, 1)) = 0.5
         _PEdgePower("Power",  Range(0, 1)) = 1.0
+        _PEdgeAmplitude("Amplitude",  Range(0, 1)) = 0.5
         _PEdgeDistanceGrain("Distance Granularity", Range(0, 1)) = 1.0
     }
     
