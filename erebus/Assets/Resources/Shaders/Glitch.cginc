@@ -516,20 +516,23 @@ fixed4 glitchFragFromCoords(float2 xy, float4 pxXY) {
         
         float dx = sampleX - .5;
         float dy = sampleY - .5;
-        float dist = dx * dx + dy * dy;
-        float offset = dist;
+        float dist = (dx * dx + dy * dy) * 2.0;
+        float offset = 0.0;
         if (_PEdgeUseWaveSource > 0.0) {
             float angle = ((atan2(dy, dx) / (3.141)) + 1.0) / 2.0;
             int sampleNumber = floor(angle * (float)_WaveSamples);
-            offset = ((_Wave[sampleNumber] + 1.0) / 2.0);
+            float level = ((_Wave[sampleNumber] + 1.0) / 2.0);
+            float adjustedDist = (dist - _PEdgeDepthMin) / (_PEdgeDepthMax - _PEdgeDepthMin);
+            offset = adjustedDist - level;
+            offset = clamp(offset, 0.0, 1.0) * _PEdgePower;
         }
         if (_PEdgeDuration > 0.0) {
             //offset *= ((sin(t / cubicEase(_PEdgeDuration, 10.0)) + 1.0) / 2.0);
         }
-        offset *= cubicEase(_PEdgePower, 1.0);
-        c[0] += offset;
-        c[1] += offset;
-        c[2] += offset;
+        //offset *= cubicEase(_PEdgePower, 1.0);
+        c[0] -= offset;
+        c[1] -= offset;
+        c[2] -= offset;
         c[0] = clamp(c[0], 0.0, 1.0);
         c[1] = clamp(c[1], 0.0, 1.0);
         c[2] = clamp(c[2], 0.0, 1.0);

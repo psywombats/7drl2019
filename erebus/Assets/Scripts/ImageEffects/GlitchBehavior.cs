@@ -28,7 +28,7 @@ public class GlitchBehavior : MonoBehaviour {
         material.SetFloat("_Elapsed", elapsedSeconds);
         if (UseWaveSource && Global.Instance().Audio.GetWaveSource() != null) {
             material.SetFloatArray("_Wave", Global.Instance().Audio.GetWaveSource().GetSamples());
-            material.SetInt("_WaveSamples", Global.Instance().Audio.GetWaveSource().GetSamples().Length);
+            material.SetInt("_WaveSamples", Global.Instance().Audio.GetWaveSource().GetSampleCount());
         }
     }
 }

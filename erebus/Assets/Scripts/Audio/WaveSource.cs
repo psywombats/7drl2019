@@ -6,8 +6,8 @@ using UnityEngine;
 public class WaveSource : MonoBehaviour {
 
     // How long does the full length of data represent in seconds?
-    public float PlayRate = 0.3f;
-    public int Oversample = 20;
+    public float PlayRate = 0.15f;
+    public int Oversample = 25;
     public AudioClip Source;
     public bool DrawWave = false;
 
@@ -25,21 +25,19 @@ public class WaveSource : MonoBehaviour {
         int sampleInCount = (int)Math.Ceiling(Source.channels * Source.frequency * PlayRate);
         int sampleCountPerChannel = sampleInCount / Source.channels;
         int outputSampleCount = sampleCountPerChannel / Oversample;
+        int inSamplesPerOut = sampleInCount / outputSampleCount;
         if (channelSamples == null) {
             channelSamples = new float[sampleInCount];
             averageSamples = new float[outputSampleCount];
         }
 
         Source.GetData(channelSamples, (int)(elapsedTime * (float)Source.frequency));
-        float accum = 0.0f;
-        for (int i = 0; i < sampleInCount; i += 1) {
-            if ((i + 1) % (Source.channels * Oversample) == 0) {
-                // this is the last in a sequence
-                averageSamples[((i + 1) / (Source.channels * Oversample)) - 1] = accum / (float)(Source.channels * Oversample);
-                accum = 0.0f;
-            } else {
-                accum += channelSamples[i];
+        for (int outSample = 0; outSample < outputSampleCount; outSample += 1) {
+            float accum = 0.0f;
+            for (int i = 0; i < inSamplesPerOut; i += 1) {
+                accum += channelSamples[outSample * inSamplesPerOut + i];
             }
+            averageSamples[outSample] = accum / (float)inSamplesPerOut;
         }
         elapsedTime += Time.deltaTime;
 
@@ -54,5 +52,11 @@ public class WaveSource : MonoBehaviour {
 
     public float[] GetSamples() {
         return averageSamples;
+    }
+
+    public int GetSampleCount() {
+        int sampleInCount = (int)Math.Ceiling(Source.channels * Source.frequency * PlayRate);
+        int sampleCountPerChannel = sampleInCount / Source.channels;
+        return sampleCountPerChannel / Oversample;
     }
 }
