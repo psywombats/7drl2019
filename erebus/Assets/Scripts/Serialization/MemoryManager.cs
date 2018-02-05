@@ -11,10 +11,21 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
 
     private const string SystemMemoryName = "system.sav";
     private const string SaveGameSuffix = ".sav";
+    private const float ScreenshotScaleFactor = 6.0f;
+    private const float LoadDelaySeconds = 1.5f;
+    private const int MaxMessages = 200;
 
     private Dictionary<string, bool> switches;
+    private Dictionary<string, int> variables;
+    private Dictionary<string, int> maxSeenCommands;
     private List<MemoryPopulater> listeners;
+    private List<LogItem> messageHistory;
+    private Texture2D screenshot;
     private float lastSystemSavedTimestamp;
+
+    // this thing will be read by the dialog scene when spawning
+    // if non-null, it'll be loaded automatically
+    public Memory ActiveMemory { get; set; }
 
     // global state, unrelated to playthroughs and things like that
     // things like total play time
@@ -23,13 +34,34 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
     public void Awake() {
         switches = new Dictionary<string, bool>();
         listeners = new List<MemoryPopulater>();
+        variables = new Dictionary<string, int>();
+        messageHistory = new List<LogItem>();
         lastSystemSavedTimestamp = Time.realtimeSinceStartup;
         LoadOrCreateSystemMemory();
         RegisterMemoryPopulater(this);
+
+        int width = (int)(Screen.width / ScreenshotScaleFactor);
+        int height = (int)(Screen.height / ScreenshotScaleFactor);
+        screenshot = new Texture2D(width, height, TextureFormat.RGB24, false);
+    }
+
+    public void OnDestroy() {
+        Destroy(screenshot);
     }
 
     public void RegisterMemoryPopulater(MemoryPopulater populater) {
         listeners.Add(populater);
+    }
+
+    public void AppendLogItem(LogItem item) {
+        messageHistory.Add(item);
+        if (messageHistory.Count > MaxMessages) {
+            messageHistory.RemoveAt(0);
+        }
+    }
+
+    public List<LogItem> GetMessageHistory() {
+        return messageHistory;
     }
 
     public bool GetSwitch(string switchName) {
@@ -43,11 +75,55 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
         switches[switchName] = value;
     }
 
+    public int GetVariable(string variableName) {
+        if (!variables.ContainsKey(variableName)) {
+            variables[variableName] = 0;
+        }
+        return variables[variableName];
+    }
+
+    public void IncrementVariable(string variableName) {
+        variables[variableName] = GetVariable(variableName) + 1;
+    }
+
+    public void DecrementVariable(string variableName) {
+        variables[variableName] = GetVariable(variableName) - 1;
+    }
+
+    public bool HasSeenCommand(string sceneName, int commandIndex) {
+        if (maxSeenCommands.ContainsKey(sceneName)) {
+            return maxSeenCommands[sceneName] >= commandIndex;
+        } else {
+            return false;
+        }
+    }
+
+    public void AcknowledgeCommand(string sceneName, int commandIndex) {
+        if (maxSeenCommands.ContainsKey(sceneName)) {
+            maxSeenCommands[sceneName] = Math.Max(maxSeenCommands[sceneName], commandIndex);
+        } else {
+            maxSeenCommands[sceneName] = commandIndex;
+        }
+    }
+
     public void SaveToSlot(int slot) {
         Memory memory = new Memory();
+
         foreach (MemoryPopulater listener in listeners) {
             listener.PopulateMemory(memory);
         }
+
+        ScenePlayer player = FindObjectOfType<ScenePlayer>();
+        memory.screen = player.ToMemory();
+
+        foreach (string key in variables.Keys) {
+            memory.variableKeys.Add(key);
+        }
+        foreach (int value in variables.Values) {
+            memory.variableValues.Add(value);
+        }
+
+        AttachScreenshotToMemory(memory);
 
         WriteJsonToFile(memory, FilePathForSlot(slot));
         SystemMemory.lastSlotSaved = slot;
@@ -84,7 +160,18 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
         lastSystemSavedTimestamp = currentTimestamp;
         SystemMemory.totalPlaySeconds += (int)Math.Round(deltaSeconds);
 
-        // TODO: settings and stuff eventually
+        // seen history
+        SystemMemory.maxSeenCommandsKeys.Clear();
+        foreach (string key in maxSeenCommands.Keys) {
+            SystemMemory.maxSeenCommandsKeys.Add(key);
+        }
+        SystemMemory.maxSeenCommandsValues.Clear();
+        foreach (int value in maxSeenCommands.Values) {
+            SystemMemory.maxSeenCommandsValues.Add(value);
+        }
+
+        // other garbage in other managers
+        SystemMemory.settings = Global.Instance().settings.ToMemory();
 
         WriteJsonToFile(SystemMemory, GetSystemMemoryFilepath());
     }
@@ -107,6 +194,38 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
         for (int i = 0; i < memory.switchKeys.Count; i += 1) {
             switches[memory.switchKeys[i]] = memory.switchValues[i];
         }
+    }
+
+    public Sprite SpriteFromBase64(string encodedString) {
+        int width = (int)(Screen.width / ScreenshotScaleFactor);
+        int height = (int)(Screen.height / ScreenshotScaleFactor);
+        byte[] pngBytes = Convert.FromBase64String(encodedString);
+        Texture2D texture = new Texture2D(width, height, TextureFormat.RGB24, false);
+        texture.LoadImage(pngBytes);
+        texture.Apply();
+        return Sprite.Create(texture, new Rect(0, 0, width, height), new Vector2(0, 0));
+    }
+
+    // takes a screenshot and keeps it in memory, to be saved later maybe
+    public void RememberScreenshot() {
+        int width = (int)(Screen.width / ScreenshotScaleFactor);
+        int height = (int)(Screen.height / ScreenshotScaleFactor);
+        RenderTexture renderTexture = new RenderTexture(width, height, 24);
+
+        List<Camera> cameras = new List<Camera>(Camera.allCameras);
+        cameras.Sort((Camera c1, Camera c2) => {
+            return c2.transform.GetSiblingIndex().CompareTo(c1.transform.GetSiblingIndex());
+        });
+        foreach (Camera camera in cameras) {
+            camera.targetTexture = renderTexture;
+            camera.Render();
+            camera.targetTexture = null;
+        }
+
+        RenderTexture.active = renderTexture;
+        screenshot.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+        RenderTexture.active = null;
+        Destroy(renderTexture);
     }
 
     private void WriteJsonToFile(object toSerialize, string fileName) {
@@ -154,5 +273,17 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
         System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
         dtDateTime = dtDateTime.AddSeconds(timestamp).ToLocalTime();
         return dtDateTime;
+    }
+
+    private void AttachScreenshotToMemory(Memory memory) {
+        byte[] pngBytes = screenshot.EncodeToPNG();
+        memory.base64ScreenshotPNG = Convert.ToBase64String(pngBytes);
+    }
+
+    private IEnumerator LoadActiveMemoryRoutine() {
+        FadeComponent fade = FindObjectOfType<FadeComponent>();
+        yield return fade.FadeToBlackRoutine();
+        yield return new WaitForSeconds(LoadDelaySeconds);
+        ScenePlayer.LoadScreen();
     }
 }

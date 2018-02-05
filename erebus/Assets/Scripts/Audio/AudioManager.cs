@@ -7,28 +7,22 @@ public class AudioManager : MonoBehaviour, MemoryPopulater {
 
     private const string NoBGMKey = "none";
 
-    private Dictionary<string, AudioClip> sfx;
-    private Dictionary<string, AudioClip> bgm;
-
     private AudioSource sfxSource;
     private AudioSource bgmSource;
+
+    private SoundEffectIndexData sfxs;
+    private BGMIndexData bgms;
+
+    private Setting<float> bgmVolumeSetting;
+    private Setting<float> sfxVolumeSetting;
 
     public string CurrentBGMKey { get; private set; }
 
     public void Start() {
-        // sound effects are loaded in the background via import settings
-
         Global.Instance().Memory.RegisterMemoryPopulater(this);
 
-        sfx = new Dictionary<string, AudioClip>();
-        foreach (AudioKeyDataEntry entry in Global.Instance().Config.SoundEffects.data) {
-            sfx[entry.Key] = entry.Clip;
-        }
-
-        bgm = new Dictionary<string, AudioClip>();
-        foreach (AudioKeyDataEntry entry in Global.Instance().Config.BackgroundMusic.data) {
-            bgm[entry.Key] = entry.Clip;
-        }
+        bgms = Global.Instance().Config.SoundEffects;
+        sfxs = Global.Instance().Config.BackgroundMusic;
 
         sfxSource = gameObject.AddComponent<AudioSource>();
         sfxSource.playOnAwake = false;
@@ -39,13 +33,16 @@ public class AudioManager : MonoBehaviour, MemoryPopulater {
         bgmSource.loop = true;
 
         CurrentBGMKey = NoBGMKey;
+        
+        sfxVolumeSetting = Global.Instance().Settings.GetFloatSetting(SettingsConstants.SoundEffectVolume);
+        bgmVolumeSetting = Global.Instance().Settings.GetFloatSetting(SettingsConstants.BGMVolume);
+
+        gameObject.AddComponent<WaveSource>();
     }
 
     public void Update() {
-        PlayBGM("wavetest");
-        if (GetComponent<WaveSource>() == null) {
-            gameObject.AddComponent<WaveSource>();
-        }
+        bgmSource.volume = bgmVolumeSetting.Value;
+        sfxSource.volume = sfxVolumeSetting.Value;
     }
 
     public void PlaySFX(string key) {

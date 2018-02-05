@@ -139,9 +139,12 @@
     <Compile Include="Assets\Standard Assets\Editor\ImageEffects\VignetteAndChromaticAberrationEditor.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Resources\SceneScripts\testScript.txt" />
+    <None Include="Assets\Resources\SceneScripts\unimplemented.txt" />
     <None Include="Assets\Resources\Shaders\AutomataShader.shader" />
     <None Include="Assets\Resources\Shaders\BitShader.shader" />
     <None Include="Assets\Resources\Shaders\ColorEffectShader.shader" />
+    <None Include="Assets\Resources\Shaders\ColoredParticle.shader" />
     <None Include="Assets\Resources\Shaders\DiffuseDepthSprite.shader" />
     <None Include="Assets\Resources\Shaders\DungeonDeferred.shader" />
     <None Include="Assets\Resources\Shaders\DungeonTexture.shader" />
@@ -149,6 +152,10 @@
     <None Include="Assets\Resources\Shaders\GlitchDiffuseShader.shader" />
     <None Include="Assets\Resources\Shaders\GlitchEffectShader.shader" />
     <None Include="Assets\Resources\Shaders\PulseCenterShader.shader" />
+    <None Include="Assets\Resources\Shaders\TransitionShader.shader" />
+    <None Include="Assets\Resources\Shaders\TransitionSpriteShader.shader" />
+    <None Include="Assets\Resources\Shaders\TransitionUIShader.shader" />
+    <None Include="Assets\Resources\Shaders\WhiteoutShader.shader" />
     <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
     <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\BlendModesOverlay.shader" />
     <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\BlurEffectConeTaps.shader" />

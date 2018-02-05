@@ -11,6 +11,14 @@ public class InputManager : MonoBehaviour {
         Down,
         Confirm,
         Cancel,
+        Menu,
+        Skip,
+        Save,
+        Load,
+        Log,
+        Auto,
+        Click,
+        Rightclick,
         Debug,
     };
 
@@ -25,7 +33,9 @@ public class InputManager : MonoBehaviour {
 
     private Dictionary<Command, List<KeyCode>> keybinds;
     private List<InputListener> listeners;
+    private List<InputListener> disabledListeners;
     private Dictionary<Command, float> holdStartTimes;
+    private List<KeyCode> fastKeys;
 
     public void Awake() {
         keybinds = new Dictionary<Command, List<KeyCode>>();
@@ -36,6 +46,18 @@ public class InputManager : MonoBehaviour {
         keybinds[Command.Confirm] = new List<KeyCode>(new[] { KeyCode.Space, KeyCode.Z, KeyCode.Return });
         keybinds[Command.Cancel] = new List<KeyCode>(new[] { KeyCode.Escape, KeyCode.B, KeyCode.X });
         keybinds[Command.Debug] = new List<KeyCode>(new[] { KeyCode.F9 });
+        keybinds[Command.Auto] = new List<KeyCode>(new[] { KeyCode.A });
+        keybinds[Command.Menu] = new List<KeyCode>(new[] { KeyCode.Escape, KeyCode.C, KeyCode.Backspace });
+        keybinds[Command.Skip] = new List<KeyCode>(new[] { KeyCode.S });
+        keybinds[Command.Save] = new List<KeyCode>();
+        keybinds[Command.Load] = new List<KeyCode>();
+        keybinds[Command.Log] = new List<KeyCode>(new[] { KeyCode.L });
+        keybinds[Command.Click] = new List<KeyCode>();
+        keybinds[Command.Rightclick] = new List<KeyCode>();
+        fastKeys = new List<KeyCode>(new[] { KeyCode.LeftControl, KeyCode.RightControl });
+
+        listeners = new List<InputListener>();
+        disabledListeners = new List<InputListener>();
 
         listeners = new List<InputListener>();
         holdStartTimes = new Dictionary<Command, float>();
@@ -46,6 +68,10 @@ public class InputManager : MonoBehaviour {
         listeners.AddRange(this.listeners);
 
         foreach (InputListener listener in listeners) {
+            if (disabledListeners.Contains(listener)) {
+                continue;
+            }
+
             bool endProcessing = false; // ew.
             foreach (Command command in System.Enum.GetValues(typeof(Command))) {
                 foreach (KeyCode code in keybinds[command]) {
@@ -79,6 +105,25 @@ public class InputManager : MonoBehaviour {
 
     public void RemoveListener(InputListener listener) {
         listeners.Remove(listener);
+    }
+
+    public void DisableListener(InputListener listener) {
+        disabledListeners.Add(listener);
+    }
+
+    public void EnableListener(InputListener listener) {
+        if (disabledListeners.Contains(listener)) {
+            disabledListeners.Remove(listener);
+        }
+    }
+
+    public bool IsFastKeyDown() {
+        foreach (KeyCode code in fastKeys) {
+            if (Input.GetKey(code)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public IEnumerator AwaitConfirm() {

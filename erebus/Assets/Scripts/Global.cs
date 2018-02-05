@@ -10,6 +10,7 @@ public class Global : MonoBehaviour {
     public MapManager Maps { get; private set; }
     public MemoryManager Memory { get; private set; }
     public AudioManager Audio { get; private set; }
+    public SettingsCollection Settings { get; private set; }
 
     private GlobalConfig config;
     public GlobalConfig Config {
@@ -36,6 +37,10 @@ public class Global : MonoBehaviour {
         return instance;
     }
 
+    public void Update() {
+        SetFullscreenMode();
+    }
+
     public void Awake() {
         DontDestroyOnLoad(gameObject);
     }
@@ -46,5 +51,14 @@ public class Global : MonoBehaviour {
         Maps = gameObject.AddComponent<MapManager>();
         Memory = gameObject.AddComponent<MemoryManager>();
         Audio = gameObject.AddComponent<AudioManager>();
+        Settings = gameObject.AddComponent<SettingsCollection>();
+    }
+
+    private void SetFullscreenMode() {
+        // not sure if this "check" is necessary
+        // actually performing this her is kind of a hack
+        if (Screen.fullScreen != settings.GetBoolSetting(SettingsConstants.Fullscreen).Value) {
+            Screen.fullScreen = settings.GetBoolSetting(SettingsConstants.Fullscreen).Value;
+        }
     }
 }

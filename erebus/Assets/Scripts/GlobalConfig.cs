@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class GlobalConfig : ScriptableObject {
 
-    public AudioKeyData SoundEffects;
-    public AudioKeyData BackgroundMusic;
+    public BGMIndexData SoundEffects;
+    public SoundEffectIndexData BackgroundMusic;
 
     public static GlobalConfig GetInstance() {
         return Resources.Load<GlobalConfig>("Config");
