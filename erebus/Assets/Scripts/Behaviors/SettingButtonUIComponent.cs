@@ -20,7 +20,7 @@ public class SettingButtonUIComponent : GenericSettingUIComponent<bool> {
     }
 
     protected override Setting<bool> InitializeSetting(string settingName) {
-        return Global.Instance().settings.GetBoolSetting(settingName);
+        return Global.Instance().Settings.GetBoolSetting(settingName);
     }
 
     protected override void MatchDisplayToSetting() {

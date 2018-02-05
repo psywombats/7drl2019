@@ -57,8 +57,8 @@ public class Global : MonoBehaviour {
     private void SetFullscreenMode() {
         // not sure if this "check" is necessary
         // actually performing this her is kind of a hack
-        if (Screen.fullScreen != settings.GetBoolSetting(SettingsConstants.Fullscreen).Value) {
-            Screen.fullScreen = settings.GetBoolSetting(SettingsConstants.Fullscreen).Value;
+        if (Screen.fullScreen != Settings.GetBoolSetting(SettingsConstants.Fullscreen).Value) {
+            Screen.fullScreen = Settings.GetBoolSetting(SettingsConstants.Fullscreen).Value;
         }
     }
 }

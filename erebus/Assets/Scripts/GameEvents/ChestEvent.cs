@@ -37,8 +37,8 @@ public class ChestEvent : TiledInstantiated {
         } else {
             Opened = true;
             UpdateAppearance();
-            ItemData item = ItemData.ItemByName(ItemKey);
-            StartCoroutine(Textbox.GetInstance().ShowSystemText("Found " + item.Name + "."));
+            //ItemData item = ItemData.ItemByName(ItemKey);
+            //tartCoroutine(Textbox.GetInstance().ShowSystemText("Found " + item.Name + "."));
         }
     }
 

@@ -31,8 +31,8 @@ public class SaveButtonComponent : MonoBehaviour {
             captionText.text = "";
             screenshot.gameObject.SetActive(false);
         } else {
-            captionText.text = System.String.Format("{0:g}", Utils.TimestampToDateTime(memory.savedAt));
-            screenshot.overrideSprite = Global.Instance().memory.SpriteFromBase64(memory.base64ScreenshotPNG);
+            captionText.text = System.String.Format("{0:g}", UIUtils.TimestampToDateTime(memory.savedAt));
+            screenshot.overrideSprite = Global.Instance().Memory.SpriteFromBase64(memory.base64ScreenshotPNG);
             screenshot.gameObject.SetActive(true);
         }
     }

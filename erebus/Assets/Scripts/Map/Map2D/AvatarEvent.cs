@@ -126,6 +126,6 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
     }
 
     private void ShowMenu() {
-        StartCoroutine(PartyInventoryScreen.GetInstance().TransitionIn());
+        // oh shiii
     }
 }

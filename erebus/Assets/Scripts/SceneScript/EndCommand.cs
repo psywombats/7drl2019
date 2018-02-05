@@ -17,7 +17,7 @@ public class EndCommand : SceneCommand {
         yield return player.textbox.FadeOutRoutine(player, 0.5f);
         yield return player.paragraphBox.FadeInRoutine(player, 0.5f);
         yield return player.paragraphBox.ShowText(player, "ENDING " + endingKey, true);
-        yield return Global.Instance().input.AwaitAdvance();
+        yield return Global.Instance().Input.AwaitConfirm();
 
         FadeComponent fade = player.GetFade();
         yield return fade.FadeToBlackRoutine();

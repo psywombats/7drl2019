@@ -37,7 +37,7 @@ public class MainMenuComponent : MenuComponent {
             StartCoroutine(SettingsRoutine());
         });
 
-        StartCoroutine(Utils.RunAfterDelay(FindObjectOfType<FadeComponent>().fadeTime, () => {
+        StartCoroutine(CoUtils.RunAfterDelay(FindObjectOfType<FadeComponent>().fadeTime, () => {
             SetInputEnabled(true);
         }));
     }
@@ -69,8 +69,8 @@ public class MainMenuComponent : MenuComponent {
     }
 
     private IEnumerator ContinueRoutine() {
-        Global.Instance().input.RemoveListener(this);
-        Global.Instance().memory.LoadFromLastSaveSlot();
+        Global.Instance().Input.RemoveListener(this);
+        Global.Instance().Memory.LoadFromLastSaveSlot();
         yield return null;
     }
 

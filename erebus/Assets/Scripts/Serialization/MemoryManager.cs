@@ -138,6 +138,10 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
         }
     }
 
+    public void LoadFromLastSaveSlot() {
+        LoadMemory(GetMemoryForSlot(SystemMemory.lastSlotSaved));
+    }
+
     public Memory GetMemoryForSlot(int slot) {
         string fileName = FilePathForSlot(slot);
         if (File.Exists(fileName)) {
@@ -171,7 +175,7 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
         }
 
         // other garbage in other managers
-        SystemMemory.settings = Global.Instance().settings.ToMemory();
+        SystemMemory.settings = Global.Instance().Settings.ToMemory();
 
         WriteJsonToFile(SystemMemory, GetSystemMemoryFilepath());
     }

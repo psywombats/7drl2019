@@ -6,6 +6,7 @@ public class SystemMemory {
 
     public List<string> maxSeenCommandsKeys;
     public List<int> maxSeenCommandsValues;
+    public SettingsMemory settings;
     public int totalPlaySeconds;
     public int lastSlotSaved;
 

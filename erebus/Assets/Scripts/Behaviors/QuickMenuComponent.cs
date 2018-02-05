@@ -37,7 +37,7 @@ public class QuickMenuComponent : MonoBehaviour {
 
     private void FormatButtonForCommand(Button button, InputManager.Command command) {
         button.onClick.AddListener(() => {
-            Global.Instance().input.SimulateCommand(command);
+            Global.Instance().Input.SimulateCommand(command);
         });
     }
 

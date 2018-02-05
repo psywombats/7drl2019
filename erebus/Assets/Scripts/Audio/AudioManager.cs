@@ -6,6 +6,7 @@ using UnityEngine;
 public class AudioManager : MonoBehaviour, MemoryPopulater {
 
     private const string NoBGMKey = "none";
+    private const float FadeSeconds = 0.5f;
 
     private AudioSource sfxSource;
     private AudioSource bgmSource;
@@ -46,7 +47,7 @@ public class AudioManager : MonoBehaviour, MemoryPopulater {
     }
 
     public void PlaySFX(string key) {
-        AudioClip clip = sfx[key];
+        AudioClip clip = sfxs.GetData(key).clip;
         StartCoroutine(PlaySFXRoutine(sfxSource, clip));
     }
 
@@ -57,7 +58,7 @@ public class AudioManager : MonoBehaviour, MemoryPopulater {
                 bgmSource.Stop();
             } else {
                 bgmSource.volume = 1.0f;
-                AudioClip clip = bgm[key];
+                AudioClip clip = bgms.GetData(key).track;
                 bgmSource.clip = clip;
                 bgmSource.Play();
             }
@@ -81,6 +82,13 @@ public class AudioManager : MonoBehaviour, MemoryPopulater {
             }
             yield return null;
         }
+    }
+
+    public IEnumerator CrossfadeRoutine(string tag) {
+        if (CurrentBGMKey != null && CurrentBGMKey != NoBGMKey) {
+            yield return FadeOutRoutine(FadeSeconds);
+        }
+        PlayBGM(tag);
     }
 
     public void PopulateMemory(Memory memory) {

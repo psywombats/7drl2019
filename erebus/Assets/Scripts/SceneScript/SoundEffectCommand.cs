@@ -11,8 +11,7 @@ public class SoundEffectCommand : SceneCommand {
     }
 
     public override IEnumerator PerformAction(ScenePlayer player) {
-        SoundPlayer soundPlayer = player.GetSound();
-        soundPlayer.PlaySound(soundTag);
+        Global.Instance().Audio.PlaySFX(soundTag);
         yield return null;
     }
 }

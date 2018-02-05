@@ -6,9 +6,6 @@ public class GGlobal : MonoBehaviour {
 
     private static GGlobal instance;
 
-    // RPG
-    public HeroParty Party { get; set; }
-
     // Globals
     public GameLuaInterpretor Lua { get; private set; }
 
@@ -18,7 +15,6 @@ public class GGlobal : MonoBehaviour {
             globalObject.hideFlags = HideFlags.HideAndDontSave;
             instance = globalObject.AddComponent<GGlobal>();
             instance.InstantiateManagers();
-            instance.InitializeRPG();
         }
         return instance;
     }
@@ -29,9 +25,5 @@ public class GGlobal : MonoBehaviour {
 
     private void InstantiateManagers() {
         Lua = gameObject.AddComponent<GameLuaInterpretor>();
-    }
-
-    private void InitializeRPG() {
-        Party = new HeroParty();
     }
 }

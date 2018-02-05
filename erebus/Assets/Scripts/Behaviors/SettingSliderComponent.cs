@@ -34,7 +34,7 @@ public class SettingSliderComponent : GenericSettingUIComponent<float> {
     }
 
     protected override Setting<float> InitializeSetting(string settingName) {
-        return Global.Instance().settings.GetFloatSetting(settingName);
+        return Global.Instance().Settings.GetFloatSetting(settingName);
     }
 
     private void MatchLabelDisplayToScrollbar() {

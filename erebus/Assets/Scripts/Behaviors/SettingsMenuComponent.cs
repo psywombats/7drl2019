@@ -29,7 +29,7 @@ public class SettingsMenuComponent : MenuComponent {
         return Spawn(parent, PrefabName, onFinish);
     }
 
-    public override bool OnCommand(InputManager.Command command) {
+    public override bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
         switch (command) {
             case InputManager.Command.Menu:
             case InputManager.Command.Rightclick:
@@ -44,7 +44,7 @@ public class SettingsMenuComponent : MenuComponent {
         foreach (SettingUIComponent setting in settings) {
             setting.Apply();
         }
-        Global.Instance().memory.SaveSystemMemory();
+        Global.Instance().Memory.SaveSystemMemory();
         StartCoroutine(ResumeRoutine());
     }
 

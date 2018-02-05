@@ -58,7 +58,7 @@ public class SceneScript {
             while (player.IsSuspended()) {
                 yield return null;
             }
-            if (!Global.Instance().memory.HasSeenCommand(sceneName, commandIndex)) {
+            if (!Global.Instance().Memory.HasSeenCommand(sceneName, commandIndex)) {
                 player.SkipMode = false;
             }
             if (player.debugBox != null) {
@@ -66,16 +66,16 @@ public class SceneScript {
                 player.debugBox.text += "command index: " + commandIndex;
             }
             yield return player.StartCoroutine(CurrentCommand.PerformAction(player));
-            Global.Instance().memory.AcknowledgeCommand(sceneName, commandIndex);
+            Global.Instance().Memory.AcknowledgeCommand(sceneName, commandIndex);
         }
     }
 
     public bool ShouldUseFastMode(ScenePlayer player) {
-        if (Global.Instance().input.IsFastKeyDown()) {
+        if (Global.Instance().Input.IsFastKeyDown()) {
             return true;
         }
-        bool hasSeenCommand = Global.Instance().memory.HasSeenCommand(sceneName, commandIndex);
-        Setting<bool> skipUnreadSetting = Global.Instance().settings.GetBoolSetting(SettingsConstants.SkipUnreadText);
+        bool hasSeenCommand = Global.Instance().Memory.HasSeenCommand(sceneName, commandIndex);
+        Setting<bool> skipUnreadSetting = Global.Instance().Settings.GetBoolSetting(SettingsConstants.SkipUnreadText);
         bool skipUnread;
         if (skipUnreadSetting == null) {
             skipUnread = false;
@@ -89,8 +89,8 @@ public class SceneScript {
     }
 
     public bool CanUseFastMode() {
-        bool hasSeenCommand = Global.Instance().memory.HasSeenCommand(sceneName, commandIndex);
-        Setting<bool> skipUnreadSetting = Global.Instance().settings.GetBoolSetting(SettingsConstants.SkipUnreadText);
+        bool hasSeenCommand = Global.Instance().Memory.HasSeenCommand(sceneName, commandIndex);
+        Setting<bool> skipUnreadSetting = Global.Instance().Settings.GetBoolSetting(SettingsConstants.SkipUnreadText);
         bool skipUnread;
         if (skipUnreadSetting == null) {
             skipUnread = false;

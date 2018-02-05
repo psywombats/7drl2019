@@ -59,7 +59,7 @@ public class PortraitGroupComponent : MonoBehaviour {
         foreach (TachiComponent portrait in portraits) {
             fadeOuts.Add(portrait.FadeOut(fade));
         }
-        yield return StartCoroutine(Utils.RunParallel(fadeOuts.ToArray(), this));
+        yield return StartCoroutine(CoUtils.RunParallel(fadeOuts.ToArray(), this));
     }
 
     public void HideAll() {

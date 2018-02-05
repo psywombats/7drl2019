@@ -29,10 +29,10 @@ public class SaveMenuComponent : MenuComponent {
 
     public void SaveOrLoadFromSlot(int slot) {
         if (mode == SaveMenuMode.Load) {
-            Memory memory = Global.Instance().memory.GetMemoryForSlot(slot);
+            Memory memory = Global.Instance().Memory.GetMemoryForSlot(slot);
             StartCoroutine(LoadRoutine(memory));
         } else {
-            Global.Instance().memory.SaveToSlot(slot);
+            Global.Instance().Memory.SaveToSlot(slot);
             RefreshData();
             StartCoroutine(ResumeRoutine());
         }
@@ -48,7 +48,7 @@ public class SaveMenuComponent : MenuComponent {
     private void RefreshData() {
         for (int i = 0; i < slots.Length; i += 1) {
             SaveButtonComponent saveButton = slots[i];
-            Memory memory = Global.Instance().memory.GetMemoryForSlot(i);
+            Memory memory = Global.Instance().Memory.GetMemoryForSlot(i);
             saveButton.Populate(this, i, memory, mode);
         }
     }
@@ -56,7 +56,7 @@ public class SaveMenuComponent : MenuComponent {
     private IEnumerator LoadRoutine(Memory memory) {
         SetInputEnabled(false);
         yield return StartCoroutine(FadeOutRoutine());
-        Global.Instance().input.RemoveListener(this);
-        Global.Instance().memory.LoadMemory(memory);
+        Global.Instance().Input.RemoveListener(this);
+        Global.Instance().Memory.LoadMemory(memory);
     }
 }

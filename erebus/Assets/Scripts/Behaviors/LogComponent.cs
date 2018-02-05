@@ -13,7 +13,7 @@ public class LogComponent : MenuComponent {
 
     public override void Start() {
         base.Start();
-        PopulateLog(Global.Instance().memory.GetMessageHistory());
+        PopulateLog(Global.Instance().Memory.GetMessageHistory());
     }
 
     public static GameObject Spawn(GameObject parent, Action onFinish) {

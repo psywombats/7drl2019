@@ -14,9 +14,9 @@ public class IncrementCommand : SceneCommand {
 
     public override IEnumerator PerformAction(ScenePlayer player) {
         if (delta > 0) {
-            Global.Instance().memory.IncrementVariable(variableName);
+            Global.Instance().Memory.IncrementVariable(variableName);
         } else {
-            Global.Instance().memory.DecrementVariable(variableName);
+            Global.Instance().Memory.DecrementVariable(variableName);
         }
         yield return null;
     }

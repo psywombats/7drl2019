@@ -11,7 +11,7 @@ public class BGMCommand : SceneCommand {
     }
 
     public override IEnumerator PerformAction(ScenePlayer player) {
-        BGMPlayer bgm = player.GetBGM();
+        AudioManager bgm = Global.Instance().Audio;
         bgm.StartCoroutine(bgm.CrossfadeRoutine(tag));
         yield return null;
     }

@@ -42,8 +42,8 @@ public class TextboxComponent : MonoBehaviour {
     }
 
     public void Awake() {
-        characterSpeedSetting = Global.Instance().settings.GetFloatSetting(SettingsConstants.TextSpeed);
-        autoSpeedSetting = Global.Instance().settings.GetFloatSetting(SettingsConstants.AutoSpeed);
+        characterSpeedSetting = Global.Instance().Settings.GetFloatSetting(SettingsConstants.TextSpeed);
+        autoSpeedSetting = Global.Instance().Settings.GetFloatSetting(SettingsConstants.AutoSpeed);
     }
 
     public void OnEnable() {
@@ -115,7 +115,7 @@ public class TextboxComponent : MonoBehaviour {
         if (speaker != null) toRun.Add(speaker.FadeInRoutine(durationSeconds));
         if (backer != null) toRun.Add(backer.FadeInRoutine(durationSeconds));
         if (quickMenu != null) toRun.Add(quickMenu.FadeInRoutine(durationSeconds));
-        yield return player.StartCoroutine(Utils.RunParallel(toRun.ToArray(), player));
+        yield return player.StartCoroutine(CoUtils.RunParallel(toRun.ToArray(), player));
     }
 
     public IEnumerator FadeOutRoutine(ScenePlayer player, float durationSeconds) {
@@ -128,7 +128,7 @@ public class TextboxComponent : MonoBehaviour {
         if (speaker != null) toRun.Add(speaker.FadeOutRoutine(durationSeconds));
         if (backer != null) toRun.Add(backer.FadeOutRoutine(durationSeconds));
         if (quickMenu != null) toRun.Add(quickMenu.FadeOutRoutine(durationSeconds));
-        yield return player.StartCoroutine(Utils.RunParallel(toRun.ToArray(), player));
+        yield return player.StartCoroutine(CoUtils.RunParallel(toRun.ToArray(), player));
     }
 
     public IEnumerator Activate(ScenePlayer player) {
@@ -141,7 +141,7 @@ public class TextboxComponent : MonoBehaviour {
         if (speaker != null) toRun.Add(speaker.Activate(player));
         if (backer != null) toRun.Add(backer.Activate(player));
         if (quickMenu != null) toRun.Add(quickMenu.Activate(player));
-        yield return player.StartCoroutine(Utils.RunParallel(toRun.ToArray(), player));
+        yield return player.StartCoroutine(CoUtils.RunParallel(toRun.ToArray(), player));
     }
 
     public IEnumerator Deactivate(ScenePlayer player) {
@@ -154,7 +154,7 @@ public class TextboxComponent : MonoBehaviour {
         if (speaker != null) toRun.Add(speaker.Deactivate(player));
         if (backer != null) toRun.Add(backer.Deactivate(player));
         if (quickMenu != null) toRun.Add(quickMenu.Deactivate(player));
-        yield return player.StartCoroutine(Utils.RunParallel(toRun.ToArray(), player));
+        yield return player.StartCoroutine(CoUtils.RunParallel(toRun.ToArray(), player));
         gameObject.SetActive(false);
     }
 

@@ -53,7 +53,7 @@ public class ChoiceCommand : SceneCommand {
             float lowestFraction = middleVisibleFraction - ((totalButtonsHeight - buttonHeight) / 2.0f) / Screen.height;
             float posY = lowestFraction + ((ButtonSpacingPx + buttonHeight) / Screen.height) * (options.Count - i - 1);
 
-            Utils.AttachAndCenter(player.canvas.gameObject, choiceObject);
+            UIUtils.AttachAndCenter(player.canvas.gameObject, choiceObject);
             transform.anchorMin = new Vector2(0.5f, posY);
             transform.anchorMax = transform.anchorMin;
             transform.anchoredPosition = new Vector2(0, 0);
@@ -122,7 +122,7 @@ public class ChoiceCommand : SceneCommand {
         }
 
         // disable skip if appropriate
-        Setting<bool> skipAtChoices = Global.Instance().settings.GetBoolSetting(SettingsConstants.SkipAtChoices);
+        Setting<bool> skipAtChoices = Global.Instance().Settings.GetBoolSetting(SettingsConstants.SkipAtChoices);
         if (!skipAtChoices.Value) {
             player.SkipMode = false;
         }

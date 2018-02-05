@@ -75,7 +75,7 @@ public class PauseMenuComponent : MenuComponent {
     }
 
     private IEnumerator TitleRoutine() {
-        Global.Instance().input.RemoveListener(this);
+        Global.Instance().Input.RemoveListener(this);
         FadeComponent fader = FindObjectOfType<FadeComponent>();
         yield return fader.FadeToBlackRoutine();
         SceneManager.LoadScene(TitleSceneName);

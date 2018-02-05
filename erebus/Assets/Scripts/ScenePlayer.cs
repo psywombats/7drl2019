@@ -38,14 +38,14 @@ public class ScenePlayer : MonoBehaviour, InputListener {
         textbox.gameObject.SetActive(false);
         paragraphBox.gameObject.SetActive(false);
         
-        Global.Instance().input.PushListener(this);
+        Global.Instance().Input.PushListener(this);
         
         portraits.HideAll();
 
-        StartCoroutine(Utils.RunAfterDelay(0.1f, () => {
-            if (Global.Instance().memory.ActiveMemory != null) {
-                Global.Instance().memory.PopulateFromMemory(Global.Instance().memory.ActiveMemory);
-                Global.Instance().memory.ActiveMemory = null;
+        StartCoroutine(CoUtils.RunAfterDelay(0.1f, () => {
+            if (Global.Instance().Memory.ActiveMemory != null) {
+                Global.Instance().Memory.PopulateFromMemory(Global.Instance().Memory.ActiveMemory);
+                Global.Instance().Memory.ActiveMemory = null;
                 ResumeLoadedScene();
             } else {
                 PlayFirstScene();
@@ -53,9 +53,12 @@ public class ScenePlayer : MonoBehaviour, InputListener {
         }));
     }
 
-    public bool OnCommand(InputManager.Command command) {
+    public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
+        if (eventType != InputManager.Event.Up) {
+            return true;
+        }
         switch (command) {
-            case InputManager.Command.Advance:
+            case InputManager.Command.Confirm:
                 if (hiddenTextMode) {
                     SetHiddenTextMode(false);
                 } else if (AutoMode) {
@@ -77,7 +80,7 @@ public class ScenePlayer : MonoBehaviour, InputListener {
                 if (hiddenTextMode) {
                     SetHiddenTextMode(false);
                 } else {
-                    Global.Instance().input.SimulateCommand(InputManager.Command.Advance);
+                    Global.Instance().Input.SimulateCommand(InputManager.Command.Confirm);
                 }
                 return true;
             case InputManager.Command.Rightclick:
@@ -87,7 +90,7 @@ public class ScenePlayer : MonoBehaviour, InputListener {
                 StartCoroutine(LogRoutine());
                 return true;
             case InputManager.Command.Save:
-                Global.Instance().memory.RememberScreenshot();
+                Global.Instance().Memory.RememberScreenshot();
                 StartCoroutine(SaveRoutine());
                 return true;
             case InputManager.Command.Load:
@@ -153,15 +156,7 @@ public class ScenePlayer : MonoBehaviour, InputListener {
     public FadeComponent GetFade() {
         return FindObjectOfType<FadeComponent>();
     }
-
-    public BGMPlayer GetBGM() {
-        return FindObjectOfType<BGMPlayer>();
-    }
-
-    public SoundPlayer GetSound() {
-        return FindObjectOfType<SoundPlayer>();
-    }
-
+    
     public SpriteEffectComponent GetEffect() {
         return FindObjectOfType<SpriteEffectComponent>();
     }
@@ -188,7 +183,6 @@ public class ScenePlayer : MonoBehaviour, InputListener {
         }
         portraits.PopulateMemory(memory);
         background.PopuateMemory(memory);
-        GetBGM().PopulateMemory(memory);
         return memory;
     }
 
@@ -199,11 +193,10 @@ public class ScenePlayer : MonoBehaviour, InputListener {
         currentScript = new SceneScript(this, memory);
         portraits.PopulateFromMemory(memory);
         background.PopulateFromMemory(memory);
-        GetBGM().PopulateFromMemory(memory);
     }
 
     public IEnumerator ResumeRoutine() {
-        yield return Utils.RunParallel(new[] {
+        yield return CoUtils.RunParallel(new[] {
             textbox.FadeInRoutine(this, PauseMenuComponent.FadeoutSeconds),
             paragraphBox.FadeInRoutine(this, PauseMenuComponent.FadeoutSeconds)
         }, this);
@@ -226,7 +219,7 @@ public class ScenePlayer : MonoBehaviour, InputListener {
     }
 
     private IEnumerator PauseRoutine() {
-        Global.Instance().memory.RememberScreenshot();
+        Global.Instance().Memory.RememberScreenshot();
         yield return StartCoroutine(DisplayMenu(PauseMenuComponent.Spawn(canvas.gameObject, () => {
             StartCoroutine(ResumeRoutine());
         })));
@@ -255,7 +248,7 @@ public class ScenePlayer : MonoBehaviour, InputListener {
         MenuComponent menuComponent = menuObject.GetComponent<MenuComponent>();
         menuComponent.Alpha = 0.0f;
 
-        yield return Utils.RunParallel(new[] {
+        yield return CoUtils.RunParallel(new[] {
             textbox.FadeOutRoutine(this, PauseMenuComponent.FadeoutSeconds),
             paragraphBox.FadeOutRoutine(this, PauseMenuComponent.FadeoutSeconds)
         }, this);
@@ -269,7 +262,7 @@ public class ScenePlayer : MonoBehaviour, InputListener {
     }
 
     private IEnumerator SetHiddenTextModeRoutine(bool hidden) {
-        Global.Instance().input.DisableListener(this);
+        Global.Instance().Input.DisableListener(this);
 
         if (hidden) {
             yield return paragraphBox.FadeOutRoutine(this, hiddenTextModeFadeoutSeconds);
@@ -280,6 +273,6 @@ public class ScenePlayer : MonoBehaviour, InputListener {
         }
 
         hiddenTextMode = hidden;
-        Global.Instance().input.EnableListener(this);
+        Global.Instance().Input.EnableListener(this);
     }
 }

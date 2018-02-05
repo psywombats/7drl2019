@@ -7,7 +7,7 @@ public class ClickInterceptorComponent : MonoBehaviour {
     public void Awake() {
         Button button = GetComponent<Button>();
         button.onClick.AddListener(() => {
-            Global.Instance().input.SimulateCommand(InputManager.Command.Click);
+            Global.Instance().Input.SimulateCommand(InputManager.Command.Click);
         });
     }
 }

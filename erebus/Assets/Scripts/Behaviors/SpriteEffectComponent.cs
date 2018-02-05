@@ -77,7 +77,7 @@ public class SpriteEffectComponent : MonoBehaviour {
     }
 
     public IEnumerator FadeLetterboxesIn() {
-        yield return StartCoroutine(Utils.RunParallel(new[] {
+        yield return StartCoroutine(CoUtils.RunParallel(new[] {
             letterboxTop.Activate(),
             letterboxBottom.Activate()
         }, this));

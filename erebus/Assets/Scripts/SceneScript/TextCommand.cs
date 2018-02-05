@@ -16,7 +16,7 @@ public abstract class TextCommand : SceneCommand {
         
         // fade the textboxes in or out
         if (!primaryBox.gameObject.activeInHierarchy) {
-            yield return player.StartCoroutine(Utils.RunParallel(new[] {
+            yield return player.StartCoroutine(CoUtils.RunParallel(new[] {
                 primaryBox.Activate(player),
                 secondaryBox.Deactivate(player)
             }, player));

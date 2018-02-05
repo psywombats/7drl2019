@@ -36,7 +36,7 @@ public class BranchCommand : SceneCommand {
     }
 
     public override IEnumerator PerformAction(ScenePlayer player) {
-        int variableValue = Global.Instance().memory.GetVariable(variableName);
+        int variableValue = Global.Instance().Memory.GetVariable(variableName);
         bool result = false;
         switch (sign) {
             case ComparisonType.LessThan:           result = variableValue < threshold;     break;

@@ -29,9 +29,9 @@ public class SpokenLineCommand : TextCommand {
         yield return player.StartCoroutine(base.PerformAction(player));
 
         if (chara != null) {
-            Global.Instance().memory.AppendLogItem(new LogItem(chara.tag.ToUpper() + ": " + text));
+            Global.Instance().Memory.AppendLogItem(new LogItem(chara.tag.ToUpper() + ": " + text));
         } else {
-            Global.Instance().memory.AppendLogItem(new LogItem(text));
+            Global.Instance().Memory.AppendLogItem(new LogItem(text));
         }
     }
 

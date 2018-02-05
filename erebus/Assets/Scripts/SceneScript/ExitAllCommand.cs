@@ -10,7 +10,7 @@ public class ExitAllCommand : StageDirectionCommand {
 
     public override IEnumerator PerformAction(ScenePlayer player) {
         if (ClosesTextboxes) {
-            yield return Utils.RunParallel(new[] {
+            yield return CoUtils.RunParallel(new[] {
                     player.textbox.Deactivate(player),
                     player.paragraphBox.Deactivate(player)
             }, player);
@@ -27,7 +27,7 @@ public class ExitAllCommand : StageDirectionCommand {
                 player.StartCoroutine(player.portraits.FadeOutAll(fade));
             }
 
-            Global.Instance().memory.AppendLogItem(new LogItem(""));
+            Global.Instance().Memory.AppendLogItem(new LogItem(""));
         }
     }
 }

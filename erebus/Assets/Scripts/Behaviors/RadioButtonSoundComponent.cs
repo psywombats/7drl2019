@@ -9,18 +9,14 @@ public class RadioButtonSoundComponent : MonoBehaviour {
 
     public string ClickSoundTag = "";
 
-    private SoundPlayer player;
-
     public void Awake() {
         Toggle toggle = GetComponent<Toggle>();
         toggle.onValueChanged.AddListener((bool value) => {
             HandleButtonEvent(ClickSoundTag.Length > 0 ? ClickSoundTag : DefaultClickSoundTag);
         });
-
-        player = FindObjectOfType<SoundPlayer>();
     }
 
     private void HandleButtonEvent(string associatedTag) {
-        player.PlaySound(associatedTag);
+        Global.Instance().Audio.PlaySFX(associatedTag);
     }
 }

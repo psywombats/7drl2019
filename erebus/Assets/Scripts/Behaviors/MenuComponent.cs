@@ -15,18 +15,21 @@ public abstract class MenuComponent : MonoBehaviour, InputListener {
     }
 
     public virtual void Start() {
-        Global.Instance().input.PushListener(this);
+        Global.Instance().Input.PushListener(this);
         SetInputEnabled(false);
     }
 
     protected static GameObject Spawn(GameObject parent, string prefabName, Action onFinish) {
         GameObject menuObject = UnityEngine.Object.Instantiate<GameObject>(Resources.Load<GameObject>(prefabName));
         menuObject.GetComponent<MenuComponent>().onFinish = onFinish;
-        Utils.AttachAndCenter(parent, menuObject);
+        UIUtils.AttachAndCenter(parent, menuObject);
         return menuObject;
     }
 
-    public virtual bool OnCommand(InputManager.Command command) {
+    public virtual bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
+        if (eventType != InputManager.Event.Up) {
+            return true;
+        }
         switch (command) {
             case InputManager.Command.Menu:
             case InputManager.Command.Rightclick:
@@ -61,16 +64,16 @@ public abstract class MenuComponent : MonoBehaviour, InputListener {
 
     protected virtual void SetInputEnabled(bool enabled) {
         if (enabled) {
-            Global.Instance().input.EnableListener(this);
+            Global.Instance().Input.EnableListener(this);
         } else {
-            Global.Instance().input.DisableListener(this);
+            Global.Instance().Input.DisableListener(this);
         }
         
     }
 
     protected IEnumerator ResumeRoutine() {
         yield return StartCoroutine(FadeOutRoutine());
-        Global.Instance().input.RemoveListener(this);
+        Global.Instance().Input.RemoveListener(this);
         if (onFinish != null) {
             onFinish();
         }
