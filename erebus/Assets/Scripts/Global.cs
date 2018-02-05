@@ -46,18 +46,18 @@ public class Global : MonoBehaviour {
     }
 
     private void InstantiateManagers() {
+        Settings = gameObject.AddComponent<SettingsCollection>();
         Input = gameObject.AddComponent<InputManager>();
         Lua = gameObject.AddComponent<LuaInterpreter>();
         Maps = gameObject.AddComponent<MapManager>();
         Memory = gameObject.AddComponent<MemoryManager>();
         Audio = gameObject.AddComponent<AudioManager>();
-        Settings = gameObject.AddComponent<SettingsCollection>();
     }
 
     private void SetFullscreenMode() {
         // not sure if this "check" is necessary
         // actually performing this her is kind of a hack
-        if (Screen.fullScreen != Settings.GetBoolSetting(SettingsConstants.Fullscreen).Value) {
+        if (Settings != null && Screen.fullScreen != Settings.GetBoolSetting(SettingsConstants.Fullscreen).Value) {
             Screen.fullScreen = Settings.GetBoolSetting(SettingsConstants.Fullscreen).Value;
         }
     }

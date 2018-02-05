@@ -24,7 +24,7 @@ public class GlitchImageEffect : MonoBehaviour {
 
     private void AssignCommonShaderVariables() {
         material.SetFloat("_Elapsed", elapsedSeconds);
-        if (UseWaveSource && Global.Instance().Audio.GetWaveSource() != null) {
+        if (UseWaveSource && Global.Instance().Audio.GetWaveSource().GetSampleCount() > 0) {
             material.SetFloatArray("_Wave", Global.Instance().Audio.GetWaveSource().GetSamples());
             material.SetInt("_WaveSamples", Global.Instance().Audio.GetWaveSource().GetSampleCount());
         }

@@ -6,10 +6,10 @@ using System.IO;
 
 public class MemoryManager : MonoBehaviour, MemoryPopulater {
 
-    public const int CurrentSaveVersion = 0;
-    public const int LowestSupportedSaveVersion = 0;
+    public const int CurrentSaveVersion = 1;
+    public const int LowestSupportedSaveVersion = 1;
 
-    private const string SystemMemoryName = "system.sav";
+    private const string SystemMemoryName = "erebus.sav";
     private const string SaveGameSuffix = ".sav";
     private const float ScreenshotScaleFactor = 6.0f;
     private const float LoadDelaySeconds = 1.5f;
@@ -35,6 +35,7 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
         switches = new Dictionary<string, bool>();
         listeners = new List<MemoryPopulater>();
         variables = new Dictionary<string, int>();
+        maxSeenCommands = new Dictionary<string, int>();
         messageHistory = new List<LogItem>();
         lastSystemSavedTimestamp = Time.realtimeSinceStartup;
         LoadOrCreateSystemMemory();
@@ -255,10 +256,10 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
         string path = GetSystemMemoryFilepath();
         if (File.Exists(path)) {
             SystemMemory = ReadJsonFromFile<SystemMemory>(path);
-
-            // TODO: settings and stuff eventually
+            Global.Instance().Settings.PopulateFromMemory(SystemMemory.settings);
         } else {
             SystemMemory = new SystemMemory();
+            Global.Instance().Settings.LoadDefaults();
         }
     }
 

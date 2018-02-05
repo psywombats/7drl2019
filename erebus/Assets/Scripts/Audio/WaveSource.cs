@@ -55,6 +55,9 @@ public class WaveSource : MonoBehaviour {
     }
 
     public int GetSampleCount() {
+        if (Source == null) {
+            return 0;
+        }
         int sampleInCount = (int)Math.Ceiling(Source.channels * Source.frequency * PlayRate);
         int sampleCountPerChannel = sampleInCount / Source.channels;
         return sampleCountPerChannel / Oversample;

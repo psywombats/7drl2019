@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class SettingsCollection : MonoBehaviour {
 
-    private const string DefaultsFileName = "Settings/SettingsDefaults";
+    private const string DefaultsFileName = "Database/SettingsDefaults";
 
     private Dictionary<string, Setting<float>> floatSettings;
     private Dictionary<string, Setting<bool>> boolSettings;
