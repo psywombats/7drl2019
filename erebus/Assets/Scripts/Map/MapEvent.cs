@@ -10,7 +10,7 @@ using UnityEngine.Assertions;
  */
  [RequireComponent(typeof(Dispatch))]
 public abstract class MapEvent : TiledInstantiated {
-
+    
     public const string EventEnabled = "enabled";
     public const string EventCollide = "collide";
     public const string EventInteract = "interact";

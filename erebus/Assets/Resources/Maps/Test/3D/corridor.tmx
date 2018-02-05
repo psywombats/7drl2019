@@ -25,7 +25,7 @@
 </data>
  </layer>
  <objectgroup name="Object Layer 1"/>
- <layer name="Tile Layer 2" width="22" height="16">
+ <layer name="Tile Layer 2" width="22" height="16" opacity="0.9">
   <properties>
    <property name="3d" value=""/>
    <property name="z" type="float" value="3"/>

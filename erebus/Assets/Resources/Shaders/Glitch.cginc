@@ -113,6 +113,7 @@ float _CClampJitterR;
 float _CClampJitterG;
 float _CClampJitterB;
 float _CClampBrightness;
+float _CClampMaxDitherJump;
 
 float _PEdgeEnabled;
 float _PEdgeUseWaveSource;
@@ -214,7 +215,16 @@ float clampShade(float source, float shadesAllowed, bool dither, bool vary, floa
             return high;
         }
     }
+    
     float chance = (high - source) / interval;
+    if (abs(chance - 0.5) > _CClampMaxDitherJump / 2.0) {
+        if (source - low < high - source) {
+            return low;
+        } else {
+            return high;
+        }
+    }
+    
     float roll;
     if (vary) {
         roll = rand3(_Elapsed, seed[0] * 34.0, seed[1] * 35.0);
