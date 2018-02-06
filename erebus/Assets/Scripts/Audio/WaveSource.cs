@@ -31,7 +31,12 @@ public class WaveSource : MonoBehaviour {
             averageSamples = new float[outputSampleCount];
         }
 
-        Source.GetData(channelSamples, (int)(elapsedTime * (float)Source.frequency));
+        int offset = (int)(elapsedTime * (float)Source.frequency);
+        while (offset >= Source.samples) {
+            elapsedTime -= Source.samples * Source.frequency;
+            offset = (int)(elapsedTime * (float)Source.frequency);
+        }
+        Source.GetData(channelSamples, offset);
         for (int outSample = 0; outSample < outputSampleCount; outSample += 1) {
             float accum = 0.0f;
             for (int i = 0; i < inSamplesPerOut; i += 1) {
