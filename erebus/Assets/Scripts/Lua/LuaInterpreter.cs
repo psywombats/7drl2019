@@ -51,7 +51,7 @@ public class LuaInterpreter : MonoBehaviour {
     }
 
     public void RegisterAvatar(AvatarEvent avatar) {
-        GlobalContext.Globals["avatar"] = avatar.GetComponent<MapEvent>().LuaObject;
+       SetGlobal("avatar", avatar.GetComponent<MapEvent>().LuaObject);
     }
 
     // generates a lua script object from the specified lua guts, can be run as a process
@@ -74,6 +74,11 @@ public class LuaInterpreter : MonoBehaviour {
     // evaluates a lua function in the global context
     public DynValue Evaluate(DynValue function) {
         return GlobalContext.Call(function);
+    }
+
+    // make sure the luaobject has been registered via [MoonSharpUserData]
+    public void SetGlobal(string key, object luaObject) {
+        GlobalContext.Globals[key] = luaObject;
     }
 
     // executes asynchronously, for cutscenes

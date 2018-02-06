@@ -2,7 +2,9 @@
 using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
+using MoonSharp.Interpreter;
 
+[MoonSharpUserData]
 public class ScenePlayer : MonoBehaviour, InputListener {
 
     private const string DialogSceneName = "DialogScene";
@@ -39,6 +41,7 @@ public class ScenePlayer : MonoBehaviour, InputListener {
         paragraphBox.gameObject.SetActive(false);
         
         Global.Instance().Input.PushListener(this);
+        Global.Instance().Lua.SetGlobal("player", this);
         
         portraits.HideAll();
 

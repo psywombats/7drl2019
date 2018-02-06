@@ -186,6 +186,7 @@
     <Compile Include="Assets\Scripts\SceneScript\ExitCommand.cs" />
     <Compile Include="Assets\Scripts\SceneScript\GotoCommand.cs" />
     <Compile Include="Assets\Scripts\SceneScript\IncrementCommand.cs" />
+    <Compile Include="Assets\Scripts\SceneScript\LuaCommand.cs" />
     <Compile Include="Assets\Scripts\SceneScript\ParagraphCommand.cs" />
     <Compile Include="Assets\Scripts\SceneScript\PerspectiveCommand.cs" />
     <Compile Include="Assets\Scripts\SceneScript\SceneCommand.cs" />
