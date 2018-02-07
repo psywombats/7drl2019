@@ -43,4 +43,10 @@ public class MapEvent2D : MapEvent {
             }
         }
     }
+
+    protected override void SetInitialLocation(RectangleObject rect) {
+        if (rect != null) {
+            Position.Set((int)rect.TmxPosition.x / Map.TileSizePx, (int)rect.TmxPosition.y / Map.TileSizePx);
+        }
+    }
 }

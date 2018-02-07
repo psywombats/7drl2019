@@ -13,8 +13,13 @@ public class TiledImporter : ICustomTiledImporter {
         if (prefab.GetComponent<TiledMap>() != null) {
             Populate<Map>(prefab, props);
         } else if (prefab.GetComponent<RuntimeTmxObject>() != null) {
+            if (props.ContainsKey("3d")) {
+                Populate<MapEvent3D>(prefab, props);
+            } else {
+                Populate<MapEvent2D>(prefab, props);
+            }
             Populate<MapEvent>(prefab, props);
-        } else if (prefab.GetComponent<Layer>() != null) {
+        } else if (prefab.GetComponent<TileLayer>() != null && prefab.GetComponent<ObjectLayer>() == null) {
             if (props.ContainsKey("3d")) {
                 Populate<Layer3D>(prefab, props);
             }

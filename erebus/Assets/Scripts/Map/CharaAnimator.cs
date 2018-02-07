@@ -5,6 +5,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(SpriteRenderer))]
+[DisallowMultipleComponent]
 public class CharaAnimator : MonoBehaviour {
 
     public MapEvent ParentEvent;
@@ -47,7 +48,7 @@ public class CharaAnimator : MonoBehaviour {
         string spritePath = "Sprites/Charas/" + spriteName;
         Sprite[] sprites = Resources.LoadAll<Sprite>(spritePath);
         foreach (Sprite sprite in sprites) {
-            if (sprite.name == spriteName + GetComponent<CharaEvent>().Facing.DirectionName() + "Center") {
+            if (sprite.name == spriteName + ParentEvent.GetComponent<CharaEvent>().Facing.DirectionName() + "Center") {
                 GetComponent<SpriteRenderer>().sprite = sprite;
                 break;
             }

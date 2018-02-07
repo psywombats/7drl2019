@@ -9,6 +9,7 @@ using System;
  * or has a physical appearance. For parallel process or whatevers, they won't have this.
  */
 [RequireComponent(typeof(MapEvent))]
+[DisallowMultipleComponent]
 public class CharaEvent : MonoBehaviour {
 
     public static readonly string FaceEvent = "eventFace";
@@ -48,7 +49,17 @@ public class CharaEvent : MonoBehaviour {
             Facing = InitialFacing;
         }
         if (properties.ContainsKey(PropertySprite)) {
-            gameObject.AddComponent<CharaAnimator>().Populate(properties[PropertySprite]);
+            if (GetComponent<MapEvent3D>() != null) {
+                GameObject puppet = new GameObject("Puppet");
+                puppet.transform.parent = gameObject.transform;
+                puppet.transform.localPosition = new Vector3(0.25f, 0.0f, -1.0f);
+                CharaAnimator animator = puppet.AddComponent<CharaAnimator>();
+                animator.ParentEvent = GetComponent<MapEvent>();
+                animator.Populate(properties[PropertySprite]);
+            } else {
+                gameObject.AddComponent<CharaAnimator>().Populate(properties[PropertySprite]);
+            }
+            
         }
         GetComponent<MapEvent>().Passable = false;
     }

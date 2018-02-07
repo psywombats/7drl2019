@@ -8,7 +8,8 @@ using UnityEngine.Assertions;
 /**
  * The generic "thing on the map" class for MGNE2. Usually comes from Tiled.
  */
- [RequireComponent(typeof(Dispatch))]
+[RequireComponent(typeof(Dispatch))]
+[DisallowMultipleComponent]
 public abstract class MapEvent : TiledInstantiated {
     
     public const string EventEnabled = "enabled";
@@ -103,9 +104,7 @@ public abstract class MapEvent : TiledInstantiated {
         gameObject.AddComponent<Dispatch>();
         Position = new IntVector2(0, 0);
         RectangleObject rect = GetComponent<RectangleObject>();
-        if (rect != null) {
-            Position.Set((int)rect.TmxPosition.x / Map.TileSizePx, (int)rect.TmxPosition.y / Map.TileSizePx);
-        }
+        SetInitialLocation(rect);
 
         // lua junk
         if (properties.ContainsKey(PropertyCondition)) {
@@ -119,7 +118,7 @@ public abstract class MapEvent : TiledInstantiated {
         }
 
         // type assignment
-        if (GetComponent<RuntimeTmxObject>().TmxType == TypeChara) {
+        if (GetComponent<RuntimeTmxObject>().TmxType == TypeChara && GetComponent<CharaEvent>() == null) {
             gameObject.AddComponent<CharaEvent>().Populate(properties);
         }
 
@@ -192,6 +191,9 @@ public abstract class MapEvent : TiledInstantiated {
 
     // set the one xyz coordinate not controlled by arrow keys
     protected abstract void SetDepth();
+
+    // set the initial place we start in from Tiled
+    protected abstract void SetInitialLocation(RectangleObject rect);
 
     // called when the avatar stumbles into us
     // before the step if impassable, after if passable
