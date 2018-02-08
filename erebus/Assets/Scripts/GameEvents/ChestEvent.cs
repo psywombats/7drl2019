@@ -33,7 +33,7 @@ public class ChestEvent : TiledInstantiated {
     private void OnInteract(AvatarEvent avatar) {
         if (Opened || ItemKey == null || ItemKey.Length == 0) {
             Opened = true;
-            StartCoroutine(Textbox.GetInstance().ShowSystemText("Empty."));
+            //StartCoroutine(Textbox.GetInstance().ShowSystemText("Empty."));
         } else {
             Opened = true;
             UpdateAppearance();

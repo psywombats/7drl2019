@@ -26,13 +26,10 @@ public class LuaInterpreter : MonoBehaviour {
         GlobalContext.Globals["eventNamed"] = (Func<DynValue, LuaMapEvent>)EventNamed;
         GlobalContext.Globals["playSFX"] = (Action<DynValue>)PlaySFX;
         GlobalContext.Globals["playBGM"] = (Action<DynValue>)PlayBGM;
-        GlobalContext.Globals["showFace"] = (Action<DynValue>)ShowFace;
 
         // routines
         GlobalContext.Globals["cs_teleportCoords"] = (Action<DynValue, DynValue, DynValue>)Teleport;
         GlobalContext.Globals["cs_teleport"] = (Action<DynValue, DynValue>)Teleport;
-        GlobalContext.Globals["cs_showText"] = (Action<DynValue>)ShowText;
-        GlobalContext.Globals["cs_hideTextbox"] = (Action)HideTextbox;
         GlobalContext.Globals["cs_wait"] = (Action<DynValue>)Wait;
         GlobalContext.Globals["cs_fadeOutBGM"] = (Action<DynValue>)FadeOutBGM;
 
@@ -150,14 +147,6 @@ public class LuaInterpreter : MonoBehaviour {
         Global.Instance().Audio.PlayBGM(bgmKey.String);
     }
 
-    private static void ShowFace(DynValue faceFilename) {
-        if (faceFilename.IsNil()) {
-            Textbox.GetInstance().ShowFace(null);
-        } else {
-            Textbox.GetInstance().ShowFace(faceFilename.String);
-        }
-    }
-
     // Routines
 
     private static void RunStaticRoutineFromLua(IEnumerator routine) {
@@ -170,14 +159,6 @@ public class LuaInterpreter : MonoBehaviour {
 
     private static void Teleport(DynValue mapName, DynValue targetEventName) {
         RunStaticRoutineFromLua(Global.Instance().Maps.TeleportRoutine(mapName.String, targetEventName.String));
-    }
-
-    private static void ShowText(DynValue text) {
-        RunStaticRoutineFromLua(Textbox.GetInstance().ShowText(text.String));
-    }
-
-    private static void HideTextbox() {
-        RunStaticRoutineFromLua(Textbox.GetInstance().TransitionOut());
     }
 
     private static void Wait(DynValue seconds) {

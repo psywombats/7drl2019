@@ -36,23 +36,23 @@ public class ScenePlayer : MonoBehaviour, InputListener {
     }
 
     public void Start() {
-        textbox.gameObject.SetActive(false);
-        paragraphBox.gameObject.SetActive(false);
+        //textbox.gameObject.SetActive(false);
+        //paragraphBox.gameObject.SetActive(false);
         
-        Global.Instance().Input.PushListener(this);
-        Global.Instance().Lua.SetGlobal("player", this);
+        //Global.Instance().Input.PushListener(this);
+        //Global.Instance().Lua.SetGlobal("player", this);
         
-        portraits.HideAll();
+        //portraits.HideAll();
 
-        StartCoroutine(CoUtils.RunAfterDelay(0.1f, () => {
-            if (Global.Instance().Memory.ActiveMemory != null) {
-                Global.Instance().Memory.PopulateFromMemory(Global.Instance().Memory.ActiveMemory);
-                Global.Instance().Memory.ActiveMemory = null;
-                ResumeLoadedScene();
-            } else {
-                PlayFirstScene();
-            }
-        }));
+        //StartCoroutine(CoUtils.RunAfterDelay(0.1f, () => {
+        //    if (Global.Instance().Memory.ActiveMemory != null) {
+        //        Global.Instance().Memory.PopulateFromMemory(Global.Instance().Memory.ActiveMemory);
+        //        Global.Instance().Memory.ActiveMemory = null;
+        //        ResumeLoadedScene();
+        //    } else {
+        //        PlayFirstScene();
+        //    }
+        //}));
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {

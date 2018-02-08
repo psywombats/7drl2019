@@ -9,24 +9,6 @@ function wait(seconds)
     await()
 end
 
-function speak(name, line)
-    if (line == nil) then
-        showFace(nil)
-        cs_showText(name)
-    else
-        showFace(name)
-        cs_showText(line)
-    end
-
-    await()
-end
-
-function speakLine(name, line)
-    speak(name, line)
-    cs_hideTextbox()
-    await()
-end
-
 function teleportCoords(mapName, x, y)
     cs_teleportCoords(mapName, x, y)
     await()
