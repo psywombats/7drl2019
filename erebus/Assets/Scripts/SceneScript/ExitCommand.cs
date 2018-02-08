@@ -16,7 +16,8 @@ public class ExitCommand : StageDirectionCommand {
         this.fadeTag = fadeTag == null ? DefaultFadeTag : fadeTag;
     }
 
-    public override IEnumerator PerformAction(ScenePlayer player) {
+    public override IEnumerator PerformAction() {
+        ScenePlayer player = Global.Instance().ScenePlayer;
         if (synchronous) {
             yield return player.StartCoroutine(ParallelAction(player));
         } else {

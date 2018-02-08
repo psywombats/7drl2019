@@ -20,7 +20,8 @@ public class ChoiceCommand : SceneCommand {
         options = new List<ChoiceOption>();
     }
 
-    public override IEnumerator PerformAction(ScenePlayer player) {
+    public override IEnumerator PerformAction() {
+        ScenePlayer player = Global.Instance().ScenePlayer;
 
         // set mode
         player.AwaitingInputFromCommand = true;

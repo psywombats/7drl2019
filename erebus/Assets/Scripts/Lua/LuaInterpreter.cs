@@ -187,4 +187,8 @@ public class LuaInterpreter : MonoBehaviour {
     private static void FadeOutBGM(DynValue seconds) {
         RunStaticRoutineFromLua(Global.Instance().Audio.FadeOutRoutine((float)seconds.Number));
     }
+
+    private static void PlayScene(DynValue sceneName) {
+        // todo
+    }
 }

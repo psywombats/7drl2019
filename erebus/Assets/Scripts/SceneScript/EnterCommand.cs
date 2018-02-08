@@ -20,7 +20,8 @@ public class EnterCommand : StageDirectionCommand {
         this.fadeTag = (fadeTag == null) ? DefaultFadeInTag : fadeTag;
     }
 
-    public override IEnumerator PerformAction(ScenePlayer player) {
+    public override IEnumerator PerformAction() {
+        ScenePlayer player = Global.Instance().ScenePlayer;
         if (synchronous) {
             yield return player.StartCoroutine(ParallelAction(player));
         } else {

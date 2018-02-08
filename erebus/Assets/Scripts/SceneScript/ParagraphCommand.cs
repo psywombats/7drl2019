@@ -8,16 +8,16 @@ public class ParagraphCommand : TextCommand {
 
     }
 
-    protected override TextboxComponent PrimaryBox(ScenePlayer parser) {
-        return parser.paragraphBox;
-    }
-
-    public override IEnumerator PerformAction(ScenePlayer player) {
-        yield return player.StartCoroutine(base.PerformAction(player));
+    public override IEnumerator PerformAction() {
+        yield return Global.Instance().ScenePlayer.StartCoroutine(base.PerformAction());
         Global.Instance().Memory.AppendLogItem(new LogItem("\n" + text + "\n"));
     }
 
-    protected override TextboxComponent SecondaryBox(ScenePlayer parser) {
-        return parser.textbox;
+    protected override TextboxComponent PrimaryBox() {
+        return Global.Instance().ScenePlayer.paragraphBox;
+    }
+
+    protected override TextboxComponent SecondaryBox() {
+        return Global.Instance().ScenePlayer.textbox;
     }
 }

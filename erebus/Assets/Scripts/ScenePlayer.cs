@@ -4,7 +4,6 @@ using System;
 using System.Collections;
 using MoonSharp.Interpreter;
 
-[MoonSharpUserData]
 public class ScenePlayer : MonoBehaviour, InputListener {
 
     private const string DialogSceneName = "DialogScene";

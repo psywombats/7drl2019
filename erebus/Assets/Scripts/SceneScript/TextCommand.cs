@@ -10,9 +10,10 @@ public abstract class TextCommand : SceneCommand {
         this.text = text;
     }
 
-    public override IEnumerator PerformAction(ScenePlayer player) {
-        TextboxComponent primaryBox = PrimaryBox(player);
-        TextboxComponent secondaryBox = SecondaryBox(player);
+    public override IEnumerator PerformAction() {
+        ScenePlayer player = Global.Instance().ScenePlayer;
+        TextboxComponent primaryBox = PrimaryBox();
+        TextboxComponent secondaryBox = SecondaryBox();
         
         // fade the textboxes in or out
         if (!primaryBox.gameObject.activeInHierarchy) {
@@ -26,7 +27,7 @@ public abstract class TextCommand : SceneCommand {
         yield return player.StartCoroutine(primaryBox.ShowText(player, text, true));
     }
 
-    protected abstract TextboxComponent PrimaryBox(ScenePlayer parser);
+    protected abstract TextboxComponent PrimaryBox();
 
-    protected abstract TextboxComponent SecondaryBox(ScenePlayer parser);
+    protected abstract TextboxComponent SecondaryBox();
 }

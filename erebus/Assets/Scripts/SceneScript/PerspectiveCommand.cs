@@ -16,7 +16,8 @@ public class PerspectiveCommand : SceneCommand {
         this.text = text;
     }
 
-    public override IEnumerator PerformAction(ScenePlayer player) {
+    public override IEnumerator PerformAction() {
+        ScenePlayer player = Global.Instance().ScenePlayer;
         effect = player.GetEffect();
 
         yield return player.StartCoroutine(player.paragraphBox.Deactivate(player));

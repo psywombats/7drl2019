@@ -10,7 +10,7 @@ public class LuaCommand : SceneCommand {
         this.luaChunk = luaChunk;
     }
 
-    public override IEnumerator PerformAction(ScenePlayer player) {
+    public override IEnumerator PerformAction() {
         LuaScript script = Global.Instance().Lua.CreateScript(luaChunk);
 
         bool finished = false;

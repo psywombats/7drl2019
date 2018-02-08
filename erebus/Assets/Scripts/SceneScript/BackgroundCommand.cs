@@ -14,7 +14,8 @@ public class BackgroundCommand : SceneCommand {
         this.transitionTag = (transitionTag == null) ? DefaultTransitionTag : transitionTag;
     }
 
-    public override IEnumerator PerformAction(ScenePlayer player) {
+    public override IEnumerator PerformAction() {
+        ScenePlayer player = Global.Instance().ScenePlayer;
         yield return player.StartCoroutine(player.paragraphBox.Deactivate(player));
         yield return player.StartCoroutine(player.textbox.Deactivate(player));
         yield return player.StartCoroutine(player.ExecuteTransition(transitionTag, () => {

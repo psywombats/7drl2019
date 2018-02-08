@@ -8,7 +8,8 @@ public class ExitAllCommand : StageDirectionCommand {
 
     public bool ClosesTextboxes { get; set; }
 
-    public override IEnumerator PerformAction(ScenePlayer player) {
+    public override IEnumerator PerformAction() {
+        ScenePlayer player = Global.Instance().ScenePlayer;
         if (ClosesTextboxes) {
             yield return CoUtils.RunParallel(new[] {
                     player.textbox.Deactivate(player),

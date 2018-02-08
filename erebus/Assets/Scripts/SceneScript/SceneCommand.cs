@@ -4,7 +4,7 @@ using System;
 
 public abstract class SceneCommand {
 
-    public abstract IEnumerator PerformAction(ScenePlayer player);
+    public abstract IEnumerator PerformAction();
 
     // focus can be lost when the menu or something pops up
 

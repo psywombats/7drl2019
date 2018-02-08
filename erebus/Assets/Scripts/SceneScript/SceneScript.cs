@@ -65,7 +65,7 @@ public class SceneScript {
                 player.debugBox.text = "scene: " + sceneName + "\n";
                 player.debugBox.text += "command index: " + commandIndex;
             }
-            yield return player.StartCoroutine(CurrentCommand.PerformAction(player));
+            yield return player.StartCoroutine(CurrentCommand.PerformAction());
             Global.Instance().Memory.AcknowledgeCommand(sceneName, commandIndex);
         }
     }
@@ -204,10 +204,6 @@ public class SceneScript {
                 // don't bother an explicit command here, this is really just a meta-command about parsing
                 holdMode = true;
                 return null;
-            case "increment":
-                return new IncrementCommand(args[0], 1);
-            case "decrement":
-                return new IncrementCommand(args[0], -1);
             case "branch":
                 this.lastBranch = new BranchCommand(args[0], args[1], args[2]);
                 return this.lastBranch;
@@ -217,18 +213,10 @@ public class SceneScript {
             case "false":
                 this.lastBranch.FalseSceneName = args[1];
                 return null;
-            case "end":
-                return new EndCommand(args[0]);
             case "perspective":
                 return new PerspectiveCommand(args[0], OptionalArg(args, 1), text);
             case "bg":
                 return new BackgroundCommand(args[0], OptionalArg(args, 1));
-            case "bgm":
-                return new BGMCommand(args[0]);
-            case "sfx":
-                return new SoundEffectCommand(args[0]);
-            case "wait":
-                return new WaitCommand(args[0]);
             default:
                 if (choice != null) {
                     string choiceString = command + " " + String.Join(" ", args.ToArray());
@@ -251,7 +239,7 @@ public class SceneScript {
             }
         }
         nvlMode = false;
-        return new SpokenLineCommand(player, commandString);
+        return new SpokenLineCommand(commandString);
     }
 
     private SceneCommand ParseParagraph(string commandString) {

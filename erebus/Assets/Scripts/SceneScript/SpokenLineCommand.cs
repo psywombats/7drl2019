@@ -9,15 +9,17 @@ public class SpokenLineCommand : TextCommand {
     // we expect text in the format MAX: "Some stuff!"
     // or else for narration lines, just Some stuff happened. is fine
     // breaking it down into character tag and stuff is done internally
-    public SpokenLineCommand(ScenePlayer player, string text) : base(text) {
+    public SpokenLineCommand(string text) : base(text) {
+        ScenePlayer player = Global.Instance().ScenePlayer;
         if (SceneScript.StartsWithName(text)) {
             string tag = text.Substring(0, text.IndexOf(':'));
             this.text = text.Substring(text.IndexOf(':') + 2);
-            chara = player.portraits.charas.GetDataOrNull(tag);
+            chara = Global.Instance().ScenePlayer.portraits.charas.GetDataOrNull(tag);
         }
     }
 
-    public override IEnumerator PerformAction(ScenePlayer player) {
+    public override IEnumerator PerformAction() {
+        ScenePlayer player = Global.Instance().ScenePlayer;
         if (player.textbox.speaker != null) {
             if (player.textbox.gameObject.activeInHierarchy) {
                 player.textbox.speaker.TransitionToChara(chara);
@@ -26,7 +28,7 @@ public class SpokenLineCommand : TextCommand {
             }
         }
         
-        yield return player.StartCoroutine(base.PerformAction(player));
+        yield return player.StartCoroutine(base.PerformAction());
 
         if (chara != null) {
             Global.Instance().Memory.AppendLogItem(new LogItem(chara.tag.ToUpper() + ": " + text));
@@ -35,11 +37,11 @@ public class SpokenLineCommand : TextCommand {
         }
     }
 
-    protected override TextboxComponent PrimaryBox(ScenePlayer player) {
-        return player.textbox;
+    protected override TextboxComponent PrimaryBox() {
+        return Global.Instance().ScenePlayer.textbox;
     }
 
-    protected override TextboxComponent SecondaryBox(ScenePlayer player) {
-        return player.paragraphBox;
+    protected override TextboxComponent SecondaryBox() {
+        return Global.Instance().ScenePlayer.paragraphBox;
     }
 }
