@@ -8,8 +8,7 @@ public class ScenePlayer : MonoBehaviour, InputListener {
 
     private const string DialogSceneName = "DialogScene";
     private const float hiddenTextModeFadeoutSeconds = 0.6f;
-
-    public TextAsset firstSceneFile;
+    
     public Canvas canvas;
     public TextboxComponent textbox;
     public TextboxComponent paragraphBox;
@@ -30,19 +29,13 @@ public class ScenePlayer : MonoBehaviour, InputListener {
     public bool AwaitingInputFromCommand { get; set; }
     public bool SkipMode { get; set; }
     public bool AutoMode { get; set; }
-
-    public static void LoadScreen() {
-        SceneManager.LoadScene(DialogSceneName);
-    }
-
+    
     public void Start() {
-        //textbox.gameObject.SetActive(false);
-        //paragraphBox.gameObject.SetActive(false);
-        
-        //Global.Instance().Input.PushListener(this);
-        //Global.Instance().Lua.SetGlobal("player", this);
-        
-        //portraits.HideAll();
+        textbox.gameObject.SetActive(false);
+        paragraphBox.gameObject.SetActive(false);
+        portraits.HideAll();
+
+        Global.Instance().Input.PushListener(this);
 
         //StartCoroutine(CoUtils.RunAfterDelay(0.1f, () => {
         //    if (Global.Instance().Memory.ActiveMemory != null) {
@@ -53,6 +46,14 @@ public class ScenePlayer : MonoBehaviour, InputListener {
         //        PlayFirstScene();
         //    }
         //}));
+    }
+
+    public void OnEnable() {
+        Global.Instance().Input.EnableListener(this);
+    }
+
+    public void OnDisable() {
+        Global.Instance().Input.DisableListener(this);
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
@@ -102,7 +103,7 @@ public class ScenePlayer : MonoBehaviour, InputListener {
                 return false;
         }
     }
-
+    
     public void SetInputEnabled(bool enabled) {
         if (enabled) {
             currentScript.CurrentCommand.OnFocusGained();
@@ -110,20 +111,20 @@ public class ScenePlayer : MonoBehaviour, InputListener {
             currentScript.CurrentCommand.OnFocusGained();
         }
     }
-
+    
     public bool WasHurried() {
         return wasHurried;
     }
-
+    
     public bool IsSuspended() {
         return suspended;
     }
-
+    
     public bool IsAutoAvailable() {
         // this may change in the future
         return true;
     }
-
+    
     public bool IsSkipAvailable() {
         if (currentScript == null) {
             return false;
@@ -131,7 +132,7 @@ public class ScenePlayer : MonoBehaviour, InputListener {
             return currentScript.CanUseFastMode();
         }
     }
-
+    
     public bool ShouldUseFastMode() {
         if (currentScript == null) {
             return false;
@@ -139,28 +140,33 @@ public class ScenePlayer : MonoBehaviour, InputListener {
             return currentScript.ShouldUseFastMode(this);
         }
     }
-
+    
     public void AcknowledgeHurried() {
         wasHurried = false;
     }
-
-    public void PlayFirstScene() {
-        StartCoroutine(PlayScriptForScene(firstSceneFile));
-    }
-
+    
     public IEnumerator AwaitHurry() {
         while (!WasHurried() && !ShouldUseFastMode() && !AutoMode) {
             yield return null;
         }
         AcknowledgeHurried();
     }
-
+    
     public FadeComponent GetFade() {
         return FindObjectOfType<FadeComponent>();
     }
     
     public SpriteEffectComponent GetEffect() {
         return FindObjectOfType<SpriteEffectComponent>();
+    }
+
+    public IEnumerator PlaySceneFromLua(string sceneName) {
+        if (enabled) {
+            Debug.LogWarning("Shouldn't the player be disabled right now?");
+        }
+        enabled = true;
+        yield return PlayScriptForScene(sceneName);
+        enabled = false;
     }
 
     public IEnumerator PlayScriptForScene(string sceneName) {
@@ -170,6 +176,11 @@ public class ScenePlayer : MonoBehaviour, InputListener {
 
     public IEnumerator PlayScriptForScene(TextAsset sceneFile) {
         currentScript = new SceneScript(this, sceneFile);
+        yield return StartCoroutine(PlayCurrentScript());
+    }
+
+    public IEnumerator PlayCommandFromLua(SceneScript script) {
+        currentScript = script;
         yield return StartCoroutine(PlayCurrentScript());
     }
 
@@ -263,6 +274,7 @@ public class ScenePlayer : MonoBehaviour, InputListener {
         yield return StartCoroutine(playingRoutine);
     }
 
+    [MoonSharpHidden]
     private IEnumerator SetHiddenTextModeRoutine(bool hidden) {
         Global.Instance().Input.DisableListener(this);
 

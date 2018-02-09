@@ -16,6 +16,9 @@ public class SceneScript {
     private static bool holdMode;
     private bool nvlMode;
 
+    // general properties
+    private bool anonymousFromLua;
+
     // playback state
     private List<SceneCommand> commands;
     private string sceneName;
@@ -31,6 +34,12 @@ public class SceneScript {
 
     public SceneScript(ScenePlayer player, ScreenMemory memory) : this(player, AssetForSceneName(memory.sceneName)) {
         commandIndex = memory.commandNumber;
+    }
+
+    public SceneScript(SceneCommand anonymousCommandFromLua, string sceneName) {
+        this.sceneName = sceneName;
+        commands = new List<SceneCommand>();
+        commands.Add(anonymousCommandFromLua);
     }
 
     public static TextAsset AssetForSceneName(string sceneName) {

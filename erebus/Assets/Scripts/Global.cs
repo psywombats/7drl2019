@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class Global : MonoBehaviour {
+
+    private static readonly string VNModulePath = "Prefabs/VNModule";
 
     private static Global instance;
     
@@ -11,7 +14,6 @@ public class Global : MonoBehaviour {
     public MemoryManager Memory { get; private set; }
     public AudioManager Audio { get; private set; }
     public SettingsCollection Settings { get; private set; }
-    public ScenePlayer ScenePlayer { get; private set; }
 
     private GlobalConfig config;
     public GlobalConfig Config {
@@ -20,6 +22,24 @@ public class Global : MonoBehaviour {
                 config = GlobalConfig.GetInstance();
             }
             return config;
+        }
+    }
+
+    private ScenePlayer scenePlayer;
+    public ScenePlayer ScenePlayer {
+        get {
+            if (scenePlayer != null) {
+                if (scenePlayer.gameObject.scene != SceneManager.GetActiveScene()) {
+                    scenePlayer = null;
+                }
+            }
+            if (scenePlayer == null) {
+                scenePlayer = FindObjectOfType<ScenePlayer>();
+            }
+            if (scenePlayer == null) {
+                scenePlayer = Instantiate(Resources.Load<GameObject>(VNModulePath)).GetComponentInChildren<ScenePlayer>();
+            }
+            return scenePlayer;
         }
     }
 
@@ -53,7 +73,6 @@ public class Global : MonoBehaviour {
         Maps = gameObject.AddComponent<MapManager>();
         Memory = gameObject.AddComponent<MemoryManager>();
         Audio = gameObject.AddComponent<AudioManager>();
-        ScenePlayer = gameObject.AddComponent<ScenePlayer>();
     }
 
     private void SetFullscreenMode() {

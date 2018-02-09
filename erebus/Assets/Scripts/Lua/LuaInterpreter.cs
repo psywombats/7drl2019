@@ -170,6 +170,6 @@ public class LuaInterpreter : MonoBehaviour {
     }
 
     private static void PlayScene(DynValue sceneName) {
-        // todo
+        RunStaticRoutineFromLua(Global.Instance().ScenePlayer.PlaySceneFromLua(sceneName.String));
     }
 }
