@@ -4,12 +4,12 @@ using System.Collections;
 [RequireComponent(typeof(Sprite))]
 public class BackgroundComponent : MonoBehaviour {
     
-    public BackgroundIndexData backgrounds;
+    
 
     private BackgroundData currentBackground;
 
 	public void SetBackground(string backgroundTag) {
-        currentBackground = backgrounds.GetData(backgroundTag);
+        currentBackground = Global.Instance().Database.Backgrounds.GetData(backgroundTag);
         UpdateDisplay();
     }
 
@@ -21,7 +21,7 @@ public class BackgroundComponent : MonoBehaviour {
 
     public void PopulateFromMemory(ScreenMemory memory) {
         if (memory.backgroundTag != null && memory.backgroundTag.Length > 0) {
-            currentBackground = backgrounds.GetData(memory.backgroundTag);
+            currentBackground = Global.Instance().Database.Backgrounds.GetData(memory.backgroundTag);
             UpdateDisplay();
         }
     }

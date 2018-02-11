@@ -126,6 +126,7 @@
     <Compile Include="Assets\Scripts\Data\FadeIndexData.cs" />
     <Compile Include="Assets\Scripts\Data\GenericDataObject.cs" />
     <Compile Include="Assets\Scripts\Data\GenericIndex.cs" />
+    <Compile Include="Assets\Scripts\Data\IndexDatabase.cs" />
     <Compile Include="Assets\Scripts\Data\SoundEffectIndexData.cs" />
     <Compile Include="Assets\Scripts\Data\TransitionIndexData.cs" />
     <Compile Include="Assets\Scripts\Game\GGlobal.cs" />
@@ -133,7 +134,6 @@
     <Compile Include="Assets\Scripts\GameEvents\ChestEvent.cs" />
     <Compile Include="Assets\Scripts\GameUI\TitleScreen.cs" />
     <Compile Include="Assets\Scripts\Global.cs" />
-    <Compile Include="Assets\Scripts\GlobalConfig.cs" />
     <Compile Include="Assets\Scripts\IO\InputListener.cs" />
     <Compile Include="Assets\Scripts\IO\InputManager.cs" />
     <Compile Include="Assets\Scripts\ImageEffects\AutomataBehavior.cs" />

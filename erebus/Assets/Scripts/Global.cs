@@ -16,13 +16,13 @@ public class Global : MonoBehaviour {
     public AudioManager Audio { get; private set; }
     public SettingsCollection Settings { get; private set; }
 
-    private GlobalConfig config;
-    public GlobalConfig Config {
+    private IndexDatabase database;
+    public IndexDatabase Database {
         get {
-            if (config == null) {
-                config = GlobalConfig.GetInstance();
+            if (database == null) {
+                database = IndexDatabase.Instance();
             }
-            return config;
+            return database;
         }
     }
 

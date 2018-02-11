@@ -8,6 +8,9 @@ public abstract class GenericIndex<T> : ScriptableObject where T : GenericDataOb
     private Dictionary<string, T> tagToDataObject;
 
     public void OnEnable() {
+        if (dataObjects == null) {
+            return;
+        }
         tagToDataObject = new Dictionary<string, T>();
         foreach (T dataObject in dataObjects) {
             tagToDataObject[dataObject.tag] = dataObject;

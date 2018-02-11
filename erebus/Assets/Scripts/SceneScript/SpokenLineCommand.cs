@@ -14,7 +14,7 @@ public class SpokenLineCommand : TextCommand {
         if (SceneScript.StartsWithName(text)) {
             string tag = text.Substring(0, text.IndexOf(':'));
             this.text = text.Substring(text.IndexOf(':') + 2);
-            chara = Global.Instance().ScenePlayer.portraits.charas.GetDataOrNull(tag);
+            chara = Global.Instance().Database.Charas.GetDataOrNull(tag);
         }
     }
 

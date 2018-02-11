@@ -30,7 +30,7 @@ public class PerspectiveCommand : SceneCommand {
 
         TachiComponent tachi = player.portraits.GetPortraitBySlot("D");
         yield return player.StartCoroutine(CoUtils.RunParallel(new[] {
-            tachi.FadeCharaIn(targetCharaKey, player.fades.GetData("whiteout_chara_in")),
+            tachi.FadeCharaIn(targetCharaKey, Global.Instance().Database.Fades.GetData("whiteout_chara_in")),
             effect.FadeLetterboxesIn()
         }, player));
         yield return new WaitForSeconds(0.8f);

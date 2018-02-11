@@ -11,9 +11,6 @@ public class AudioManager : MonoBehaviour, MemoryPopulater {
     private AudioSource sfxSource;
     private AudioSource bgmSource;
 
-    private SoundEffectIndexData sfxs;
-    private BGMIndexData bgms;
-
     private Setting<float> bgmVolumeSetting;
     private Setting<float> sfxVolumeSetting;
 
@@ -21,9 +18,6 @@ public class AudioManager : MonoBehaviour, MemoryPopulater {
 
     public void Start() {
         Global.Instance().Memory.RegisterMemoryPopulater(this);
-
-        bgms = Global.Instance().Config.SoundEffects;
-        sfxs = Global.Instance().Config.BackgroundMusic;
 
         sfxSource = gameObject.AddComponent<AudioSource>();
         sfxSource.playOnAwake = false;
@@ -48,7 +42,7 @@ public class AudioManager : MonoBehaviour, MemoryPopulater {
     }
 
     public void PlaySFX(string key) {
-        AudioClip clip = sfxs.GetData(key).clip;
+        AudioClip clip = Global.Instance().Database.SFX.GetData(key).clip;
         StartCoroutine(PlaySFXRoutine(sfxSource, clip));
     }
 
@@ -59,7 +53,7 @@ public class AudioManager : MonoBehaviour, MemoryPopulater {
                 bgmSource.Stop();
             } else {
                 bgmSource.volume = 1.0f;
-                AudioClip clip = bgms.GetData(key).track;
+                AudioClip clip = Global.Instance().Database.BGM.GetData(key).track;
                 bgmSource.clip = clip;
                 bgmSource.Play();
             }

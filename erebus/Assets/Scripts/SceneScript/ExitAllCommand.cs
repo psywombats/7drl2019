@@ -20,7 +20,7 @@ public class ExitAllCommand : StageDirectionCommand {
         if (!player.portraits.AnyVisible()) {
             yield return null;
         } else {
-            FadeData fade = player.fades.GetData(DefaultFadeTag);
+            FadeData fade = Global.Instance().Database.Fades.GetData(DefaultFadeTag);
             if (synchronous) {
                 yield return player.StartCoroutine(player.portraits.FadeOutAll(fade));
             } else {

@@ -17,9 +17,6 @@ public class ScenePlayer : MonoBehaviour, InputListener {
     public TransitionComponent transition;
     public UnityEngine.UI.Text debugBox;
 
-    public TransitionIndexData transitions;
-    public FadeIndexData fades;
-
     private SceneScript currentScript;
     private IEnumerator playingRoutine;
     private bool suspended;
@@ -221,7 +218,7 @@ public class ScenePlayer : MonoBehaviour, InputListener {
     }
 
     public IEnumerator ExecuteTransition(string tag, Action intermediate) {
-        TransitionData data = transitions.GetData(tag);
+        TransitionData data = Global.Instance().Database.Transitions.GetData(tag);
         StartCoroutine(transition.TransitionRoutine(data, intermediate));
         while (transition.IsTransitioning()) {
             if (ShouldUseFastMode()) {

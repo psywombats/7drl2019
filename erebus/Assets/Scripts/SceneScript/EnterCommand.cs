@@ -35,10 +35,10 @@ public class EnterCommand : StageDirectionCommand {
 
         // fade out if someone's there already
         if (portrait.gameObject.activeSelf) {
-            yield return portrait.FadeOut(player.fades.GetData(DefaultFadeOutTag));
+            yield return portrait.FadeOut(Global.Instance().Database.Fades.GetData(DefaultFadeOutTag));
         }
 
         // fade in the referenced chara
-        yield return portrait.FadeCharaIn(charaTag, player.fades.GetData(fadeTag));
+        yield return portrait.FadeCharaIn(charaTag, Global.Instance().Database.Fades.GetData(fadeTag));
     }
 }

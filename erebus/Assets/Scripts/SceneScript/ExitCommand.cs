@@ -27,12 +27,12 @@ public class ExitCommand : StageDirectionCommand {
     }
 
     private IEnumerator ParallelAction(ScenePlayer player) {
-        CharaData chara = player.portraits.charas.GetData(charaTag);
+        CharaData chara = Global.Instance().Database.Charas.GetData(charaTag);
         TachiComponent portrait = player.portraits.GetPortraitByChara(chara);
 
         // fade 'em out!
         if (portrait != null) {
-            yield return portrait.FadeOut(player.fades.GetData(fadeTag));
+            yield return portrait.FadeOut(Global.Instance().Database.Fades.GetData(fadeTag));
         }
     }
 }
