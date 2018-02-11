@@ -7,6 +7,7 @@ public class Global : MonoBehaviour {
     private static readonly string VNModulePath = "Prefabs/VNModule";
 
     private static Global instance;
+    private bool destructing;
     
     public InputManager Input { get; private set; }
     public LuaInterpreter Lua { get; private set; }
@@ -28,6 +29,9 @@ public class Global : MonoBehaviour {
     private ScenePlayer scenePlayer;
     public ScenePlayer ScenePlayer {
         get {
+            if (destructing) {
+                return null;
+            }
             if (scenePlayer != null) {
                 if (scenePlayer.gameObject.scene != SceneManager.GetActiveScene()) {
                     scenePlayer = null;
@@ -64,6 +68,10 @@ public class Global : MonoBehaviour {
 
     public void Awake() {
         DontDestroyOnLoad(gameObject);
+    }
+
+    public void OnDestroy() {
+        destructing = true;
     }
 
     private void InstantiateManagers() {

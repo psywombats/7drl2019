@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public abstract class GenericIndex<T> : ScriptableObject where T : GenericDataObject {
 
-    public T[] dataObjects;
+    public List<T> dataObjects;
 
     private Dictionary<string, T> tagToDataObject;
 

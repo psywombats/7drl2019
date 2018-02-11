@@ -13,7 +13,7 @@ public class SpeakerDisplayComponent : MonoBehaviour {
         this.chara = chara;
         if (chara != null) {
             portraitImage.sprite = chara.portrait;
-            nametag.text = chara.name;
+            nametag.text = chara.displayName;
         } else {
             chara = null;
         }

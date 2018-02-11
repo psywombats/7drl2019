@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public abstract class GenericDataObject : ScriptableObject {
+public abstract class GenericDataObject {
 
     public string tag;
 

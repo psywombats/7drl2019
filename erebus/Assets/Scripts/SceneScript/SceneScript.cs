@@ -16,9 +16,6 @@ public class SceneScript {
     private static bool holdMode;
     private bool nvlMode;
 
-    // general properties
-    private bool anonymousFromLua;
-
     // playback state
     private List<SceneCommand> commands;
     private string sceneName;

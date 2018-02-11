@@ -32,6 +32,7 @@ public class LuaInterpreter : MonoBehaviour {
         GlobalContext.Globals["cs_teleport"] = (Action<DynValue, DynValue>)Teleport;
         GlobalContext.Globals["cs_wait"] = (Action<DynValue>)Wait;
         GlobalContext.Globals["cs_fadeOutBGM"] = (Action<DynValue>)FadeOutBGM;
+        GlobalContext.Globals["cs_playScene"] = (Action<DynValue>)PlayScene;
 
         // global defines lua-side
         LoadDefines(DefinesPath);
@@ -171,5 +172,18 @@ public class LuaInterpreter : MonoBehaviour {
 
     private static void PlayScene(DynValue sceneName) {
         RunStaticRoutineFromLua(Global.Instance().ScenePlayer.PlaySceneFromLua(sceneName.String));
+    }
+
+    // Scene interaction routines
+
+    private static void RunSceneCommand(SceneCommand command) {
+        // TODO: get the real title in here
+        SceneScript script = new SceneScript(command, "anonymous command");
+        RunStaticRoutineFromLua(Global.Instance().ScenePlayer.PlayCommandFromLua(script));
+    }
+
+    private static void Speak(DynValue line) {
+        // line is interpreted as either a system command or tagged dialog
+        RunSceneCommand(new SpokenLineCommand(line.String));
     }
 }

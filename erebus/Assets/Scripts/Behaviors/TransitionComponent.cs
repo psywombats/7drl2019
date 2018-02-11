@@ -59,11 +59,11 @@ public class TransitionComponent : MonoBehaviour {
     }
 
     public IEnumerator TransitionRoutine(TransitionData transition, Action intermediate = null) {
-        yield return StartCoroutine(FadeRoutine(transition.fadeOut));
+        yield return StartCoroutine(FadeRoutine(transition.GetFadeOut()));
         if (intermediate != null) {
             intermediate();
         }
-        yield return StartCoroutine(FadeRoutine(transition.fadeIn, true));
+        yield return StartCoroutine(FadeRoutine(transition.GetFadeIn(), true));
     }
 
     public IEnumerator FadeRoutine(FadeData fade, bool invert = false, float timeMult = 1.0f) {

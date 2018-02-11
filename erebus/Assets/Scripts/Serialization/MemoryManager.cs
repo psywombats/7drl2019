@@ -199,6 +199,10 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
         for (int i = 0; i < memory.switchKeys.Count; i += 1) {
             switches[memory.switchKeys[i]] = memory.switchValues[i];
         }
+        variables.Clear();
+        for (int i = 0; i < memory.variableKeys.Count; i += 1) {
+            variables[memory.variableKeys[i]] = memory.variableValues[i];
+        }
     }
 
     public Sprite SpriteFromBase64(string encodedString) {
@@ -261,6 +265,12 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
             SystemMemory = new SystemMemory();
             Global.Instance().Settings.LoadDefaults();
         }
+
+        // time to populate from system memory
+        maxSeenCommands.Clear();
+        for (int i = 0; i < SystemMemory.maxSeenCommandsKeys.Count; i += 1) {
+            variables[SystemMemory.maxSeenCommandsKeys[i]] = SystemMemory.maxSeenCommandsValues[i];
+        }
     }
 
     private string GetSystemMemoryFilepath() {
@@ -289,6 +299,6 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
         FadeComponent fade = FindObjectOfType<FadeComponent>();
         yield return fade.FadeToBlackRoutine();
         yield return new WaitForSeconds(LoadDelaySeconds);
-        ScenePlayer.LoadScreen();
+        //ScenePlayer.LoadScreen();
     }
 }

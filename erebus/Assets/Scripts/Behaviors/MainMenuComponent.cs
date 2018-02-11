@@ -51,7 +51,7 @@ public class MainMenuComponent : MenuComponent {
 
     private IEnumerator StartRoutine() {
         yield return fade.FadeToBlackRoutine();
-        ScenePlayer.LoadScreen();
+        //ScenePlayer.LoadScreen();
     }
 
     private IEnumerator LoadRoutine() {

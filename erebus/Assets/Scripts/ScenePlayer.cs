@@ -56,6 +56,34 @@ public class ScenePlayer : MonoBehaviour, InputListener {
         Global.Instance().Input.DisableListener(this);
     }
 
+    public IEnumerator PlaySceneFromLua(string sceneName) {
+        if (enabled) {
+            Debug.LogWarning("Shouldn't the player be disabled right now?");
+        }
+        enabled = true;
+        yield return PlayScriptForScene(sceneName);
+        enabled = false;
+    }
+
+    public IEnumerator PlayScriptForScene(string sceneName) {
+        TextAsset file = SceneScript.AssetForSceneName(sceneName);
+        yield return StartCoroutine(PlayScriptForScene(file));
+    }
+
+    public IEnumerator PlayScriptForScene(TextAsset sceneFile) {
+        currentScript = new SceneScript(this, sceneFile);
+        yield return StartCoroutine(PlayCurrentScript());
+    }
+
+    public IEnumerator PlayCommandFromLua(SceneScript script) {
+        currentScript = script;
+        yield return StartCoroutine(PlayCurrentScript());
+    }
+
+    public IEnumerator PlayCommandFromLua(SceneCommand command, string anonymousSceneName) {
+        yield return PlayCommandFromLua(new SceneScript(command, anonymousSceneName));
+    }
+
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
         if (eventType != InputManager.Event.Up) {
             return true;
@@ -158,30 +186,6 @@ public class ScenePlayer : MonoBehaviour, InputListener {
     
     public SpriteEffectComponent GetEffect() {
         return FindObjectOfType<SpriteEffectComponent>();
-    }
-
-    public IEnumerator PlaySceneFromLua(string sceneName) {
-        if (enabled) {
-            Debug.LogWarning("Shouldn't the player be disabled right now?");
-        }
-        enabled = true;
-        yield return PlayScriptForScene(sceneName);
-        enabled = false;
-    }
-
-    public IEnumerator PlayScriptForScene(string sceneName) {
-        TextAsset file = SceneScript.AssetForSceneName(sceneName);
-        yield return StartCoroutine(PlayScriptForScene(file));
-    }
-
-    public IEnumerator PlayScriptForScene(TextAsset sceneFile) {
-        currentScript = new SceneScript(this, sceneFile);
-        yield return StartCoroutine(PlayCurrentScript());
-    }
-
-    public IEnumerator PlayCommandFromLua(SceneScript script) {
-        currentScript = script;
-        yield return StartCoroutine(PlayCurrentScript());
     }
 
     public void ResumeLoadedScene() {

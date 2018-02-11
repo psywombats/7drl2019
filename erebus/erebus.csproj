@@ -84,7 +84,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Audio\AudioKeyData.cs" />
     <Compile Include="Assets\Scripts\Audio\AudioManager.cs" />
     <Compile Include="Assets\Scripts\Audio\WaveSource.cs" />
     <Compile Include="Assets\Scripts\Behaviors\BackgroundComponent.cs" />
@@ -121,21 +120,13 @@
     <Compile Include="Assets\Scripts\Behaviors\ToggleTextColorComponent.cs" />
     <Compile Include="Assets\Scripts\Behaviors\TransitionComponent.cs" />
     <Compile Include="Assets\Scripts\Behaviors\UIImageAnimationComponent.cs" />
-    <Compile Include="Assets\Scripts\Data\BGMData.cs" />
     <Compile Include="Assets\Scripts\Data\BGMIndexData.cs" />
-    <Compile Include="Assets\Scripts\Data\BackgroundData.cs" />
     <Compile Include="Assets\Scripts\Data\BackgroundIndexData.cs" />
-    <Compile Include="Assets\Scripts\Data\CharaData.cs" />
     <Compile Include="Assets\Scripts\Data\CharaIndexData.cs" />
-    <Compile Include="Assets\Scripts\Data\FadeData.cs" />
     <Compile Include="Assets\Scripts\Data\FadeIndexData.cs" />
     <Compile Include="Assets\Scripts\Data\GenericDataObject.cs" />
     <Compile Include="Assets\Scripts\Data\GenericIndex.cs" />
-    <Compile Include="Assets\Scripts\Data\ParticleData.cs" />
-    <Compile Include="Assets\Scripts\Data\ParticleIndexData.cs" />
-    <Compile Include="Assets\Scripts\Data\SoundEffectData.cs" />
     <Compile Include="Assets\Scripts\Data\SoundEffectIndexData.cs" />
-    <Compile Include="Assets\Scripts\Data\TransitionData.cs" />
     <Compile Include="Assets\Scripts\Data\TransitionIndexData.cs" />
     <Compile Include="Assets\Scripts\Game\GGlobal.cs" />
     <Compile Include="Assets\Scripts\Game\GameLuaInterpretor.cs" />
