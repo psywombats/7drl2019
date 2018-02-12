@@ -44,3 +44,13 @@ function fadeOutBGM(seconds)
     cs_fadeOutBGM(seconds)
     await()
 end
+
+function speakLine(line)
+    cs_speakLine(line)
+    await()
+end
+
+function playScene(sceneName)
+    cs_playSceen(sceneName)
+    await()
+end

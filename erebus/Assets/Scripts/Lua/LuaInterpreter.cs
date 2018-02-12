@@ -33,6 +33,7 @@ public class LuaInterpreter : MonoBehaviour {
         GlobalContext.Globals["cs_wait"] = (Action<DynValue>)Wait;
         GlobalContext.Globals["cs_fadeOutBGM"] = (Action<DynValue>)FadeOutBGM;
         GlobalContext.Globals["cs_playScene"] = (Action<DynValue>)PlayScene;
+        GlobalContext.Globals["cs_speakLine"] = (Action<DynValue>)Speak;
 
         // global defines lua-side
         LoadDefines(DefinesPath);
@@ -179,6 +180,7 @@ public class LuaInterpreter : MonoBehaviour {
     private static void RunSceneCommand(SceneCommand command) {
         // TODO: get the real title in here
         SceneScript script = new SceneScript(command, "anonymous command");
+        Global.Instance().ScenePlayer.gameObject.SetActive(true);
         RunStaticRoutineFromLua(Global.Instance().ScenePlayer.PlayCommandFromLua(script));
     }
 

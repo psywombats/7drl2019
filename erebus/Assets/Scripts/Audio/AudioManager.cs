@@ -38,7 +38,6 @@ public class AudioManager : MonoBehaviour, MemoryPopulater {
     public void Update() {
         bgmSource.volume = bgmVolumeSetting.Value;
         sfxSource.volume = sfxVolumeSetting.Value;
-        PlayBGM("test_a");
     }
 
     public void PlaySFX(string key) {

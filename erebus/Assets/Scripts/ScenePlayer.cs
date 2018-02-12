@@ -28,8 +28,6 @@ public class ScenePlayer : MonoBehaviour, InputListener {
     public bool AutoMode { get; set; }
     
     public void Start() {
-        textbox.gameObject.SetActive(false);
-        paragraphBox.gameObject.SetActive(false);
         portraits.HideAll();
 
         Global.Instance().Input.PushListener(this);
@@ -75,6 +73,7 @@ public class ScenePlayer : MonoBehaviour, InputListener {
     public IEnumerator PlayCommandFromLua(SceneScript script) {
         currentScript = script;
         yield return StartCoroutine(PlayCurrentScript());
+        yield return DisableRoutine();
     }
 
     public IEnumerator PlayCommandFromLua(SceneCommand command, string anonymousSceneName) {
@@ -209,6 +208,14 @@ public class ScenePlayer : MonoBehaviour, InputListener {
         background.PopulateFromMemory(memory);
     }
 
+    public IEnumerator DisableRoutine() {
+        yield return CoUtils.RunParallel(new[] {
+            textbox.FadeOutRoutine(this, PauseMenuComponent.FadeoutSeconds),
+            paragraphBox.FadeOutRoutine(this, PauseMenuComponent.FadeoutSeconds)
+        }, this);
+        gameObject.SetActive(false);
+    }
+
     public IEnumerator ResumeRoutine() {
         yield return CoUtils.RunParallel(new[] {
             textbox.FadeInRoutine(this, PauseMenuComponent.FadeoutSeconds),
@@ -274,8 +281,7 @@ public class ScenePlayer : MonoBehaviour, InputListener {
         playingRoutine = currentScript.PerformActions(this);
         yield return StartCoroutine(playingRoutine);
     }
-
-    [MoonSharpHidden]
+    
     private IEnumerator SetHiddenTextModeRoutine(bool hidden) {
         Global.Instance().Input.DisableListener(this);
 

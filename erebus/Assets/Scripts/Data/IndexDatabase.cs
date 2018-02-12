@@ -13,6 +13,6 @@ public class IndexDatabase : ScriptableObject {
     public CharaIndexData Charas;
 
     public static IndexDatabase Instance() {
-        return Resources.Load<IndexDatabase>("Database/Database.asset");
+        return Resources.Load<IndexDatabase>("Database/Database");
     }
 }

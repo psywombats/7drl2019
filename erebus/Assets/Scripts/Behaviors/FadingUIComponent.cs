@@ -6,10 +6,13 @@ using System.Collections;
 [RequireComponent(typeof(TransitionComponent))]
 public class FadingUIComponent : MonoBehaviour {
 
+    private static readonly string FadeInKeyDefault = "fade";
+    private static readonly string FadeOutKeyDefault = "fade";
+
     public float FadeSeconds = 0.5f;
     public float FastModeFadeSeconds = 0.15f;
-    public FadeData fadeIn;
-    public FadeData fadeOut;
+    public string fadeInKey;
+    public string fadeOutKey;
 
     private float fadeDurationSeconds;
     private float targetAlpha;
@@ -73,26 +76,16 @@ public class FadingUIComponent : MonoBehaviour {
     public IEnumerator Activate(ScenePlayer player = null) {
         gameObject.SetActive(true);
         SetAlpha(0.0f);
-        if (fadeIn != null) {
-            TransitionComponent transition = GetComponent<TransitionComponent>();
-            if (Alpha < 1.0f) {
-                fadeIn.delay = GetFadeSeconds(player);
-                StartCoroutine(transition.FadeRoutine(fadeIn));
-                yield return null;
-                SetAlpha(1.0f);
-                while (transition.IsTransitioning()) {
-                    if (player != null && player.WasHurried()) {
-                        transition.Hurry();
-                    }
-                    yield return null;
-                }
-            }
-        } else {
-            targetAlpha = 1.0f;
-            fadeDurationSeconds = GetFadeSeconds(player);
-            while (Alpha != targetAlpha) {
+        FadeData fadeIn = new FadeData(Global.Instance().Database.Fades.GetData(fadeInKey.Length == 0 ? FadeInKeyDefault : fadeInKey));
+        TransitionComponent transition = GetComponent<TransitionComponent>();
+        if (Alpha < 1.0f) {
+            fadeIn.delay = GetFadeSeconds(player);
+            StartCoroutine(transition.FadeRoutine(fadeIn));
+            yield return null;
+            SetAlpha(1.0f);
+            while (transition.IsTransitioning()) {
                 if (player != null && player.WasHurried()) {
-                    break;
+                    transition.Hurry();
                 }
                 yield return null;
             }
@@ -100,25 +93,15 @@ public class FadingUIComponent : MonoBehaviour {
     }
 
     public IEnumerator Deactivate(ScenePlayer player = null) {
-        if (fadeOut != null) {
-            TransitionComponent transition = GetComponent<TransitionComponent>();
-            if (Alpha > 0.0f) {
-                fadeOut.delay = GetFadeSeconds(player);
-                StartCoroutine(transition.FadeRoutine(fadeOut, true));
-                yield return null;
-                while (transition.IsTransitioning()) {
-                    if (player != null && player.WasHurried()) {
-                        transition.Hurry();
-                    }
-                    yield return null;
-                }
-            }
-        } else {
-            targetAlpha = 0.0f;
-            fadeDurationSeconds = GetFadeSeconds(player);
-            while (Alpha != targetAlpha) {
+        FadeData fadeOut = new FadeData(Global.Instance().Database.Fades.GetData(fadeInKey.Length == 0 ? FadeOutKeyDefault : fadeOutKey));
+        TransitionComponent transition = GetComponent<TransitionComponent>();
+        if (Alpha > 0.0f) {
+            fadeOut.delay = GetFadeSeconds(player);
+            StartCoroutine(transition.FadeRoutine(fadeOut, true));
+            yield return null;
+            while (transition.IsTransitioning()) {
                 if (player != null && player.WasHurried()) {
-                    break;
+                    transition.Hurry();
                 }
                 yield return null;
             }

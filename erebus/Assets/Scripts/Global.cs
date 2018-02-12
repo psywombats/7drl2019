@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class Global : MonoBehaviour {
 
-    private static readonly string VNModulePath = "Prefabs/VNModule";
+    private static readonly string VNModulePath = "Prefabs/UI/VNModule";
 
     private static Global instance;
     private bool destructing;
@@ -19,7 +19,7 @@ public class Global : MonoBehaviour {
     private IndexDatabase database;
     public IndexDatabase Database {
         get {
-            if (database == null) {
+            if (database == null && !destructing) {
                 database = IndexDatabase.Instance();
             }
             return database;
@@ -41,7 +41,9 @@ public class Global : MonoBehaviour {
                 scenePlayer = FindObjectOfType<ScenePlayer>();
             }
             if (scenePlayer == null) {
-                scenePlayer = Instantiate(Resources.Load<GameObject>(VNModulePath)).GetComponentInChildren<ScenePlayer>();
+                GameObject module = Instantiate(Resources.Load<GameObject>(VNModulePath));
+                scenePlayer = module.GetComponentInChildren<ScenePlayer>();
+                module.transform.parent = FindObjectOfType<AvatarEvent>().VNModuleAttachmentPoint.transform;
             }
             return scenePlayer;
         }

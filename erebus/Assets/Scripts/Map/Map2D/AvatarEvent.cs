@@ -6,6 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof(CharaEvent))]
 public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
 
+    public GameObject VNModuleAttachmentPoint;
+
     private int pauseCount;
     public bool InputPaused {
         get {
@@ -22,35 +24,40 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
         if (GetComponent<CharaEvent>().Tracking || InputPaused) {
             return true;
         }
-        if (eventType == InputManager.Event.Hold) {
-            switch (command) {
-                case InputManager.Command.Up:
-                    TryStep(OrthoDir.North);
-                    return false;
-                case InputManager.Command.Down:
-                    TryStep(OrthoDir.South);
-                    return false;
-                case InputManager.Command.Right:
-                    TryStep(OrthoDir.East);
-                    return false;
-                case InputManager.Command.Left:
-                    TryStep(OrthoDir.West);
-                    return false;
-                case InputManager.Command.Confirm:
-                    Interact();
-                    return true;
-                case InputManager.Command.Cancel:
-                    ShowMenu();
-                    return true;
-                case InputManager.Command.Debug:
-                    Global.Instance().Memory.SaveToSlot(0);
-                    return true;
-                default:
-                    return false;
-
-            }
-        } else {
-            return false;
+        switch (eventType) {
+            case InputManager.Event.Hold:
+                switch (command) {
+                    case InputManager.Command.Up:
+                        TryStep(OrthoDir.North);
+                        return false;
+                    case InputManager.Command.Down:
+                        TryStep(OrthoDir.South);
+                        return false;
+                    case InputManager.Command.Right:
+                        TryStep(OrthoDir.East);
+                        return false;
+                    case InputManager.Command.Left:
+                        TryStep(OrthoDir.West);
+                        return false;
+                    default:
+                        return false;
+                }
+            case InputManager.Event.Up:
+                switch (command) {
+                    case InputManager.Command.Confirm:
+                        Interact();
+                        return false;
+                    case InputManager.Command.Cancel:
+                        ShowMenu();
+                        return false;
+                    case InputManager.Command.Debug:
+                        Global.Instance().Memory.SaveToSlot(0);
+                        return false;
+                    default:
+                        return false;
+                }
+            default:
+                return false;
         }
     }
 

@@ -18,6 +18,10 @@ public abstract class GenericIndex<T> : ScriptableObject where T : GenericDataOb
     }
 
     public T GetData(string tag) {
+        if (!tagToDataObject.ContainsKey(tag.ToLower())) {
+            Debug.LogError("Index " + this.GetType().Name + " does not contain key\"" + tag + "\"");
+            return null;
+        }
         return tagToDataObject[tag.ToLower()];
     }
 

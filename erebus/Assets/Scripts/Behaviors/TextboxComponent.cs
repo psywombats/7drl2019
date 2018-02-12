@@ -53,7 +53,7 @@ public class TextboxComponent : MonoBehaviour {
         if (quickMenu != null) quickMenu.GetComponent<FadingUIComponent>().SetAlpha(0.0f);
         if (advancePrompt != null) AdvancePromptAlpha = 0.0f;
     }
-
+    
     public void Clear() {
         textbox.text = "";
     }

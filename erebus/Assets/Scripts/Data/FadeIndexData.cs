@@ -18,4 +18,13 @@ public class FadeData : GenericDataObject {
     public float delay;
     [Range(0.0f, 1.0f)] public float softEdgePercent;
 
+    // copy constructor
+    public FadeData(FadeData copySource) {
+        transitionMask = copySource.transitionMask;
+        invert = copySource.invert;
+        flipHorizontal = copySource.flipHorizontal;
+        flipVertical = copySource.flipVertical;
+        delay = copySource.delay;
+        softEdgePercent = copySource.softEdgePercent;
+    }
 }
