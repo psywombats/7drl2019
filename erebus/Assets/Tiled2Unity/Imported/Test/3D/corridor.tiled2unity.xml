@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 2/11/2018 4:24:21 PM-->
+<!--Last exported: 2/12/2018 10:11:07 PM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="debug_eris" />
   <AssignMaterial mesh="mesh_0002" material="debug_eris" />
@@ -16,12 +16,12 @@
     <GameObject name="Object Layer 1" x="0" y="0" z="0">
       <ObjectLayer offsetX="0" offsetY="0" color="#ff808080" />
       <Property name="3d" value="" />
-      <GameObject name="TestEvent" x="10" y="-8" rotation="0">
+      <GameObject name="TestEvent" x="7" y="-9" rotation="0">
         <Property name="3d" value="" />
         <Property name="face" value="east" />
         <Property name="onInteract" value="speakLine('NPC: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.')" />
         <Property name="sprite" value="scientist" />
-        <RectangleObjectComponent tmx-object-id="6" tmx-object-name="TestEvent" tmx-object-type="Character" tmx-object-x="160" tmx-object-y="128" tmx-object-width="16" tmx-object-height="16" tmx-object-rotation="0" />
+        <RectangleObjectComponent tmx-object-id="6" tmx-object-name="TestEvent" tmx-object-type="Character" tmx-object-x="112" tmx-object-y="144" tmx-object-width="16" tmx-object-height="16" tmx-object-rotation="0" />
         <BoxCollider2D width="1" height="1" />
       </GameObject>
     </GameObject>

@@ -213,6 +213,8 @@ public class ScenePlayer : MonoBehaviour, InputListener {
             textbox.FadeOutRoutine(this, PauseMenuComponent.FadeoutSeconds),
             paragraphBox.FadeOutRoutine(this, PauseMenuComponent.FadeoutSeconds)
         }, this);
+        textbox.gameObject.SetActive(false);
+        paragraphBox.gameObject.SetActive(false);
         gameObject.SetActive(false);
     }
 
