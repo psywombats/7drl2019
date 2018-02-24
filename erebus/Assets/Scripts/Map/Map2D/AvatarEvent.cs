@@ -6,8 +6,6 @@ using UnityEngine;
 [RequireComponent(typeof(CharaEvent))]
 public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
 
-    public GameObject VNModuleAttachmentPoint;
-
     private int pauseCount;
     public bool InputPaused {
         get {

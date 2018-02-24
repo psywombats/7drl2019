@@ -15,6 +15,8 @@ public class Global : MonoBehaviour {
     public MemoryManager Memory { get; private set; }
     public AudioManager Audio { get; private set; }
     public SettingsCollection Settings { get; private set; }
+    public ScenePlayer ScenePlayer { get; private set; }
+    public UIEngine UIEngine { get; private set; }
 
     private IndexDatabase database;
     public IndexDatabase Database {
@@ -23,29 +25,6 @@ public class Global : MonoBehaviour {
                 database = IndexDatabase.Instance();
             }
             return database;
-        }
-    }
-
-    private ScenePlayer scenePlayer;
-    public ScenePlayer ScenePlayer {
-        get {
-            if (destructing) {
-                return null;
-            }
-            if (scenePlayer != null) {
-                if (scenePlayer.gameObject.scene != SceneManager.GetActiveScene()) {
-                    scenePlayer = null;
-                }
-            }
-            if (scenePlayer == null) {
-                scenePlayer = FindObjectOfType<ScenePlayer>();
-            }
-            if (scenePlayer == null) {
-                GameObject module = Instantiate(Resources.Load<GameObject>(VNModulePath));
-                scenePlayer = module.GetComponentInChildren<ScenePlayer>();
-                module.transform.parent = FindObjectOfType<AvatarEvent>().VNModuleAttachmentPoint.transform;
-            }
-            return scenePlayer;
         }
     }
 
@@ -83,6 +62,11 @@ public class Global : MonoBehaviour {
         Maps = gameObject.AddComponent<MapManager>();
         Memory = gameObject.AddComponent<MemoryManager>();
         Audio = gameObject.AddComponent<AudioManager>();
+
+        GameObject module = Instantiate(Resources.Load<GameObject>(VNModulePath));
+        module.transform.parent = transform;
+        UIEngine = module.GetComponentInChildren<UIEngine>();
+        ScenePlayer = UIEngine.ScenePlayer;
     }
 
     private void SetFullscreenMode() {

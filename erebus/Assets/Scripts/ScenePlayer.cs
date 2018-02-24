@@ -9,13 +9,11 @@ public class ScenePlayer : MonoBehaviour, InputListener {
     private const string DialogSceneName = "DialogScene";
     private const float hiddenTextModeFadeoutSeconds = 0.6f;
     
-    public Canvas canvas;
     public TextboxComponent textbox;
     public TextboxComponent paragraphBox;
     public BackgroundComponent background;
     public PortraitGroupComponent portraits;
     public TransitionComponent transition;
-    public UnityEngine.UI.Text debugBox;
 
     private SceneScript currentScript;
     private IEnumerator playingRoutine;
@@ -31,16 +29,6 @@ public class ScenePlayer : MonoBehaviour, InputListener {
         portraits.HideAll();
 
         Global.Instance().Input.PushListener(this);
-
-        //StartCoroutine(CoUtils.RunAfterDelay(0.1f, () => {
-        //    if (Global.Instance().Memory.ActiveMemory != null) {
-        //        Global.Instance().Memory.PopulateFromMemory(Global.Instance().Memory.ActiveMemory);
-        //        Global.Instance().Memory.ActiveMemory = null;
-        //        ResumeLoadedScene();
-        //    } else {
-        //        PlayFirstScene();
-        //    }
-        //}));
     }
 
     public void OnEnable() {
@@ -243,25 +231,25 @@ public class ScenePlayer : MonoBehaviour, InputListener {
 
     private IEnumerator PauseRoutine() {
         Global.Instance().Memory.RememberScreenshot();
-        yield return StartCoroutine(DisplayMenu(PauseMenuComponent.Spawn(canvas.gameObject, () => {
+        yield return StartCoroutine(DisplayMenu(PauseMenuComponent.Spawn(Global.Instance().UIEngine.Canvas.gameObject, () => {
             StartCoroutine(ResumeRoutine());
         })));
     }
 
     private IEnumerator LogRoutine() {
-        yield return StartCoroutine(DisplayMenu(LogComponent.Spawn(canvas.gameObject, () => {
+        yield return StartCoroutine(DisplayMenu(LogComponent.Spawn(Global.Instance().UIEngine.Canvas.gameObject, () => {
             StartCoroutine(ResumeRoutine());
         })));
     }
 
     private IEnumerator SaveRoutine() {
-        yield return StartCoroutine(DisplayMenu(SaveMenuComponent.Spawn(canvas.gameObject, SaveMenuComponent.SaveMenuMode.Save, () => {
+        yield return StartCoroutine(DisplayMenu(SaveMenuComponent.Spawn(Global.Instance().UIEngine.Canvas.gameObject, SaveMenuComponent.SaveMenuMode.Save, () => {
             StartCoroutine(ResumeRoutine());
         })));
     }
 
     private IEnumerator LoadRoutine() {
-        yield return StartCoroutine(DisplayMenu(SaveMenuComponent.Spawn(canvas.gameObject, SaveMenuComponent.SaveMenuMode.Load, () => {
+        yield return StartCoroutine(DisplayMenu(SaveMenuComponent.Spawn(Global.Instance().UIEngine.Canvas.gameObject, SaveMenuComponent.SaveMenuMode.Load, () => {
             StartCoroutine(ResumeRoutine());
         })));
     }

@@ -67,10 +67,8 @@ public class SceneScript {
             if (!Global.Instance().Memory.HasSeenCommand(sceneName, commandIndex)) {
                 player.SkipMode = false;
             }
-            if (player.debugBox != null) {
-                player.debugBox.text = "scene: " + sceneName + "\n";
-                player.debugBox.text += "command index: " + commandIndex;
-            }
+            Global.Instance().UIEngine.DebugBox.text = "scene: " + sceneName + "\n";
+            Global.Instance().UIEngine.DebugBox.text += "command index: " + commandIndex;
             yield return player.StartCoroutine(CurrentCommand.PerformAction());
             Global.Instance().Memory.AcknowledgeCommand(sceneName, commandIndex);
         }
@@ -119,10 +117,8 @@ public class SceneScript {
         foreach (string commandString in commandStrings) {
             SceneCommand command;
 
-            if (player!= null && player.debugBox != null) {
-                player.debugBox.text = "parsing scene: " + sceneName + "\n";
-                player.debugBox.text += "command string: " + commandString;
-            }
+            Global.Instance().UIEngine.DebugBox.text = "parsing scene: " + sceneName + "\n";
+            Global.Instance().UIEngine.DebugBox.text += "command string: " + commandString;
 
             if (commandString.Trim().Length == 0) {
                 // newline, this is a command to clear the stage of characters presuming no HOLDs

@@ -47,7 +47,7 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
     }
 
     public void OnDestroy() {
-        Destroy(screenshot);
+        DestroyImmediate(screenshot);
     }
 
     public void RegisterMemoryPopulater(MemoryPopulater populater) {
