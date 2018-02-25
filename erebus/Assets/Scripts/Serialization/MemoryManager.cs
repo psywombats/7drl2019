@@ -226,14 +226,16 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
             return c2.transform.GetSiblingIndex().CompareTo(c1.transform.GetSiblingIndex());
         });
         foreach (Camera camera in cameras) {
+            RenderTexture oldTexture = camera.targetTexture;
             camera.targetTexture = renderTexture;
             camera.Render();
-            camera.targetTexture = null;
+            camera.targetTexture = oldTexture;
         }
 
+        RenderTexture active = RenderTexture.active;
         RenderTexture.active = renderTexture;
         screenshot.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-        RenderTexture.active = null;
+        RenderTexture.active = active;
         Destroy(renderTexture);
     }
 

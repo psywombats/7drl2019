@@ -7,7 +7,7 @@ using System.Collections;
 public class PauseMenuComponent : MenuComponent {
 
     public const float FadeoutSeconds = 0.2f;
-    private const string PrefabName = "UI/PauseMenu";
+    private const string PrefabName = "Prefabs/UI/PauseMenu";
     private const string TitleSceneName = "TitleScene";
 
     public Button saveButton;
