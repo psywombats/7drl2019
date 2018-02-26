@@ -114,8 +114,7 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
             listener.PopulateMemory(memory);
         }
 
-        ScenePlayer player = FindObjectOfType<ScenePlayer>();
-        memory.screen = player.ToMemory();
+        ScenePlayer player = Global.Instance().ScenePlayer;
 
         foreach (string key in variables.Keys) {
             memory.variableKeys.Add(key);

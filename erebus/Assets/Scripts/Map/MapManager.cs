@@ -50,7 +50,7 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
     }
 
     public void PopulateFromMemory(Memory memory) {
-        avatar = Instantiate<GameObject>(Resources.Load<GameObject>("Prefabs/Avatar")).GetComponent<AvatarEvent>();
+        avatar = Instantiate<GameObject>(Resources.Load<GameObject>("Prefabs/Map3D/Avatar3D")).GetComponent<AvatarEvent>();
         ActiveMap = InstantiateMap(memory.mapName);
         Avatar.transform.parent = ActiveMap.LowestObjectLayer().transform;
         Avatar.PopulateFromMemory(memory);

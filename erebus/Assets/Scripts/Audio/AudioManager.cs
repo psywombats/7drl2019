@@ -16,7 +16,7 @@ public class AudioManager : MonoBehaviour, MemoryPopulater {
 
     public string CurrentBGMKey { get; private set; }
 
-    public void Start() {
+    public void Awake() {
         Global.Instance().Memory.RegisterMemoryPopulater(this);
 
         sfxSource = gameObject.AddComponent<AudioSource>();

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CanvasGroup))]
 public class SettingsMenuComponent : MenuComponent {
 
-    private const string PrefabName = "UI/SettingsMenu";
+    private const string PrefabName = "Prefabs/UI/SettingsMenu";
     private const string ConfirmBodyText = "Save changes?";
     private const string AffirmText = "Apply";
     private const string CancelText = "Close";

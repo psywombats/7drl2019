@@ -51,6 +51,10 @@ public class FadingUIComponent : MonoBehaviour {
         return Alpha;
     }
 
+    public float GetDuration() {
+        return fadeDurationSeconds;
+    }
+
     public IEnumerator FadeInRoutine(float durationSeconds) {
         if (!gameObject.activeInHierarchy) {
             yield break;

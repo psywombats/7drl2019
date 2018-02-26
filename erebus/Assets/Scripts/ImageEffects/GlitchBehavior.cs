@@ -1,27 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-[RequireComponent(typeof(SpriteRenderer))]
 public class GlitchBehavior : MonoBehaviour {
-    public Shader shader;
-    
-    private Material material;
     public bool UseWaveSource;
+
+    private Material material;
     private float elapsedSeconds;
 
     public void Awake() {
         SpriteRenderer renderer = GetComponent<SpriteRenderer>();
-        material = renderer.sharedMaterial;
+        if (renderer != null) {
+            material = renderer.sharedMaterial;
+        } else {
+            material = GetComponent<Image>().material;
+        }
     }
 
     public void Update() {
         AssignCommonShaderVariables();
         elapsedSeconds += Time.deltaTime;
-    }
-
-    public Material GetMaterial() {
-        return material;
     }
 
     private void AssignCommonShaderVariables() {

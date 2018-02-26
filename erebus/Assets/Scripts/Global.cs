@@ -63,10 +63,10 @@ public class Global : MonoBehaviour {
         Memory = gameObject.AddComponent<MemoryManager>();
         Audio = gameObject.AddComponent<AudioManager>();
 
-        GameObject module = Instantiate(Resources.Load<GameObject>(VNModulePath));
-        module.transform.parent = transform;
-        UIEngine = module.GetComponentInChildren<UIEngine>();
-        ScenePlayer = UIEngine.ScenePlayer;
+        //GameObject module = Instantiate(Resources.Load<GameObject>(VNModulePath));
+        //module.transform.parent = transform;
+        //UIEngine = module.GetComponentInChildren<UIEngine>();
+        //ScenePlayer = UIEngine.ScenePlayer;
     }
 
     private void SetFullscreenMode() {

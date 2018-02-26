@@ -5,52 +5,53 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuComponent : MenuComponent {
     
-    public Button startButton;
-    public Button loadButton;
-    public Button quitButton;
-    public Button settingsButton;
-    public Button continueButton;
+    public Button StartButton;
+    public Button LoadButton;
+    public Button QuitButton;
+    public Button SettingsButton;
+    public Button ContinueButton;
 
-    private FadeComponent fade;
+    public FadingUIComponent Tint;
 
     public void Awake() {
-        fade = FindObjectOfType<FadeComponent>();
-
-        startButton.onClick.AddListener(() => {
+        StartButton.onClick.AddListener(() => {
             SetInputEnabled(false);
             StartCoroutine(StartRoutine());
         });
-        loadButton.onClick.AddListener(() => {
+        LoadButton.onClick.AddListener(() => {
             SetInputEnabled(false);
             StartCoroutine(LoadRoutine());
         });
-        quitButton.onClick.AddListener(() => {
+        QuitButton.onClick.AddListener(() => {
             SetInputEnabled(false);
             StartCoroutine(QuitRoutine());
         });
-        continueButton.onClick.AddListener(() => {
+        ContinueButton.onClick.AddListener(() => {
             SetInputEnabled(false);
             StartCoroutine(ContinueRoutine());
         });
-        settingsButton.onClick.AddListener(() => {
+        SettingsButton.onClick.AddListener(() => {
             SetInputEnabled(false);
             StartCoroutine(SettingsRoutine());
         });
+    }
 
-        StartCoroutine(CoUtils.RunAfterDelay(FindObjectOfType<FadeComponent>().fadeTime, () => {
-            SetInputEnabled(true);
-        }));
+    public override void Start() {
+        base.Start();
+        StartCoroutine(InitializeRoutine());
     }
 
     protected override void SetInputEnabled(bool enabled) {
         base.SetInputEnabled(enabled);
-        startButton.interactable = enabled;
-        loadButton.interactable = enabled;
-        quitButton.interactable = enabled;
+        StartButton.interactable = enabled;
+        LoadButton.interactable = enabled;
+        QuitButton.interactable = enabled;
+        SettingsButton.interactable = enabled;
+        ContinueButton.interactable = enabled;
     }
 
     private IEnumerator StartRoutine() {
-        yield return fade.FadeToBlackRoutine();
+        yield return Tint.Activate();
         //ScenePlayer.LoadScreen();
     }
 
@@ -64,7 +65,7 @@ public class MainMenuComponent : MenuComponent {
     }
 
     private IEnumerator QuitRoutine() {
-        yield return fade.FadeToBlackRoutine();
+        yield return Tint.Activate();
         Application.Quit();
     }
 
@@ -81,5 +82,11 @@ public class MainMenuComponent : MenuComponent {
         });
         settingsObject.GetComponent<SettingsMenuComponent>().Alpha = 0.0f;
         yield return StartCoroutine(settingsObject.GetComponent<SettingsMenuComponent>().FadeInRoutine());
+    }
+
+    private IEnumerator InitializeRoutine() {
+        Global.Instance().Audio.PlayBGM("murder");
+        yield return Tint.Activate();
+        SetInputEnabled(true);
     }
 }

@@ -76,7 +76,7 @@ public class TransitionComponent : MonoBehaviour {
 
         ScenePlayer player = FindObjectOfType<ScenePlayer>();
         while (elapsedSeconds < transitionDuration) {
-            if (player.ShouldUseFastMode()) {
+            if (player != null && player.ShouldUseFastMode()) {
                 break;
             }
             yield return null;

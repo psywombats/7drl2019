@@ -5,7 +5,7 @@ using System.IO;
 
 public class SaveMenuComponent : MenuComponent {
 
-    private const string PrefabName = "UI/SaveMenu";
+    private const string PrefabName = "Prefabs/UI/SaveMenu";
     private const float FadeoutSeconds = 0.2f;
 
     public enum SaveMenuMode {

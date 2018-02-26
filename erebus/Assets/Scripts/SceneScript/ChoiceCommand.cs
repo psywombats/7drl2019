@@ -9,7 +9,7 @@ using System;
 // when the [choice] is created, it originally has no options
 public class ChoiceCommand : SceneCommand {
 
-    private const string ButtonPrefabName = "UI/ChoiceButton";
+    private const string ButtonPrefabName = "Prefabs/UI/ChoiceButton";
     private const float ButtonSpacingPx = 16.0f;
     private const float ButtonFadeDuration = 0.5f;
 
