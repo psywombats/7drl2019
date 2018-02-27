@@ -11,8 +11,6 @@ public class MainMenuComponent : MenuComponent {
     public Button SettingsButton;
     public Button ContinueButton;
 
-    public FadingUIComponent Tint;
-
     public void Awake() {
         StartButton.onClick.AddListener(() => {
             SetInputEnabled(false);
@@ -51,8 +49,8 @@ public class MainMenuComponent : MenuComponent {
     }
 
     private IEnumerator StartRoutine() {
-        yield return Tint.Activate();
-        //ScenePlayer.LoadScreen();
+        yield return Global.Instance().UIEngine.Tint.Activate();
+        yield return SceneManager.LoadSceneAsync("MainScene");
     }
 
     private IEnumerator LoadRoutine() {
@@ -65,7 +63,7 @@ public class MainMenuComponent : MenuComponent {
     }
 
     private IEnumerator QuitRoutine() {
-        yield return Tint.Activate();
+        yield return Global.Instance().UIEngine.Tint.Activate();
         Application.Quit();
     }
 
@@ -85,8 +83,8 @@ public class MainMenuComponent : MenuComponent {
     }
 
     private IEnumerator InitializeRoutine() {
-        Global.Instance().Audio.PlayBGM("murder");
-        yield return Tint.Activate();
+        Global.Instance().Audio.PlayBGM("noise");
+        yield return Global.Instance().UIEngine.Tint.Activate();
         SetInputEnabled(true);
     }
 }

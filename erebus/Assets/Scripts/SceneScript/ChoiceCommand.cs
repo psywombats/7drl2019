@@ -54,7 +54,7 @@ public class ChoiceCommand : SceneCommand {
             float lowestFraction = middleVisibleFraction - ((totalButtonsHeight - buttonHeight) / 2.0f) / Screen.height;
             float posY = lowestFraction + ((ButtonSpacingPx + buttonHeight) / Screen.height) * (options.Count - i - 1);
 
-            UIUtils.AttachAndCenter(Global.Instance().UIEngine.Canvas.gameObject, choiceObject);
+            UIUtils.AttachAndCenter(player.Canvas.gameObject, choiceObject);
             transform.anchorMin = new Vector2(0.5f, posY);
             transform.anchorMax = transform.anchorMin;
             transform.anchoredPosition = new Vector2(0, 0);

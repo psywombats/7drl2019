@@ -19,6 +19,7 @@ public class PauseMenuComponent : MenuComponent {
     public Button settingsButton;
 
     public static GameObject Spawn(GameObject parent, Action onFinish) {
+        Global.Instance().Memory.RememberScreenshot();
         return Spawn(parent, PrefabName, onFinish);
     }
 

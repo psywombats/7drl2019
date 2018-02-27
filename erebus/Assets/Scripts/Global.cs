@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class Global : MonoBehaviour {
 
-    private static readonly string VNModulePath = "Prefabs/UI/VNModule";
+    private static readonly string UIModulePath = "Prefabs/UI/UIModule";
 
     private static Global instance;
     private bool destructing;
@@ -63,10 +63,9 @@ public class Global : MonoBehaviour {
         Memory = gameObject.AddComponent<MemoryManager>();
         Audio = gameObject.AddComponent<AudioManager>();
 
-        //GameObject module = Instantiate(Resources.Load<GameObject>(VNModulePath));
-        //module.transform.parent = transform;
-        //UIEngine = module.GetComponentInChildren<UIEngine>();
-        //ScenePlayer = UIEngine.ScenePlayer;
+        GameObject module = Instantiate(Resources.Load<GameObject>(UIModulePath));
+        module.transform.parent = transform;
+        UIEngine = module.GetComponentInChildren<UIEngine>();
     }
 
     private void SetFullscreenMode() {

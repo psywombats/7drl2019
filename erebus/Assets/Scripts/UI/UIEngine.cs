@@ -4,9 +4,10 @@ using System.Collections;
 
 public class UIEngine : MonoBehaviour, InputListener {
 
-    public Canvas Canvas;
+    public Canvas InteractiveCanvas;
     public UnityEngine.UI.Text DebugBox;
-    public ScenePlayer ScenePlayer;
+    public GameObject MenuAttachmentPoint;
+    public FadingUIComponent Tint;
 
     public void Start() {
         Global.Instance().Input.PushListener(this);
@@ -31,7 +32,9 @@ public class UIEngine : MonoBehaviour, InputListener {
     }
 
     private IEnumerator PauseRoutine() {
-        Global.Instance().Memory.RememberScreenshot();
-        yield return StartCoroutine(DisplayMenu(PauseMenuComponent.Spawn(Global.Instance().UIEngine.Canvas.gameObject, () => {} )));
+        InteractiveCanvas.enabled = true;
+        yield return StartCoroutine(DisplayMenu(PauseMenuComponent.Spawn(InteractiveCanvas.gameObject, () => {
+            InteractiveCanvas.enabled = false;
+        })));
     }
 }
