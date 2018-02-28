@@ -14,7 +14,7 @@ public class MainMenuComponent : MenuComponent {
     public void Awake() {
         StartButton.onClick.AddListener(() => {
             SetInputEnabled(false);
-            StartCoroutine(StartRoutine());
+            Global.Instance().UIEngine.StartCoroutine(StartRoutine());
         });
         LoadButton.onClick.AddListener(() => {
             SetInputEnabled(false);
@@ -49,12 +49,16 @@ public class MainMenuComponent : MenuComponent {
     }
 
     private IEnumerator StartRoutine() {
-        yield return CoUtils.RunParallel(new[] {
-            Global.Instance().UIEngine.Tint.Deactivate(),
-            Global.Instance().Audio.FadeOutRoutine(Global.Instance().UIEngine.Tint.GetDuration()),
-        }, this);
         AsyncOperation op = SceneManager.LoadSceneAsync("Main");
-        while (!op.isDone) yield return null;
+        op.allowSceneActivation = false;
+        yield return CoUtils.RunParallel(new[] {
+            Global.Instance().UIEngine.Tint.Deactivate(null, false),
+            Global.Instance().Audio.FadeOutRoutine(Global.Instance().UIEngine.Tint.FadeSeconds),
+        }, this);
+        op.allowSceneActivation = true;
+        while (!op.isDone) {
+            yield return null;
+        }
         LuaScript script = Global.Instance().Lua.CreateScriptFromFile("intro");
         yield return script.RunRoutine();
     }

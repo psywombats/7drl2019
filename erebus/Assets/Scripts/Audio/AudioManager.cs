@@ -11,6 +11,7 @@ public class AudioManager : MonoBehaviour, MemoryPopulater {
     private AudioSource sfxSource;
     private AudioSource bgmSource;
 
+    private float baseVolume = 1.0f;
     private Setting<float> bgmVolumeSetting;
     private Setting<float> sfxVolumeSetting;
 
@@ -36,8 +37,8 @@ public class AudioManager : MonoBehaviour, MemoryPopulater {
     }
 
     public void Update() {
-        bgmSource.volume = bgmVolumeSetting.Value;
-        sfxSource.volume = sfxVolumeSetting.Value;
+        bgmSource.volume = bgmVolumeSetting.Value * baseVolume;
+        sfxSource.volume = sfxVolumeSetting.Value * baseVolume;
     }
 
     public void PlaySFX(string key) {
@@ -69,13 +70,15 @@ public class AudioManager : MonoBehaviour, MemoryPopulater {
 
     public IEnumerator FadeOutRoutine(float durationSeconds) {
         CurrentBGMKey = NoBGMKey;
-        while (bgmSource.volume > 0.0f) {
-            bgmSource.volume -= Time.deltaTime / durationSeconds;
-            if (bgmSource.volume < 0.0f) {
-                bgmSource.volume = 0.0f;
+        while (baseVolume > 0.0f) {
+            baseVolume -= Time.deltaTime / durationSeconds;
+            if (baseVolume < 0.0f) {
+                baseVolume = 0.0f;
             }
             yield return null;
         }
+        baseVolume = 1.0f;
+        PlayBGM(NoBGMKey);
     }
 
     public IEnumerator CrossfadeRoutine(string tag) {

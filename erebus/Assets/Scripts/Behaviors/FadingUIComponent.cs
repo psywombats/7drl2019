@@ -96,7 +96,7 @@ public class FadingUIComponent : MonoBehaviour {
         }
     }
 
-    public IEnumerator Deactivate(ScenePlayer player = null) {
+    public IEnumerator Deactivate(ScenePlayer player = null, bool setDisabled = true) {
         FadeData fadeOut = new FadeData(Global.Instance().Database.Fades.GetData(fadeInKey.Length == 0 ? FadeOutKeyDefault : fadeOutKey));
         TransitionComponent transition = GetComponent<TransitionComponent>();
         if (Alpha > 0.0f) {
@@ -110,7 +110,9 @@ public class FadingUIComponent : MonoBehaviour {
                 yield return null;
             }
         }
-        gameObject.SetActive(false);
+        if (setDisabled) {
+            gameObject.SetActive(false);
+        }
     }
 
     private float GetFadeSeconds(ScenePlayer player) {
