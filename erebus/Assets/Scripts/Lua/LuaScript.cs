@@ -16,4 +16,9 @@ public class LuaScript {
     public void Run(Action callback = null) {
         Global.Instance().Lua.RunScript(function, callback);
     }
+
+    public IEnumerator RunRoutine() {
+        Run();
+        yield break;
+    }
 }

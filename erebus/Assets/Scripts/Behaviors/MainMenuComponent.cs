@@ -49,8 +49,14 @@ public class MainMenuComponent : MenuComponent {
     }
 
     private IEnumerator StartRoutine() {
-        yield return Global.Instance().UIEngine.Tint.Activate();
-        yield return SceneManager.LoadSceneAsync("MainScene");
+        yield return CoUtils.RunParallel(new[] {
+            Global.Instance().UIEngine.Tint.Deactivate(),
+            Global.Instance().Audio.FadeOutRoutine(Global.Instance().UIEngine.Tint.GetDuration()),
+        }, this);
+        AsyncOperation op = SceneManager.LoadSceneAsync("Main");
+        while (!op.isDone) yield return null;
+        LuaScript script = Global.Instance().Lua.CreateScriptFromFile("intro");
+        yield return script.RunRoutine();
     }
 
     private IEnumerator LoadRoutine() {

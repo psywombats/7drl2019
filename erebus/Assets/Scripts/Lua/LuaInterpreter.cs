@@ -53,6 +53,12 @@ public class LuaInterpreter : MonoBehaviour {
        SetGlobal("avatar", avatar.GetComponent<MapEvent>().LuaObject);
     }
 
+    // generates a lua script from a lua file
+    public LuaScript CreateScriptFromFile(string fileName) {
+        TextAsset luaText = Resources.Load<TextAsset>("Scenes/" + fileName + ".lua");
+        return CreateScript(luaText.text);
+    }
+
     // generates a lua script object from the specified lua guts, can be run as a process
     public LuaScript CreateScript(string luaScript) {
         luaScript = "return function()\n" + luaScript;
