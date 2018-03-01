@@ -55,7 +55,7 @@ public class LuaInterpreter : MonoBehaviour {
 
     // generates a lua script from a lua file
     public LuaScript CreateScriptFromFile(string fileName) {
-        TextAsset luaText = Resources.Load<TextAsset>("Scenes/" + fileName + ".lua");
+        TextAsset luaText = Resources.Load<TextAsset>("SceneScripts/" + fileName);
         return CreateScript(luaText.text);
     }
 

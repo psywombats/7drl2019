@@ -157,6 +157,7 @@
     <Compile Include="Assets\Tiled2Unity\Scripts\Editor\TiledAssetPostProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Resources\SceneScripts\intro.txt" />
     <None Include="Assets\Resources\SceneScripts\testScript.txt" />
     <None Include="Assets\Resources\SceneScripts\unimplemented.txt" />
     <None Include="Assets\Resources\Shaders\AutomataShader.shader" />
