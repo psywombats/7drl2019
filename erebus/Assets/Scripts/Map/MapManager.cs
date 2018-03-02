@@ -7,28 +7,8 @@ using UnityEngine.Assertions;
 
 public class MapManager : MonoBehaviour, MemoryPopulater {
 
-    private Map activeMap;
-    public Map ActiveMap {
-        get {
-            if (activeMap == null) {
-                activeMap = GameObject.FindObjectOfType<Map>();
-            }
-            return activeMap;
-        }
-        private set {
-            activeMap = value;
-        }
-    }
-
-    private AvatarEvent avatar;
-    public AvatarEvent Avatar {
-        get {
-            if (avatar == null) {
-                avatar = ActiveMap.GetComponentInChildren<AvatarEvent>();
-            }
-            return avatar;
-        }
-    }
+    public Map ActiveMap { get; private set; }
+    public AvatarEvent Avatar { get; private set; }
 
     private MapCamera mapCamera;
     public MapCamera Camera {
@@ -42,21 +22,31 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
 
     public void Start() {
         Global.Instance().Memory.RegisterMemoryPopulater(this);
+        DebugMapMarker debugMap = FindObjectOfType<DebugMapMarker>();
+        if (debugMap != null) {
+            ActiveMap = FindObjectOfType<Map>();
+            Avatar = ActiveMap.GetComponentInChildren<AvatarEvent>();
+        }
+    }
+
+    public void SetUpInitialMap(string mapName) {
+        ActiveMap = InstantiateMap(mapName);
+        AddInitialAvatar();
     }
 
     public void PopulateMemory(Memory memory) {
-        Avatar.PopulateMemory(memory);
-        memory.mapName = ActiveMap.FullName;
+        if (ActiveMap != null) {
+            Avatar.PopulateMemory(memory);
+            memory.mapName = ActiveMap.FullName;
+        }
     }
 
     public void PopulateFromMemory(Memory memory) {
-        avatar = Instantiate<GameObject>(Resources.Load<GameObject>("Prefabs/Map3D/Avatar3D")).GetComponent<AvatarEvent>();
-        ActiveMap = InstantiateMap(memory.mapName);
-        Avatar.transform.parent = ActiveMap.LowestObjectLayer().transform;
-        Avatar.PopulateFromMemory(memory);
-        ActiveMap.OnTeleportTo();
-        Camera.Target = Avatar.GetComponent<MapEvent>();
-        Camera.ManualUpdate();
+        if (memory.mapName != null) {
+            AddInitialAvatar();
+            ActiveMap = InstantiateMap(memory.mapName);
+            Avatar.PopulateFromMemory(memory);
+        }
     }
 
     public IEnumerator TeleportRoutine(string mapName, IntVector2 location) {
@@ -113,6 +103,17 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
         }
         Assert.IsNotNull(newMapObject);
         return Instantiate(newMapObject).GetComponent<Map>();
+    }
+
+    private void AddInitialAvatar(Memory memory = null) {
+        Avatar = Instantiate<GameObject>(Resources.Load<GameObject>("Prefabs/Map3D/Avatar3D")).GetComponent<AvatarEvent>();
+        if (memory != null) {
+            Avatar.PopulateFromMemory(memory);
+        }
+        Avatar.transform.parent = ActiveMap.LowestObjectLayer().transform;
+        ActiveMap.OnTeleportTo();
+        Camera.Target = Avatar.GetComponent<MapEvent>();
+        Camera.ManualUpdate();
     }
 
     private IEnumerator TeleportOutRoutine() {

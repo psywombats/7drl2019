@@ -88,9 +88,13 @@ public class LuaInterpreter : MonoBehaviour {
 
     // executes asynchronously, for cutscenes
     public void RunScript(DynValue function, Action callback = null) {
-        Global.Instance().Maps.Avatar.PauseInput();
+        if (Global.Instance().Maps.Avatar != null) {
+            Global.Instance().Maps.Avatar.PauseInput();
+        }
         StartCoroutine(CoUtils.RunWithCallback(ScriptRoutine(function), this, () => {
-            Global.Instance().Maps.Avatar.UnpauseInput();
+            if (Global.Instance().Maps.Avatar != null) {
+                Global.Instance().Maps.Avatar.UnpauseInput();
+            }
             activeScript = null;
             if (callback != null) {
                 callback();
