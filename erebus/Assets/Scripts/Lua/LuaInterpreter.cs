@@ -34,6 +34,8 @@ public class LuaInterpreter : MonoBehaviour {
         GlobalContext.Globals["cs_fadeOutBGM"] = (Action<DynValue>)FadeOutBGM;
         GlobalContext.Globals["cs_playScene"] = (Action<DynValue>)PlayScene;
         GlobalContext.Globals["cs_speakLine"] = (Action<DynValue>)Speak;
+        GlobalContext.Globals["cs_fadeIn"] = (Action)FadeIn;
+        GlobalContext.Globals["cs_fadeOut"] = (Action)FadeOut;
 
         // global defines lua-side
         LoadDefines(DefinesPath);
@@ -183,6 +185,14 @@ public class LuaInterpreter : MonoBehaviour {
 
     private static void PlayScene(DynValue sceneName) {
         RunStaticRoutineFromLua(Global.Instance().ScenePlayer.PlaySceneFromLua(sceneName.String));
+    }
+
+    private static void FadeIn() {
+        RunStaticRoutineFromLua(Global.Instance().UIEngine.GlobalFadeRoutine(false));
+    }
+
+    private static void FadeOut() {
+        RunStaticRoutineFromLua(Global.Instance().UIEngine.GlobalFadeRoutine(true));
     }
 
     // Scene interaction routines

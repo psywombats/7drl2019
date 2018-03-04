@@ -54,3 +54,13 @@ function playScene(sceneName)
     cs_playSceen(sceneName)
     await()
 end
+
+function fadeIn()
+    cs_fadeIn()
+    await()
+end
+
+function fadeOut()
+    cs_fadeOut()
+    await()
+end

@@ -31,6 +31,14 @@ public class UIEngine : MonoBehaviour, InputListener {
         yield return menuComponent.FadeInRoutine();
     }
 
+    public IEnumerator GlobalFadeRoutine(bool fadeOut) {
+        if (fadeOut) {
+            yield return Tint.Deactivate(null, false);
+        } else {
+            yield return Tint.Activate(null);
+        }
+    }
+
     private IEnumerator PauseRoutine() {
         InteractiveCanvas.enabled = true;
         yield return StartCoroutine(DisplayMenu(PauseMenuComponent.Spawn(InteractiveCanvas.gameObject, () => {

@@ -1,17 +1,16 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityStandardAssets.ImageEffects;
 
 [ExecuteInEditMode]
-public class ColorEffect : ImageEffectBase {
+public class ColorEffect : MonoBehaviour {
 
     public Color color;
     
-    void OnRenderImage(RenderTexture source, RenderTexture destination) {
-        material.SetColor("_Color", color);
-        Graphics.Blit(source, destination, material);
-    }
+    // A unity version update broke this, reimplement if needed
+    //void OnRenderImage(RenderTexture source, RenderTexture destination) {
+    //    material.SetColor("_Color", color);
+    //    Graphics.Blit(source, destination, material);
+    //}
 
     public void SetColor(Color newColor) {
         color = newColor;

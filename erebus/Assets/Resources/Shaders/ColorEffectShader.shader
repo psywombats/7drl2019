@@ -18,7 +18,7 @@ uniform sampler2D _MainTex;
 uniform fixed4 _Color;
 
 fixed4 frag (v2f_img i) : SV_Target {
-	fixed4 output = tex2D(_MainTex, UnityStereoScreenSpaceUVAdjust(i.uv, _MainTex_ST));
+	fixed4 output = tex2D(_MainTex, i.uv);
 	output.r *= _Color.r;
     output.g *= _Color.g;
     output.b *= _Color.b;

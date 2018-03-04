@@ -52,7 +52,7 @@ public class MainMenuComponent : MenuComponent {
         AsyncOperation op = SceneManager.LoadSceneAsync("Main");
         op.allowSceneActivation = false;
         yield return CoUtils.RunParallel(new[] {
-            Global.Instance().UIEngine.Tint.Deactivate(null, false),
+            Global.Instance().UIEngine.GlobalFadeRoutine(true),
             Global.Instance().Audio.FadeOutRoutine(Global.Instance().UIEngine.Tint.FadeSeconds),
         }, this);
         op.allowSceneActivation = true;

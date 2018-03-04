@@ -106,7 +106,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: AlexWestaLeft
+      name: AlexWestLeft
       rect:
         serializedVersion: 2
         x: 0
@@ -119,7 +119,7 @@ TextureImporter:
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: AlexWestaCenter
+      name: AlexWestCenter
       rect:
         serializedVersion: 2
         x: 24
@@ -132,7 +132,7 @@ TextureImporter:
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: AlexWestaRight
+      name: AlexWestRight
       rect:
         serializedVersion: 2
         x: 48
@@ -145,7 +145,7 @@ TextureImporter:
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: AlexSouthaLeft
+      name: AlexSouthLeft
       rect:
         serializedVersion: 2
         x: 0
@@ -158,7 +158,7 @@ TextureImporter:
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: AlexSouthaCenter
+      name: AlexSouthCenter
       rect:
         serializedVersion: 2
         x: 24
@@ -171,7 +171,7 @@ TextureImporter:
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: AlexSouthaRight
+      name: AlexSouthRight
       rect:
         serializedVersion: 2
         x: 48
@@ -184,7 +184,7 @@ TextureImporter:
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: AlexEastaLeft
+      name: AlexEastLeft
       rect:
         serializedVersion: 2
         x: 0
@@ -197,7 +197,7 @@ TextureImporter:
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: AlexEastaCenter
+      name: AlexEastCenter
       rect:
         serializedVersion: 2
         x: 24
@@ -210,7 +210,7 @@ TextureImporter:
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: AlexEastaRight
+      name: AlexEastRight
       rect:
         serializedVersion: 2
         x: 48
@@ -223,7 +223,7 @@ TextureImporter:
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: AlexNorthaLeft
+      name: AlexNorthLeft
       rect:
         serializedVersion: 2
         x: 0
@@ -236,7 +236,7 @@ TextureImporter:
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: AlexNorthaCenter
+      name: AlexNorthCenter
       rect:
         serializedVersion: 2
         x: 24
@@ -249,7 +249,7 @@ TextureImporter:
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: AlexNorthaRight
+      name: AlexNorthRight
       rect:
         serializedVersion: 2
         x: 48
