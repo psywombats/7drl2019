@@ -250,6 +250,7 @@
     <None Include="Assets\Standard Assets\Effects\TessellationShaders\Shaders\BumpedSpecularDisplacement.shader" />
     <None Include="Assets\Standard Assets\Effects\TessellationShaders\Shaders\BumpedSpecularSmooth.shader" />
     <None Include="Assets\Tiled2Unity\Imported\Test\3D\corridor.tiled2unity.xml" />
+    <None Include="Assets\Tiled2Unity\Imported\Test\3D\tactics.tiled2unity.xml" />
     <None Include="Assets\Tiled2Unity\Imported\Test\Testmap01.tiled2unity.xml" />
     <None Include="Assets\Tiled2Unity\Imported\Test\Testmap02.tiled2unity.xml" />
     <None Include="Assets\Tiled2Unity\Imported\Test\battle_mockup.tiled2unity.xml" />
