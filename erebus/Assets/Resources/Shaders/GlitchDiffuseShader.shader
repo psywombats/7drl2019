@@ -133,7 +133,6 @@
             "CanUseSpriteAtlas"="True"
         }
 
-        Cull Off
         Lighting Off
         Blend One OneMinusSrcAlpha
 
