@@ -644,11 +644,13 @@
  <tile id="186">
   <properties>
    <property name="wall3d" value="170,154"/>
+   <property name="x" value=""/>
   </properties>
  </tile>
  <tile id="187">
   <properties>
    <property name="wall3d" value="171,155"/>
+   <property name="x" value=""/>
   </properties>
  </tile>
  <tile id="222">

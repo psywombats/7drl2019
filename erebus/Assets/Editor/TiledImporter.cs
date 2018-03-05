@@ -32,7 +32,7 @@ public class TiledImporter : ICustomTiledImporter {
                 child.transform.localEulerAngles = new Vector3(90.0f, 0.0f, 0.0f);
                 Vector3 oldPosition = child.transform.position;
                 child.transform.position = new Vector3(oldPosition.x, child.GetComponent<Layer3D>().Z, oldPosition.z);
-                if (child.transform.transform.position.z > 0.0f) {
+                if (child.transform.localPosition.y > 0.0f && !child.GetComponent<Layer3D>().IsExteriorCeiling) {
                     child.transform.localScale = new Vector3(1.0f, 1.0f, -1.0f);
                 }
             }
