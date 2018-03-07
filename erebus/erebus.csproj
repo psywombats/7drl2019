@@ -129,10 +129,6 @@
     <Compile Include="Assets\Scripts\Data\IndexDatabase.cs" />
     <Compile Include="Assets\Scripts\Data\SoundEffectIndexData.cs" />
     <Compile Include="Assets\Scripts\Data\TransitionIndexData.cs" />
-    <Compile Include="Assets\Scripts\Game\GGlobal.cs" />
-    <Compile Include="Assets\Scripts\Game\GameLuaInterpretor.cs" />
-    <Compile Include="Assets\Scripts\GameEvents\ChestEvent.cs" />
-    <Compile Include="Assets\Scripts\GameUI\TitleScreen.cs" />
     <Compile Include="Assets\Scripts\Global.cs" />
     <Compile Include="Assets\Scripts\IO\InputListener.cs" />
     <Compile Include="Assets\Scripts\IO\InputManager.cs" />
@@ -152,6 +148,7 @@
     <Compile Include="Assets\Scripts\Map\CharaEvent.cs" />
     <Compile Include="Assets\Scripts\Map\DebugMapMarker.cs" />
     <Compile Include="Assets\Scripts\Map\EventAppearance.cs" />
+    <Compile Include="Assets\Scripts\Map\Events\ChestEvent.cs" />
     <Compile Include="Assets\Scripts\Map\Map.cs" />
     <Compile Include="Assets\Scripts\Map\Map2D\AvatarEvent.cs" />
     <Compile Include="Assets\Scripts\Map\Map2D\MapCamera2D.cs" />
@@ -169,6 +166,10 @@
     <Compile Include="Assets\Scripts\Map\OrthoDir.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\Doll.cs" />
     <Compile Include="Assets\Scripts\Map\TiledInstantiated.cs" />
+    <Compile Include="Assets\Scripts\RPG\Alignment.cs" />
+    <Compile Include="Assets\Scripts\RPG\Battle.cs" />
+    <Compile Include="Assets\Scripts\RPG\BattleUnit.cs" />
+    <Compile Include="Assets\Scripts\RPG\Unit.cs" />
     <Compile Include="Assets\Scripts\SceneScript\BackgroundCommand.cs" />
     <Compile Include="Assets\Scripts\SceneScript\BranchCommand.cs" />
     <Compile Include="Assets\Scripts\SceneScript\ChoiceCommand.cs" />

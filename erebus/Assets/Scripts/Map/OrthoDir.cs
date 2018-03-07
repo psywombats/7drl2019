@@ -79,7 +79,7 @@ public static class OrthoDirExtensions {
             }
         }
 
-        // TODO: assert
+        Debug.Assert(false, "Could not find orthodir matching " + directionName);
         return OrthoDir.North;
     }
 

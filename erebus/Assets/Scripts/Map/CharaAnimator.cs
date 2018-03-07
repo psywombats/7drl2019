@@ -22,6 +22,10 @@ public class CharaAnimator : MonoBehaviour {
                 GetComponent<SpriteRenderer>().enabled = enabled;
             });
         }
+
+        Parent().GetComponent<Dispatch>().RegisterListener(CharaEvent.FaceEvent, (object direction) => {
+            GetComponent<Animator>().SetInteger("dir", ((OrthoDir)direction).Ordinal());
+        });
     }
 
     public void Update() {

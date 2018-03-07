@@ -37,9 +37,6 @@ public class Global : MonoBehaviour {
             instance.InstantiateManagers();
         }
 
-        // this should be the only game/engine binding
-        GGlobal.Instance();
-
         return instance;
     }
 
