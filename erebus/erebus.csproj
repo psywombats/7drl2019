@@ -206,6 +206,7 @@
     <Compile Include="Assets\Scripts\Util\InstanceMultiController.cs" />
     <Compile Include="Assets\Scripts\Util\IntVector2.cs" />
     <Compile Include="Assets\Scripts\Util\IntVector3.cs" />
+    <Compile Include="Assets\Scripts\Util\ObjectPool.cs" />
     <Compile Include="Assets\Scripts\Util\UIUtils.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\CircleObject.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\GroupLayer.cs" />
