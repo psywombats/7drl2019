@@ -29,7 +29,7 @@
    <property name="3d" value=""/>
   </properties>
  </objectgroup>
- <layer name="Tile Layer 2" width="22" height="16" opacity="0.9">
+ <layer name="Tile Layer 2" width="22" height="16" visible="0" opacity="0.9">
   <properties>
    <property name="3d" value=""/>
    <property name="z" type="float" value="3"/>
@@ -53,7 +53,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <layer name="Ceil 2" width="22" height="16" opacity="0.9">
+ <layer name="Ceil 2" width="22" height="16" visible="0" opacity="0.9">
   <properties>
    <property name="3d" value=""/>
    <property name="ceil" value="exterior"/>

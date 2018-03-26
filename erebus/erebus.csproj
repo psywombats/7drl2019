@@ -169,6 +169,10 @@
     <Compile Include="Assets\Scripts\RPG\Alignment.cs" />
     <Compile Include="Assets\Scripts\RPG\Battle.cs" />
     <Compile Include="Assets\Scripts\RPG\BattleUnit.cs" />
+    <Compile Include="Assets\Scripts\RPG\Stat\AdditiveStat.cs" />
+    <Compile Include="Assets\Scripts\RPG\Stat\FlagStat.cs" />
+    <Compile Include="Assets\Scripts\RPG\Stat\MultiplicativeStat.cs" />
+    <Compile Include="Assets\Scripts\RPG\Stat\Stat.cs" />
     <Compile Include="Assets\Scripts\RPG\Unit.cs" />
     <Compile Include="Assets\Scripts\SceneScript\BackgroundCommand.cs" />
     <Compile Include="Assets\Scripts\SceneScript\BranchCommand.cs" />

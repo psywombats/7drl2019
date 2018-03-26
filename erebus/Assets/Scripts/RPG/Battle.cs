@@ -23,7 +23,7 @@ public class Battle {
 
     public void AddUnit(Unit unit) {
         BattleUnit battleUnit = new BattleUnit(unit, this);
-        AddUnit(unit);
+        AddUnit(battleUnit);
     }
 
     private void RemoveUnit(BattleUnit unit) {
