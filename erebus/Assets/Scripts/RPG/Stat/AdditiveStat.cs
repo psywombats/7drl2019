@@ -1,16 +1,28 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class AdditiveStat : MonoBehaviour {
+/**
+ * Additive stat - anything straight additive used as a based in calculations.
+ */
+public enum AdditiveStat {
+    PPower,
+    SPower,
+    PArmor,
+    SArmor,
+}
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+public class AdditiveStatAttribute : Stat {
+
+}
+
+public static class AdditiveStatExtensions {
+
+    public static float Add(float value1, float value2) {
+        return value1 + value2;
+    }
+
+    public static float Remove(float value1, float value2) {
+        return value1 - value2;
+    }
 }

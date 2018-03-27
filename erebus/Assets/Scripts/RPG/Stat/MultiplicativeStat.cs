@@ -1,16 +1,27 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class MultiplicativeStat : MonoBehaviour {
+/**
+ * Multiplicative stat, for when additive stuff would be OP.
+ * Classic examples: damage reduction 50% plus 50% should be 75% reduction, not 100%.
+ */
+public enum MultiplicativeStat {
+    DamageDealtRate,
+    DamageTaken,
+}
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+public class MultiplicativeStatAttribute : Stat {
+
+}
+
+public class MultiplicativeStatExtensions {
+
+    public static float Add(float value1, float value2) {
+        return value1 * value2;
+    }
+
+    public static float Remove(float value1, float value2) {
+        return value1 / value2;
+    }
 }

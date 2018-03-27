@@ -173,6 +173,7 @@
     <Compile Include="Assets\Scripts\RPG\Stat\FlagStat.cs" />
     <Compile Include="Assets\Scripts\RPG\Stat\MultiplicativeStat.cs" />
     <Compile Include="Assets\Scripts\RPG\Stat\Stat.cs" />
+    <Compile Include="Assets\Scripts\RPG\Stat\StatSet.cs" />
     <Compile Include="Assets\Scripts\RPG\Unit.cs" />
     <Compile Include="Assets\Scripts\SceneScript\BackgroundCommand.cs" />
     <Compile Include="Assets\Scripts\SceneScript\BranchCommand.cs" />

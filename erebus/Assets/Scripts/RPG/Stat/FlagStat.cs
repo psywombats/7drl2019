@@ -1,16 +1,25 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class FlagStat : MonoBehaviour {
+/**
+ * A binary stat, you have it or you don't.
+ */
+public enum FlagStat {
+    DummyFlag,
+}
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+public class FlagStatAttribute : Stat {
+
+}
+
+public static class FlagStatExtensions {
+
+    public static int Add(int value1, int value2) {
+        return value1 + value2;
+    }
+
+    public static int Remove(int value1, int value2) {
+        return value1 - value2;
+    }
 }
