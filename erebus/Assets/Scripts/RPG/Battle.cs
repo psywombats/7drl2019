@@ -21,8 +21,8 @@ public class Battle {
         unitsByAlignment[unit.Align].Add(unit);
     }
 
-    public void AddUnit(Unit unit) {
-        BattleUnit battleUnit = new BattleUnit(unit, this);
+    public void AddUnit(Unit unit, Alignment align) {
+        BattleUnit battleUnit = new BattleUnit(unit, this, align);
         AddUnit(battleUnit);
     }
 

@@ -6,10 +6,8 @@ using System.Collections.Generic;
 public class Memory {
 
     // variables
-    public List<string> variableKeys;
-    public List<int> variableValues;
-    public List<string> switchKeys;
-    public List<bool> switchValues;
+    public SerialDictionary<string, int> variables;
+    public SerialDictionary<string, bool> switches;
 
     // scene data
     public ScreenMemory screen;
@@ -24,5 +22,8 @@ public class Memory {
     public int saveVersion;
     public double savedAt;
     public string base64ScreenshotPNG;
+
+    // rpg
+    public RPGMemory rpg;
 
 }

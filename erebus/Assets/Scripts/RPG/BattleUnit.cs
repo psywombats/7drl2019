@@ -7,15 +7,11 @@ public class BattleUnit {
     public Unit Unit { get; private set; }
     public Battle Battle { get; private set; }
     public Doll doll { get; private set; }
-    
-    public Alignment Align {
-        get {
-            return Unit.Align;
-        }
-    }
+    public Alignment Align { get; private set; }
 
-    public BattleUnit(Unit unit, Battle battle) {
+    public BattleUnit(Unit unit, Battle battle, Alignment align) {
         this.Unit = unit;
         this.Battle = battle;
+        this.Align = align;
     }
 }

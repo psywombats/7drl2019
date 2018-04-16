@@ -6,8 +6,8 @@ using System.IO;
 
 public class MemoryManager : MonoBehaviour, MemoryPopulater {
 
-    public const int CurrentSaveVersion = 1;
-    public const int LowestSupportedSaveVersion = 1;
+    public const int CurrentSaveVersion = 2;
+    public const int LowestSupportedSaveVersion = 2;
 
     private const string SystemMemoryName = "erebus.sav";
     private const string SaveGameSuffix = ".sav";
@@ -114,17 +114,7 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
             listener.PopulateMemory(memory);
         }
 
-        ScenePlayer player = Global.Instance().ScenePlayer;
-
-        foreach (string key in variables.Keys) {
-            memory.variableKeys.Add(key);
-        }
-        foreach (int value in variables.Values) {
-            memory.variableValues.Add(value);
-        }
-
-        AttachScreenshotToMemory(memory);
-
+        // we are included in listener list, heavy lifting is in PopulateMemory
         WriteJsonToFile(memory, FilePathForSlot(slot));
         SystemMemory.lastSlotSaved = slot;
         SaveSystemMemory();
@@ -181,27 +171,19 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
     }
 
     public void PopulateMemory(Memory memory) {
-        memory.switchKeys = new List<string>();
-        memory.switchValues = new List<bool>();
-        foreach (KeyValuePair<string, bool> pair in switches) {
-            memory.switchKeys.Add(pair.Key);
-            memory.switchValues.Add(pair.Value);
-        }
+        ScenePlayer player = Global.Instance().ScenePlayer;
+        AttachScreenshotToMemory(memory);
 
+        memory.variables = new SerialDictionary<string, int>(variables);
+        memory.switches = new SerialDictionary<string, bool>(switches);
         memory.savedAt = CurrentTimestamp();
         memory.saveVersion = CurrentSaveVersion;
     }
 
     public void PopulateFromMemory(Memory memory) {
         // just need to handle the stuff actually stored in this manager
-        switches.Clear();
-        for (int i = 0; i < memory.switchKeys.Count; i += 1) {
-            switches[memory.switchKeys[i]] = memory.switchValues[i];
-        }
-        variables.Clear();
-        for (int i = 0; i < memory.variableKeys.Count; i += 1) {
-            variables[memory.variableKeys[i]] = memory.variableValues[i];
-        }
+        switches = memory.switches.toDictionary();
+        variables = memory.variables.toDictionary();
     }
 
     public Sprite SpriteFromBase64(string encodedString) {
