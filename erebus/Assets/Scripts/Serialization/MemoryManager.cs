@@ -182,8 +182,8 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
 
     public void PopulateFromMemory(Memory memory) {
         // just need to handle the stuff actually stored in this manager
-        switches = memory.switches.toDictionary();
-        variables = memory.variables.toDictionary();
+        switches = memory.switches.ToDictionary();
+        variables = memory.variables.ToDictionary();
     }
 
     public Sprite SpriteFromBase64(string encodedString) {

@@ -12,10 +12,7 @@ public class PartyManager : MemoryPopulater {
     }
 
     public void PopulateFromMemory(Memory memory) {
-        knownUnits.Clear();
-        foreach (UnitMemory unitMemory in memory.rpg.KnownUnits) {
-            knownUnits.Add(new Unit(unitMemory));
-        }
+        throw new System.NotImplementedException();
     }
 
     public void PopulateMemory(Memory memory) {

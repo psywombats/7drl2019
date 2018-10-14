@@ -13,7 +13,7 @@ public class SerialDictionary<K, V> {
         values = new List<V>(dictionary.Values);
     }
 
-    public Dictionary<K, V> toDictionary() {
+    public Dictionary<K, V> ToDictionary() {
         Dictionary<K, V> result = new Dictionary<K, V>();
         for (int i = 0; i < keys.Count; i += 1) {
             result[keys[i]] = values[i];

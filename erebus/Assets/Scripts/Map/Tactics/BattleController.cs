@@ -23,10 +23,10 @@ public class BattleController : MonoBehaviour {
 
     // this should take a battle memory at some point
     public void Setup() {
-        this.battle = new Battle()
+        this.battle = new Battle(this);
 
         dolls = new Dictionary<BattleUnit, Doll>();
-        foreach (BattleUnit unit in battle.Units) {
+        foreach (BattleUnit unit in battle.AllUnits()) {
             Doll doll = Doll.Instantiate(this, unit);
             dolls[unit] = doll;
         }
@@ -34,5 +34,11 @@ public class BattleController : MonoBehaviour {
 
     public void OnEnable() {
         this.map = FindObjectOfType<Map>();
+    }
+
+    // === GETTERS AND BOOKKEEPING ===
+
+    public Doll GetDollForUnit(BattleUnit unit) {
+        return dolls[unit];
     }
 }

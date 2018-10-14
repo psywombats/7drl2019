@@ -28,9 +28,9 @@ public class StatSet {
     }
 
     public StatSet(StatsMemory memory) {
-        additiveStats = memory.additiveStats.toDictionary();
-        multiplicativeStats = memory.multiplicativeStats.toDictionary();
-        flagStats = memory.flagStats.toDictionary();
+        additiveStats = memory.additiveStats.ToDictionary();
+        multiplicativeStats = memory.multiplicativeStats.ToDictionary();
+        flagStats = memory.flagStats.ToDictionary();
     }
 
     public float Get(AdditiveStat stat) {

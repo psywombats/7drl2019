@@ -9,6 +9,12 @@ public class BattleUnit {
     public Alignment Align { get; private set; }
     public IntVector2 Location { get; private set; }
 
+    public Doll Doll {
+        get {
+            return Battle.Controller.GetDollForUnit(this);
+        }
+    }
+
     public BattleUnit(Unit unit, Battle battle, Alignment align) {
         this.Unit = unit;
         this.Battle = battle;
