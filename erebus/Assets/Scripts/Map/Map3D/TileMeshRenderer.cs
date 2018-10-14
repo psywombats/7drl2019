@@ -4,6 +4,10 @@ using UnityEngine;
 using UnityEditor;
 using Tiled2Unity;
 
+/**
+ * Give a map, tileset, and tileset ID, produces a quad with that texture on it. Internally there's
+ * a store of mesh assets and if given a known tileset ID, will use that old mesh instead.
+ */
 [RequireComponent(typeof(MeshRenderer))]
 public class TileMeshRenderer : MonoBehaviour {
 

@@ -29,6 +29,10 @@ internal sealed class SpriteImporter : AssetPostprocessor {
         string path = assetPath;
         string name = NameFromPath(path);
 
+        if (name.Contains("Placeholder")) {
+            return;
+        }
+
         if (path.Contains("Sprites") || path.Contains("UI") || path.Contains("tilesets")) {
             TextureImporter importer = (TextureImporter)assetImporter;
             importer.filterMode = FilterMode.Point;
