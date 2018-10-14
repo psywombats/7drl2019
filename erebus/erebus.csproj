@@ -208,6 +208,7 @@
     <Compile Include="Assets\Scripts\Serialization\SettingsMemory.cs" />
     <Compile Include="Assets\Scripts\Serialization\SystemMemory.cs" />
     <Compile Include="Assets\Scripts\Serialization\TachiMemory.cs" />
+    <Compile Include="Assets\Scripts\Tactics3D\BattleController.cs" />
     <Compile Include="Assets\Scripts\Tactics3D\SelectionGrid.cs" />
     <Compile Include="Assets\Scripts\UI\ScenePlayer.cs" />
     <Compile Include="Assets\Scripts\UI\UIEngine.cs" />

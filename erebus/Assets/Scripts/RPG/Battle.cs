@@ -2,6 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/**
+ * A battle in progress. Responsible for all battle logic, state, and control flow. The actual
+ * battle visual representation is contained in the BattleController.
+ * 
+ * Eventually this should be created from a battle memory or similar.
+ */
 public class Battle {
 
     public HashSet<BattleUnit> Units { get; private set; }
@@ -32,7 +38,7 @@ public class Battle {
         Units.Add(unit);
     }
 
-    public HashSet<BattleUnit> unitsForAlignment(Alignment align) {
+    public HashSet<BattleUnit> UnitsForAlignment(Alignment align) {
         return unitsByAlignment[align];
     }
 }
