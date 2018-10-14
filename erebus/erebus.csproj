@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.6.3p2</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -166,7 +164,9 @@
     <Compile Include="Assets\Scripts\Map\MapEvent.cs" />
     <Compile Include="Assets\Scripts\Map\MapManager.cs" />
     <Compile Include="Assets\Scripts\Map\OrthoDir.cs" />
+    <Compile Include="Assets\Scripts\Map\Tactics\BattleController.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\Doll.cs" />
+    <Compile Include="Assets\Scripts\Map\Tactics\SelectionGrid.cs" />
     <Compile Include="Assets\Scripts\Map\TiledInstantiated.cs" />
     <Compile Include="Assets\Scripts\RPG\Alignment.cs" />
     <Compile Include="Assets\Scripts\RPG\Battle.cs" />
@@ -208,8 +208,6 @@
     <Compile Include="Assets\Scripts\Serialization\SettingsMemory.cs" />
     <Compile Include="Assets\Scripts\Serialization\SystemMemory.cs" />
     <Compile Include="Assets\Scripts\Serialization\TachiMemory.cs" />
-    <Compile Include="Assets\Scripts\Tactics3D\BattleController.cs" />
-    <Compile Include="Assets\Scripts\Tactics3D\SelectionGrid.cs" />
     <Compile Include="Assets\Scripts\UI\ScenePlayer.cs" />
     <Compile Include="Assets\Scripts\UI\UIEngine.cs" />
     <Compile Include="Assets\Scripts\UI\UISprite.cs" />

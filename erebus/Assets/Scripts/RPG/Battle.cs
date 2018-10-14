@@ -10,17 +10,27 @@ using UnityEngine;
  */
 public class Battle {
 
-    public HashSet<BattleUnit> Units { get; private set; }
-
+    // internal state
+    private BattleController controller;
     private Dictionary<Alignment, HashSet<BattleUnit>> unitsByAlignment;
+    private HashSet<BattleUnit> units;
 
-    public Battle() {
-        Units = new HashSet<BattleUnit>();
-        unitsByAlignment = new Dictionary<Alignment, HashSet<BattleUnit>>();
+    // === INITIALIZATION ===
+
+    public Battle(BattleController controller) {
+        this.controller = controller;
+        this.units = new HashSet<BattleUnit>();
+        this.unitsByAlignment = new Dictionary<Alignment, HashSet<BattleUnit>>();
+    }
+
+    // === BOOKKEEPING AND GETTERS ===
+
+    public ICollection<BattleUnit> AllUnits() {
+        return units;
     }
 
     public void AddUnit(BattleUnit unit) {
-        Debug.Assert(!Units.Contains(unit));
+        Debug.Assert(!units.Contains(unit));
         if (!unitsByAlignment.ContainsKey(unit.Align)) {
             unitsByAlignment[unit.Align] = new HashSet<BattleUnit>();
         }
@@ -33,12 +43,25 @@ public class Battle {
     }
 
     private void RemoveUnit(BattleUnit unit) {
-        Debug.Assert(Units.Contains(unit));
+        Debug.Assert(units.Contains(unit));
         unitsByAlignment[unit.Align].Remove(unit);
-        Units.Add(unit);
+        units.Add(unit);
     }
 
     public HashSet<BattleUnit> UnitsForAlignment(Alignment align) {
         return unitsByAlignment[align];
+    }
+
+    // === BATTLE INITIALIZATION ===
+
+    public IntVector2 GetStartingLocationFor(BattleUnit unit) {
+        // TODO: GetStartingLocationFor
+        return new IntVector2(2, 9);
+    }
+
+    // === STATE MACHINE ===
+
+    public void StartBattle() {
+
     }
 }
