@@ -1,43 +1,45 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 /**
  * A stat set is a collection of stats of different types.
  * It can represent a modifier set (+3 str sword) or a base set (Alex, 10 str)
  * */
-public class StatSet {
+[System.Serializable]
+public class StatSet : ISerializationCallbackReceiver {
 
-    private Dictionary<AdditiveStat, float> additiveStats;
-    private Dictionary<MultiplicativeStat, float> multiplicativeStats;
+    // serialization
+    public SerialDictionary<AdditiveStat, float> serialAddStats;
+    public SerialDictionary<MultiplicativeStat, float> serialMultStats;
+    public SerialDictionary<FlagStat, int> serialFlagStats;
+
+    // actual properties
+    private Dictionary<AdditiveStat, float> addStats;
+    private Dictionary<MultiplicativeStat, float> multStats;
     private Dictionary<FlagStat, int> flagStats;
 
     public StatSet() {
-        additiveStats = new Dictionary<AdditiveStat, float>();
-        multiplicativeStats = new Dictionary<MultiplicativeStat, float>();
+        addStats = new Dictionary<AdditiveStat, float>();
+        multStats = new Dictionary<MultiplicativeStat, float>();
         flagStats = new Dictionary<FlagStat, int>();
         foreach (AdditiveStat statId in Enum.GetValues(typeof(AdditiveStat))) {
-            additiveStats[statId] = 0.0f;
+            addStats[statId] = 0.0f;
         }
         foreach (MultiplicativeStat statId in Enum.GetValues(typeof(MultiplicativeStat))) {
-            multiplicativeStats[statId] = 0.0f;
+            multStats[statId] = 0.0f;
         }
         foreach (FlagStat statId in Enum.GetValues(typeof(FlagStat))) {
             flagStats[statId] = 0;
         }
     }
 
-    public StatSet(StatsMemory memory) {
-        additiveStats = memory.additiveStats.ToDictionary();
-        multiplicativeStats = memory.multiplicativeStats.ToDictionary();
-        flagStats = memory.flagStats.ToDictionary();
-    }
-
     public float Get(AdditiveStat stat) {
-        return additiveStats[stat];
+        return addStats[stat];
     }
     public float Get(MultiplicativeStat stat) {
-        return multiplicativeStats[stat];
+        return multStats[stat];
     }
     public bool Is(FlagStat stat) {
         return flagStats[stat] > 0;
@@ -45,10 +47,10 @@ public class StatSet {
 
     public void AddSet(StatSet other) {
         foreach (AdditiveStat statId in Enum.GetValues(typeof(AdditiveStat))) {
-            additiveStats[statId] = AdditiveStatExtensions.Add(Get(statId), other.Get(statId));
+            addStats[statId] = AdditiveStatExtensions.Add(Get(statId), other.Get(statId));
         }
         foreach (MultiplicativeStat statId in Enum.GetValues(typeof(MultiplicativeStat))) {
-            multiplicativeStats[statId] = MultiplicativeStatExtensions.Add(Get(statId), other.Get(statId));
+            multStats[statId] = MultiplicativeStatExtensions.Add(Get(statId), other.Get(statId));
         }
         foreach (FlagStat statId in Enum.GetValues(typeof(FlagStat))) {
             flagStats[statId] = FlagStatExtensions.Add(flagStats[statId], other.flagStats[statId]);
@@ -57,19 +59,27 @@ public class StatSet {
 
     public void RemoveSet(StatSet other) {
         foreach (AdditiveStat statId in Enum.GetValues(typeof(AdditiveStat))) {
-            additiveStats[statId] = AdditiveStatExtensions.Remove(Get(statId), other.Get(statId));
+            addStats[statId] = AdditiveStatExtensions.Remove(Get(statId), other.Get(statId));
         }
         foreach (MultiplicativeStat statId in Enum.GetValues(typeof(MultiplicativeStat))) {
-            multiplicativeStats[statId] = MultiplicativeStatExtensions.Remove(Get(statId), other.Get(statId));
+            multStats[statId] = MultiplicativeStatExtensions.Remove(Get(statId), other.Get(statId));
         }
         foreach (FlagStat statId in Enum.GetValues(typeof(FlagStat))) {
             flagStats[statId] = FlagStatExtensions.Remove(flagStats[statId], other.flagStats[statId]);
         }
     }
 
-    public void PopulateMemory(StatsMemory memory) {
-        memory.additiveStats = new SerialDictionary<AdditiveStat, float>(additiveStats);
-        memory.multiplicativeStats = new SerialDictionary<MultiplicativeStat, float>(multiplicativeStats);
-        memory.flagStats = new SerialDictionary<FlagStat, int>(flagStats);
+    // === SERIALIZATION ===
+
+    public void OnBeforeSerialize() {
+        serialAddStats = new SerialDictionary<AdditiveStat, float>(addStats);
+        serialFlagStats = new SerialDictionary<FlagStat, int>(flagStats);
+        serialMultStats = new SerialDictionary<MultiplicativeStat, float>(multStats);
+    }
+
+    public void OnAfterDeserialize() {
+        addStats = serialAddStats.ToDictionary();
+        flagStats = serialFlagStats.ToDictionary();
+        multStats = serialMultStats.ToDictionary();
     }
 }
