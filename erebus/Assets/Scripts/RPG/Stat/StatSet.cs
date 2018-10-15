@@ -9,77 +9,48 @@ using UnityEngine;
  * */
 [System.Serializable]
 public class StatSet : ISerializationCallbackReceiver {
-
-    // serialization
-    public SerialDictionary<AdditiveStat, float> serialAddStats;
-    public SerialDictionary<MultiplicativeStat, float> serialMultStats;
-    public SerialDictionary<FlagStat, int> serialFlagStats;
-
-    // actual properties
-    private Dictionary<AdditiveStat, float> addStats;
-    private Dictionary<MultiplicativeStat, float> multStats;
-    private Dictionary<FlagStat, int> flagStats;
+    
+    public SerialDictionary<StatTag, float> serializedStats;
+    private Dictionary<StatTag, float> stats;
 
     public StatSet() {
-        addStats = new Dictionary<AdditiveStat, float>();
-        multStats = new Dictionary<MultiplicativeStat, float>();
-        flagStats = new Dictionary<FlagStat, int>();
-        foreach (AdditiveStat statId in Enum.GetValues(typeof(AdditiveStat))) {
-            addStats[statId] = 0.0f;
-        }
-        foreach (MultiplicativeStat statId in Enum.GetValues(typeof(MultiplicativeStat))) {
-            multStats[statId] = 0.0f;
-        }
-        foreach (FlagStat statId in Enum.GetValues(typeof(FlagStat))) {
-            flagStats[statId] = 0;
+        stats = new Dictionary<StatTag, float>();
+        foreach (StatTag tag in Enum.GetValues(typeof(StatTag))) {
+            stats[tag] = Stat.Get(tag).combinator.Zero();
         }
     }
 
-    public float Get(AdditiveStat stat) {
-        return addStats[stat];
+    public float Get(StatTag tag) {
+        return stats[tag];
     }
-    public float Get(MultiplicativeStat stat) {
-        return multStats[stat];
-    }
-    public bool Is(FlagStat stat) {
-        return flagStats[stat] > 0;
+
+    public bool Is(StatTag tag) {
+        return stats[tag] > 0.0f;
     }
 
     public void AddSet(StatSet other) {
-        foreach (AdditiveStat statId in Enum.GetValues(typeof(AdditiveStat))) {
-            addStats[statId] = AdditiveStatExtensions.Add(Get(statId), other.Get(statId));
-        }
-        foreach (MultiplicativeStat statId in Enum.GetValues(typeof(MultiplicativeStat))) {
-            multStats[statId] = MultiplicativeStatExtensions.Add(Get(statId), other.Get(statId));
-        }
-        foreach (FlagStat statId in Enum.GetValues(typeof(FlagStat))) {
-            flagStats[statId] = FlagStatExtensions.Add(flagStats[statId], other.flagStats[statId]);
+        foreach (StatTag tag in Enum.GetValues(typeof(StatTag))) {
+            stats[tag] = Stat.Get(tag).combinator.Combine(stats[tag], other.stats[tag]);
         }
     }
 
     public void RemoveSet(StatSet other) {
-        foreach (AdditiveStat statId in Enum.GetValues(typeof(AdditiveStat))) {
-            addStats[statId] = AdditiveStatExtensions.Remove(Get(statId), other.Get(statId));
-        }
-        foreach (MultiplicativeStat statId in Enum.GetValues(typeof(MultiplicativeStat))) {
-            multStats[statId] = MultiplicativeStatExtensions.Remove(Get(statId), other.Get(statId));
-        }
-        foreach (FlagStat statId in Enum.GetValues(typeof(FlagStat))) {
-            flagStats[statId] = FlagStatExtensions.Remove(flagStats[statId], other.flagStats[statId]);
+        foreach (StatTag tag in Enum.GetValues(typeof(StatTag))) {
+            stats[tag] = Stat.Get(tag).combinator.Decombine(stats[tag], other.stats[tag]);
         }
     }
 
     // === SERIALIZATION ===
 
     public void OnBeforeSerialize() {
-        serialAddStats = new SerialDictionary<AdditiveStat, float>(addStats);
-        serialFlagStats = new SerialDictionary<FlagStat, int>(flagStats);
-        serialMultStats = new SerialDictionary<MultiplicativeStat, float>(multStats);
+        serializedStats = new SerialDictionary<StatTag, float>(stats);
     }
 
     public void OnAfterDeserialize() {
-        addStats = serialAddStats.ToDictionary();
-        flagStats = serialFlagStats.ToDictionary();
-        multStats = serialMultStats.ToDictionary();
+        stats = serializedStats.ToDictionary();
+    }
+
+    public static implicit operator StatSet(UnityEngine.Object v) {
+        throw new NotImplementedException();
     }
 }

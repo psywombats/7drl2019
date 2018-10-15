@@ -175,12 +175,12 @@
     <Compile Include="Assets\Scripts\RPG\BattleUnit.cs" />
     <Compile Include="Assets\Scripts\RPG\PartyManager.cs" />
     <Compile Include="Assets\Scripts\RPG\Data\RPGMemory.cs" />
-    <Compile Include="Assets\Scripts\RPG\Stat\AdditiveStat.cs" />
-    <Compile Include="Assets\Scripts\RPG\Stat\FlagStat.cs" />
-    <Compile Include="Assets\Scripts\RPG\Stat\MultiplicativeStat.cs" />
+    <Compile Include="Assets\Scripts\RPG\Stat\CombinationStrategy.cs" />
+    <Compile Include="Assets\Scripts\RPG\Stat\CombinationAdditive.cs" />
     <Compile Include="Assets\Scripts\RPG\Stat\Stat.cs" />
     <Compile Include="Assets\Scripts\RPG\Stat\StatSet.cs" />
     <Compile Include="Assets\Scripts\RPG\Stat\StatSetEditor.cs" />
+    <Compile Include="Assets\Scripts\RPG\Stat\StatTag.cs" />
     <Compile Include="Assets\Scripts\RPG\Unit.cs" />
     <Compile Include="Assets\Scripts\SceneScript\BackgroundCommand.cs" />
     <Compile Include="Assets\Scripts\SceneScript\BranchCommand.cs" />
