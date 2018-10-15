@@ -1,16 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
-public class Unit {
+[CreateAssetMenu(fileName = "Unit", menuName = "Data/RPG/Unit")]
+public class Unit : ScriptableObject {
 
-    public StatSet Stats { get; private set; }
+    public string unitName;
+    public StatSet stats;
 
-    //public Unit(UnitMemory memory) {
-    //    Stats = new StatSet(memory.statsMemory);
-    //}
-
-    //public Unit(Alignment align) {
-    //    // TODO: shouldn't be able to init with zero stats
-    //    this.Stats = new StatSet();
-    //}
 }

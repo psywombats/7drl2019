@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-[CreateAssetMenu(fileName = "BackgroundIndexData", menuName = "Data/BackgroundIndexData")]
+[CreateAssetMenu(fileName = "BackgroundIndexData", menuName = "Data/VN/BackgroundIndexData")]
 public class BackgroundIndexData : GenericIndex<BackgroundData> {
 
 }

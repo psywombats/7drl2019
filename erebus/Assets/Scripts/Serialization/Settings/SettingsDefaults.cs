@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "SettingsDefaults", menuName = "Data/SettingsDefaults")]
+[CreateAssetMenu(fileName = "SettingsDefaults", menuName = "Data/Settings/SettingsDefaults")]
 public class SettingsDefaults : ScriptableObject {
 
     public float textSpeed;

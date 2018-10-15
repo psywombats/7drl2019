@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-[CreateAssetMenu(fileName = "FadeIndexData", menuName = "Data/FadeIndexData")]
+[CreateAssetMenu(fileName = "FadeIndexData", menuName = "Data/VN/FadeIndexData")]
 public class FadeIndexData : GenericIndex<FadeData> {
 
 }

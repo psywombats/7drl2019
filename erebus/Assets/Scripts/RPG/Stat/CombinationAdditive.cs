@@ -6,7 +6,7 @@ public class CombinationAdditive : CombinationStrategy {
     private static CombinationAdditive instance;
 
     private CombinationAdditive() {
-        super();
+        
     }
 
     public static CombinationAdditive Instance() {

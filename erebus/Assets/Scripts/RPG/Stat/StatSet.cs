@@ -10,15 +10,25 @@ using UnityEngine;
 [System.Serializable]
 public class StatSet : ISerializationCallbackReceiver {
     
-    public SerialDictionary<StatTag, float> serializedStats;
+    public StatDictionary serializedStats;
     private Dictionary<StatTag, float> stats;
 
     public StatSet() {
+        InitNewSet();
+    }
+
+    private StatSet(StatDictionary stats) {
+        this.stats = stats.ToDictionary();
+    }
+
+    private void InitNewSet() {
         stats = new Dictionary<StatTag, float>();
         foreach (StatTag tag in Enum.GetValues(typeof(StatTag))) {
             stats[tag] = Stat.Get(tag).combinator.Zero();
         }
     }
+
+    // === ACCESSORS ===
 
     public float Get(StatTag tag) {
         return stats[tag];
@@ -27,6 +37,17 @@ public class StatSet : ISerializationCallbackReceiver {
     public bool Is(StatTag tag) {
         return stats[tag] > 0.0f;
     }
+
+    public void Set(StatTag tag, float value) {
+        stats[tag] = value;
+    }
+
+    public float this[StatTag tag] {
+        get { return stats[tag]; }
+        set { stats[tag] = value; }
+    }
+
+    // === SET OPERATIONS ===
 
     public void AddSet(StatSet other) {
         foreach (StatTag tag in Enum.GetValues(typeof(StatTag))) {
@@ -43,14 +64,25 @@ public class StatSet : ISerializationCallbackReceiver {
     // === SERIALIZATION ===
 
     public void OnBeforeSerialize() {
-        serializedStats = new SerialDictionary<StatTag, float>(stats);
+        serializedStats = new StatDictionary(stats);
     }
 
     public void OnAfterDeserialize() {
-        stats = serializedStats.ToDictionary();
+        InitNewSet();
+        if (serializedStats != null) {
+            AddSet(new StatSet(serializedStats));
+        }
     }
 
     public static implicit operator StatSet(UnityEngine.Object v) {
         throw new NotImplementedException();
     }
+
+    [System.Serializable]
+    public class StatDictionary : SerialDictionary<StatTag, float> {
+        public StatDictionary(Dictionary<StatTag, float> dictionary) : base(dictionary) {
+
+        }
+    }
 }
+

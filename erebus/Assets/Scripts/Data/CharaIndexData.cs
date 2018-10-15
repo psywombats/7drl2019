@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-[CreateAssetMenu(fileName = "CharaIndexData", menuName = "Data/CharaIndexData")]
+[CreateAssetMenu(fileName = "CharaIndexData", menuName = "Data/VN/CharaIndexData")]
 public class CharaIndexData : GenericIndex<CharaData> {
 
 }

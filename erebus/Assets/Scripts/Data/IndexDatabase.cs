@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "TransitionIndexData", menuName = "Data/IndexDatabase")]
+[CreateAssetMenu(fileName = "IndexDatabase", menuName = "Data/IndexDatabase")]
 public class IndexDatabase : ScriptableObject {
 
     public TransitionIndexData Transitions;

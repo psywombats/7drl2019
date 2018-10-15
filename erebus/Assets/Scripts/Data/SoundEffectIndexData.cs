@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System;
 
-[CreateAssetMenu(fileName = "SoundEffectIndexData", menuName = "Data/SoundEffectIndexData")]
+[CreateAssetMenu(fileName = "SoundEffectIndexData", menuName = "Data/VN/SoundEffectIndexData")]
 public class SoundEffectIndexData : GenericIndex<SoundEffectData> {
 
 }

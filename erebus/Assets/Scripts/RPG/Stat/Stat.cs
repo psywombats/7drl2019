@@ -11,12 +11,14 @@ public class Stat {
 
     public CombinationStrategy combinator { get; private set; }
     public StatTag tag { get; private set; }
+    public String nameShort { get; private set; }
 
     private static Dictionary<StatTag, Stat> stats;
 
-    private Stat(StatTag tag, CombinationStrategy combinator) {
+    private Stat(StatTag tag, CombinationStrategy combinator, String nameShort) {
         this.combinator = combinator;
         this.tag = tag;
+        this.nameShort = nameShort;
     }
 
     public static Stat Get(StatTag tag) {
@@ -26,12 +28,17 @@ public class Stat {
         return stats[tag];
     }
 
-    private static void InitializeStats() {
-        AddStat(StatTag.MHP,    CombinationAdditive.Instance());
-        AddStat(StatTag.HP,     CombinationAdditive.Instance());
+    public static Stat Get(int enumIndex) {
+        return Get((StatTag)enumIndex);
     }
 
-    private static void AddStat(StatTag tag, CombinationStrategy combinator) {
-        stats[tag] = new Stat(tag, combinator);
+    private static void InitializeStats() {
+        stats = new Dictionary<StatTag, Stat>();
+        AddStat(StatTag.MHP,    CombinationAdditive.Instance(), "MHP");
+        AddStat(StatTag.HP,     CombinationAdditive.Instance(), "HP");
+    }
+
+    private static void AddStat(StatTag tag, CombinationStrategy combinator, String nameShort) {
+        stats[tag] = new Stat(tag, combinator, nameShort);
     }
 }

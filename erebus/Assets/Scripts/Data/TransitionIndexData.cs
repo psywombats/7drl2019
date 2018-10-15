@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-[CreateAssetMenu(fileName = "TransitionIndexData", menuName = "Data/TransitionIndexData")]
+[CreateAssetMenu(fileName = "TransitionIndexData", menuName = "Data/VN/TransitionIndexData")]
 public class TransitionIndexData : GenericIndex<TransitionData> {
 
 }
