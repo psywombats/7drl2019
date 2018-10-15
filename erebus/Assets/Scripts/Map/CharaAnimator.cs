@@ -33,9 +33,9 @@ public class CharaAnimator : MonoBehaviour {
             Vector2 position = Parent().transform.position;
             Vector2 delta = position - lastPosition;
 
-            bool stepping = AlwaysAnimates || delta.sqrMagnitude > 0 || Parent().GetComponent<CharaEvent>().Tracking;
+            bool stepping = AlwaysAnimates || delta.sqrMagnitude > 0 || Parent().GetComponent<CharaEvent>().tracking;
             GetComponent<Animator>().SetBool("stepping", stepping);
-            GetComponent<Animator>().SetInteger("dir", Parent().GetComponent<CharaEvent>().Facing.Ordinal());
+            GetComponent<Animator>().SetInteger("dir", Parent().GetComponent<CharaEvent>().facing.Ordinal());
 
             lastPosition = position;
         } else {
@@ -52,7 +52,7 @@ public class CharaAnimator : MonoBehaviour {
         string spritePath = "Sprites/Charas/" + spriteName;
         Sprite[] sprites = Resources.LoadAll<Sprite>(spritePath);
         foreach (Sprite sprite in sprites) {
-            if (sprite.name == spriteName + ParentEvent.GetComponent<CharaEvent>().Facing.DirectionName() + "Center") {
+            if (sprite.name == spriteName + ParentEvent.GetComponent<CharaEvent>().facing.DirectionName() + "Center") {
                 GetComponent<SpriteRenderer>().sprite = sprite;
                 break;
             }

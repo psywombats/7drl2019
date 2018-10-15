@@ -33,7 +33,8 @@ public class Battle : ScriptableObject {
     }
 
     public BattleUnit AddUnitFromKey(string unitKey) {
-        Unit unit = Resources.Load<Unit>("Database/RPG/Units/" + unitKey);
+        Unit unit = Resources.Load<Unit>("Database/Units/" + unitKey);
+        Debug.Assert(unit != null, "Unknown unit key " + unitKey);
         BattleUnit battleUnit = new BattleUnit(unit, this);
         AddUnit(battleUnit);
         return battleUnit;

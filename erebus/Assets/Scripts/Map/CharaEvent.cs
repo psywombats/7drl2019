@@ -18,36 +18,38 @@ public class CharaEvent : MonoBehaviour {
     private static readonly string PropertyFacing = "face";
 
     // Editor
-    public float TilesPerSecond = 2.0f;
-    public OrthoDir InitialFacing;
+    public float tilesPerSecond = 2.0f;
+    public OrthoDir initialFacing;
+    public GameObject doll;
 
     // Public
-    public Map Parent { get { return GetComponent<MapEvent>().Parent; } }
-    public ObjectLayer Layer { get { return GetComponent<MapEvent>().Layer; } }
-    public GameObject doll { get; private set; }
-    public Vector3 TargetPositionPx { get; set; }
+    public Map parent { get { return GetComponent<MapEvent>().Parent; } }
+    public ObjectLayer layer { get { return GetComponent<MapEvent>().Layer; } }
+    public Vector3 targetPositionPx { get; set; }
 
-    private OrthoDir facing;
-    public OrthoDir Facing {
-        get { return facing; }
+    private OrthoDir internalFacing;
+    public OrthoDir facing {
+        get {
+            return internalFacing;
+        }
         set {
-            if (facing != value) {
-                facing = value;
+            if (internalFacing != value) {
+                internalFacing = value;
                 GetComponent<Dispatch>().Signal(FaceEvent, value);
             }
         }
     }
 
-    public bool Tracking { get; private set; }
+    public bool tracking { get; private set; }
 
     public void Start() {
-        Facing = InitialFacing;
+        facing = initialFacing;
     }
 
     public void Populate(IDictionary<string, string> properties) {
         if (properties.ContainsKey(PropertyFacing)) {
-            InitialFacing = OrthoDirExtensions.Parse(properties[PropertyFacing]);
-            Facing = InitialFacing;
+            initialFacing = OrthoDirExtensions.Parse(properties[PropertyFacing]);
+            facing = initialFacing;
         }
         if (properties.ContainsKey(PropertySprite)) {
             if (GetComponent<MapEvent3D>() != null) {
@@ -74,19 +76,19 @@ public class CharaEvent : MonoBehaviour {
 
         int thisLayerIndex = GetComponent<MapEvent>().LayerIndex;
 
-        foreach (MapEvent mapEvent in Parent.GetEventsAt(Layer, loc)) {
+        foreach (MapEvent mapEvent in parent.GetEventsAt(layer, loc)) {
             if (!mapEvent.IsPassableBy(this)) {
                 return false;
             }
         }
 
         for (int i = thisLayerIndex - 1; i >= 0 && i >= thisLayerIndex - 2; i -= 1) {
-            TileLayer layer = Parent.transform.GetChild(i).GetComponent<TileLayer>();
-            if (loc.x < 0 || loc.x >= Parent.width || loc.y < 0 || loc.y >= Parent.height) {
+            TileLayer layer = parent.transform.GetChild(i).GetComponent<TileLayer>();
+            if (loc.x < 0 || loc.x >= parent.width || loc.y < 0 || loc.y >= parent.height) {
                 return false;
             }
             if (layer != null) {
-                if (!Parent.IsChipPassableAt(layer, loc)) {
+                if (!parent.IsChipPassableAt(layer, loc)) {
                     return false;
                 }
             }
@@ -96,26 +98,26 @@ public class CharaEvent : MonoBehaviour {
     }
 
     public IEnumerator StepRoutine(OrthoDir dir) {
-        if (Tracking) {
+        if (tracking) {
             yield break;
         }
-        Tracking = true;
+        tracking = true;
 
         MapEvent mapEvent = GetComponent<MapEvent>();
         mapEvent.Position += dir.XY();
-        TargetPositionPx = mapEvent.CalculateOffsetPositionPx(dir);
-        Facing = dir;
+        targetPositionPx = mapEvent.CalculateOffsetPositionPx(dir);
+        facing = dir;
 
         while (true) {
-            mapEvent.PositionPx = Vector3.MoveTowards(mapEvent.PositionPx, TargetPositionPx, TilesPerSecond * Time.deltaTime);
+            mapEvent.PositionPx = Vector3.MoveTowards(mapEvent.PositionPx, targetPositionPx, tilesPerSecond * Time.deltaTime);
 
             // I think we actually want to handle this via prefabs now
             if (Global.Instance().Maps.Camera.Target == GetComponent<MapEvent>()) {
                 Global.Instance().Maps.Camera.ManualUpdate();
             }
 
-            if (mapEvent.PositionPx == TargetPositionPx) {
-                Tracking = false;
+            if (mapEvent.PositionPx == targetPositionPx) {
+                tracking = false;
                 break;
             } else {
                 yield return null;
@@ -130,7 +132,7 @@ public class CharaEvent : MonoBehaviour {
     }
 
     public IEnumerator PathToRoutine(IntVector2 location) {
-        List<IntVector2> path = Parent.FindPath(this, location);
+        List<IntVector2> path = parent.FindPath(this, location);
         if (path == null) {
             yield break;
         }

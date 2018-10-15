@@ -19,7 +19,7 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
-        if (GetComponent<CharaEvent>().Tracking || InputPaused) {
+        if (GetComponent<CharaEvent>().tracking || InputPaused) {
             return true;
         }
         switch (eventType) {
@@ -61,12 +61,12 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
 
     public void PopulateFromMemory(Memory memory) {
         GetComponent<MapEvent>().SetLocation(memory.position);
-        GetComponent<CharaEvent>().Facing = memory.facing;
+        GetComponent<CharaEvent>().facing = memory.facing;
     }
 
     public void PopulateMemory(Memory memory) {
         memory.position = GetComponent<MapEvent>().Position;
-        memory.facing = GetComponent<CharaEvent>().Facing;
+        memory.facing = GetComponent<CharaEvent>().facing;
     }
 
     public void PauseInput() {
@@ -78,7 +78,7 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
     }
 
     private void Interact() {
-        IntVector2 target = GetComponent<MapEvent>().Position + GetComponent<CharaEvent>().Facing.XY();
+        IntVector2 target = GetComponent<MapEvent>().Position + GetComponent<CharaEvent>().facing.XY();
         List<MapEvent> targetEvents = GetComponent<MapEvent>().Parent.GetEventsAt(GetComponent<MapEvent>().Layer, target);
         foreach (MapEvent tryTarget in targetEvents) {
             if (tryTarget.SwitchEnabled && !tryTarget.IsPassableBy(GetComponent<CharaEvent>())) {
@@ -99,7 +99,7 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
 
     private bool TryStep(OrthoDir dir) {
         IntVector2 target = GetComponent<MapEvent>().Position + dir.XY();
-        GetComponent<CharaEvent>().Facing = dir;
+        GetComponent<CharaEvent>().facing = dir;
         List<MapEvent> targetEvents = GetComponent<MapEvent>().Parent.GetEventsAt(GetComponent<MapEvent>().Layer, target);
 
         List<MapEvent> toCollide = new List<MapEvent>();

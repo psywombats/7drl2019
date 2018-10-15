@@ -26,7 +26,8 @@ public class BattleController : MonoBehaviour {
 
     // this should take a battle memory at some point
     public void Setup(string battleKey) {
-        this.battle = Resources.Load<Battle>("Database/RPG/Battles/" + battleKey);
+        this.battle = Resources.Load<Battle>("Database/Battles/" + battleKey);
+        Debug.Assert(this.battle != null, "Unknown battle key " + battleKey);
     }
 
     // === GETTERS AND BOOKKEEPING ===

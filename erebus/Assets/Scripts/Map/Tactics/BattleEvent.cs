@@ -12,7 +12,15 @@ public class BattleEvent : TiledInstantiated {
     private static string InstancePath = "Prefabs/Map3D/Doll";
 
     // Editor properties
-    public SpriteRenderer sprite { get { return GetComponent<CharaEvent>().doll.GetComponent<SpriteRenderer>(); } }
+    public SpriteRenderer sprite {
+        get {
+            if (GetComponent<CharaEvent>().doll == null) {
+                return null;
+            } else {
+                return GetComponent<CharaEvent>().doll.GetComponent<SpriteRenderer>();
+            }
+        }
+    }
     public bool billboardX = true;
     public BattleUnit unit { get; private set; }
     public BattleController controller { get; private set; }
@@ -35,7 +43,7 @@ public class BattleEvent : TiledInstantiated {
     }
 
     public void Update() {
-        if (billboardX) {
+        if (billboardX && sprite != null) {
             Vector3 angles = sprite.transform.eulerAngles;
             sprite.transform.eulerAngles = new Vector3(
                     TacticsCam.Instance().transform.eulerAngles.x, 

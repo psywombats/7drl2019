@@ -185,9 +185,6 @@ public abstract class MapEvent : TiledInstantiated {
     public void SetLocation(IntVector2 location) {
         Position = location;
         OnValidate();
-        if (Global.Instance().Maps.Camera.Target == this) {
-            Global.Instance().Maps.Camera.ManualUpdate();
-        }
     }
 
     // we have a solid TileX/TileY, please move the doll to the correct screen space
@@ -209,7 +206,7 @@ public abstract class MapEvent : TiledInstantiated {
     // facing us if impassable, on top of us if passable
     private void OnInteract(AvatarEvent avatar) {
         if (GetComponent<CharaEvent>() != null) {
-            GetComponent<CharaEvent>().Facing = DirectionTo(avatar.GetComponent<MapEvent>());
+            GetComponent<CharaEvent>().facing = DirectionTo(avatar.GetComponent<MapEvent>());
         }
         LuaObject.Run(PropertyInteract);
     }

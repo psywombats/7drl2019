@@ -60,11 +60,11 @@ public class LuaMapEvent {
     // all meant to be called by proxy
 
     public void face(string directionName) {
-        mapEvent.GetComponent<CharaEvent>().Facing = OrthoDirExtensions.Parse(directionName);
+        mapEvent.GetComponent<CharaEvent>().facing = OrthoDirExtensions.Parse(directionName);
     }
 
     public void faceToward(LuaMapEvent other) {
-        mapEvent.GetComponent<CharaEvent>().Facing = mapEvent.DirectionTo(other.mapEvent);
+        mapEvent.GetComponent<CharaEvent>().facing = mapEvent.DirectionTo(other.mapEvent);
     }
 
     public int x() {

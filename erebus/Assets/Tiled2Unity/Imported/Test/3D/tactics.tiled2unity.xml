@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 10/15/2018 1:21:28 AM-->
+<!--Last exported: 10/15/2018 1:48:03 AM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="debug_eris" />
   <Prefab name="tactics" orientation="Orthogonal" staggerAxis="Y" staggerIndex="Odd" hexSideLength="0" numLayers="1" numTilesWide="22" numTilesHigh="16" tileWidth="16" tileHeight="16" exportScale="0.0625" mapWidthInPixels="352" mapHeightInPixels="256" backgroundColor="#808080" resourcePath="Test/3D" sortingOrder="1">
@@ -16,12 +16,12 @@
     <GameObject name="Object Layer 1" x="0" y="0" z="0">
       <ObjectLayer offsetX="0" offsetY="0" color="#ff808080" />
       <Property name="3d" value="" />
-      <GameObject name="Mook1" x="8" y="-8" rotation="0">
+      <GameObject name="Mookster" x="8" y="-8" rotation="0">
         <Property name="3d" value="" />
         <Property name="face" value="south" />
         <Property name="sprite" value="scientist" />
         <Property name="unit" value="mook1" />
-        <RectangleObjectComponent tmx-object-id="8" tmx-object-name="Mook1" tmx-object-type="Character" tmx-object-x="128" tmx-object-y="128" tmx-object-width="16" tmx-object-height="16" tmx-object-rotation="0" />
+        <RectangleObjectComponent tmx-object-id="8" tmx-object-name="Mookster" tmx-object-type="Character" tmx-object-x="128" tmx-object-y="128" tmx-object-width="16" tmx-object-height="16" tmx-object-rotation="0" />
         <BoxCollider2D width="1" height="1" />
       </GameObject>
     </GameObject>
