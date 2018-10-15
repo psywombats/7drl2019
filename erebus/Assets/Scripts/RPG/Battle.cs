@@ -4,22 +4,26 @@ using UnityEngine;
 
 /**
  * A battle in progress. Responsible for all battle logic, state, and control flow. The actual
- * battle visual representation is contained in the BattleController.
+ * battle visual representation is contained in the BattleController. 
  * 
- * Eventually this should be created from a battle memory or similar.
+ * Flow for battles works like this:
+ *  - A Tiled map is loaded that has the 'battle' property
+ *  - A BattleController is created
+ *  - The BattleController loads a serialized instance of this class via key
+ *  - All the Tiled events participating in the battle register to the controller using the 'unit'
+ *    key, and we then register them here
  */
+[CreateAssetMenu(fileName = "Battle", menuName = "Data/RPG/Battle")]
 public class Battle : ScriptableObject {
     
     public BattleController controller { get; private set; }
-
-    private Dictionary<Alignment, HashSet<BattleUnit>> unitsByAlignment;
-    private HashSet<BattleUnit> units;
+    
+    private List<BattleUnit> units;
 
     // === INITIALIZATION ===
 
     public Battle() {
-        this.units = new HashSet<BattleUnit>();
-        this.unitsByAlignment = new Dictionary<Alignment, HashSet<BattleUnit>>();
+        this.units = new List<BattleUnit>();
     }
 
     // === BOOKKEEPING AND GETTERS ===
@@ -28,27 +32,15 @@ public class Battle : ScriptableObject {
         return units;
     }
 
-    public void AddUnit(BattleUnit unit) {
-        Debug.Assert(!units.Contains(unit));
-        if (!unitsByAlignment.ContainsKey(unit.Align)) {
-            unitsByAlignment[unit.Align] = new HashSet<BattleUnit>();
-        }
-        unitsByAlignment[unit.Align].Add(unit);
-    }
-
-    public void AddUnit(Unit unit, Alignment align) {
-        BattleUnit battleUnit = new BattleUnit(unit, this, align);
+    public BattleUnit AddUnitFromKey(string unitKey) {
+        Unit unit = Resources.Load<Unit>("Database/RPG/Units/" + unitKey);
+        BattleUnit battleUnit = new BattleUnit(unit, this);
         AddUnit(battleUnit);
+        return battleUnit;
     }
 
-    private void RemoveUnit(BattleUnit unit) {
-        Debug.Assert(units.Contains(unit));
-        unitsByAlignment[unit.Align].Remove(unit);
+    private void AddUnit(BattleUnit unit) {
         units.Add(unit);
-    }
-
-    public HashSet<BattleUnit> UnitsForAlignment(Alignment align) {
-        return unitsByAlignment[align];
     }
 
     // === BATTLE INITIALIZATION ===

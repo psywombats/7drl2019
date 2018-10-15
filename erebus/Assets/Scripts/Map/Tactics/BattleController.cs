@@ -6,39 +6,39 @@ using System.Collections.Generic;
  * Responsible for user input and rendering during a battle. Control flow is actually handled by
  * the Battle class.
  */
+ [RequireComponent(typeof(Map))]
 public class BattleController : MonoBehaviour {
 
     // properties required upon initializion
-    private Battle battle;
-    public Battle Battle { get { return battle; } private set { battle = value; } }
+    public Battle battle { get; private set; }
 
     // all of these behaviors read + managed internally
-    private Map map;
-    public Map Map { get { return map; } private set { map = value; } }
+    public Map map { get { return GetComponent<Map>(); } }
 
     // internal state
-    private Dictionary<BattleUnit, Doll> dolls;
+    private Dictionary<BattleUnit, BattleEvent> dolls;
 
     // === INITIALIZATION ===
 
-    // this should take a battle memory at some point
-    public void Setup() {
-        this.battle = new Battle(this);
-
-        dolls = new Dictionary<BattleUnit, Doll>();
-        foreach (BattleUnit unit in battle.AllUnits()) {
-            Doll doll = Doll.Instantiate(this, unit);
-            dolls[unit] = doll;
-        }
+    public BattleController() {
+        dolls = new Dictionary<BattleUnit, BattleEvent>();
     }
 
-    public void OnEnable() {
-        this.map = FindObjectOfType<Map>();
+    // this should take a battle memory at some point
+    public void Setup(string battleKey) {
+        this.battle = Resources.Load<Battle>("Database/RPG/Battles/" + battleKey);
     }
 
     // === GETTERS AND BOOKKEEPING ===
 
-    public Doll GetDollForUnit(BattleUnit unit) {
+    public BattleEvent GetDollForUnit(BattleUnit unit) {
         return dolls[unit];
+    }
+
+    public void AddUnitFromTiledEvent(BattleEvent doll, string unitKey) {
+        BattleUnit newUnit = battle.AddUnitFromKey(unitKey);
+        newUnit.CopyInfoFromDoll(doll);
+        doll.Setup(this, newUnit);
+        dolls[newUnit] = doll;
     }
 }

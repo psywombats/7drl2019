@@ -37,7 +37,7 @@ public class MapEvent2D : MapEvent {
             for (int i = 0; i < Parent.transform.childCount; i += 1) {
                 if (Layer == Parent.transform.GetChild(i).gameObject.GetComponent<ObjectLayer>()) {
                     float depthPerLayer = -1.0f;
-                    float z = depthPerLayer * ((float)Position.y / (float)Parent.Height) + (depthPerLayer * (float)i);
+                    float z = depthPerLayer * ((float)Position.y / (float)Parent.height) + (depthPerLayer * (float)i);
                     gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, z);
                 }
             }

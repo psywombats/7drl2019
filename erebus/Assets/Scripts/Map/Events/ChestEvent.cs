@@ -5,7 +5,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(EventAppearance))]
 [RequireComponent(typeof(MapEvent))]
-public class ChestEvent : MonoBehaviour, ITiledInstantiated {
+public class ChestEvent : TiledInstantiated {
 
     private const string OpenSpriteName = "Events/chest_open";
     private const string ClosedSpriteName = "Events/chest_closed";
@@ -54,6 +54,6 @@ public class ChestEvent : MonoBehaviour, ITiledInstantiated {
 
     private string GetSwitchName() {
         MapEvent mapEvent = GetComponent<MapEvent>();
-        return mapEvent.Parent.FullName + ":" + mapEvent.Position;
+        return mapEvent.Parent.fullName + ":" + mapEvent.Position;
     }
 }

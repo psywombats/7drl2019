@@ -4,22 +4,26 @@ using System.Collections.Generic;
 // representation of a unit in battle
 public class BattleUnit {
 
-    public Unit Unit { get; private set; }
-    public Battle Battle { get; private set; }
-    public Alignment Align { get; private set; }
-    public IntVector2 Location { get; private set; }
+    public Unit unit { get; private set; }
+    public Battle battle { get; private set; }
+    public Alignment align { get; private set; }
+    public IntVector2 location { get; private set; }
 
-    public Doll Doll {
+    public BattleEvent Doll {
         get {
-            return Battle.Controller.GetDollForUnit(this);
+            return battle.controller.GetDollForUnit(this);
         }
     }
 
-    public BattleUnit(Unit unit, Battle battle, Alignment align) {
-        this.Unit = unit;
-        this.Battle = battle;
-        this.Align = align;
+    public BattleUnit(Unit unit, Battle battle) {
+        this.unit = unit;
+        this.battle = battle;
 
-        Location = battle.GetStartingLocationFor(this);
+        location = battle.GetStartingLocationFor(this);
+    }
+
+    // given a doll from Tiled, copy over its relevant information
+    public void CopyInfoFromDoll(BattleEvent doll) {
+        this.location = doll.GetComponent<MapEvent3D>().Position;
     }
 }

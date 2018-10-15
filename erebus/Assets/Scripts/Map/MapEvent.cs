@@ -16,6 +16,7 @@ public abstract class MapEvent : TiledInstantiated {
     public const string EventCollide = "collide";
     public const string EventInteract = "interact";
 
+    public const string PropertyUnit = "unit";
     private const string PropertyCondition = "show";
     private const string PropertyInteract = "onInteract";
     private const string PropertyCollide = "onCollide";
@@ -120,6 +121,9 @@ public abstract class MapEvent : TiledInstantiated {
         // type assignment
         if (GetComponent<RuntimeTmxObject>().TmxType == TypeChara && GetComponent<CharaEvent>() == null) {
             gameObject.AddComponent<CharaEvent>().Populate(properties);
+        }
+        if (properties.ContainsKey(PropertyUnit)) {
+            gameObject.AddComponent<BattleEvent>().Populate(properties);
         }
 
         SetDepth();

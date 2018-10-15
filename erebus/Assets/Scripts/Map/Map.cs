@@ -11,31 +11,38 @@ using UnityEngine;
 public class Map : TiledInstantiated {
 
     private const string PropertyBGM = "bgm";
+    private const string PropertyBattle = "battle";
 
-    public static readonly int TileSizePx = 16;
+    public const int TileSizePx = 16;
 
-    public IntVector2 Size;
-    public int Width { get { return Size.x; } }
-    public int Height { get { return Size.y; } }
+    public IntVector2 size { get; private set; }
+    public int width { get { return size.x; } }
+    public int height { get { return size.y; } }
 
-    public string BGMKey { get; private set; }
-    public String ResourcePath { get { return GetComponent<TiledMap>().ResourcePath; } }
-    public string FullName {
+    public BattleController battleController { get; private set; }
+
+    public string bgmKey { get; private set; }
+    public String resourcePath { get { return GetComponent<TiledMap>().ResourcePath; } }
+    public string fullName {
         get {
             string name = gameObject.name;
             if (name.EndsWith("(Clone)")) {
                 name = name.Substring(0, name.Length - "(Clone)".Length);
             }
-            return ResourcePath + "/" + name;
+            return resourcePath + "/" + name;
         }
     }
 
     public override void Populate(IDictionary<string, string> properties) {
         TiledMap tiled = GetComponent<TiledMap>();
-        Size = new IntVector2(tiled.NumTilesWide, tiled.NumTilesHigh);
+        size = new IntVector2(tiled.NumTilesWide, tiled.NumTilesHigh);
 
         if (properties.ContainsKey(PropertyBGM)) {
-            BGMKey = properties[PropertyBGM];
+            bgmKey = properties[PropertyBGM];
+        }
+        if (properties.ContainsKey(PropertyBattle)) {
+            battleController = gameObject.AddComponent<BattleController>();
+            battleController.Setup(properties[PropertyBattle]);
         }
     }
 
@@ -81,8 +88,8 @@ public class Map : TiledInstantiated {
     }
 
     public void OnTeleportTo() {
-        if (BGMKey != null) {
-            Global.Instance().Audio.PlayBGM(BGMKey);
+        if (bgmKey != null) {
+            Global.Instance().Audio.PlayBGM(bgmKey);
         }
     }
 

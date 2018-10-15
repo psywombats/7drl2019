@@ -7,40 +7,44 @@ using UnityEngine;
  */
 [ExecuteInEditMode]
 [RequireComponent(typeof(CharaEvent))]
-public class Doll : MonoBehaviour {
+public class BattleEvent : TiledInstantiated {
 
     private static string InstancePath = "Prefabs/Map3D/Doll";
 
     // Editor properties
-    public SpriteRenderer Sprite;
-    public bool BillboardedX = true;
+    public SpriteRenderer sprite { get { return GetComponent<CharaEvent>().doll.GetComponent<SpriteRenderer>(); } }
+    public bool billboardX = true;
+    public BattleUnit unit { get; private set; }
+    public BattleController controller { get; private set; }
 
-    public BattleUnit Unit { get; private set; }
-    public BattleController Controller { get; private set; }
-
-    public static Doll Instantiate(BattleController controller, BattleUnit unit) {
-        Doll instance = Instantiate(Resources.Load<GameObject>(InstancePath)).GetComponent<Doll>();
+    public static BattleEvent Instantiate(BattleController controller, BattleUnit unit) {
+        BattleEvent instance = Instantiate(Resources.Load<GameObject>(InstancePath)).GetComponent<BattleEvent>();
         instance.Setup(controller, unit);
         return instance;
     }
 
     public void Setup(BattleController controller, BattleUnit unit) {
-        this.Unit = unit;
-        this.Controller = controller;
+        this.unit = unit;
+        this.controller = controller;
         SetScreenPositionToMatchTilePosition();
     }
 
+    public override void Populate(IDictionary<string, string> properties) {
+        string unitKey = properties[MapEvent.PropertyUnit];
+        GetComponent<MapEvent3D>().Parent.battleController.AddUnitFromTiledEvent(this, unitKey);
+    }
+
     public void Update() {
-        if (BillboardedX) {
-            Vector3 angles = Sprite.transform.eulerAngles;
-            Sprite.transform.eulerAngles = new Vector3(
+        if (billboardX) {
+            Vector3 angles = sprite.transform.eulerAngles;
+            sprite.transform.eulerAngles = new Vector3(
                     TacticsCam.Instance().transform.eulerAngles.x, 
                     angles.y, 
                     angles.z);
         }
     }
-    
+
     public void SetScreenPositionToMatchTilePosition() {
-        GetComponent<MapEvent>().SetLocation(Unit.Location);
+        GetComponent<MapEvent>().SetLocation(unit.location);
     }
 }

@@ -37,7 +37,7 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
     public void PopulateMemory(Memory memory) {
         if (ActiveMap != null) {
             Avatar.PopulateMemory(memory);
-            memory.mapName = ActiveMap.FullName;
+            memory.mapName = ActiveMap.fullName;
         }
     }
 
@@ -95,7 +95,7 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
     private Map InstantiateMap(string mapName) {
         GameObject newMapObject = null;
         if (ActiveMap != null) {
-            string localPath = ActiveMap.ResourcePath + "/" + mapName;
+            string localPath = ActiveMap.resourcePath + "/" + mapName;
             newMapObject = Resources.Load<GameObject>(localPath);
         }
         if (newMapObject == null) {

@@ -24,6 +24,7 @@ public class CharaEvent : MonoBehaviour {
     // Public
     public Map Parent { get { return GetComponent<MapEvent>().Parent; } }
     public ObjectLayer Layer { get { return GetComponent<MapEvent>().Layer; } }
+    public GameObject doll { get; private set; }
     public Vector3 TargetPositionPx { get; set; }
 
     private OrthoDir facing;
@@ -50,10 +51,10 @@ public class CharaEvent : MonoBehaviour {
         }
         if (properties.ContainsKey(PropertySprite)) {
             if (GetComponent<MapEvent3D>() != null) {
-                GameObject puppet = new GameObject("Puppet");
-                puppet.transform.parent = gameObject.transform;
-                puppet.transform.localPosition = new Vector3(0.25f, 0.0f, -1.0f);
-                CharaAnimator animator = puppet.AddComponent<CharaAnimator>();
+                doll = new GameObject("Doll");
+                doll.transform.parent = gameObject.transform;
+                doll.transform.localPosition = new Vector3(0.25f, 0.0f, -1.0f);
+                CharaAnimator animator = doll.AddComponent<CharaAnimator>();
                 animator.ParentEvent = GetComponent<MapEvent>();
                 animator.Populate(properties[PropertySprite]);
             } else {
@@ -81,7 +82,7 @@ public class CharaEvent : MonoBehaviour {
 
         for (int i = thisLayerIndex - 1; i >= 0 && i >= thisLayerIndex - 2; i -= 1) {
             TileLayer layer = Parent.transform.GetChild(i).GetComponent<TileLayer>();
-            if (loc.x < 0 || loc.x >= Parent.Width || loc.y < 0 || loc.y >= Parent.Height) {
+            if (loc.x < 0 || loc.x >= Parent.width || loc.y < 0 || loc.y >= Parent.height) {
                 return false;
             }
             if (layer != null) {
