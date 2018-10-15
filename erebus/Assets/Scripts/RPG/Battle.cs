@@ -8,17 +8,16 @@ using UnityEngine;
  * 
  * Eventually this should be created from a battle memory or similar.
  */
-public class Battle {
+public class Battle : ScriptableObject {
     
-    public BattleController Controller { get; private set; }
+    public BattleController controller { get; private set; }
 
     private Dictionary<Alignment, HashSet<BattleUnit>> unitsByAlignment;
     private HashSet<BattleUnit> units;
 
     // === INITIALIZATION ===
 
-    public Battle(BattleController controller) {
-        this.Controller = controller;
+    public Battle() {
         this.units = new HashSet<BattleUnit>();
         this.unitsByAlignment = new Dictionary<Alignment, HashSet<BattleUnit>>();
     }

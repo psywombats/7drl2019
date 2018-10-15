@@ -19,16 +19,24 @@ public class StatSetDrawer : PropertyDrawer {
             "Stats");
 
         for (int i = 0; i < keys.arraySize; i += 1) {
+            SerializedProperty serializedValue = values.GetArrayElementAtIndex(i);
             Stat stat = Stat.Get(keys.GetArrayElementAtIndex(i).enumValueIndex);
-            float value = values.GetArrayElementAtIndex(i).floatValue;
+            float value = serializedValue.floatValue;
             
             EditorGUI.LabelField(
                 new Rect(18 + pos.x, 24 + pos.y + i * 18, pos.width, pos.height),
                 stat.nameShort + ": ");
-            EditorGUI.FloatField(
-                new Rect(pos.x + 100, 24 + pos.y + i * 18, pos.width, pos.height),
-                value,
-                fieldStyle);
+            if (stat.useBinaryEditor) {
+                serializedValue.floatValue = EditorGUI.Toggle(
+                    new Rect(pos.x + 100, 24 + pos.y + i * 18, pos.width, pos.height),
+                    (value > 0.0f)) ? 1.0f : 0.0f;
+            } else {
+                serializedValue.floatValue = EditorGUI.FloatField(
+                    new Rect(pos.x + 100, 24 + pos.y + i * 18, pos.width, pos.height),
+                    value,
+                    fieldStyle);
+            }
+
         }
     }
 }

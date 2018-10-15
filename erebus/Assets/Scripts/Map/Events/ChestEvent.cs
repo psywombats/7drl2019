@@ -5,7 +5,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(EventAppearance))]
 [RequireComponent(typeof(MapEvent))]
-public class ChestEvent : TiledInstantiated {
+public class ChestEvent : MonoBehaviour, ITiledInstantiated {
 
     private const string OpenSpriteName = "Events/chest_open";
     private const string ClosedSpriteName = "Events/chest_closed";

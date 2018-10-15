@@ -157,7 +157,6 @@
     <Compile Include="Assets\Scripts\Map\Map3D\Layer3D.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\MapCamera3D.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\MapEvent3D.cs" />
-    <Compile Include="Assets\Scripts\Map\Map3D\TacticsCam.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\TileMeshRenderer.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\Wall3D.cs" />
     <Compile Include="Assets\Scripts\Map\MapCamera.cs" />
@@ -167,6 +166,7 @@
     <Compile Include="Assets\Scripts\Map\Tactics\BattleController.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\Doll.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\SelectionGrid.cs" />
+    <Compile Include="Assets\Scripts\Map\Tactics\TacticsCam.cs" />
     <Compile Include="Assets\Scripts\Map\TiledInstantiated.cs" />
     <Compile Include="Assets\Scripts\RPG\Alignment.cs" />
     <Compile Include="Assets\Scripts\RPG\Battle.cs" />

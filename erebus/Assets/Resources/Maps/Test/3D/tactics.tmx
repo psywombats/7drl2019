@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="2017.05.26" orientation="orthogonal" renderorder="right-down" width="22" height="16" tilewidth="16" tileheight="16" nextobjectid="7">
+ <properties>
+  <property name="battle" value="test_battle"/>
+ </properties>
  <tileset firstgid="1" source="../../tilesets/debug_eris.tsx"/>
  <layer name="Tile Layer 1" width="22" height="16">
   <properties>

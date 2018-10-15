@@ -5,8 +5,8 @@ using UnityEngine;
 /**
  * Anything that comes from Tiled2Unity.
  */
-public abstract class TiledInstantiated : MonoBehaviour {
+public interface ITiledInstantiated {
 
-    public abstract void Populate(IDictionary<string, string> properties);
+    void Populate(IDictionary<string, string> properties);
 
 }
