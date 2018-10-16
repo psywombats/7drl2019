@@ -11,9 +11,9 @@ public class GameEventImporter : TiledImporter {
         if (prefab.GetComponent<RuntimeTmxObject>() != null) {
             string type = prefab.GetComponent<RuntimeTmxObject>().TmxType.ToLower();
             switch (type) {
-                case "chest":
-                    Populate<ChestEvent>(prefab, props);
-                    break;
+                //case "chest":
+                //    Populate<ChestEvent>(prefab, props);
+                //    break;
             }
         }
     }
