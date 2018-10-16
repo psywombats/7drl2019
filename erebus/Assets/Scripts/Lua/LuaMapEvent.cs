@@ -57,7 +57,7 @@ public class LuaMapEvent {
         }
     }
 
-    // all meant to be called by proxy
+    // === CALLED BY LUA === 
 
     public void face(string directionName) {
         mapEvent.GetComponent<CharaEvent>().facing = OrthoDirExtensions.Parse(directionName);
@@ -84,10 +84,10 @@ public class LuaMapEvent {
     }
 
     public void cs_walk(string directionName, int count) {
-        Global.Instance().Lua.RunRoutineFromLua(mapEvent.GetComponent<CharaEvent>().StepMultiRoutine(OrthoDirExtensions.Parse(directionName), count));
+        Global.Instance().Lua.RunRoutineFromLua(mapEvent.GetComponent<MapEvent>().StepMultiRoutine(OrthoDirExtensions.Parse(directionName), count));
     }
 
     public void cs_step(string directionName) {
-        Global.Instance().Lua.RunRoutineFromLua(mapEvent.GetComponent<CharaEvent>().StepRoutine(OrthoDirExtensions.Parse(directionName)));
+        Global.Instance().Lua.RunRoutineFromLua(mapEvent.GetComponent<MapEvent>().StepRoutine(OrthoDirExtensions.Parse(directionName)));
     }
 }

@@ -35,7 +35,7 @@ public class CharaAnimator : MonoBehaviour {
             Vector2 position = Parent().transform.position;
             Vector2 delta = position - lastPosition;
 
-            bool stepping = AlwaysAnimates || delta.sqrMagnitude > 0 || Parent().GetComponent<CharaEvent>().tracking;
+            bool stepping = AlwaysAnimates || delta.sqrMagnitude > 0 || Parent().GetComponent<MapEvent>().tracking;
             GetComponent<Animator>().SetBool("stepping", stepping);
             GetComponent<Animator>().SetInteger("dir", Parent().GetComponent<CharaEvent>().facing.Ordinal());
 

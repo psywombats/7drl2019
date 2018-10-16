@@ -15,7 +15,7 @@ public class Map : TiledInstantiated {
 
     public const int TileSizePx = 16;
 
-    public IntVector2 size { get; private set; }
+    public IntVector2 size;
     public int width { get { return size.x; } }
     public int height { get { return size.y; } }
 
@@ -35,7 +35,6 @@ public class Map : TiledInstantiated {
 
     public override void Populate(IDictionary<string, string> properties) {
         TiledMap tiled = GetComponent<TiledMap>();
-        size = new IntVector2(tiled.NumTilesWide, tiled.NumTilesHigh);
 
         if (properties.ContainsKey(PropertyBGM)) {
             bgmKey = properties[PropertyBGM];

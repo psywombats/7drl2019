@@ -52,7 +52,7 @@ public class LuaInterpreter : MonoBehaviour {
     }
 
     public void RegisterAvatar(AvatarEvent avatar) {
-       SetGlobal("avatar", avatar.GetComponent<MapEvent>().LuaObject);
+       SetGlobal("avatar", avatar.GetComponent<MapEvent>().luaObject);
     }
 
     // generates a lua script from a lua file
@@ -149,7 +149,7 @@ public class LuaInterpreter : MonoBehaviour {
         if (mapEvent == null) {
             return null;
         } else {
-            return mapEvent.LuaObject;
+            return mapEvent.luaObject;
         }
     }
 

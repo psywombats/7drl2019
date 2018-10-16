@@ -19,7 +19,7 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
-        if (GetComponent<CharaEvent>().tracking || InputPaused) {
+        if (GetComponent<MapEvent>().tracking || InputPaused) {
             return true;
         }
         switch (eventType) {
@@ -112,7 +112,7 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
         }
 
         if (passable) {
-            StartCoroutine(CoUtils.RunWithCallback(GetComponent<CharaEvent>().StepRoutine(dir), this, () => {
+            StartCoroutine(CoUtils.RunWithCallback(GetComponent<MapEvent>().StepRoutine(dir), this, () => {
                 foreach (MapEvent targetEvent in toCollide) {
                     if (targetEvent.SwitchEnabled) {
                         targetEvent.GetComponent<Dispatch>().Signal(MapEvent.EventCollide, this);

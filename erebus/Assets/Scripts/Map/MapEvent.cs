@@ -15,6 +15,7 @@ public abstract class MapEvent : TiledInstantiated {
     public const string EventEnabled = "enabled";
     public const string EventCollide = "collide";
     public const string EventInteract = "interact";
+    public const string EventMove = "move";
 
     public const string PropertyUnit = "unit";
     private const string PropertyCondition = "show";
@@ -24,17 +25,17 @@ public abstract class MapEvent : TiledInstantiated {
     private static readonly string TypeChara = "Character";
 
     // Editor properties
-
+    public float tilesPerSecond = 2.0f;
     public IntVector2 Position;
     public bool Passable = true;
-
     public string LuaCondition;
     [TextArea(3, 6)] public string LuaOnInteract;
     [TextArea(3, 6)] public string LuaOnCollide;
 
     // Properties
-
-    public LuaMapEvent LuaObject { get; private set; }
+    public LuaMapEvent luaObject { get; private set; }
+    public Vector3 targetPositionPx { get; set; }
+    public bool tracking { get; private set; }
 
     public Vector3 PositionPx {
         get { return transform.localPosition; }
@@ -130,10 +131,10 @@ public abstract class MapEvent : TiledInstantiated {
     }
 
     public void Start() {
-        LuaObject = Global.Instance().Lua.CreateEvent(this);
-        LuaObject.Set(PropertyCollide, LuaOnCollide);
-        LuaObject.Set(PropertyInteract, LuaOnInteract);
-        LuaObject.Set(PropertyCondition, LuaCondition);
+        luaObject = Global.Instance().Lua.CreateEvent(this);
+        luaObject.Set(PropertyCollide, LuaOnCollide);
+        luaObject.Set(PropertyInteract, LuaOnInteract);
+        luaObject.Set(PropertyCondition, LuaCondition);
 
         if (GetComponent<AvatarEvent>() != null) {
             Global.Instance().Lua.RegisterAvatar(GetComponent<AvatarEvent>());
@@ -160,7 +161,7 @@ public abstract class MapEvent : TiledInstantiated {
     }
 
     public void CheckEnabled() {
-        SwitchEnabled = LuaObject.EvaluateBool(PropertyCondition, true);
+        SwitchEnabled = luaObject.EvaluateBool(PropertyCondition, true);
     }
 
     public OrthoDir DirectionTo(MapEvent other) {
@@ -169,6 +170,23 @@ public abstract class MapEvent : TiledInstantiated {
 
     public bool IsPassableBy(CharaEvent chara) {
         return Passable || !SwitchEnabled;
+    }
+
+    public bool CanPassAt(IntVector2 loc) {
+        int thisLayerIndex = GetComponent<MapEvent>().LayerIndex;
+        for (int i = thisLayerIndex - 1; i >= 0 && i >= thisLayerIndex - 2; i -= 1) {
+            TileLayer layer = Parent.transform.GetChild(i).GetComponent<TileLayer>();
+            if (loc.x < 0 || loc.x >= Parent.width || loc.y < 0 || loc.y >= Parent.height) {
+                return false;
+            }
+            if (layer != null) {
+                if (!Parent.IsChipPassableAt(layer, loc)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     public bool ContainsPosition(IntVector2 loc) {
@@ -199,7 +217,7 @@ public abstract class MapEvent : TiledInstantiated {
     // called when the avatar stumbles into us
     // before the step if impassable, after if passable
     private void OnCollide(AvatarEvent avatar) {
-        LuaObject.Run(PropertyCollide);
+        luaObject.Run(PropertyCollide);
     }
 
     // called when the avatar stumbles into us
@@ -208,7 +226,7 @@ public abstract class MapEvent : TiledInstantiated {
         if (GetComponent<CharaEvent>() != null) {
             GetComponent<CharaEvent>().facing = DirectionTo(avatar.GetComponent<MapEvent>());
         }
-        LuaObject.Run(PropertyInteract);
+        luaObject.Run(PropertyInteract);
     }
 
     private LuaScript ParseScript(string lua) {
@@ -224,6 +242,40 @@ public abstract class MapEvent : TiledInstantiated {
             return null;
         } else {
             return Global.Instance().Lua.CreateCondition(lua);
+        }
+    }
+
+    public IEnumerator StepRoutine(OrthoDir dir) {
+        if (tracking) {
+            yield break;
+        }
+        tracking = true;
+
+        MapEvent mapEvent = GetComponent<MapEvent>();
+        mapEvent.Position += dir.XY();
+        targetPositionPx = mapEvent.CalculateOffsetPositionPx(dir);
+        GetComponent<Dispatch>().Signal(EventMove, dir);
+
+        while (true) {
+            mapEvent.PositionPx = Vector3.MoveTowards(mapEvent.PositionPx, targetPositionPx, tilesPerSecond * Time.deltaTime);
+
+            // TODO: ugly, I think we actually want to handle this via prefabs now
+            if (Global.Instance().Maps.Camera != null && Global.Instance().Maps.Camera.Target == GetComponent<MapEvent>()) {
+                Global.Instance().Maps.Camera.ManualUpdate();
+            }
+
+            if (mapEvent.PositionPx == targetPositionPx) {
+                tracking = false;
+                break;
+            } else {
+                yield return null;
+            }
+        }
+    }
+
+    public IEnumerator StepMultiRoutine(OrthoDir dir, int count) {
+        for (int i = 0; i < count; i += 1) {
+            yield return StartCoroutine(StepRoutine(dir));
         }
     }
 }
