@@ -8,6 +8,8 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class CharaAnimator : MonoBehaviour {
 
+    private const string DefaultMaterialPath = "Materials/SpriteDefault";
+
     public MapEvent ParentEvent;
     public bool AlwaysAnimates = false;
 
@@ -48,6 +50,8 @@ public class CharaAnimator : MonoBehaviour {
         string controllerPath = "Animations/Charas/Instances/" + spriteName;
         RuntimeAnimatorController controller = Resources.Load<RuntimeAnimatorController>(controllerPath);
         GetComponent<Animator>().runtimeAnimatorController = controller;
+
+        GetComponent<SpriteRenderer>().material = Resources.Load<Material>(DefaultMaterialPath);
 
         string spritePath = "Sprites/Charas/" + spriteName;
         Sprite[] sprites = Resources.LoadAll<Sprite>(spritePath);

@@ -29,6 +29,7 @@ public class BattleEvent : TiledInstantiated {
     public override void Populate(IDictionary<string, string> properties) {
         string unitKey = properties[MapEvent.PropertyUnit];
         GetComponent<MapEvent3D>().Parent.battleController.AddUnitFromTiledEvent(this, unitKey);
+        GetComponent<CharaEvent>().doll.AddComponent<BillboardingSpriteComponent>();
     }
 
     public void SetScreenPositionToMatchTilePosition() {

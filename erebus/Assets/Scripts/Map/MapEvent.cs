@@ -122,7 +122,7 @@ public abstract class MapEvent : TiledInstantiated {
         if (GetComponent<RuntimeTmxObject>().TmxType == TypeChara && GetComponent<CharaEvent>() == null) {
             gameObject.AddComponent<CharaEvent>().Populate(properties);
         }
-        if (properties.ContainsKey(PropertyUnit)) {
+        if (properties.ContainsKey(PropertyUnit) && GetComponent<BattleEvent>() == null) {
             gameObject.AddComponent<BattleEvent>().Populate(properties);
         }
 

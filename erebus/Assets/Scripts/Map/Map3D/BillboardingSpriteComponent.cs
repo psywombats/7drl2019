@@ -6,6 +6,7 @@ using System.Collections;
  */
 [RequireComponent(typeof(SpriteRenderer))]
 [ExecuteInEditMode]
+[DisallowMultipleComponent]
 public class BillboardingSpriteComponent : MonoBehaviour {
 
     public void Update() {
