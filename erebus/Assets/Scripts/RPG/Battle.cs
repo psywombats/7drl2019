@@ -22,14 +22,14 @@ public class Battle : ScriptableObject {
     private List<BattleUnit> units;
     private Dictionary<Alignment, BattleFaction> factions;
 
-    // === INITIALIZATION ===
+    // === INITIALIZATION ==========================================================================
 
     public Battle() {
         this.units = new List<BattleUnit>();
         this.factions = new Dictionary<Alignment, BattleFaction>();
     }
 
-    // === BOOKKEEPING AND GETTERS ===
+    // === BOOKKEEPING AND GETTERS =================================================================
 
     public ICollection<BattleUnit> AllUnits() {
         return units;
@@ -49,25 +49,33 @@ public class Battle : ScriptableObject {
         BattleUnit battleUnit = new BattleUnit(unit, this);
         AddUnit(battleUnit);
 
-        if (factions[battleUnit.align] == null) {
+        if (!factions.ContainsKey(battleUnit.align)) {
             factions[battleUnit.align] = new BattleFaction(this, battleUnit.align);
         }
 
         return battleUnit;
     }
 
+    public List<BattleFaction> GetFactions() {
+        return new List<BattleFaction>(factions.Values);
+    }
+
+    public BattleFaction GetFaction(Alignment align) {
+        return this.factions[align];
+    }
+
     private void AddUnit(BattleUnit unit) {
         units.Add(unit);
     }
 
-    // === BATTLE INITIALIZATION ===
+    // === BATTLE INITIALIZATION ===================================================================
 
     public IntVector2 GetStartingLocationFor(BattleUnit unit) {
         // TODO: GetStartingLocationFor
         return new IntVector2(2, 9);
     }
 
-    // === STATE MACHINE ===
+    // === STATE MACHINE ===========================================================================
 
     // runs and executes this battle
     public IEnumerator BattleRoutine() {

@@ -7,27 +7,31 @@ public class BattleUnit {
     public Unit unit { get; private set; }
     public Battle battle { get; private set; }
     public Alignment align { get; private set; }
-    public IntVector2 location { get; private set; }
+    public IntVector2 position { get; private set; }
     public bool hasMovedThisTurn { get; private set; }
 
-    // === INITIALIZATION ==========================================================================
-
-    public BattleEvent Doll {
+    public BattleEvent doll {
         get {
             return battle.controller.GetDollForUnit(this);
         }
     }
 
-    public BattleUnit(Unit unit, Battle battle) {
+    // === INITIALIZATION ==========================================================================
+
+    public BattleUnit() {
+        this.align = Alignment.Hero;
+    }
+
+    public BattleUnit(Unit unit, Battle battle) : base() {
         this.unit = unit;
         this.battle = battle;
 
-        location = battle.GetStartingLocationFor(this);
+        position = battle.GetStartingLocationFor(this);
     }
 
     // given a doll from Tiled, copy over its relevant information
     public void CopyInfoFromDoll(BattleEvent doll) {
-        this.location = doll.GetComponent<MapEvent3D>().Position;
+        this.position = doll.GetComponent<MapEvent3D>().Position;
     }
 
     // === STATE MACHINE ===========================================================================

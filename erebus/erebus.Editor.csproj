@@ -130,6 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Editor\AudioImporter.cs" />
+    <Compile Include="Assets\Editor\BattleControllerEditor.cs" />
     <Compile Include="Assets\Editor\ClipInfo.cs" />
     <Compile Include="Assets\Editor\FontImporter.cs" />
     <Compile Include="Assets\Editor\GameEventImporter.cs" />

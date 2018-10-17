@@ -14,7 +14,7 @@ public class BattleEvent : TiledInstantiated {
     public BattleUnit unit { get; private set; }
     public BattleController controller { get; private set; }
 
-    public static BattleEvent Instantiate(BattleController controller, BattleUnit unit) {
+    public static BattleEvent GetInstance(BattleController controller, BattleUnit unit) {
         BattleEvent instance = Instantiate(Resources.Load<GameObject>(InstancePath)).GetComponent<BattleEvent>();
         instance.Setup(controller, unit);
         return instance;
@@ -33,6 +33,6 @@ public class BattleEvent : TiledInstantiated {
     }
 
     public void SetScreenPositionToMatchTilePosition() {
-        GetComponent<MapEvent>().SetLocation(unit.location);
+        GetComponent<MapEvent>().SetLocation(unit.position);
     }
 }

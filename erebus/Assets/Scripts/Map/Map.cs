@@ -34,8 +34,6 @@ public class Map : TiledInstantiated {
     }
 
     public override void Populate(IDictionary<string, string> properties) {
-        TiledMap tiled = GetComponent<TiledMap>();
-
         if (properties.ContainsKey(PropertyBGM)) {
             bgmKey = properties[PropertyBGM];
         }

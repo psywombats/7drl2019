@@ -9,10 +9,8 @@ using System.Collections.Generic;
  [RequireComponent(typeof(Map))]
 public class BattleController : MonoBehaviour {
 
-    private static readonly IntVector2 CanceledLocation = new IntVector2(-1, -1);
-
     // properties required upon initializion
-    public Battle battle { get; private set; }
+    public Battle battle;
 
     // all of these behaviors read + managed internally
     public Map map { get { return GetComponent<Map>(); } }
@@ -20,7 +18,7 @@ public class BattleController : MonoBehaviour {
     // internal state
     private Dictionary<BattleUnit, BattleEvent> dolls;
     private BattleUnit actingUnit;
-    private IntVector2 selectedLocation;
+    private IntVector2 selectionPosition;
 
     // === INITIALIZATION ==========================================================================
 
@@ -48,11 +46,20 @@ public class BattleController : MonoBehaviour {
         dolls[newUnit] = doll;
     }
 
+    public BattleUnit GetUnitAt(IntVector2 position) {
+        foreach (MapEvent mapEvent in map.GetEventsAt(map.LowestObjectLayer(), position)) {
+            if (mapEvent.GetComponent<BattleEvent>() != null) {
+                return mapEvent.GetComponent<BattleEvent>().unit;
+            }
+        }
+        return null;
+    }
+
     // === STATE MACHINE ===========================================================================
 
     private void ResetActionState() {
         this.actingUnit = null;
-        this.targetedMoveLocation = CanceledLocation;
+        this.selectionPosition = Cursor.CanceledPosition;
     }
 
     // it's a discrete step in the human's turn, they should be able to undo up to this point
@@ -61,7 +68,7 @@ public class BattleController : MonoBehaviour {
 
         while (actingUnit == null) {
             yield return SelectUnitRoutine();
-            while (selectedLocation == CanceledLocation) {
+            while (selectionPosition == Cursor.CanceledPosition) {
                 yield return SelectMoveLocationRoutine();
                 if (actingUnit == null) {
                     break;
@@ -71,19 +78,42 @@ public class BattleController : MonoBehaviour {
         }
     }
 
-    // selects an allied unit, guarantees that this battle's selected unit will be non-null
+    // selects an allied unit, guarantees that this battle's selected unit will be non-null 
     private IEnumerator SelectUnitRoutine() {
-        // spawn the cursor
-        while (this.actingUnit == null) {
-            yield return null;
+        BattleUnit defaultHero = battle.GetFaction(Alignment.Hero).NextMoveableUnit();
+        Cursor cursor = SpawnCursor();
+        cursor.GetComponent<MapEvent>().SetLocation(defaultHero.position);
+        while (actingUnit == null) {
+            cursor.Configure((IntVector2 pos) => {
+                BattleUnit unit = GetUnitAt(pos);
+                if (unit != null && unit.align == Alignment.Hero) {
+                    actingUnit = unit;
+                }
+            });
+            yield return cursor.AwaitSelectionRoutine();
         }
+        Destroy(cursor);
     }
 
     // selects a move location for the selected unit, could potentially null out selected unit
     private IEnumerator SelectMoveLocationRoutine() {
         // spawn the cursor
-        while (this.selectedLocation == CanceledLocation && this.actingUnit != null) {
+        while (this.selectionPosition == Cursor.CanceledPosition && this.actingUnit != null) {
             yield return null;
         }
+    }
+
+    // === GAMEBOARD AND GRAPHICAL INTERACTION =====================================================
+
+    private SelectionGrid SpawnSelectionGrid() {
+        SelectionGrid grid = SelectionGrid.GetInstance();
+        grid.gameObject.transform.parent = GetComponent<Map>().LowestObjectLayer().transform;
+        return grid;
+    }
+
+    private Cursor SpawnCursor() {
+        Cursor cursor = Cursor.GetInstance();
+        cursor.gameObject.transform.parent = GetComponent<Map>().LowestObjectLayer().transform;
+        return cursor;
     }
 }

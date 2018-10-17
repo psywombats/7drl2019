@@ -10,9 +10,11 @@ using System;
 [ExecuteInEditMode]
 public class SelectionGrid : MonoBehaviour {
 
+    const string InstancePath = "Prefabs/Map3D/SelectionGrid";
+
+    // editor properties
     public MeshFilter Mesh;
     public MeshRenderer MeshRenderer;
-    [Header("Autotile texture - RM style")]
     public Texture2D GridTexture;
 
     private IntVector2 size;
@@ -25,9 +27,14 @@ public class SelectionGrid : MonoBehaviour {
         ElbowNW, ElbowNE, ElbowSE, ElbowSW,
     }
 
+    public static SelectionGrid GetInstance() {
+        GameObject prefab = Resources.Load<GameObject>(InstancePath);
+        return UnityEngine.Object.Instantiate<GameObject>(prefab).GetComponent<SelectionGrid>();
+    }
+
     public void OnEnable() {
-        ConfigureNewGrid(new IntVector2(5, 5), (IntVector2 loc) => {
-            return loc.x >= loc.y;
+        ConfigureNewGrid(new IntVector2(5, 3), (IntVector2 loc) => {
+            return loc.x > 0 || loc.y > 0;
         });
     }
 

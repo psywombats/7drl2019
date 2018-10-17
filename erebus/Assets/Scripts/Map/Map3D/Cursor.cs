@@ -1,10 +1,43 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class Cursor : MonoBehaviour, InputListener {
 
+    public static readonly IntVector2 CanceledPosition = new IntVector2(-1, -1);
+
+    private const string InstancePath = "Prefabs/Map3D/Cursor";
+
+    private Func<IntVector2, bool> canMoveTo;
+    private Action<IntVector2> onSelect;
+    private bool awaitingSelect;
+
+    public static Cursor GetInstance() {
+        GameObject prefab = Resources.Load<GameObject>(InstancePath);
+        return UnityEngine.Object.Instantiate<GameObject>(prefab).GetComponent<Cursor>();
+    }
+
     public void Start() {
         Global.Instance().Input.PushListener(this);
+    }
+
+    // configures the cursor behavior
+    // canMoveTo - if this returns true, the location can be moved to
+    // onSelect - called when the user tries to select the location the cursor is on
+    public void Configure(Func<IntVector2, bool> canMoveTo, Action<IntVector2> onSelect) {
+        this.canMoveTo = canMoveTo;
+        this.onSelect = onSelect;
+    }
+    public void Configure(Action<IntVector2> onSelect) {
+        Configure((IntVector2 pos) => { return true; }, onSelect);
+    }
+
+    // waits for the cursor to select
+    public IEnumerator AwaitSelectionRoutine() {
+        awaitingSelect = true;
+        while (awaitingSelect) {
+            yield return null;
+        }
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
@@ -29,6 +62,18 @@ public class Cursor : MonoBehaviour, InputListener {
                     default:
                         return false;
                 }
+            case InputManager.Event.Down:
+                switch (command) {
+                    case InputManager.Command.Confirm:
+                        onSelect(GetComponent<MapEvent>().Position);
+                        awaitingSelect = false;
+                        return true;
+                    case InputManager.Command.Cancel:
+                        onSelect(CanceledPosition);
+                        return true;
+                    default:
+                        return false;
+                }
             default:
                 return false;
         }
@@ -36,7 +81,7 @@ public class Cursor : MonoBehaviour, InputListener {
 
     private bool TryStep(OrthoDir dir) {
         IntVector2 target = GetComponent<MapEvent>().Position + dir.XY();
-        if (GetComponent<MapEvent>().CanPassAt(target)) {
+        if (canMoveTo(target) && GetComponent<MapEvent>().CanPassAt(target)) {
             StartCoroutine(GetComponent<MapEvent>().StepRoutine(dir));
         }
 
