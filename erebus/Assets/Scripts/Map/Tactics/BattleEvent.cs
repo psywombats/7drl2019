@@ -10,7 +10,8 @@ using UnityEngine;
 public class BattleEvent : TiledInstantiated {
 
     private static string InstancePath = "Prefabs/Map3D/Doll";
-    
+
+    public string unitKey;
     public BattleUnit unit { get; private set; }
     public BattleController controller { get; private set; }
 
@@ -27,12 +28,16 @@ public class BattleEvent : TiledInstantiated {
     }
 
     public override void Populate(IDictionary<string, string> properties) {
-        string unitKey = properties[MapEvent.PropertyUnit];
-        GetComponent<MapEvent3D>().Parent.battleController.AddUnitFromTiledEvent(this, unitKey);
+        this.unitKey = properties[MapEvent.PropertyUnit];
         GetComponent<CharaEvent>().doll.AddComponent<BillboardingSpriteComponent>();
     }
 
+    public void OnEnable() {
+        BattleController controller = GetComponent<MapEvent3D>().Parent.GetComponent<BattleController>();
+        controller.AddUnitFromTiledEvent(this, unitKey);
+    }
+
     public void SetScreenPositionToMatchTilePosition() {
-        GetComponent<MapEvent>().SetLocation(unit.position);
+        GetComponent<MapEvent>().SetLocation(unit.location);
     }
 }

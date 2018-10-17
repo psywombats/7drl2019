@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 10/17/2018 12:48:33 AM-->
+<!--Last exported: 10/17/2018 1:13:14 AM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="debug_eris" />
   <Prefab name="tactics" orientation="Orthogonal" staggerAxis="Y" staggerIndex="Odd" hexSideLength="0" numLayers="1" numTilesWide="22" numTilesHigh="16" tileWidth="16" tileHeight="16" exportScale="0.0625" mapWidthInPixels="352" mapHeightInPixels="256" backgroundColor="#808080" resourcePath="Test/3D" sortingOrder="1">

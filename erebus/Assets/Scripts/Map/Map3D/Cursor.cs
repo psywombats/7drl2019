@@ -4,7 +4,7 @@ using System;
 
 public class Cursor : MonoBehaviour, InputListener {
 
-    public static readonly IntVector2 CanceledPosition = new IntVector2(-1, -1);
+    public static readonly IntVector2 CanceledLocation = new IntVector2(-1, -1);
 
     private const string InstancePath = "Prefabs/Map3D/Cursor";
 
@@ -17,8 +17,12 @@ public class Cursor : MonoBehaviour, InputListener {
         return UnityEngine.Object.Instantiate<GameObject>(prefab).GetComponent<Cursor>();
     }
 
-    public void Start() {
+    public void OnEnable() {
         Global.Instance().Input.PushListener(this);
+    }
+
+    public void OnDisable() {
+        Global.Instance().Input.RemoveListener(this);
     }
 
     // configures the cursor behavior
@@ -69,7 +73,7 @@ public class Cursor : MonoBehaviour, InputListener {
                         awaitingSelect = false;
                         return true;
                     case InputManager.Command.Cancel:
-                        onSelect(CanceledPosition);
+                        onSelect(CanceledLocation);
                         return true;
                     default:
                         return false;

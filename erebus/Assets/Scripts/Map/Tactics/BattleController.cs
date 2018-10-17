@@ -29,7 +29,6 @@ public class BattleController : MonoBehaviour {
     // this should take a battle memory at some point
     public void Setup(string battleKey) {
         this.battle = Resources.Load<Battle>("Database/Battles/" + battleKey);
-        battle.RegisterController(this);
         Debug.Assert(this.battle != null, "Unknown battle key " + battleKey);
     }
 
@@ -59,7 +58,7 @@ public class BattleController : MonoBehaviour {
 
     private void ResetActionState() {
         this.actingUnit = null;
-        this.selectionPosition = Cursor.CanceledPosition;
+        this.selectionPosition = Cursor.CanceledLocation;
     }
 
     // it's a discrete step in the human's turn, they should be able to undo up to this point
@@ -68,13 +67,12 @@ public class BattleController : MonoBehaviour {
 
         while (actingUnit == null) {
             yield return SelectUnitRoutine();
-            while (selectionPosition == Cursor.CanceledPosition) {
+            while (selectionPosition == Cursor.CanceledLocation) {
                 yield return SelectMoveLocationRoutine();
                 if (actingUnit == null) {
                     break;
                 }
             }
-            
         }
     }
 
@@ -82,10 +80,10 @@ public class BattleController : MonoBehaviour {
     private IEnumerator SelectUnitRoutine() {
         BattleUnit defaultHero = battle.GetFaction(Alignment.Hero).NextMoveableUnit();
         Cursor cursor = SpawnCursor();
-        cursor.GetComponent<MapEvent>().SetLocation(defaultHero.position);
+        cursor.GetComponent<MapEvent>().SetLocation(defaultHero.location);
         while (actingUnit == null) {
-            cursor.Configure((IntVector2 pos) => {
-                BattleUnit unit = GetUnitAt(pos);
+            cursor.Configure((IntVector2 loc) => {
+                BattleUnit unit = GetUnitAt(loc);
                 if (unit != null && unit.align == Alignment.Hero) {
                     actingUnit = unit;
                 }
@@ -97,8 +95,9 @@ public class BattleController : MonoBehaviour {
 
     // selects a move location for the selected unit, could potentially null out selected unit
     private IEnumerator SelectMoveLocationRoutine() {
-        // spawn the cursor
-        while (this.selectionPosition == Cursor.CanceledPosition && this.actingUnit != null) {
+        Cursor cursor = SpawnCursor();
+        cursor.GetComponent<MapEvent>().SetLocation(actingUnit.location);
+        while (this.selectionPosition == Cursor.CanceledLocation && this.actingUnit != null) {
             yield return null;
         }
     }

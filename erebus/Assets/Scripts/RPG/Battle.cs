@@ -35,10 +35,6 @@ public class Battle : ScriptableObject {
         return units;
     }
 
-    public void RegisterController(BattleController controller) {
-        this.controller = controller;
-    }
-
     public IEnumerable<BattleUnit> UnitsByAlignment(Alignment align) {
         return units.Where(unit => (unit.align == align));
     }
@@ -78,7 +74,8 @@ public class Battle : ScriptableObject {
     // === STATE MACHINE ===========================================================================
 
     // runs and executes this battle
-    public IEnumerator BattleRoutine() {
+    public IEnumerator BattleRoutine(BattleController controller) {
+        this.controller = controller;
         while (true) {
             yield return NextRoundRoutine();
             if (CheckGameOver() != Alignment.None) {

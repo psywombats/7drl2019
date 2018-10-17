@@ -7,7 +7,7 @@ public class BattleUnit {
     public Unit unit { get; private set; }
     public Battle battle { get; private set; }
     public Alignment align { get; private set; }
-    public IntVector2 position { get; private set; }
+    public IntVector2 location { get; private set; }
     public bool hasMovedThisTurn { get; private set; }
 
     public BattleEvent doll {
@@ -22,16 +22,16 @@ public class BattleUnit {
         this.align = Alignment.Hero;
     }
 
-    public BattleUnit(Unit unit, Battle battle) : base() {
+    public BattleUnit(Unit unit, Battle battle) : this() {
         this.unit = unit;
         this.battle = battle;
 
-        position = battle.GetStartingLocationFor(this);
+        location = battle.GetStartingLocationFor(this);
     }
 
     // given a doll from Tiled, copy over its relevant information
     public void CopyInfoFromDoll(BattleEvent doll) {
-        this.position = doll.GetComponent<MapEvent3D>().Position;
+        this.location = doll.GetComponent<MapEvent3D>().Position;
     }
 
     // === STATE MACHINE ===========================================================================
@@ -48,6 +48,14 @@ public class BattleUnit {
     }
 
     // === RPG =====================================================================================
+
+    public float Get(StatTag tag) {
+        return unit.stats.Get(tag);
+    }
+
+    public bool Is(StatTag tag) {
+        return unit.stats.Is(tag);
+    }
 
     // checks for deadness and dead-like conditions like petrification
     public bool IsDead() {

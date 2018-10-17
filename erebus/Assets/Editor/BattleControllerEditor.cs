@@ -12,7 +12,7 @@ public class BattleControllerEditor : Editor {
 
         BattleController controller = (BattleController)target;
         if (GUILayout.Button("Start Battle")) {
-            controller.StartCoroutine(controller.battle.BattleRoutine());
+            controller.StartCoroutine(controller.battle.BattleRoutine(controller));
         }
 
         GUILayout.Label("Battle status:");
