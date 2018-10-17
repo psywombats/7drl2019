@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.6.3p2</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -172,6 +174,7 @@
     <Compile Include="Assets\Scripts\Map\TiledInstantiated.cs" />
     <Compile Include="Assets\Scripts\RPG\Alignment.cs" />
     <Compile Include="Assets\Scripts\RPG\Battle.cs" />
+    <Compile Include="Assets\Scripts\RPG\BattleFaction.cs" />
     <Compile Include="Assets\Scripts\RPG\BattleUnit.cs" />
     <Compile Include="Assets\Scripts\RPG\Data\RPGMemory.cs" />
     <Compile Include="Assets\Scripts\RPG\PartyManager.cs" />

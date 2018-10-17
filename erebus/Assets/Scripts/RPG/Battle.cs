@@ -20,11 +20,13 @@ public class Battle : ScriptableObject {
     public BattleController controller { get; private set; }
     
     private List<BattleUnit> units;
+    private Dictionary<Alignment, BattleFaction> factions;
 
     // === INITIALIZATION ===
 
     public Battle() {
         this.units = new List<BattleUnit>();
+        this.factions = new Dictionary<Alignment, BattleFaction>();
     }
 
     // === BOOKKEEPING AND GETTERS ===
@@ -46,6 +48,11 @@ public class Battle : ScriptableObject {
         Debug.Assert(unit != null, "Unknown unit key " + unitKey);
         BattleUnit battleUnit = new BattleUnit(unit, this);
         AddUnit(battleUnit);
+
+        if (factions[battleUnit.align] == null) {
+            factions[battleUnit.align] = new BattleFaction(this, battleUnit.align);
+        }
+
         return battleUnit;
     }
 
@@ -65,7 +72,7 @@ public class Battle : ScriptableObject {
     // runs and executes this battle
     public IEnumerator BattleRoutine() {
         while (true) {
-            yield return NextRound();
+            yield return NextRoundRoutine();
             if (CheckGameOver() != Alignment.None) {
                 yield break;
             }
@@ -86,10 +93,13 @@ public class Battle : ScriptableObject {
 
     // returns which alignment won the game, or Alignment.None if no one did
     private Alignment CheckGameOver() {
-        foreach (Alignment align in new Alignment[] { Alignment.Hero, Alignment.Enemy } ) {
-            bool allDead = false;
-            foreach (BattleUnit unit in UnitsByAlignment(align)) {
-
+        foreach (BattleFaction faction in factions.Values) {
+            if (faction.HasWon()) {
+                return faction.align;
+            } else if (faction.align == Alignment.Hero && faction.HasLost()) {
+                return Alignment.Enemy;
+            } else if (faction.align == Alignment.Enemy && faction.HasLost()) {
+                return Alignment.Hero;
             }
         }
         return Alignment.None;
@@ -97,29 +107,31 @@ public class Battle : ScriptableObject {
 
     // responsible for changing ui state to this unit's turn, then 
     private IEnumerator PlayTurnRoutine(Alignment align) {
-        yield return ReactiveUnitsRoutine(align);
-        while (HasUnitsLeftToAct(align)) {
-            yield return NextUnitActionRoutine(align);
+        if (factions[align] == null) {
+            yield break;
+        }
+        yield return ResetForNewTurnRoutine(align);
+        while (factions[align].HasUnitsLeftToAct()) {
+            yield return PlayNextActionRoutine(align);
         }
     }
 
-    private bool HasUnitsLeftToAct(Alignment align) {
-        foreach (BattleUnit unit in UnitsByAlignment(align)) {
-            if (!unit.hasMovedThisTurn) {
-                return true;
-            }
+    private IEnumerator PlayNextActionRoutine(Alignment align) {
+        switch (align) {
+            case Alignment.Hero:
+                yield return controller.PlayNextHumanActionRoutine();
+                break;
+            case Alignment.Enemy:
+                // TODO: AI
+                yield break;
+            default:
+                Debug.Assert(false, "bad align " + align);
+                yield break;
         }
-        return false;
     }
 
-    private IEnumerator NextUnitActionRoutine(Alignment align) {
-        yield break;
-    }
-
-    private IEnumerator ReactiveUnitsRoutine(Alignment align) {
-        foreach (BattleUnit unit in UnitsByAlignment(align)) {
-            unit.ResetForNewTurn();
-        }
+    private IEnumerator ResetForNewTurnRoutine(Alignment align) {
+        factions[align].ResetForNewTurn();
         yield break;
     }
 }

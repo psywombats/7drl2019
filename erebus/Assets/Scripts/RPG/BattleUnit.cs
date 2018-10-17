@@ -10,6 +10,8 @@ public class BattleUnit {
     public IntVector2 location { get; private set; }
     public bool hasMovedThisTurn { get; private set; }
 
+    // === INITIALIZATION ==========================================================================
+
     public BattleEvent Doll {
         get {
             return battle.controller.GetDollForUnit(this);
@@ -28,14 +30,23 @@ public class BattleUnit {
         this.location = doll.GetComponent<MapEvent3D>().Position;
     }
 
-    // called at the beginning of this unit's faction's turn
-    public void ResetForNewTurn() {
-
-    }
+    // === STATE MACHINE ===========================================================================
 
     // perform action during faction's turn -- for humans, this involves menus, for enemies, AI
     public IEnumerator TakeAction() {
         hasMovedThisTurn = true;
         yield break;
+    }
+
+    // called at the beginning of this unit's faction's turn
+    public void ResetForNewTurn() {
+
+    }
+
+    // === RPG =====================================================================================
+
+    // checks for deadness and dead-like conditions like petrification
+    public bool IsDead() {
+        return unit.stats.Get(StatTag.HP) <= 0;
     }
 }
