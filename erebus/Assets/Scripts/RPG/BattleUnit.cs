@@ -8,6 +8,7 @@ public class BattleUnit {
     public Battle battle { get; private set; }
     public Alignment align { get; private set; }
     public IntVector2 location { get; private set; }
+    public bool hasMovedThisTurn { get; private set; }
 
     public BattleEvent Doll {
         get {
@@ -25,5 +26,16 @@ public class BattleUnit {
     // given a doll from Tiled, copy over its relevant information
     public void CopyInfoFromDoll(BattleEvent doll) {
         this.location = doll.GetComponent<MapEvent3D>().Position;
+    }
+
+    // called at the beginning of this unit's faction's turn
+    public void ResetForNewTurn() {
+
+    }
+
+    // perform action during faction's turn -- for humans, this involves menus, for enemies, AI
+    public IEnumerator TakeAction() {
+        hasMovedThisTurn = true;
+        yield break;
     }
 }

@@ -2,6 +2,7 @@
 using UnityEngine;
 
 public enum Alignment {
+    [AlignmentAttribute("None / Unknown")] None,
     [AlignmentAttribute("Hero")] Hero,
     [AlignmentAttribute("Enemy")] Enemy,
 }

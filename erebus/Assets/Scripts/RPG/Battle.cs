@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /**
@@ -32,6 +33,14 @@ public class Battle : ScriptableObject {
         return units;
     }
 
+    public void RegisterController(BattleController controller) {
+        this.controller = controller;
+    }
+
+    public IEnumerable<BattleUnit> UnitsByAlignment(Alignment align) {
+        return units.Where(unit => (unit.align == align));
+    }
+
     public BattleUnit AddUnitFromKey(string unitKey) {
         Unit unit = Resources.Load<Unit>("Database/Units/" + unitKey);
         Debug.Assert(unit != null, "Unknown unit key " + unitKey);
@@ -53,7 +62,64 @@ public class Battle : ScriptableObject {
 
     // === STATE MACHINE ===
 
-    public void StartBattle() {
+    // runs and executes this battle
+    public IEnumerator BattleRoutine() {
+        while (true) {
+            yield return NextRound();
+            if (CheckGameOver() != Alignment.None) {
+                yield break;
+            }
+        }
+    }
+    
+    // coroutine to play out a single round of combat
+    private IEnumerator NextRoundRoutine() {
+        yield return PlayTurnRoutine(Alignment.Hero);
+        if (CheckGameOver() != Alignment.None) {
+            yield break;
+        }
+        yield return PlayTurnRoutine(Alignment.Enemy);
+        if (CheckGameOver() != Alignment.None) {
+            yield break;
+        }
+    }
 
+    // returns which alignment won the game, or Alignment.None if no one did
+    private Alignment CheckGameOver() {
+        foreach (Alignment align in new Alignment[] { Alignment.Hero, Alignment.Enemy } ) {
+            bool allDead = false;
+            foreach (BattleUnit unit in UnitsByAlignment(align)) {
+
+            }
+        }
+        return Alignment.None;
+    }
+
+    // responsible for changing ui state to this unit's turn, then 
+    private IEnumerator PlayTurnRoutine(Alignment align) {
+        yield return ReactiveUnitsRoutine(align);
+        while (HasUnitsLeftToAct(align)) {
+            yield return NextUnitActionRoutine(align);
+        }
+    }
+
+    private bool HasUnitsLeftToAct(Alignment align) {
+        foreach (BattleUnit unit in UnitsByAlignment(align)) {
+            if (!unit.hasMovedThisTurn) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private IEnumerator NextUnitActionRoutine(Alignment align) {
+        yield break;
+    }
+
+    private IEnumerator ReactiveUnitsRoutine(Alignment align) {
+        foreach (BattleUnit unit in UnitsByAlignment(align)) {
+            unit.ResetForNewTurn();
+        }
+        yield break;
     }
 }
