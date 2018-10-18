@@ -54,7 +54,7 @@ public class CharaEvent : MonoBehaviour {
             if (GetComponent<MapEvent3D>() != null) {
                 doll = new GameObject("Doll");
                 doll.transform.parent = gameObject.transform;
-                doll.transform.localPosition = new Vector3(0.25f, 0.0f, -0.65f);
+                doll.transform.localPosition = new Vector3(0.125f, 0.0f, -0.65f);
                 CharaAnimator animator = doll.AddComponent<CharaAnimator>();
                 animator.ParentEvent = GetComponent<MapEvent>();
                 animator.Populate(properties[PropertySprite]);

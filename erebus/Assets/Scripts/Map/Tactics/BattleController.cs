@@ -106,21 +106,21 @@ public class BattleController : MonoBehaviour {
 
     // selects a move location for the selected unit, might be canceled
     private IEnumerator SelectMoveLocationRoutine() {
-        int range = (int)actingUnit.Get(StatTag.MOVE);
-        Func<IntVector2, bool> rule = (IntVector2 loc) => {
-            return loc != actingUnit.location &&
-                IntVector2.ManhattanDistance(loc, actingUnit.location) <= range;
-        };
-
         cursor.gameObject.SetActive(true);
         cursor.GetComponent<MapEvent>().SetLocation(actingUnit.location);
-        cursor.Configure(rule, (IntVector2 loc) => {
+        cursor.Configure((IntVector2 loc) => {
             this.selectionPosition = loc;
         });
 
         SelectionGrid grid = SpawnSelectionGrid();
-        grid.ConfigureNewGrid(map.size, rule);
-        
+        int range = (int)actingUnit.Get(StatTag.MOVE);
+        grid.ConfigureNewGrid(map.size, (IntVector2 loc) => {
+            if (loc == actingUnit.location) {
+                return false;
+            }
+            return map.FindPath(actingUnit.doll.GetComponent<CharaEvent>(), loc, range) != null;
+        });
+
         yield return cursor.AwaitSelectionRoutine();
 
         cursor.gameObject.SetActive(false);

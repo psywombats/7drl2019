@@ -95,8 +95,18 @@ public class Map : TiledInstantiated {
 
     }
 
-    // returns a list of coordinates to step to with the last one being the destination, or null if no path
+    // returns a list of coordinates to step to with the last one being the destination, or null
     public List<IntVector2> FindPath(CharaEvent actor, IntVector2 to) {
+        return FindPath(actor, to, width > height ? width : height);
+    }
+    public List<IntVector2> FindPath(CharaEvent actor, IntVector2 to, int maxPathLength) {
+        if (IntVector2.ManhattanDistance(actor.GetComponent<MapEvent>().Position, to) > maxPathLength) {
+            return null;
+        }
+        if (!actor.CanPassAt(to)) {
+            return null;
+        }
+
         HashSet<IntVector2> visited = new HashSet<IntVector2>();
         List<List<IntVector2>> heads = new List<List<IntVector2>>();
         List<IntVector2> firstHead = new List<IntVector2>();
@@ -112,19 +122,21 @@ public class Map : TiledInstantiated {
             List<IntVector2> head = heads[0];
             heads.RemoveAt(0);
             IntVector2 at = head[head.Count - 1];
-            visited.Add(at);
 
             if (at == to) {
                 // trim to remove the current location from the beginning
                 return head.GetRange(1, head.Count - 1);
             }
 
-            foreach (OrthoDir dir in Enum.GetValues(typeof(OrthoDir))) {
-                IntVector2 next = head[head.Count - 1] + dir.XY();
-                if (!visited.Contains(next) && actor.CanPassAt(next)) {
-                    List<IntVector2> newHead = new List<IntVector2>(head);
-                    newHead.Add(next);
-                    heads.Add(newHead);
+            if (head.Count < maxPathLength) {
+                foreach (OrthoDir dir in Enum.GetValues(typeof(OrthoDir))) {
+                    IntVector2 next = head[head.Count - 1] + dir.XY();
+                    if (!visited.Contains(next) && actor.CanPassAt(next)) {
+                        List<IntVector2> newHead = new List<IntVector2>(head);
+                        newHead.Add(next);
+                        heads.Add(newHead);
+                        visited.Add(next);
+                    }
                 }
             }
         }
