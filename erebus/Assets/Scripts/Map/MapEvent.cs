@@ -272,10 +272,18 @@ public abstract class MapEvent : TiledInstantiated {
         GetComponent<Dispatch>().Signal(EventMove, dir);
 
         while (true) {
-            mapEvent.PositionPx = Vector3.MoveTowards(mapEvent.PositionPx, targetPositionPx, tilesPerSecond * Time.deltaTime);
+            if (tilesPerSecond > 0) {
+                mapEvent.PositionPx = Vector3.MoveTowards(mapEvent.PositionPx, 
+                    targetPositionPx, 
+                    tilesPerSecond * Time.deltaTime);
+            } else {
+                // indicates warp speed, cap'n
+                mapEvent.PositionPx = targetPositionPx;
+            }
+            
 
             // TODO: ugly, I think we actually want to handle this via prefabs now
-            if (Global.Instance().Maps.Camera != null && Global.Instance().Maps.Camera.Target == GetComponent<MapEvent>()) {
+            if (Global.Instance().Maps.Camera.Target == GetComponent<MapEvent>()) {
                 Global.Instance().Maps.Camera.ManualUpdate();
             }
 

@@ -13,7 +13,7 @@ public class BillboardingSpriteComponent : MonoBehaviour {
         SpriteRenderer sprite = GetComponent<SpriteRenderer>();
         Vector3 angles = sprite.transform.eulerAngles;
         sprite.transform.eulerAngles = new Vector3(
-                TacticsCam.Instance().transform.eulerAngles.x,
+                TacticsCam.Instance().cam.transform.eulerAngles.x,
                 angles.y,
                 angles.z);
     }

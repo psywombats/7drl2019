@@ -30,7 +30,7 @@ public class InputManager : MonoBehaviour {
         Repeat,
     };
 
-    private static readonly float KeyRepeatSeconds = 0.6f;
+    private static readonly float KeyRepeatSeconds = 0.5f;
 
     private Dictionary<Command, List<KeyCode>> keybinds;
     private List<InputListener> listeners;

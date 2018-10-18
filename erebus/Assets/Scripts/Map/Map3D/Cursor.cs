@@ -7,8 +7,11 @@ public class Cursor : MonoBehaviour, InputListener {
     public static readonly IntVector2 CanceledLocation = new IntVector2(-1, -1);
 
     private const string InstancePath = "Prefabs/Map3D/Cursor";
+
+    public float minTimeBetweenMoves = 0.1f;
     
     private Action<IntVector2> onSelect;
+    private float lastStepTime;
     private bool awaitingSelect;
 
     public static Cursor GetInstance() {
@@ -18,10 +21,14 @@ public class Cursor : MonoBehaviour, InputListener {
 
     public void OnEnable() {
         Global.Instance().Input.PushListener(this);
+        TacticsCam.Instance().Target = GetComponent<MapEvent>();
     }
 
     public void OnDisable() {
         Global.Instance().Input.RemoveListener(this);
+        if (TacticsCam.Instance() != null && TacticsCam.Instance().Target == GetComponent<MapEvent>()) {
+            TacticsCam.Instance().Target = null;
+        }
     }
 
     // configures the cursor behavior
@@ -77,9 +84,13 @@ public class Cursor : MonoBehaviour, InputListener {
     }
 
     private bool TryStep(OrthoDir dir) {
+        if (Time.fixedTime - lastStepTime < minTimeBetweenMoves) {
+            return true;
+        }
         IntVector2 target = GetComponent<MapEvent>().Position + dir.XY();
         if (GetComponent<MapEvent>().CanPassAt(target)) {
             StartCoroutine(GetComponent<MapEvent>().StepRoutine(dir));
+            lastStepTime = Time.fixedTime;
         }
 
         return true;
