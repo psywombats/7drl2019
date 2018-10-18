@@ -8,4 +8,6 @@ public enum StatTag {
 
     RES_FIRE,
     WEAK_FIRE,
+
+    MOVE,
 }

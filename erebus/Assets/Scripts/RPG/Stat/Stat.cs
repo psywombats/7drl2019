@@ -40,6 +40,7 @@ public class Stat {
         AddStat(StatTag.HP,         CombinationAdditive.Instance(), "HP",       false);
         AddStat(StatTag.RES_FIRE,   CombinationAdditive.Instance(), "O-FIRE",   true);
         AddStat(StatTag.WEAK_FIRE,  CombinationAdditive.Instance(), "X-FIRE",   true);
+        AddStat(StatTag.MOVE,       CombinationAdditive.Instance(), "MOVE",     false);
     }
 
     private static void AddStat(StatTag tag, CombinationStrategy combinator, String nameShort, bool useBinaryEditor) {

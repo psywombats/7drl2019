@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 /**
  * Responsible for user input and rendering during a battle. Control flow is actually handled by
  * the Battle class.
  */
- [RequireComponent(typeof(Map))]
+[RequireComponent(typeof(Map))]
 public class BattleController : MonoBehaviour {
 
     // properties required upon initializion
@@ -19,11 +20,18 @@ public class BattleController : MonoBehaviour {
     private Dictionary<BattleUnit, BattleEvent> dolls;
     private BattleUnit actingUnit;
     private IntVector2 selectionPosition;
+    private Cursor cursor;
 
     // === INITIALIZATION ==========================================================================
 
     public BattleController() {
         dolls = new Dictionary<BattleUnit, BattleEvent>();
+    }
+
+    public void Start() {
+        cursor = Cursor.GetInstance();
+        cursor.gameObject.transform.parent = GetComponent<Map>().LowestObjectLayer().transform;
+        cursor.gameObject.SetActive(false);
     }
 
     // this should take a battle memory at some point
@@ -65,41 +73,58 @@ public class BattleController : MonoBehaviour {
     public IEnumerator PlayNextHumanActionRoutine() {
         ResetActionState();
 
+        MoveCursorToDefaultUnit();
+
         while (actingUnit == null) {
             yield return SelectUnitRoutine();
             while (selectionPosition == Cursor.CanceledLocation) {
                 yield return SelectMoveLocationRoutine();
-                if (actingUnit == null) {
+                if (selectionPosition == Cursor.CanceledLocation) {
                     break;
                 }
+                actingUnit.location = selectionPosition;
+                yield return actingUnit.doll.GetComponent<CharaEvent>().PathToRoutine(selectionPosition);
             }
         }
     }
 
     // selects an allied unit, guarantees that this battle's selected unit will be non-null 
     private IEnumerator SelectUnitRoutine() {
-        BattleUnit defaultHero = battle.GetFaction(Alignment.Hero).NextMoveableUnit();
-        Cursor cursor = SpawnCursor();
-        cursor.GetComponent<MapEvent>().SetLocation(defaultHero.location);
+        cursor.gameObject.SetActive(true);
+        cursor.Configure((IntVector2 loc) => {
+            BattleUnit unit = GetUnitAt(loc);
+            if (unit != null && unit.align == Alignment.Hero) {
+                actingUnit = unit;
+            }
+        });
+
         while (actingUnit == null) {
-            cursor.Configure((IntVector2 loc) => {
-                BattleUnit unit = GetUnitAt(loc);
-                if (unit != null && unit.align == Alignment.Hero) {
-                    actingUnit = unit;
-                }
-            });
             yield return cursor.AwaitSelectionRoutine();
         }
-        Destroy(cursor);
+        cursor.gameObject.SetActive(false);
     }
 
-    // selects a move location for the selected unit, could potentially null out selected unit
+    // selects a move location for the selected unit, might be canceled
     private IEnumerator SelectMoveLocationRoutine() {
-        Cursor cursor = SpawnCursor();
+        int range = (int)actingUnit.Get(StatTag.MOVE);
+        Func<IntVector2, bool> rule = (IntVector2 loc) => {
+            return loc != actingUnit.location &&
+                IntVector2.ManhattanDistance(loc, actingUnit.location) <= range;
+        };
+
+        cursor.gameObject.SetActive(true);
         cursor.GetComponent<MapEvent>().SetLocation(actingUnit.location);
-        while (this.selectionPosition == Cursor.CanceledLocation && this.actingUnit != null) {
-            yield return null;
-        }
+        cursor.Configure(rule, (IntVector2 loc) => {
+            this.selectionPosition = loc;
+        });
+
+        SelectionGrid grid = SpawnSelectionGrid();
+        grid.ConfigureNewGrid(map.size, rule);
+        
+        yield return cursor.AwaitSelectionRoutine();
+
+        cursor.gameObject.SetActive(false);
+        Destroy(grid.gameObject);
     }
 
     // === GAMEBOARD AND GRAPHICAL INTERACTION =====================================================
@@ -110,9 +135,8 @@ public class BattleController : MonoBehaviour {
         return grid;
     }
 
-    private Cursor SpawnCursor() {
-        Cursor cursor = Cursor.GetInstance();
-        cursor.gameObject.transform.parent = GetComponent<Map>().LowestObjectLayer().transform;
-        return cursor;
+    private void MoveCursorToDefaultUnit() {
+        BattleUnit defaultHero = battle.GetFaction(Alignment.Hero).NextMoveableUnit();
+        cursor.GetComponent<MapEvent>().SetLocation(defaultHero.location);
     }
 }

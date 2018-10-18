@@ -7,7 +7,7 @@ public class BattleUnit {
     public Unit unit { get; private set; }
     public Battle battle { get; private set; }
     public Alignment align { get; private set; }
-    public IntVector2 location { get; private set; }
+    public IntVector2 location { get; set; }
     public bool hasMovedThisTurn { get; private set; }
 
     public BattleEvent doll {
