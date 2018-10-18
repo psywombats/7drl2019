@@ -114,14 +114,17 @@ public class BattleController : MonoBehaviour {
 
         SelectionGrid grid = SpawnSelectionGrid();
         int range = (int)actingUnit.Get(StatTag.MOVE);
-        grid.ConfigureNewGrid(map.size, (IntVector2 loc) => {
+        Func<IntVector2, bool> rule = (IntVector2 loc) => {
             if (loc == actingUnit.location) {
                 return false;
             }
             return map.FindPath(actingUnit.doll.GetComponent<CharaEvent>(), loc, range) != null;
-        });
+        };
+        grid.ConfigureNewGrid(map.size, rule);
 
-        yield return cursor.AwaitSelectionRoutine();
+        do {
+            yield return cursor.AwaitSelectionRoutine();
+        } while (selectionPosition != Cursor.CanceledLocation && !rule(selectionPosition));
 
         cursor.gameObject.SetActive(false);
         Destroy(grid.gameObject);

@@ -13,7 +13,8 @@ public enum OrthoDir {
 public class OrthoDirAttribute : Attribute {
 
     // this set is in tile space
-    public IntVector2 XY { get; private set; }
+    // (xy is public for optimization)
+    public IntVector2 XY;
     public int X { get { return XY.x; } }
     public int Y { get { return XY.y; } }
 
@@ -85,7 +86,7 @@ public static class OrthoDirExtensions {
 
     public static int X(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().X; }
     public static int Y(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().Y; }
-    public static IntVector2 XY(this OrthoDir dir) { return new IntVector2(dir.X(), dir.Y()); }
+    public static IntVector2 XY(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().XY; }
 
     public static int Px2DX(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().Px2DX; }
     public static int Px2DY(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().Px2DY; }

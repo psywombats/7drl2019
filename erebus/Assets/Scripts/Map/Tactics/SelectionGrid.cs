@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using UnityEngine.Profiling;
 
 /**
  *  A purely cosmetic grid that can be configured to display tiles as 'on' or 'off.' It then renders
@@ -61,6 +62,7 @@ public class SelectionGrid : MonoBehaviour {
             }
         }
 
+        Profiler.BeginSample("pathfinding");
         // redo the triangle geometry to only reflect where rule evaluates true
         int[] triangles = new int[gridSize.x * gridSize.y * 6];
         for (int ti = 0, vi = 0, y = 0; y < gridSize.y; y++, vi++) {
@@ -79,7 +81,7 @@ public class SelectionGrid : MonoBehaviour {
         }
         mesh.triangles = triangles;
         mesh.RecalculateNormals();
-
+        Profiler.EndSample();
     }
 
     private void RecalculateGrid() {

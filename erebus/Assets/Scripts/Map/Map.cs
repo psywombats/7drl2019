@@ -31,6 +31,9 @@ public class Map : TiledInstantiated {
         }
     }
 
+    // true if the tile at x,y has the x "impassable" property for pathfinding
+    private bool[,] passabilityXMap;
+
     public override void Populate(IDictionary<string, string> properties) {
         TiledMap tiled = GetComponent<TiledMap>();
         size = new IntVector2(tiled.NumTilesWide, tiled.NumTilesHigh);
@@ -46,8 +49,17 @@ public class Map : TiledInstantiated {
 
     public bool IsChipPassableAt(TileLayer layer, IntVector2 loc) {
         TiledMap tiledMap = GetComponent<TiledMap>();
-        TiledProperty property = tiledMap.GetPropertyForTile("x", layer, loc.x, loc.y);
-        return (property == null) ? true : (property.GetStringValue() == "false");
+        if (passabilityXMap == null) {
+            passabilityXMap = new bool[width, height];
+            for (int x = 0; x < width; x += 1) {
+                for (int y = 0; y < height; y += 1) {
+                    TiledProperty property = tiledMap.GetPropertyForTile("x", layer, x, y);
+                    passabilityXMap[x, y] = (property == null) ? true : (property.GetStringValue() == "false");
+                }
+            }
+        }
+
+        return passabilityXMap[loc.x, loc.y];
     }
 
     // careful, this implementation is straight from MGNE, it's efficiency is questionable, to say the least
@@ -130,7 +142,14 @@ public class Map : TiledInstantiated {
 
             if (head.Count < maxPathLength) {
                 foreach (OrthoDir dir in Enum.GetValues(typeof(OrthoDir))) {
-                    IntVector2 next = head[head.Count - 1] + dir.XY();
+                    IntVector2 next = head[head.Count - 1];
+                    // minor perf here, this is critical code
+                    switch (dir) {
+                        case OrthoDir.East:     next.x += 1;    break;
+                        case OrthoDir.North:    next.y += 1;    break;
+                        case OrthoDir.West:     next.x -= 1;    break;
+                        case OrthoDir.South:    next.y -= 1;    break;
+                    }
                     if (!visited.Contains(next) && actor.CanPassAt(next)) {
                         List<IntVector2> newHead = new List<IntVector2>(head);
                         newHead.Add(next);

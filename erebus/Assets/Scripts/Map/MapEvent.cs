@@ -42,13 +42,19 @@ public abstract class MapEvent : TiledInstantiated {
         set { transform.localPosition = value; }
     }
 
+    private Map _parent;
     public Map Parent {
         get {
+            // this is wiped in update but we'll cache it across frames anyway
+            if (_parent != null) {
+                return _parent;
+            }
             GameObject parent = gameObject;
             while (parent.transform.parent != null) {
                 parent = parent.transform.parent.gameObject;
                 Map map = parent.GetComponent<Map>();
                 if (map != null) {
+                    _parent = map;
                     return map;
                 }
             }
@@ -70,10 +76,16 @@ public abstract class MapEvent : TiledInstantiated {
         }
     }
 
+    private int _layerIndex = -1;
     public int LayerIndex {
         get {
+            // this is a perf optimization -- events can't change layer now
+            if (_layerIndex != -1) {
+                return _layerIndex;
+            }
             for (int thisLayerIndex = 0; thisLayerIndex < Parent.transform.childCount; thisLayerIndex += 1) {
                 if (Parent.transform.GetChild(thisLayerIndex).gameObject.GetComponent<ObjectLayer>() == Layer) {
+                    _layerIndex = thisLayerIndex;
                     return thisLayerIndex;
                 }
             }
@@ -153,6 +165,9 @@ public abstract class MapEvent : TiledInstantiated {
     public void Update() {
         SetDepth();
         CheckEnabled();
+
+        // TODO: only clear this when we change scene for the avatar
+        _parent = null;
     }
 
     public void OnValidate() {
