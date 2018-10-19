@@ -105,7 +105,7 @@ public class Battle : ScriptableObject {
 
     // responsible for changing ui state to this unit's turn, then 
     private IEnumerator PlayTurnRoutine(Alignment align) {
-        if (factions[align] == null) {
+        if (!factions.ContainsKey(align)) {
             yield break;
         }
         yield return ResetForNewTurnRoutine(align);

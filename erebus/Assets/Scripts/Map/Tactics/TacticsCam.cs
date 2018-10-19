@@ -23,8 +23,13 @@ public class TacticsCam : MapCamera {
         CopyTargetPosition();
     }
 
+    public override Camera GetCameraComponent() {
+        return cam;
+    }
+
     public void Start() {
         WarpToTarget();
+        Global.Instance().Maps.SetCamera(this);
     }
 
     public void Update() {
@@ -46,8 +51,8 @@ public class TacticsCam : MapCamera {
     }
 
     private void CopyTargetPosition() {
-        if (Target != null) {
-            targetTileLocation = Target.Position;
+        if (target != null) {
+            targetTileLocation = target.Position;
         }
     }
 }

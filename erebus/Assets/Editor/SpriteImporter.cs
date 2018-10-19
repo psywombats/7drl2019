@@ -59,7 +59,7 @@ internal sealed class SpriteImporter : AssetPostprocessor {
                         data.alignment = (int)SpriteAlignment.Custom;
                         data.border = new Vector4(0, 0, 0, 0);
                         data.name = name + facingNames[y] + StepNames[x];
-                        data.pivot = new Vector2(((charaWidth - Map.TileSizePx) / 2.0f) / (float)charaWidth, 0.0f);
+                        data.pivot = new Vector2((charaWidth / 2.0f) / (float)charaWidth, 0.0f);
                         spritesheet.Add(data);
                     }
                 }

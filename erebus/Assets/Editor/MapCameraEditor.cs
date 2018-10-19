@@ -13,7 +13,7 @@ public class MapCameraEditor : Editor {
         if (GUILayout.Button("Attach and Center")) {
             AvatarEvent avatar = GameObject.FindObjectOfType<AvatarEvent>();
             if (avatar != null) {
-                camera.Target = avatar.GetComponent<MapEvent>();
+                camera.target = avatar.GetComponent<MapEvent>();
                 camera.ManualUpdate();
             } else {
                 Debug.LogError("No avatar could be found in the scene");

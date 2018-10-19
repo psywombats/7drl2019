@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Tiled2Unity;
 using UnityEngine;
@@ -12,6 +13,7 @@ public class CharaAnimator : MonoBehaviour {
 
     public MapEvent ParentEvent;
     public bool AlwaysAnimates = false;
+    public bool DynamicFacing = false;
 
     private Vector2 lastPosition;
 
@@ -24,10 +26,6 @@ public class CharaAnimator : MonoBehaviour {
                 GetComponent<SpriteRenderer>().enabled = enabled;
             });
         }
-
-        Parent().GetComponent<Dispatch>().RegisterListener(CharaEvent.FaceEvent, (object direction) => {
-            GetComponent<Animator>().SetInteger("dir", ((OrthoDir)direction).Ordinal());
-        });
     }
 
     public void Update() {
@@ -37,7 +35,7 @@ public class CharaAnimator : MonoBehaviour {
 
             bool stepping = AlwaysAnimates || delta.sqrMagnitude > 0 || Parent().GetComponent<MapEvent>().tracking;
             GetComponent<Animator>().SetBool("stepping", stepping);
-            GetComponent<Animator>().SetInteger("dir", Parent().GetComponent<CharaEvent>().facing.Ordinal());
+            GetComponent<Animator>().SetInteger("dir", CalculateDirection().Ordinal());
 
             lastPosition = position;
         } else {
@@ -70,5 +68,18 @@ public class CharaAnimator : MonoBehaviour {
     private void UpdatePositionMemory() {
         lastPosition.x = gameObject.transform.position.x;
         lastPosition.y = gameObject.transform.position.y;
+    }
+
+    private OrthoDir CalculateDirection() {
+        OrthoDir normalDir = Parent().GetComponent<CharaEvent>().facing;
+        MapCamera cam = Application.isPlaying ? Global.Instance().Maps.Camera : FindObjectOfType<MapCamera>();
+        if (!DynamicFacing && !cam.dynamicFacing) {
+            return normalDir;
+        }
+
+        float rotation = cam.GetCameraComponent().transform.localEulerAngles.y;
+        rotation += 45.0f;
+        int rotationOrdinal = (int)Math.Floor(rotation / 90.0f);
+        return (OrthoDir)(normalDir.Ordinal() + rotationOrdinal);
     }
 }

@@ -283,7 +283,7 @@ public abstract class MapEvent : TiledInstantiated {
             
 
             // TODO: ugly, I think we actually want to handle this via prefabs now
-            if (Global.Instance().Maps.Camera.Target == GetComponent<MapEvent>()) {
+            if (Global.Instance().Maps.Camera.target == GetComponent<MapEvent>()) {
                 Global.Instance().Maps.Camera.ManualUpdate();
             }
 

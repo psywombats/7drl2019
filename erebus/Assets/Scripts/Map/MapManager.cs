@@ -19,6 +19,10 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
             return mapCamera;
         }
     }
+    public void SetCamera(MapCamera cam) {
+        Debug.Assert(mapCamera == null);
+        mapCamera = cam;
+    }
 
     public void Start() {
         Global.Instance().Memory.RegisterMemoryPopulater(this);
@@ -112,7 +116,7 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
         }
         Avatar.transform.parent = ActiveMap.LowestObjectLayer().transform;
         ActiveMap.OnTeleportTo();
-        Camera.Target = Avatar.GetComponent<MapEvent>();
+        Camera.target = Avatar.GetComponent<MapEvent>();
         Camera.ManualUpdate();
     }
 

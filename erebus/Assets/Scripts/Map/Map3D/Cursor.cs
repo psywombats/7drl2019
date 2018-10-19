@@ -21,13 +21,13 @@ public class Cursor : MonoBehaviour, InputListener {
 
     public void OnEnable() {
         Global.Instance().Input.PushListener(this);
-        TacticsCam.Instance().Target = GetComponent<MapEvent>();
+        TacticsCam.Instance().target = GetComponent<MapEvent>();
     }
 
     public void OnDisable() {
         Global.Instance().Input.RemoveListener(this);
-        if (TacticsCam.Instance() != null && TacticsCam.Instance().Target == GetComponent<MapEvent>()) {
-            TacticsCam.Instance().Target = null;
+        if (TacticsCam.Instance() != null && TacticsCam.Instance().target == GetComponent<MapEvent>()) {
+            TacticsCam.Instance().target = null;
         }
     }
 

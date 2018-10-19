@@ -37,7 +37,7 @@
     <property name="3d" value=""/>
     <property name="face" value="south"/>
     <property name="sprite" value="whitescrew_hero01"/>
-    <property name="unit" value="mook1"/>
+    <property name="unit" value="hero1"/>
    </properties>
   </object>
  </objectgroup>
