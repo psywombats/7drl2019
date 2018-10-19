@@ -36,18 +36,13 @@ public class TacticsCam : MapCamera {
         CopyTargetPosition();
         transform.localPosition = Vector3.SmoothDamp(
                 transform.localPosition,
-                ScreenPosForTile(targetTileLocation),
+                MapEvent3D.TileToWorldCoords(targetTileLocation),
                 ref velocity,
                 snapTime);
     }
 
     public void WarpToTarget() {
-        transform.localPosition = ScreenPosForTile(targetTileLocation);
-    }
-
-    // TODO: this makes some very bad assumptions
-    private Vector3 ScreenPosForTile(IntVector2 tilePos) {
-        return new Vector3(tilePos.x, transform.localPosition.y, -1.0f * tilePos.y);
+        transform.localPosition = MapEvent3D.TileToWorldCoords(targetTileLocation);
     }
 
     private void CopyTargetPosition() {

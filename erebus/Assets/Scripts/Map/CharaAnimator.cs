@@ -14,6 +14,7 @@ public class CharaAnimator : MonoBehaviour {
     public MapEvent ParentEvent;
     public bool AlwaysAnimates = false;
     public bool DynamicFacing = false;
+    public String output;
 
     private Vector2 lastPosition;
 
@@ -77,9 +78,11 @@ public class CharaAnimator : MonoBehaviour {
             return normalDir;
         }
 
-        float rotation = cam.GetCameraComponent().transform.localEulerAngles.y;
-        rotation += 45.0f;
-        int rotationOrdinal = (int)Math.Floor(rotation / 90.0f);
-        return (OrthoDir)(normalDir.Ordinal() + rotationOrdinal);
+        Vector3 ourScreen = cam.GetCameraComponent().WorldToScreenPoint(ParentEvent.transform.position);
+        Vector3 targetWorld = MapEvent3D.TileToWorldCoords(ParentEvent.Position + normalDir.XY());
+        Vector3 targetScreen = cam.GetCameraComponent().WorldToScreenPoint(targetWorld);
+        Vector3 delta = targetScreen - ourScreen;
+        output = "" + delta;
+        return OrthoDirExtensions.DirectionOf(new Vector2(delta.x, -delta.y));
     }
 }

@@ -5,13 +5,19 @@ using UnityEngine;
 
 public class MapEvent3D : MapEvent {
 
+    public static Vector3 TileToWorldCoords(IntVector2 position) {
+        return new Vector3(position.x, 0.0f, -1.0f * position.y);
+    }
+
     public override Vector3 CalculateOffsetPositionPx(OrthoDir dir) {
         return PositionPx + dir.Px3D();
     }
 
     protected override void SetScreenPositionToMatchTilePosition() {
         // this is not correct for all OrthoDir 3DPX setups
-        transform.localPosition = new Vector3(Position.x, transform.localPosition.y, -1.0f * Position.y);
+        float y = transform.localPosition.y;
+        transform.localPosition = TileToWorldCoords(Position);
+        transform.localPosition = new Vector3(transform.localPosition.x, y, transform.localPosition.z);
     }
     
     protected override void SetDepth() {

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 10/18/2018 10:30:34 PM-->
+<!--Last exported: 10/19/2018 1:39:12 AM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="chip04d_castle" />
   <AssignMaterial mesh="mesh_0002" material="chip04d_castle" />
@@ -18,12 +18,20 @@
     <GameObject name="Object Layer 1" x="0" y="0" z="0">
       <ObjectLayer offsetX="0" offsetY="0" color="#ff808080" />
       <Property name="3d" value="" />
-      <GameObject name="Mookster" x="8" y="-6" rotation="0">
+      <GameObject name="Bob" x="8" y="-6" rotation="0">
         <Property name="3d" value="" />
-        <Property name="face" value="south" />
+        <Property name="face" value="east" />
         <Property name="sprite" value="whitescrew_hero01" />
         <Property name="unit" value="hero1" />
-        <RectangleObjectComponent tmx-object-id="8" tmx-object-name="Mookster" tmx-object-type="Character" tmx-object-x="128" tmx-object-y="96" tmx-object-width="16" tmx-object-height="16" tmx-object-rotation="0" />
+        <RectangleObjectComponent tmx-object-id="8" tmx-object-name="Bob" tmx-object-type="Character" tmx-object-x="128" tmx-object-y="96" tmx-object-width="16" tmx-object-height="16" tmx-object-rotation="0" />
+        <BoxCollider2D width="1" height="1" />
+      </GameObject>
+      <GameObject name="Mook" x="10" y="-6" rotation="0">
+        <Property name="3d" value="" />
+        <Property name="face" value="west" />
+        <Property name="sprite" value="whitescrew_skeleton" />
+        <Property name="unit" value="mook1" />
+        <RectangleObjectComponent tmx-object-id="9" tmx-object-name="Mook" tmx-object-type="Character" tmx-object-x="160" tmx-object-y="96" tmx-object-width="16" tmx-object-height="16" tmx-object-rotation="0" />
         <BoxCollider2D width="1" height="1" />
       </GameObject>
     </GameObject>

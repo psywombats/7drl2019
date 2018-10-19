@@ -9,13 +9,11 @@ using UnityEngine;
 public class PartyManager : MonoBehaviour, MemoryPopulater {
 
     // unit key to unit
-    private Dictionary<string, Unit> knownUnits;
-    private List<Unit> partyMembers;
+    private Dictionary<string, Unit> knownUnits = new Dictionary<string, Unit>();
+    private List<Unit> partyMembers = new List<Unit>();
 
-    public PartyManager() {
+    public void Start() {
         Global.Instance().Memory.RegisterMemoryPopulater(this);
-        knownUnits = new Dictionary<string, Unit>();
-        partyMembers = new List<Unit>();
     }
 
     // either loads a unit from the db or from our store
