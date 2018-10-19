@@ -47,8 +47,8 @@ public class BattleController : MonoBehaviour {
     }
 
     public void AddUnitFromTiledEvent(BattleEvent doll, string unitKey) {
-        BattleUnit newUnit = battle.AddUnitFromKey(unitKey);
-        newUnit.CopyInfoFromDoll(doll);
+        IntVector2 position = doll.GetComponent<MapEvent3D>().Position;
+        BattleUnit newUnit = battle.AddUnitFromKey(unitKey, position);
         doll.Setup(this, newUnit);
         dolls[newUnit] = doll;
     }
@@ -111,7 +111,7 @@ public class BattleController : MonoBehaviour {
         cursor.Configure((IntVector2 loc) => {
             this.selectionPosition = loc;
         });
-
+        
         SelectionGrid grid = SpawnSelectionGrid();
         int range = (int)actingUnit.Get(StatTag.MOVE);
         Func<IntVector2, bool> rule = (IntVector2 loc) => {

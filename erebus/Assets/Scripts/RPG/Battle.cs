@@ -39,10 +39,10 @@ public class Battle : ScriptableObject {
         return units.Where(unit => (unit.align == align));
     }
 
-    public BattleUnit AddUnitFromKey(string unitKey) {
-        Unit unit = Resources.Load<Unit>("Database/Units/" + unitKey);
+    public BattleUnit AddUnitFromKey(string unitKey, IntVector2 startingLocation) {
+        Unit unit = Global.Instance().Party.LookUpUnit(unitKey);
         Debug.Assert(unit != null, "Unknown unit key " + unitKey);
-        BattleUnit battleUnit = new BattleUnit(unit, this);
+        BattleUnit battleUnit = new BattleUnit(unit, this, startingLocation);
         AddUnit(battleUnit);
 
         if (!factions.ContainsKey(battleUnit.align)) {
@@ -62,13 +62,6 @@ public class Battle : ScriptableObject {
 
     private void AddUnit(BattleUnit unit) {
         units.Add(unit);
-    }
-
-    // === BATTLE INITIALIZATION ===================================================================
-
-    public IntVector2 GetStartingLocationFor(BattleUnit unit) {
-        // TODO: GetStartingLocationFor
-        return new IntVector2(2, 9);
     }
 
     // === STATE MACHINE ===========================================================================

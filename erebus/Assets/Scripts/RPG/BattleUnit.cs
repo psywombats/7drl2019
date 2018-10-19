@@ -18,20 +18,14 @@ public class BattleUnit {
 
     // === INITIALIZATION ==========================================================================
 
-    public BattleUnit() {
-        this.align = Alignment.Hero;
-    }
-
-    public BattleUnit(Unit unit, Battle battle) : this() {
+    // we create battle units from three sources
+    //  - unit, this is a keyed by what comes in from tiled and used to look up hero/enemy in db
+    //  - battle, the parent battle creating this unit for
+    //  - starting location, gleened from the tiled event usually
+    public BattleUnit(Unit unit, Battle battle, IntVector2 location) {
         this.unit = unit;
         this.battle = battle;
-
-        location = battle.GetStartingLocationFor(this);
-    }
-
-    // given a doll from Tiled, copy over its relevant information
-    public void CopyInfoFromDoll(BattleEvent doll) {
-        this.location = doll.GetComponent<MapEvent3D>().Position;
+        this.location = location;
     }
 
     // === STATE MACHINE ===========================================================================

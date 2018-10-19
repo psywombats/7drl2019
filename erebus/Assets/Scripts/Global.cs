@@ -17,6 +17,7 @@ public class Global : MonoBehaviour {
     public SettingsCollection Settings { get; private set; }
     public ScenePlayer ScenePlayer { get; private set; }
     public UIEngine UIEngine { get; private set; }
+    public PartyManager Party { get; private set; }
 
     private IndexDatabase database;
     public IndexDatabase Database {
@@ -59,6 +60,7 @@ public class Global : MonoBehaviour {
         Maps = gameObject.AddComponent<MapManager>();
         Memory = gameObject.AddComponent<MemoryManager>();
         Audio = gameObject.AddComponent<AudioManager>();
+        Party = gameObject.AddComponent<PartyManager>();
 
         GameObject module = Instantiate(Resources.Load<GameObject>(UIModulePath));
         module.transform.parent = transform;
