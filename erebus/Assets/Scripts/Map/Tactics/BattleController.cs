@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 /**
  * Responsible for user input and rendering during a battle. Control flow is actually handled by
@@ -9,6 +10,8 @@ using System;
  */
 [RequireComponent(typeof(Map))]
 public class BattleController : MonoBehaviour {
+
+    private const string ListenerId = "BattleControllerListenerId";
 
     // properties required upon initializion
     public Battle battle;
@@ -21,6 +24,7 @@ public class BattleController : MonoBehaviour {
     private BattleUnit actingUnit;
     private IntVector2 selectionPosition;
     private Cursor cursor;
+    private DirectionCursor dirCursor;
 
     // === INITIALIZATION ==========================================================================
 
@@ -32,6 +36,10 @@ public class BattleController : MonoBehaviour {
         cursor = Cursor.GetInstance();
         cursor.gameObject.transform.parent = GetComponent<Map>().LowestObjectLayer().transform;
         cursor.gameObject.SetActive(false);
+
+        dirCursor = DirectionCursor.GetInstance();
+        dirCursor.gameObject.transform.parent = GetComponent<Map>().LowestObjectLayer().transform;
+        dirCursor.gameObject.SetActive(false);
     }
 
     // this should take a battle memory at some point
@@ -85,6 +93,14 @@ public class BattleController : MonoBehaviour {
                 actingUnit.location = selectionPosition;
                 yield return actingUnit.doll.GetComponent<CharaEvent>().PathToRoutine(selectionPosition);
             }
+
+            // TODO: remove this nonsense
+            yield return SelectAdjacentUnitRoutine((BattleUnit unit) => {
+                return unit.align == Alignment.Enemy;
+            });
+            if (selectionPosition == Cursor.CanceledLocation) {
+                break;
+            }
         }
     }
 
@@ -102,6 +118,46 @@ public class BattleController : MonoBehaviour {
             yield return cursor.AwaitSelectionRoutine();
         }
         cursor.gameObject.SetActive(false);
+    }
+
+    // selects a square to be targeted by the acting unit, might be canceled
+    private IEnumerator SelectTargetDirRoutine(HashSet<OrthoDir> allowedDirections) { 
+        dirCursor.gameObject.SetActive(true);
+        cursor.DisableReticules();
+
+        SelectionGrid grid = SpawnSelectionGrid();
+        grid.ConfigureNewGrid(new IntVector2(3, 3), (IntVector2 loc) => {
+            return (loc.x + loc.y) % 2 == 1;
+        });
+        grid.GetComponent<MapEvent>().Position = actingUnit.location - new IntVector2(1, 1);
+        grid.GetComponent<MapEvent>().SetScreenPositionToMatchTilePosition();
+
+        selectionPosition = Cursor.CanceledLocation;
+        dirCursor.Configure(actingUnit.doll.GetComponent<CharaEvent>(), (IntVector2 loc) => {
+            selectionPosition = loc;
+        });
+        dirCursor.dir = allowedDirections.ElementAt(0);
+        do {
+            yield return dirCursor.AwaitSelectionRoutine();
+        } while (selectionPosition != Cursor.CanceledLocation
+                && !allowedDirections.Contains(OrthoDirExtensions.DirectionOf(selectionPosition - actingUnit.location)));
+
+        Destroy(grid.gameObject);
+        cursor.EnableReticules();
+        dirCursor.gameObject.SetActive(false);
+    }
+
+    // selects an adjacent unit to the actor (provided they meet the rule), cancelable
+    private IEnumerator SelectAdjacentUnitRoutine(Func<BattleUnit, bool> rule) {
+        HashSet<OrthoDir> dirs = new HashSet<OrthoDir>();
+        foreach (OrthoDir dir in Enum.GetValues(typeof(OrthoDir))) {
+            IntVector2 loc = actingUnit.location + dir.XY();
+            BattleEvent doll = map.GetEventAt<BattleEvent>(map.LowestObjectLayer(), loc);
+            if (doll != null && rule(doll.unit)) {
+                dirs.Add(dir);
+            }
+        }
+        yield return SelectTargetDirRoutine(dirs);
     }
 
     // selects a move location for the selected unit, might be canceled

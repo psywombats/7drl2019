@@ -74,6 +74,17 @@ public class Map : TiledInstantiated {
         return events;
     }
 
+    // returns the first event at loc that implements T
+    public T GetEventAt<T>(ObjectLayer layer, IntVector2 loc) {
+        List<MapEvent> events = GetEventsAt(layer, loc);
+        foreach (MapEvent mapEvent in events) {
+            if (mapEvent.GetComponent<T>() != null) {
+                return mapEvent.GetComponent<T>();
+            }
+        }
+        return default(T);
+    }
+
     public Layer LayerAtIndex(int layerIndex) {
         return transform.GetChild(layerIndex).GetComponent<Layer>();
     }

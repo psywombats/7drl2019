@@ -37,6 +37,7 @@ public class InputManager : MonoBehaviour {
     private List<InputListener> disabledListeners;
     private Dictionary<Command, float> holdStartTimes;
     private List<KeyCode> fastKeys;
+    private Dictionary<string, InputListener> anonymousListeners;
     private bool simulatedAdvance;
 
     public void Awake() {
@@ -63,6 +64,8 @@ public class InputManager : MonoBehaviour {
 
         listeners = new List<InputListener>();
         holdStartTimes = new Dictionary<Command, float>();
+
+        anonymousListeners = new Dictionary<string, InputListener>();
     }
 
     public void Update() {
@@ -101,10 +104,18 @@ public class InputManager : MonoBehaviour {
         }
     }
 
+    public void PushListener(string id, Func<Command, Event, bool> responder) {
+        InputListener listener = new AnonymousListener(responder);
+        this.anonymousListeners[id] = listener;
+        PushListener(listener);
+    }
     public void PushListener(InputListener listener) {
         listeners.Insert(0, listener);
     }
 
+    public void RemoveListener(string id) {
+        listeners.Remove(anonymousListeners[id]);
+    }
     public void RemoveListener(InputListener listener) {
         listeners.Remove(listener);
     }

@@ -221,7 +221,7 @@ public abstract class MapEvent : TiledInstantiated {
     }
 
     // we have a solid TileX/TileY, please move the doll to the correct screen space
-    protected abstract void SetScreenPositionToMatchTilePosition();
+    public abstract void SetScreenPositionToMatchTilePosition();
 
     // set the one xyz coordinate not controlled by arrow keys
     protected abstract void SetDepth();

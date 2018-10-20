@@ -9,6 +9,7 @@ public class Cursor : MonoBehaviour, InputListener {
     private const string InstancePath = "Prefabs/Map3D/Cursor";
 
     public float minTimeBetweenMoves = 0.1f;
+    public GameObject reticules;
     
     private Action<IntVector2> onSelect;
     private float lastStepTime;
@@ -42,6 +43,13 @@ public class Cursor : MonoBehaviour, InputListener {
         while (awaitingSelect) {
             yield return null;
         }
+    }
+
+    public void EnableReticules() {
+        reticules.SetActive(true);
+    }
+    public void DisableReticules() {
+        reticules.SetActive(false);
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {

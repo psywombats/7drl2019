@@ -13,7 +13,7 @@ public class MapEvent3D : MapEvent {
         return PositionPx + dir.Px3D();
     }
 
-    protected override void SetScreenPositionToMatchTilePosition() {
+    public override void SetScreenPositionToMatchTilePosition() {
         // this is not correct for all OrthoDir 3DPX setups
         float y = transform.localPosition.y;
         transform.localPosition = TileToWorldCoords(Position);

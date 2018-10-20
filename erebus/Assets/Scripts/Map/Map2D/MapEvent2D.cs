@@ -14,7 +14,7 @@ public class MapEvent2D : MapEvent {
         throw new System.NotImplementedException();
     }
 
-    protected override void SetScreenPositionToMatchTilePosition() {
+    public override void SetScreenPositionToMatchTilePosition() {
         // this is probably not correct with our new screenspace measurements
         Vector2 transform = new Vector2(Map.TileSizePx, Map.TileSizePx);
         if (OrthoDir.East.X() != OrthoDir.East.Px2DX()) {

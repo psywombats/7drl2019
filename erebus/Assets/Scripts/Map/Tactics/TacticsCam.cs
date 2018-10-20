@@ -45,6 +45,10 @@ public class TacticsCam : MapCamera {
         transform.localPosition = MapEvent3D.TileToWorldCoords(targetTileLocation);
     }
 
+    public IEnumerator SwitchToDuelCamRoutine() {
+        yield return null;
+    }
+
     private void CopyTargetPosition() {
         if (target != null) {
             targetTileLocation = target.Position;
