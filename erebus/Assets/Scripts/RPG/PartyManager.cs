@@ -19,8 +19,8 @@ public class PartyManager : MonoBehaviour, MemoryPopulater {
     // either loads a unit from the db or from our store
     public Unit LookUpUnit(string unitKey) {
         if (!knownUnits.ContainsKey(unitKey)) {
-            Unit unit = Resources.Load<Unit>("Database/Units/" + unitKey);
-            if (!unit.unique) {
+            Unit unit = Instantiate(Resources.Load<Unit>("Database/Units/" + unitKey));
+            if (unit.unique) {
                 knownUnits[unitKey] = unit;
             }
             return unit;

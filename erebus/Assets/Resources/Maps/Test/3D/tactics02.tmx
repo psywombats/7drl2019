@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="2017.05.26" orientation="orthogonal" renderorder="right-down" width="22" height="16" tilewidth="16" tileheight="16" nextobjectid="10">
+<map version="2017.05.26" orientation="orthogonal" renderorder="right-down" width="22" height="16" tilewidth="16" tileheight="16" nextobjectid="11">
  <properties>
   <property name="battle" value="test_battle"/>
  </properties>
@@ -32,18 +32,26 @@
   <properties>
    <property name="3d" value=""/>
   </properties>
-  <object id="8" name="Bob" type="Character" x="128" y="96" width="16" height="16">
+  <object id="8" name="Bob" type="Character" x="160" y="112" width="16" height="16">
    <properties>
     <property name="3d" value=""/>
-    <property name="face" value="east"/>
+    <property name="face" value="north"/>
     <property name="sprite" value="whitescrew_hero01"/>
     <property name="unit" value="hero1"/>
    </properties>
   </object>
-  <object id="9" name="Mook" type="Character" x="160" y="96" width="16" height="16">
+  <object id="9" name="Mook" type="Character" x="160" y="80" width="16" height="16">
    <properties>
     <property name="3d" value=""/>
-    <property name="face" value="west"/>
+    <property name="face" value="south"/>
+    <property name="sprite" value="whitescrew_skeleton"/>
+    <property name="unit" value="mook1"/>
+   </properties>
+  </object>
+  <object id="10" name="Mook2" type="Character" x="96" y="80" width="16" height="16">
+   <properties>
+    <property name="3d" value=""/>
+    <property name="face" value="east"/>
     <property name="sprite" value="whitescrew_skeleton"/>
     <property name="unit" value="mook1"/>
    </properties>
