@@ -32,7 +32,7 @@
   <properties>
    <property name="3d" value=""/>
   </properties>
-  <object id="8" name="Bob" type="Character" x="160" y="112" width="16" height="16">
+  <object id="8" name="Bob" type="Character" x="144" y="112" width="16" height="16">
    <properties>
     <property name="3d" value=""/>
     <property name="face" value="north"/>

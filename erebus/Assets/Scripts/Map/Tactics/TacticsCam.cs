@@ -5,6 +5,7 @@ using UnityEngine;
 public class TacticsCam : MapCamera {
 
     private float DuelCamSnapTime = 0.5f;
+    private float DuelCamDistance = 6.0f;
 
     public Camera cam;
     public Vector3 targetAngles;
@@ -46,7 +47,6 @@ public class TacticsCam : MapCamera {
     }
 
     public void Update() {
-        CopyTargetPosition();
         transform.localPosition = Vector3.SmoothDamp(
                 transform.localPosition,
                 targetDollyPosition,
@@ -84,14 +84,18 @@ public class TacticsCam : MapCamera {
     public IEnumerator SwitchToDuelCamRoutine(MapEvent target1, MapEvent target2) {
         Vector3 targetWorld1 = MapEvent3D.TileToWorldCoords(target1.Position);
         Vector3 targetWorld2 = MapEvent3D.TileToWorldCoords(target2.Position);
-        yield return SwitchToDuelCamRoutine((targetWorld1 + targetWorld2) / 2.0f);
+        float angle = Mathf.Atan2(targetWorld1.x - targetWorld2.x, targetWorld1.z - targetWorld2.z);
+        angle = angle / 2.0f / Mathf.PI * 360.0f;
+        angle += 90.0f;
+        while (angle >= 180.0f) angle -= 180.0f;
+        yield return SwitchToDuelCamRoutine((targetWorld1 + targetWorld2) / 2.0f, angle);
     }
-    public IEnumerator SwitchToDuelCamRoutine(Vector3 centerPoint) {
+    public IEnumerator SwitchToDuelCamRoutine(Vector3 centerPoint, float angle = 0.0f) {
         snapTime = DuelCamSnapTime;
-        targetAngles = new Vector3(0.0f, 90.0f, 0.0f);
+        targetAngles = new Vector3(5.0f, angle, 0.0f);
         target = null;
         targetDollyPosition = centerPoint;
-        distance = 5.0f;
+        distance = DuelCamDistance;
         CopyTargetPosition();
 
         yield return new WaitForSeconds(DuelCamSnapTime);
@@ -103,7 +107,9 @@ public class TacticsCam : MapCamera {
         }
         targetCamPosition = PositionForAngleDist();
         targetCamAngles = new Vector3(targetAngles.x, 0.0f, 0.0f);
-        targetDollyAngles = new Vector3(0.0f, targetAngles.y, 0.0f);
+        float angleY = targetAngles.y;
+        while (angleY < 0.0f) angleY += 360.0f;
+        targetDollyAngles = new Vector3(0.0f, angleY, 0.0f);
     }
 
     private Vector3 LookTargetForPosition(Vector3 pos) {
