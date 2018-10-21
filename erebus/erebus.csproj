@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.6.3p2</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -135,11 +133,8 @@
     <Compile Include="Assets\Scripts\IO\AnonymousListener.cs" />
     <Compile Include="Assets\Scripts\IO\InputListener.cs" />
     <Compile Include="Assets\Scripts\IO\InputManager.cs" />
-    <Compile Include="Assets\Scripts\ImageEffects\AutomataBehavior.cs" />
-    <Compile Include="Assets\Scripts\ImageEffects\ColorEffect.cs" />
-    <Compile Include="Assets\Scripts\ImageEffects\ColorMapperBehavior.cs" />
-    <Compile Include="Assets\Scripts\ImageEffects\DummyImageEffect.cs" />
     <Compile Include="Assets\Scripts\ImageEffects\DurationEffectBehavior.cs" />
+    <Compile Include="Assets\Scripts\ImageEffects\FadeoutBehavior.cs" />
     <Compile Include="Assets\Scripts\ImageEffects\GlitchBehavior.cs" />
     <Compile Include="Assets\Scripts\ImageEffects\GlitchImageEffect.cs" />
     <Compile Include="Assets\Scripts\ImageEffects\TimeScaleSlider.cs" />
@@ -248,21 +243,14 @@
     <None Include="Assets\Resources\SceneScripts\intro.txt" />
     <None Include="Assets\Resources\SceneScripts\testScript.txt" />
     <None Include="Assets\Resources\SceneScripts\unimplemented.txt" />
-    <None Include="Assets\Resources\Shaders\AutomataShader.shader" />
-    <None Include="Assets\Resources\Shaders\BitShader.shader" />
-    <None Include="Assets\Resources\Shaders\ColorEffectShader.shader" />
-    <None Include="Assets\Resources\Shaders\ColoredParticle.shader" />
     <None Include="Assets\Resources\Shaders\DiffuseDepthSprite.shader" />
-    <None Include="Assets\Resources\Shaders\DungeonDeferred.shader" />
-    <None Include="Assets\Resources\Shaders\DungeonTexture.shader" />
     <None Include="Assets\Resources\Shaders\Glitch.cginc" />
-    <None Include="Assets\Resources\Shaders\GlitchDiffuseShader.shader" />
     <None Include="Assets\Resources\Shaders\GlitchEffectShader.shader" />
-    <None Include="Assets\Resources\Shaders\PulseCenterShader.shader" />
+    <None Include="Assets\Resources\Shaders\GlitchGeometryShader.shader" />
+    <None Include="Assets\Resources\Shaders\GlitchSpriteShader.shader" />
     <None Include="Assets\Resources\Shaders\TransitionShader.shader" />
     <None Include="Assets\Resources\Shaders\TransitionSpriteShader.shader" />
     <None Include="Assets\Resources\Shaders\TransitionUIShader.shader" />
-    <None Include="Assets\Resources\Shaders\WhiteoutShader.shader" />
     <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
     <None Include="Assets\Standard Assets\Effects\ImageEffects\Readme.txt" />
     <None Include="Assets\Standard Assets\Effects\Projectors\Guidelines.txt" />

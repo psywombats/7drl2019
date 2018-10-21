@@ -352,8 +352,6 @@ fixed4 glitchFragFromCoords(float2 xy, float4 pxXY) {
     }
     
     fixed4 c = SampleSpriteTexture(xy);
-    c.rgb *= c.a;
-    
     
     // rectangular displacement
     if (_RDispEnabled > 0.0) {
@@ -375,7 +373,6 @@ fixed4 glitchFragFromCoords(float2 xy, float4 pxXY) {
                     c = preserveBrightness(cOrig, c);
                 } else {
                     c = tex2D(_RDispTex, xy);
-                    c.rgb *= c.a;
                 }
             }
         }
@@ -390,7 +387,6 @@ fixed4 glitchFragFromCoords(float2 xy, float4 pxXY) {
         float sourceRoll = rand3(t, sourceChunkX, sourceChunkY);
         if (sourceRoll > 1.0 - chance) {
             c = tex2D(_MainTex, float2(sourceX, sourceY));
-            c.rgb *= c.a;
         }
     }
     
@@ -418,7 +414,6 @@ fixed4 glitchFragFromCoords(float2 xy, float4 pxXY) {
                         float power = variance3(cubicEase(_TDistHDispPower, 0.5), _TDistHDispPowerVariance, 1.0, float3(29.0, t, 0.0));
                         power *= chunkedRatio;
                         c = tex2D(_MainTex, float2(xy[0] + power, xy[1]));
-                        c.rgb *= c.a;
                     }
                     if (!_TDistExcludeAlpha || (c.a > 0.01)) {
                         fixed4 cOrig = c;

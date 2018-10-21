@@ -1,4 +1,4 @@
-﻿Shader "Erebus/GlitchDiffuseShader" {
+﻿Shader "Erebus/GlitchSpriteShader" {
     Properties {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
         _Color ("Tint", Color) = (1,1,1,1)
@@ -7,6 +7,7 @@
         [HideInInspector] _Flip ("Flip", Vector) = (1,1,1,1)
         [PerRendererData] _AlphaTex ("External Alpha", 2D) = "white" {}
         [PerRendererData] _EnableExternalAlpha ("Enable External Alpha", Float) = 0
+        [PerRendererData] _Alpha("Alpha", Float) = 1.0
         _Cutoff("Base Alpha cutoff", Range(0,.9)) = .5
         _ResolutionX("Resolution X (px)", Float) = 1066
         _ResolutionY("Resolution Y (px)", Float) = 600
@@ -128,22 +129,24 @@
         Tags {
             "Queue"="Transparent"
             "IgnoreProjector"="True"
-            "RenderType"="TransparentCutout"
+            "RenderType"="Transparent"
             "PreviewType"="Plane"
             "CanUseSpriteAtlas"="True"
         }
 
         Lighting Off
-        Blend One OneMinusSrcAlpha
+        Blend SrcAlpha OneMinusSrcAlpha
+        ZWrite Off
 
         CGPROGRAM
-        #pragma surface surf Lambert vertex:vert nofog nolightmap nodynlightmap alphatest:_Cutoff keepalpha noinstancing
+        #pragma surface surf Lambert vertex:vert nofog nolightmap nodynlightmap keepalpha noinstancing
         #pragma multi_compile _ PIXELSNAP_ON
         #pragma multi_compile _ ETC1_EXTERNAL_ALPHA
         #include "Glitch.cginc"
         
         float _ResolutionX;
         float _ResolutionY;
+        float _Alpha;
 
         struct Input {
             float2 uv_MainTex;
@@ -161,13 +164,14 @@
 
             UNITY_INITIALIZE_OUTPUT(Input, o);
             o.color = v.color * _Color * _RendererColor;
+            o.color.a = o.color.a * _Alpha;
         }
 
         void surf(Input IN, inout SurfaceOutput o) {
             float2 xy = IN.uv_MainTex;
             float4 pxXY = float4(xy[0] * (float)_ResolutionX, xy[1] * (float)_ResolutionY, 0.0, 0.0);
             fixed4 c = glitchFragFromCoords(xy, pxXY) * IN.color;
-            o.Albedo = c.rgb * c.a;
+            o.Albedo = c.rgb;
             o.Alpha = c.a;
         }
         ENDCG

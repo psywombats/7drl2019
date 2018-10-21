@@ -122,11 +122,13 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
 
     private IEnumerator TeleportOutRoutine() {
         Avatar.PauseInput();
-        yield return StartCoroutine(Camera.GetComponent<ColorEffect>().FadeRoutine(Color.black, 0.3f));
+        //yield return StartCoroutine(Camera.GetComponent<ColorEffect>().FadeRoutine(Color.black, 0.3f));
+        yield return null;
     }
 
     private IEnumerator TeleportInRoutine() {
-        yield return StartCoroutine(Camera.GetComponent<ColorEffect>().FadeRoutine(Color.white, 0.3f));
+        //yield return StartCoroutine(Camera.GetComponent<ColorEffect>().FadeRoutine(Color.white, 0.3f));
         Avatar.UnpauseInput();
+        yield return null;
     }
 }
