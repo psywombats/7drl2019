@@ -33,7 +33,19 @@ public class DirectionCursor : MonoBehaviour, InputListener {
         this.onSelect = onSelect;
         this.dir = OrthoDir.North;
     }
-    
+
+    public void OnEnable() {
+        Global.Instance().Input.PushListener(this);
+        TacticsCam.Instance().target = GetComponent<MapEvent>();
+    }
+
+    public void OnDisable() {
+        Global.Instance().Input.RemoveListener(this);
+        if (TacticsCam.Instance() != null && TacticsCam.Instance().target == GetComponent<MapEvent>()) {
+            TacticsCam.Instance().target = null;
+        }
+    }
+
     public IEnumerator AwaitSelectionRoutine() {
         awaitingSelect = true;
         while (awaitingSelect) {

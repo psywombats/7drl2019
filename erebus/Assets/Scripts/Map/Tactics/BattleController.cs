@@ -101,6 +101,11 @@ public class BattleController : MonoBehaviour {
             if (selectionPosition == Cursor.CanceledLocation) {
                 break;
             }
+            BattleUnit targetUnit = map.GetEventAt<BattleEvent>(map.LowestObjectLayer(), selectionPosition).unit;
+
+            yield return TacticsCam.Instance().SwitchToDuelCamRoutine(
+                actingUnit.doll.GetComponent<MapEvent>(),
+                targetUnit.doll.GetComponent<MapEvent>());
         }
     }
 

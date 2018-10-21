@@ -4,14 +4,22 @@ using UnityEngine;
 
 public class TacticsCam : MapCamera {
 
-    public Camera cam;
-    public Vector3 targetPosition;
-    public float snapTime = 0.2f;
-    public float angle = 35.0f;
-    public float distance = 12.0f;
-    public bool fixAngleAndDistance = false;
+    private float DuelCamSnapTime = 0.5f;
 
-    private Vector3 velocity = new Vector3(0, 0, 0);
+    public Camera cam;
+    public Vector3 targetAngles;
+    public float distance = 12.0f;
+
+    public float snapTime { get; set; }
+
+    private Vector3 targetCamPosition;
+    private Vector3 targetCamAngles;
+    private Vector3 targetDollyPosition;
+    private Vector3 targetDollyAngles;
+    private Vector3 dollyVelocity = new Vector3(0, 0, 0);
+    private Vector3 dollyAngleVelocity = new Vector3(0, 0, 0);
+    private Vector3 camVelocity = new Vector3(0, 0, 0);
+    private Vector3 camAnglesVelocity = new Vector3(0, 0, 0);
 
     private static TacticsCam instance;
     public static TacticsCam Instance() {
@@ -41,32 +49,61 @@ public class TacticsCam : MapCamera {
         CopyTargetPosition();
         transform.localPosition = Vector3.SmoothDamp(
                 transform.localPosition,
-                targetPosition,
-                ref velocity,
+                targetDollyPosition,
+                ref dollyAngleVelocity,
                 snapTime);
-        if (fixAngleAndDistance) {
-            SetPositionToMatchAngleDist();
-        }
+        transform.localEulerAngles = Vector3.SmoothDamp(
+                transform.localEulerAngles,
+                targetDollyAngles,
+                ref dollyVelocity,
+                snapTime);
+        cam.transform.localPosition = Vector3.SmoothDamp(
+                cam.transform.localPosition,
+                targetCamPosition,
+                ref camVelocity,
+                snapTime);
+        cam.transform.localEulerAngles = Vector3.SmoothDamp(
+                cam.transform.localEulerAngles,
+                targetCamAngles,
+                ref camAnglesVelocity,
+                snapTime);
     }
 
     public void OnValidate() {
-        if (fixAngleAndDistance) {
-            SetPositionToMatchAngleDist();
-        }
+        CopyTargetPosition();
+        WarpToTarget();
     }
 
     public void WarpToTarget() {
-        transform.localPosition = targetPosition;
+        transform.localPosition = targetDollyPosition;
+        transform.localEulerAngles = targetDollyAngles;
+        cam.transform.localPosition = targetCamPosition;
+        cam.transform.localEulerAngles = targetCamAngles;
     }
 
-    public IEnumerator SwitchToDuelCamRoutine() {
-        yield return null;
+    public IEnumerator SwitchToDuelCamRoutine(MapEvent target1, MapEvent target2) {
+        Vector3 targetWorld1 = MapEvent3D.TileToWorldCoords(target1.Position);
+        Vector3 targetWorld2 = MapEvent3D.TileToWorldCoords(target2.Position);
+        yield return SwitchToDuelCamRoutine((targetWorld1 + targetWorld2) / 2.0f);
+    }
+    public IEnumerator SwitchToDuelCamRoutine(Vector3 centerPoint) {
+        snapTime = DuelCamSnapTime;
+        targetAngles = new Vector3(0.0f, 90.0f, 0.0f);
+        target = null;
+        targetDollyPosition = centerPoint;
+        distance = 5.0f;
+        CopyTargetPosition();
+
+        yield return new WaitForSeconds(DuelCamSnapTime);
     }
 
     private void CopyTargetPosition() {
         if (target != null) {
-            targetPosition = MapEvent3D.TileToWorldCoords(target.Position);
+            targetDollyPosition = MapEvent3D.TileToWorldCoords(target.Position);
         }
+        targetCamPosition = PositionForAngleDist();
+        targetCamAngles = new Vector3(targetAngles.x, 0.0f, 0.0f);
+        targetDollyAngles = new Vector3(0.0f, targetAngles.y, 0.0f);
     }
 
     private Vector3 LookTargetForPosition(Vector3 pos) {
@@ -74,20 +111,10 @@ public class TacticsCam : MapCamera {
         return new Vector3(pos.x + 0.5f, pos.y + 1.0f, pos.z - 0.5f);
     }
 
-    private void SetAngleDistToMatchPosition() {
-        Vector3 lookingAt = LookTargetForPosition(targetPosition);
-        Vector2 lookingAt2d = new Vector2(lookingAt.x, lookingAt.z);
-        Vector2 current2d = new Vector2(cam.transform.position.x, cam.transform.position.z);
-        float dist = Vector2.Distance(current2d, lookingAt2d);
-        this.angle = Mathf.Atan2(cam.transform.position.y - lookingAt.y, dist) / 2 / Mathf.PI * 360.0f;
-        this.distance = Vector3.Distance(cam.transform.position, lookingAt);
-    }
-
-    private void SetPositionToMatchAngleDist() {
-        Vector3 lookingAt = LookTargetForPosition(targetPosition);
-        cam.transform.localPosition = new Vector3(0.0f,
-            Mathf.Sin(angle / 360.0f * 2.0f * Mathf.PI) * distance,
-            -1.0f * Mathf.Cos(angle / 360.0f * 2.0f * Mathf.PI) * distance);
-        cam.transform.localEulerAngles = new Vector3(angle, 0.0f, 0.0f);
+    private Vector3 PositionForAngleDist() {
+        float angle = targetAngles.x;
+        return new Vector3(0.0f,
+                Mathf.Sin(angle / 360.0f * 2.0f * Mathf.PI) * distance,
+                -1.0f * Mathf.Cos(angle / 360.0f * 2.0f * Mathf.PI) * distance);
     }
 }

@@ -7,6 +7,7 @@ public class Cursor : MonoBehaviour, InputListener {
     public static readonly IntVector2 CanceledLocation = new IntVector2(-1, -1);
 
     private const string InstancePath = "Prefabs/Map3D/Cursor";
+    private const float ScrollSnapTime = 0.2f;
 
     public float minTimeBetweenMoves = 0.1f;
     public GameObject reticules;
@@ -23,6 +24,7 @@ public class Cursor : MonoBehaviour, InputListener {
     public void OnEnable() {
         Global.Instance().Input.PushListener(this);
         TacticsCam.Instance().target = GetComponent<MapEvent>();
+        TacticsCam.Instance().snapTime = ScrollSnapTime;
     }
 
     public void OnDisable() {
