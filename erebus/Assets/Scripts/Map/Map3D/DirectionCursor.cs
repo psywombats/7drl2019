@@ -90,5 +90,6 @@ public class DirectionCursor : MonoBehaviour, InputListener {
         actor.facing = dir;
         GetComponent<MapEvent>().Position = actor.GetComponent<MapEvent>().Position + dir.XY();
         GetComponent<MapEvent>().SetScreenPositionToMatchTilePosition();
+        TacticsCam.Instance().ManualUpdate();
     }
 }

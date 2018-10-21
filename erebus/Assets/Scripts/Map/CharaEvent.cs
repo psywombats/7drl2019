@@ -66,6 +66,10 @@ public class CharaEvent : MonoBehaviour {
         GetComponent<MapEvent>().Passable = false;
     }
 
+    public void FaceToward(IntVector2 pos) {
+        facing = OrthoDirExtensions.DirectionOf(pos - GetComponent<MapEvent>().Position);
+    }
+
     // checks if the given location is passable for this character
     // takes into account both chip and event
     public bool CanPassAt(IntVector2 loc) {
