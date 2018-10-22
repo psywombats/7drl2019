@@ -32,8 +32,17 @@ public class TiledImporter : ICustomTiledImporter {
                 child.transform.localEulerAngles = new Vector3(90.0f, 0.0f, 0.0f);
                 Vector3 oldPosition = child.transform.position;
                 child.transform.position = new Vector3(oldPosition.x, child.GetComponent<Layer3D>().Z, oldPosition.z);
-                if (child.transform.localPosition.y > 0.0f && !child.GetComponent<Layer3D>().IsExteriorCeiling) {
+                if (child.GetComponent<Layer3D>().IsInteriorCeiling) {
                     child.transform.localScale = new Vector3(1.0f, 1.0f, -1.0f);
+                }
+            }
+        }
+        if (prefab.GetComponent<Map>() != null) {
+            string layerName = prefab.GetComponent<Map>().displayLayer;
+            if (layerName != null) {
+                int layer = LayerMask.NameToLayer(layerName);
+                foreach (Transform transform in prefab.GetComponentsInChildren<Transform>(true)) {
+                    transform.gameObject.layer = layer;
                 }
             }
         }

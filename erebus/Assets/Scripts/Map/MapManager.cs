@@ -7,8 +7,10 @@ using UnityEngine.Assertions;
 
 public class MapManager : MonoBehaviour, MemoryPopulater {
 
-    public Map ActiveMap { get; private set; }
+    public Map ActiveMap { get; set; }
     public AvatarEvent Avatar { get; private set; }
+    public DuelMap ActiveDuelMap { get; set; }
+    public SceneBlendController BlendController { get; set; }
 
     private MapCamera mapCamera;
     public MapCamera Camera {

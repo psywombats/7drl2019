@@ -18,6 +18,7 @@ public abstract class MapEvent : TiledInstantiated {
     public const string EventMove = "move";
 
     public const string PropertyUnit = "unit";
+    public const string PropertyTarget = "target";
     private const string PropertyCondition = "show";
     private const string PropertyInteract = "onInteract";
     private const string PropertyCollide = "onCollide";
@@ -137,6 +138,9 @@ public abstract class MapEvent : TiledInstantiated {
         }
         if (properties.ContainsKey(PropertyUnit) && GetComponent<BattleEvent>() == null) {
             gameObject.AddComponent<BattleEvent>().Populate(properties);
+        }
+        if (properties.ContainsKey(PropertyTarget) && GetComponent<DollTargetEvent>() == null) {
+            gameObject.AddComponent<DollTargetEvent>().Populate(properties);
         }
 
         SetDepth();

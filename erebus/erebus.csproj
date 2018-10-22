@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.6.3p2</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -157,6 +159,7 @@
     <Compile Include="Assets\Scripts\Map\Map3D\Layer3D.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\MapCamera3D.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\MapEvent3D.cs" />
+    <Compile Include="Assets\Scripts\Map\Map3D\SceneBlendController.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\TileMeshRenderer.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\Wall3D.cs" />
     <Compile Include="Assets\Scripts\Map\MapCamera.cs" />
@@ -166,6 +169,8 @@
     <Compile Include="Assets\Scripts\Map\SimpleSpriteAnimator.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\BattleController.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\BattleEvent.cs" />
+    <Compile Include="Assets\Scripts\Map\Tactics\DollTargetEvent.cs" />
+    <Compile Include="Assets\Scripts\Map\Tactics\DuelMap.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\SelectionGrid.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\TacticsCam.cs" />
     <Compile Include="Assets\Scripts\Map\TiledInstantiated.cs" />

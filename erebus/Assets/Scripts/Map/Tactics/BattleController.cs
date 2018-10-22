@@ -104,9 +104,7 @@ public class BattleController : MonoBehaviour {
             BattleUnit targetUnit = map.GetEventAt<BattleEvent>(map.LowestObjectLayer(), selectionPosition).unit;
             targetUnit.doll.GetComponent<CharaEvent>().FaceToward(actingUnit.location);
 
-            yield return TacticsCam.Instance().SwitchToDuelCamRoutine(
-                actingUnit.doll.GetComponent<MapEvent>(),
-                targetUnit.doll.GetComponent<MapEvent>());
+            yield return Global.Instance().Maps.ActiveDuelMap.SwitchToMapRoutine(actingUnit.doll, targetUnit.doll);
         }
     }
 

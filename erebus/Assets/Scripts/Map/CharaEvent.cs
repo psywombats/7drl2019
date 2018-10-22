@@ -20,6 +20,7 @@ public class CharaEvent : MonoBehaviour {
     // Editor
     public OrthoDir initialFacing;
     public GameObject doll;
+    public CharaAnimator animator;
 
     // Public
     public Map parent { get { return GetComponent<MapEvent>().Parent; } }
@@ -55,19 +56,28 @@ public class CharaEvent : MonoBehaviour {
                 doll = new GameObject("Doll");
                 doll.transform.parent = gameObject.transform;
                 doll.transform.localPosition = new Vector3(0.5f, 0.0f, -0.5f);
-                CharaAnimator animator = doll.AddComponent<CharaAnimator>();
-                animator.ParentEvent = GetComponent<MapEvent>();
-                animator.Populate(properties[PropertySprite]);
+                animator = doll.AddComponent<CharaAnimator>();
+                animator.parentEvent = GetComponent<MapEvent>();
             } else {
-                gameObject.AddComponent<CharaAnimator>().Populate(properties[PropertySprite]);
+                animator = gameObject.AddComponent<CharaAnimator>();
             }
-
+            animator.SetSpriteByKey(properties[PropertySprite]);
+            animator.Populate(properties);
         }
         GetComponent<MapEvent>().Passable = false;
     }
 
     public void FaceToward(IntVector2 pos) {
         facing = OrthoDirExtensions.DirectionOf(pos - GetComponent<MapEvent>().Position);
+    }
+
+    public void SetAppearance(string spriteKey) {
+        animator.SetSpriteByKey(spriteKey);
+    }
+
+    // returns the sprite key currently in use
+    public string GetAppearance() {
+        return animator.spriteName;
     }
 
     // checks if the given location is passable for this character

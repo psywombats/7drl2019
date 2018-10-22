@@ -10,11 +10,22 @@ public class FadeoutBehavior : MonoBehaviour {
 
     public float alpha = 1.0f;
 
+    private bool tracking;
+    private float alphaTarget;
+
     private Material FindMaterial() {
         if (GetComponent<SpriteRenderer>() != null) {
-            return GetComponent<SpriteRenderer>().material;
+            if (Application.isPlaying) {
+                return GetComponent<SpriteRenderer>().material;
+            } else {
+                return GetComponent<SpriteRenderer>().sharedMaterial;
+            }
         } else if (GetComponent<MeshRenderer>() != null) {
-            return GetComponent<MeshRenderer>().material;
+            if (Application.isPlaying) {
+                return GetComponent<MeshRenderer>().material;
+            } else {
+                return GetComponent<MeshRenderer>().sharedMaterial;
+            }
         } else {
             Debug.Assert(false);
             return null;
@@ -23,5 +34,19 @@ public class FadeoutBehavior : MonoBehaviour {
 
     public void Update() {
         FindMaterial().SetFloat("_Alpha", alpha);
+    }
+
+    public void OnValidate() {
+        FindMaterial().SetFloat("_Alpha", alpha);
+    }
+
+    public IEnumerator FadeRoutine(float target, float duration) {
+        float original = alpha;
+        float elapsed = 0;
+        while (alpha != target) {
+            elapsed += Time.deltaTime;
+            alpha = Mathf.Lerp(original, target, elapsed / duration);
+            yield return null;
+        }
     }
 }

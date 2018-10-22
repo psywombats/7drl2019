@@ -12,14 +12,14 @@ public class Layer3D : TiledInstantiated {
 
     public GameObject transformChild;
     public float Z { get; set; }
-    public bool IsExteriorCeiling { get; private set; }
+    public bool IsInteriorCeiling { get; private set; }
 
     public override void Populate(IDictionary<string, string> properties) {
         transformChild = new GameObject("Wall3D");
         transformChild.transform.parent = transform;
 
         Z = properties.ContainsKey("z") ? float.Parse(properties["z"]) : 0.0f;
-        IsExteriorCeiling = properties.ContainsKey("ceil") && properties["ceil"].Equals("exterior");
+        IsInteriorCeiling = properties.ContainsKey("ceil") && properties["ceil"].Equals("interior");
 
         TiledMap tiledMap = transform.parent.GetComponentInParent<TiledMap>();
         for (int x = 0; x < tiledMap.NumTilesWide; x += 1) {

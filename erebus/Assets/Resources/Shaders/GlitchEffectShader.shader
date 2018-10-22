@@ -4,6 +4,8 @@
         _Color("Tint", Color) = (1,1,1,1)
         [MaterialToggle] PixelSnap("Pixel snap", Float) = 0
         
+        _Alpha("Alpha", Float) = 1.0
+        
         _Elapsed("Elapsed Seconds", Float) = 1.0
         
         [Space(25)][MaterialToggle] _HDispEnabled(" === Horizontal Displacement === ", Float) = 0.0
@@ -123,6 +125,7 @@
             ZTest Always
             Cull Off
             ZWrite Off
+            Blend SrcAlpha OneMinusSrcAlpha
 
             CGPROGRAM
             
@@ -132,6 +135,8 @@
             #include "Glitch.cginc"
             #pragma vertex vert
             #pragma fragment frag
+            
+            float _Alpha;
 
             v2f vert(appdata_t IN) {
                 v2f OUT;
@@ -151,7 +156,7 @@
                 float2 xy = IN.texcoord;
                 float4 pxXY = IN.vertex;
                 fixed4 c = glitchFragFromCoords(xy, pxXY) * IN.color;
-                c.a = 1.0f;
+                c.a = _Alpha;
                 return c;
             }
 

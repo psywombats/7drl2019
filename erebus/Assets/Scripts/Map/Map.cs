@@ -12,10 +12,15 @@ public class Map : TiledInstantiated {
 
     private const string PropertyBGM = "bgm";
     private const string PropertyBattle = "battle";
+    private const string PropertyLayer = "displayLayer";
+    private const string PropertyType = "type";
+
+    private const string TypeDuel = "duel";
 
     public const int TileSizePx = 16;
 
     public IntVector2 size;
+    public string displayLayer;
     public int width { get { return size.x; } }
     public int height { get { return size.y; } }
 
@@ -34,6 +39,11 @@ public class Map : TiledInstantiated {
     // true if the tile at x,y has the x "impassable" property for pathfinding
     private bool[,] passabilityXMap;
 
+    public void Start() {
+        // TODO: figure out loading
+        Global.Instance().Maps.ActiveMap = this;
+    }
+
     public override void Populate(IDictionary<string, string> properties) {
         TiledMap tiled = GetComponent<TiledMap>();
         size = new IntVector2(tiled.NumTilesWide, tiled.NumTilesHigh);
@@ -44,6 +54,19 @@ public class Map : TiledInstantiated {
         if (properties.ContainsKey(PropertyBattle)) {
             BattleController battleController = gameObject.AddComponent<BattleController>();
             battleController.Setup(properties[PropertyBattle]);
+        }
+        if (properties.ContainsKey(PropertyLayer)) {
+            displayLayer = properties[PropertyLayer];
+        }
+        if (properties.ContainsKey(PropertyType)) {
+            switch (properties[PropertyType]) {
+                case TypeDuel:
+                    gameObject.AddComponent<DuelMap>();
+                    break;
+                default:
+                    Debug.Assert(false, "Unknown map type " + properties[PropertyType]);
+                    break;
+            }
         }
     }
 
@@ -83,6 +106,11 @@ public class Map : TiledInstantiated {
             }
         }
         return default(T);
+    }
+
+    // returns all events that have a component of type t
+    public List<T> GetEvents<T>() {
+        return new List<T>(LowestObjectLayer().GetComponentsInChildren<T>());
     }
 
     public Layer LayerAtIndex(int layerIndex) {
