@@ -102,7 +102,7 @@ public class BattleController : MonoBehaviour {
                 break;
             }
             BattleUnit targetUnit = map.GetEventAt<BattleEvent>(map.LowestObjectLayer(), selectionPosition).unit;
-            targetUnit.doll.GetComponent<CharaEvent>().FaceToward(targetUnit.location);
+            targetUnit.doll.GetComponent<CharaEvent>().FaceToward(actingUnit.location);
 
             yield return TacticsCam.Instance().SwitchToDuelCamRoutine(
                 actingUnit.doll.GetComponent<MapEvent>(),

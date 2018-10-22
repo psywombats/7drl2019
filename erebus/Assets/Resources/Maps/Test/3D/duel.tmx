@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="2017.05.26" orientation="orthogonal" renderorder="right-down" width="22" height="16" tilewidth="16" tileheight="16" nextobjectid="11">
+ <properties>
+  <property name="battle" value="test_battle"/>
+ </properties>
+ <tileset firstgid="1" source="../../tilesets/debug_eris.tsx"/>
+ <tileset firstgid="513" source="../../tilesets/chip04d_castle.tsx"/>
+ <layer name="Tile Layer 1" width="22" height="16">
+  <properties>
+   <property name="3d" value=""/>
+  </properties>
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,769,769,769,0,0,0,0,0,0,0,0,769,769,769,0,0,0,0,
+0,768,769,770,686,686,686,768,769,769,769,769,769,769,770,686,686,686,768,769,770,0,
+0,686,686,686,686,656,686,686,686,686,686,686,686,686,686,686,656,686,686,686,686,0,
+0,686,686,686,656,656,656,686,686,686,686,686,686,686,686,656,656,656,686,686,686,0,
+0,656,656,656,656,656,656,656,656,656,656,656,656,656,656,656,656,656,656,656,656,0,
+0,656,656,656,656,680,656,656,656,656,656,656,656,656,656,656,680,656,656,656,656,0,
+0,656,656,656,656,656,656,656,656,656,656,656,656,656,656,656,656,656,656,656,656,0,
+0,686,686,686,656,656,656,686,686,686,686,686,686,686,686,656,656,656,686,686,686,0,
+0,686,686,686,686,656,686,686,686,686,686,686,686,686,686,686,656,686,686,686,686,0,
+0,0,0,0,686,686,686,0,0,0,0,0,0,0,0,686,686,686,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup name="Object Layer 1">
+  <properties>
+   <property name="3d" value=""/>
+  </properties>
+  <object id="8" name="Bob" type="Character" x="160" y="112" width="16" height="16">
+   <properties>
+    <property name="3d" value=""/>
+    <property name="face" value="north"/>
+    <property name="sprite" value="whitescrew_hero01"/>
+    <property name="unit" value="hero1"/>
+   </properties>
+  </object>
+  <object id="9" name="Mook" type="Character" x="160" y="80" width="16" height="16">
+   <properties>
+    <property name="3d" value=""/>
+    <property name="face" value="south"/>
+    <property name="sprite" value="whitescrew_skeleton"/>
+    <property name="unit" value="mook1"/>
+   </properties>
+  </object>
+  <object id="10" name="Mook2" type="Character" x="96" y="80" width="16" height="16">
+   <properties>
+    <property name="3d" value=""/>
+    <property name="face" value="east"/>
+    <property name="sprite" value="whitescrew_skeleton"/>
+    <property name="unit" value="mook1"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <layer name="Ceil 2" width="22" height="16" opacity="0.9">
+  <properties>
+   <property name="3d" value=""/>
+   <property name="ceil" value="exterior"/>
+   <property name="z" type="float" value="3"/>
+  </properties>
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+</map>
