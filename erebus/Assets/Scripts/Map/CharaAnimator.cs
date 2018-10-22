@@ -82,7 +82,7 @@ public class CharaAnimator : MonoBehaviour {
     private OrthoDir CalculateDirection() {
         OrthoDir normalDir = Parent().GetComponent<CharaEvent>().facing;
         MapCamera cam = Application.isPlaying ? Global.Instance().Maps.Camera : FindObjectOfType<MapCamera>();
-        if (!cam || !dynamicFacing && !cam.dynamicFacing) {
+        if (!cam || !dynamicFacing) {
             return normalDir;
         }
 

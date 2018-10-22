@@ -5,7 +5,7 @@ using UnityEngine;
 public class TacticsCam : MapCamera {
 
     private float DuelCamSnapTime = 0.5f;
-    private float DuelCamDistance = 6.0f;
+    private float DuelCamDistance = 8.0f;
 
     public Camera cam;
     public Vector3 targetAngles;
@@ -21,6 +21,9 @@ public class TacticsCam : MapCamera {
     private Vector3 dollyAngleVelocity = new Vector3(0, 0, 0);
     private Vector3 camVelocity = new Vector3(0, 0, 0);
     private Vector3 camAnglesVelocity = new Vector3(0, 0, 0);
+
+    private float standardDistance;
+    private Vector3 standardAngles;
 
     private static TacticsCam instance;
     public static TacticsCam Instance() {
@@ -81,6 +84,11 @@ public class TacticsCam : MapCamera {
         cam.transform.localEulerAngles = targetCamAngles;
     }
 
+    public void ResetToTacticsMode() {
+        distance = standardDistance;
+        targetAngles = standardAngles;
+    }
+
     public IEnumerator SwitchToDuelCamRoutine(MapEvent target1, MapEvent target2) {
         Vector3 targetWorld1 = MapEvent3D.TileToWorldCoords(target1.Position);
         Vector3 targetWorld2 = MapEvent3D.TileToWorldCoords(target2.Position);
@@ -91,6 +99,9 @@ public class TacticsCam : MapCamera {
         yield return SwitchToDuelCamRoutine((targetWorld1 + targetWorld2) / 2.0f, angle);
     }
     public IEnumerator SwitchToDuelCamRoutine(Vector3 centerPoint, float angle = 0.0f) {
+        standardAngles = targetAngles;
+        standardDistance = distance;
+
         snapTime = DuelCamSnapTime;
         targetAngles = new Vector3(5.0f, angle, 0.0f);
         target = null;
@@ -99,6 +110,13 @@ public class TacticsCam : MapCamera {
         CopyTargetPosition();
 
         yield return new WaitForSeconds(DuelCamSnapTime);
+    }
+
+    public IEnumerator DuelZoomRoutine(float zoomDistance, float duration) {
+        distance = distance - zoomDistance;
+        snapTime = duration;
+        CopyTargetPosition();
+        yield return new WaitForSeconds(duration);
     }
 
     private void CopyTargetPosition() {

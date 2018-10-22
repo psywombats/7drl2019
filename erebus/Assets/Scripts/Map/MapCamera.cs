@@ -9,7 +9,6 @@ public class MapCamera : MonoBehaviour {
     // these are read by sprites, not actually enforced by the cameras
     public bool billboardX;
     public bool billboardY;
-    public bool dynamicFacing;
 
     public virtual void ManualUpdate() {
 

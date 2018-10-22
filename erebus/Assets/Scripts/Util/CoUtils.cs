@@ -9,6 +9,11 @@ public class CoUtils {
         toRun();
     }
 
+    public static IEnumerator Delay(float delayInSeconds, IEnumerator toRun) {
+        yield return Wait(delayInSeconds);
+        yield return toRun;
+    }
+
     public static IEnumerator RunParallel(IEnumerator[] coroutines, MonoBehaviour runner) {
         int running = coroutines.Length;
         foreach (IEnumerator coroutine in coroutines) {

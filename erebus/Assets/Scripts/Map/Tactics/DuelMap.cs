@@ -40,10 +40,15 @@ public class DuelMap : MonoBehaviour {
 
     public IEnumerator SwitchToMapRoutine(BattleEvent attacker, BattleEvent defender) {
         ConfigureForDuel(attacker, defender);
+        float duration = 0.6f;
         yield return TacticsCam.Instance().SwitchToDuelCamRoutine(
             attacker.GetComponent<MapEvent>(), 
             defender.GetComponent<MapEvent>());
-        yield return new WaitForSeconds(1.0f);
-        yield return Global.Instance().Maps.BlendController.BlendInDuelRoutine(1.0f);
+        yield return new WaitForSeconds(0.6f);
+        yield return CoUtils.RunParallel(new IEnumerator[] {
+            CoUtils.Delay(0.0f, TacticsCam.Instance().DuelZoomRoutine(8.0f, duration/2.0f)),
+            CoUtils.Delay(duration/3.0f, Global.Instance().Maps.BlendController.BlendInDuelRoutine(duration*2.0f/3.0f)),
+            CoUtils.Delay(duration/3.0f, DuelCam.Instance().TransitionInZoomRoutine(12.0f, duration/2.0f)),
+        }, this);
     }
 }
