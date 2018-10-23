@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MapCamera : MonoBehaviour {
-
+    
     public MapEvent target;
 
     // these are read by sprites, not actually enforced by the cameras

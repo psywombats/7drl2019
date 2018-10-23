@@ -120,9 +120,12 @@
     }
     
     SubShader {
+    
+        Tags {
+            "Queue"="Transparent"
+        }
 
         Pass {
-            ZTest Always
             Cull Off
             ZWrite Off
             Blend SrcAlpha OneMinusSrcAlpha

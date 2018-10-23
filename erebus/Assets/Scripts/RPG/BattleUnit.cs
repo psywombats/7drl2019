@@ -8,7 +8,7 @@ public class BattleUnit {
     public Battle battle { get; private set; }
     public Alignment align { get { return unit.align; } }
     public IntVector2 location { get; set; }
-    public bool hasMovedThisTurn { get; private set; }
+    public bool hasActedThisTurn { get; private set; }
 
     public BattleEvent doll {
         get {
@@ -30,15 +30,14 @@ public class BattleUnit {
 
     // === STATE MACHINE ===========================================================================
 
-    // perform action during faction's turn -- for humans, this involves menus, for enemies, AI
-    public IEnumerator TakeAction() {
-        hasMovedThisTurn = true;
-        yield break;
+    // called at the end of this unit's action
+    public void MarkActionTaken() {
+        hasActedThisTurn = true;
     }
 
     // called at the beginning of this unit's faction's turn
     public void ResetForNewTurn() {
-
+        hasActedThisTurn = false;
     }
 
     // === RPG =====================================================================================

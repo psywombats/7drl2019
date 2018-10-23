@@ -43,6 +43,8 @@ public class TacticsCam : MapCamera {
     }
 
     public void Start() {
+        targetDollyPosition = transform.localPosition;
+        CopyTargetPosition();
         WarpToTarget();
         if (Application.isPlaying) {
             Global.Instance().Maps.SetCamera(this);
@@ -50,6 +52,9 @@ public class TacticsCam : MapCamera {
     }
 
     public void Update() {
+        if (target != null) {
+            CopyTargetPosition();
+        }
         transform.localPosition = Vector3.SmoothDamp(
                 transform.localPosition,
                 targetDollyPosition,
@@ -72,11 +77,6 @@ public class TacticsCam : MapCamera {
                 snapTime);
     }
 
-    public void OnValidate() {
-        CopyTargetPosition();
-        WarpToTarget();
-    }
-
     public void WarpToTarget() {
         transform.localPosition = targetDollyPosition;
         transform.localEulerAngles = targetDollyAngles;
@@ -87,6 +87,13 @@ public class TacticsCam : MapCamera {
     public void ResetToTacticsMode() {
         distance = standardDistance;
         targetAngles = standardAngles;
+        CopyTargetPosition();
+        WarpToTarget();
+    }
+
+    public void SetTargetLocation(IntVector2 loc) {
+        target = null;
+        targetDollyPosition = MapEvent3D.TileToWorldCoords(loc);
     }
 
     public IEnumerator SwitchToDuelCamRoutine(MapEvent target1, MapEvent target2) {

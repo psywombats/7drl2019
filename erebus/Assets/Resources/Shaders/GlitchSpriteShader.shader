@@ -8,6 +8,7 @@
         [PerRendererData] _AlphaTex ("External Alpha", 2D) = "white" {}
         [PerRendererData] _EnableExternalAlpha ("Enable External Alpha", Float) = 0
         [PerRendererData] _Alpha("Alpha", Float) = 1.0
+        [PerRendererData] _Desaturation("Desaturation", Range(0, 1)) = 0.0
         _Cutoff("Base Alpha cutoff", Range(0,.9)) = .5
         _ResolutionX("Resolution X (px)", Float) = 1066
         _ResolutionY("Resolution Y (px)", Float) = 600
@@ -147,6 +148,7 @@
         float _ResolutionX;
         float _ResolutionY;
         float _Alpha;
+        float _Desaturation;
 
         struct Input {
             float2 uv_MainTex;
@@ -171,7 +173,9 @@
             float2 xy = IN.uv_MainTex;
             float4 pxXY = float4(xy[0] * (float)_ResolutionX, xy[1] * (float)_ResolutionY, 0.0, 0.0);
             fixed4 c = glitchFragFromCoords(xy, pxXY) * IN.color;
-            o.Albedo = c.rgb;
+            float avg = (c[0] + c[1] + c[2]) / 3.0;
+            float4 desat = float4(avg / 2.0, avg / 2.0, avg / 2.0, c.a);
+            o.Albedo = c.rgb * (1.0 - _Desaturation) + desat.rgb * (_Desaturation);
             o.Alpha = c.a;
         }
         ENDCG

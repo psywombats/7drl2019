@@ -54,7 +54,7 @@ public class BattleFaction {
     // returns an available unit that hasn't taken their turn yet
     public BattleUnit NextMoveableUnit() {
         foreach (BattleUnit unit in GetUnits()) {
-            if (!unit.hasMovedThisTurn) {
+            if (!unit.hasActedThisTurn) {
                 return unit;
             }
         }

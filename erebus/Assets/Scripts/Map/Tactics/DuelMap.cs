@@ -38,7 +38,7 @@ public class DuelMap : MonoBehaviour {
         Defender().GetComponent<CharaEvent>().facing = OrthoDir.West;
     }
 
-    public IEnumerator SwitchToMapRoutine(BattleEvent attacker, BattleEvent defender) {
+    public IEnumerator EnterMapRoutine(BattleEvent attacker, BattleEvent defender) {
         ConfigureForDuel(attacker, defender);
         float duration = 0.6f;
         yield return TacticsCam.Instance().SwitchToDuelCamRoutine(
@@ -50,5 +50,10 @@ public class DuelMap : MonoBehaviour {
             CoUtils.Delay(duration/3.0f, Global.Instance().Maps.BlendController.BlendInDuelRoutine(duration*2.0f/3.0f)),
             CoUtils.Delay(duration/3.0f, DuelCam.Instance().TransitionInZoomRoutine(12.0f, duration/2.0f)),
         }, this);
+    }
+
+    public IEnumerator ExitMapRoutine() {
+        TacticsCam.Instance().ResetToTacticsMode();
+        yield return Global.Instance().Maps.BlendController.FadeInTacticsRoutine(1.2f);
     }
 }

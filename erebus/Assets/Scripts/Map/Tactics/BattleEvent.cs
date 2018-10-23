@@ -41,4 +41,12 @@ public class BattleEvent : TiledInstantiated {
     public void SetScreenPositionToMatchTilePosition() {
         GetComponent<MapEvent>().SetLocation(unit.location);
     }
+
+    public IEnumerator PostActionRoutine() {
+        yield return GetComponent<CharaEvent>().animator.DesaturateRoutine(1.0f);
+    }
+
+    public IEnumerator PostTurnRoutine() {
+        yield return GetComponent<CharaEvent>().animator.DesaturateRoutine(0.0f);
+    }
 }

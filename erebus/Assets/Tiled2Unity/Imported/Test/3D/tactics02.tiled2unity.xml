@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 10/21/2018 10:43:48 PM-->
+<!--Last exported: 10/22/2018 9:54:03 PM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="chip04d_castle" />
   <AssignMaterial mesh="mesh_0002" material="chip04d_castle" />
@@ -24,6 +24,14 @@
         <Property name="sprite" value="whitescrew_skeleton" />
         <Property name="unit" value="mook1" />
         <RectangleObjectComponent tmx-object-id="10" tmx-object-name="Mook2" tmx-object-type="Character" tmx-object-x="96" tmx-object-y="80" tmx-object-width="16" tmx-object-height="16" tmx-object-rotation="0" />
+        <BoxCollider2D width="1" height="1" />
+      </GameObject>
+      <GameObject name="Roberta" x="15" y="-5" rotation="0">
+        <Property name="3d" value="" />
+        <Property name="face" value="west" />
+        <Property name="sprite" value="whitescrew_hero02" />
+        <Property name="unit" value="hero2" />
+        <RectangleObjectComponent tmx-object-id="13" tmx-object-name="Roberta" tmx-object-type="Character" tmx-object-x="240" tmx-object-y="80" tmx-object-width="16" tmx-object-height="16" tmx-object-rotation="0" />
         <BoxCollider2D width="1" height="1" />
       </GameObject>
       <GameObject name="Mook" x="11" y="-6" rotation="0">

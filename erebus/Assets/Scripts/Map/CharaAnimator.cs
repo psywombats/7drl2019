@@ -11,8 +11,10 @@ public class CharaAnimator : MonoBehaviour {
 
     private const string DefaultMaterialPath = "Materials/SpriteDefault";
     private const string AlwaysAnimatesProperty = "step";
+    private const float DesaturationDuration = 0.5f;
 
     public MapEvent parentEvent = null;
+    public float desaturation = 0.0f;
     public bool alwaysAnimates = false;
     public bool dynamicFacing = false;
     public string spriteName = "";
@@ -44,6 +46,18 @@ public class CharaAnimator : MonoBehaviour {
             GetComponent<Animator>().SetBool("stepping", alwaysAnimates);
             GetComponent<Animator>().SetInteger("dir", OrthoDir.South.Ordinal());
         }
+
+        CopyShaderValues();
+    }
+
+    public void OnValidate() {
+        CopyShaderValues();
+    }
+
+    public void Populate(IDictionary<string, string> properties) {
+        if (properties.ContainsKey(AlwaysAnimatesProperty)) {
+            alwaysAnimates = true;
+        }
     }
 
     public void SetSpriteByKey(string spriteName) {
@@ -64,14 +78,24 @@ public class CharaAnimator : MonoBehaviour {
         }
     }
 
-    public void Populate(IDictionary<string, string> properties) {
-        if (properties.ContainsKey(AlwaysAnimatesProperty)) {
-            alwaysAnimates = true;
+    public IEnumerator DesaturateRoutine(float targetDesat) {
+        float oldDesat = desaturation;
+        float elapsed = 0.0f;
+        while (desaturation != targetDesat) {
+            elapsed += Time.deltaTime;
+            desaturation = Mathf.Lerp(oldDesat, targetDesat, elapsed / DesaturationDuration);
+            yield return null;
         }
     }
 
     private GameObject Parent() {
         return parentEvent == null ? transform.parent.gameObject : parentEvent.gameObject;
+    }
+
+    private void CopyShaderValues() {
+        SpriteRenderer sprite = GetComponent<SpriteRenderer>();
+        Material material = Application.isPlaying ? sprite.material : sprite.sharedMaterial;
+        material.SetFloat("_Desaturation", desaturation);
     }
 
     private void UpdatePositionMemory() {

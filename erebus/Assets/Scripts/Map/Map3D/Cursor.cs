@@ -59,7 +59,7 @@ public class Cursor : MonoBehaviour, InputListener {
             return true;
         }
         switch (eventType) {
-            case InputManager.Event.Hold:
+            case InputManager.Event.Down:
                 switch (command) {
                     case InputManager.Command.Up:
                         TryStep(OrthoDir.North);
@@ -73,11 +73,6 @@ public class Cursor : MonoBehaviour, InputListener {
                     case InputManager.Command.Left:
                         TryStep(OrthoDir.West);
                         return true;
-                    default:
-                        return false;
-                }
-            case InputManager.Event.Down:
-                switch (command) {
                     case InputManager.Command.Confirm:
                         onSelect(GetComponent<MapEvent>().Position);
                         awaitingSelect = false;
@@ -85,12 +80,10 @@ public class Cursor : MonoBehaviour, InputListener {
                     case InputManager.Command.Cancel:
                         onSelect(CanceledLocation);
                         return true;
-                    default:
-                        return false;
                 }
-            default:
-                return false;
+                break;
         }
+        return true;
     }
 
     private bool TryStep(OrthoDir dir) {

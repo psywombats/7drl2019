@@ -77,6 +77,18 @@ public class BattleController : MonoBehaviour {
         this.selectionPosition = Cursor.CanceledLocation;
     }
 
+    public IEnumerator TurnBeginAnimationRoutine(Alignment align) {
+        yield break;
+    }
+
+    public IEnumerator TurnEndAnimationRoutine(Alignment align) {
+        List<IEnumerator> routinesToRun = new List<IEnumerator>();
+        foreach (BattleUnit unit in battle.UnitsByAlignment(align)) {
+            routinesToRun.Add(unit.doll.PostTurnRoutine());
+        }
+        yield return CoUtils.RunParallel(routinesToRun.ToArray(), this);
+    }
+
     // it's a discrete step in the human's turn, they should be able to undo up to this point
     public IEnumerator PlayNextHumanActionRoutine() {
         ResetActionState();
@@ -104,7 +116,12 @@ public class BattleController : MonoBehaviour {
             BattleUnit targetUnit = map.GetEventAt<BattleEvent>(map.LowestObjectLayer(), selectionPosition).unit;
             targetUnit.doll.GetComponent<CharaEvent>().FaceToward(actingUnit.location);
 
-            yield return Global.Instance().Maps.ActiveDuelMap.SwitchToMapRoutine(actingUnit.doll, targetUnit.doll);
+            yield return Global.Instance().Maps.ActiveDuelMap.EnterMapRoutine(actingUnit.doll, targetUnit.doll);
+            yield return new WaitForSeconds(2.0f);
+
+            actingUnit.MarkActionTaken();
+            yield return Global.Instance().Maps.ActiveDuelMap.ExitMapRoutine();
+            yield return actingUnit.doll.PostActionRoutine();
         }
     }
 
@@ -161,7 +178,12 @@ public class BattleController : MonoBehaviour {
                 dirs.Add(dir);
             }
         }
-        yield return SelectTargetDirRoutine(dirs);
+        if (dirs.Count > 0) {
+            yield return SelectTargetDirRoutine(dirs);
+        } else {
+            selectionPosition = Cursor.CanceledLocation;
+            yield return null;
+        }
     }
 
     // selects a move location for the selected unit, might be canceled
@@ -191,6 +213,10 @@ public class BattleController : MonoBehaviour {
     }
 
     // === GAMEBOARD AND GRAPHICAL INTERACTION =====================================================
+
+    public void TargetCameraToLocation(IntVector2 loc) {
+        TacticsCam.Instance().SetTargetLocation(loc);
+    }
 
     private SelectionGrid SpawnSelectionGrid() {
         SelectionGrid grid = SelectionGrid.GetInstance();

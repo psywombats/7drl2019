@@ -16,6 +16,8 @@ using UnityEngine;
  */
 [CreateAssetMenu(fileName = "Battle", menuName = "Data/RPG/Battle")]
 public class Battle : ScriptableObject {
+
+    public AIController ai;
     
     public BattleController controller { get; private set; }
     
@@ -69,6 +71,7 @@ public class Battle : ScriptableObject {
     // runs and executes this battle
     public IEnumerator BattleRoutine(BattleController controller) {
         this.controller = controller;
+        this.ai.ConfigureForBattle(this);
         while (true) {
             yield return NextRoundRoutine();
             if (CheckGameOver() != Alignment.None) {
@@ -108,10 +111,12 @@ public class Battle : ScriptableObject {
         if (!factions.ContainsKey(align)) {
             yield break;
         }
-        yield return ResetForNewTurnRoutine(align);
+        factions[align].ResetForNewTurn();
+        yield return controller.TurnBeginAnimationRoutine(align);
         while (factions[align].HasUnitsLeftToAct()) {
             yield return PlayNextActionRoutine(align);
         }
+        yield return controller.TurnEndAnimationRoutine(align);
     }
 
     private IEnumerator PlayNextActionRoutine(Alignment align) {
@@ -120,16 +125,11 @@ public class Battle : ScriptableObject {
                 yield return controller.PlayNextHumanActionRoutine();
                 break;
             case Alignment.Enemy:
-                // TODO: AI
+                yield return ai.PlayNextAIActionRoutine();
                 yield break;
             default:
                 Debug.Assert(false, "bad align " + align);
                 yield break;
         }
-    }
-
-    private IEnumerator ResetForNewTurnRoutine(Alignment align) {
-        factions[align].ResetForNewTurn();
-        yield break;
     }
 }
