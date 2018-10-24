@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.6.3p2</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -84,6 +86,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Animation\BattleAnimation.cs" />
+    <Compile Include="Assets\Scripts\Animation\BattleAnimationPlayer.cs" />
+    <Compile Include="Assets\Scripts\Animation\SimpleSpriteAnimator.cs" />
     <Compile Include="Assets\Scripts\Audio\AudioManager.cs" />
     <Compile Include="Assets\Scripts\Audio\WaveSource.cs" />
     <Compile Include="Assets\Scripts\Behaviors\BackgroundComponent.cs" />
@@ -164,7 +169,6 @@
     <Compile Include="Assets\Scripts\Map\MapEvent.cs" />
     <Compile Include="Assets\Scripts\Map\MapManager.cs" />
     <Compile Include="Assets\Scripts\Map\OrthoDir.cs" />
-    <Compile Include="Assets\Scripts\Map\SimpleSpriteAnimator.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\BattleController.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\BattleEvent.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\DollTargetEvent.cs" />
