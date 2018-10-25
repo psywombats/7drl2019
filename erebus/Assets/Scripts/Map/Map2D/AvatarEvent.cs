@@ -112,7 +112,7 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
         }
 
         if (passable) {
-            StartCoroutine(CoUtils.RunWithCallback(GetComponent<MapEvent>().StepRoutine(dir), this, () => {
+            StartCoroutine(CoUtils.RunWithCallback(GetComponent<MapEvent>().StepRoutine(dir), () => {
                 foreach (MapEvent targetEvent in toCollide) {
                     if (targetEvent.SwitchEnabled) {
                         targetEvent.GetComponent<Dispatch>().Signal(MapEvent.EventCollide, this);

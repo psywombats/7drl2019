@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using MoonSharp.Interpreter;
+using System;
 
+[MoonSharpUserData]
 public class DollTargetEvent : TiledInstantiated {
 
     public enum Type {
@@ -11,6 +14,7 @@ public class DollTargetEvent : TiledInstantiated {
 
     public Type type;
 
+    [MoonSharpHidden]
     public override void Populate(IDictionary<string, string> properties) {
         switch (properties[MapEvent.PropertyTarget]) {
             case "attacker":
@@ -25,7 +29,14 @@ public class DollTargetEvent : TiledInstantiated {
         }
     }
 
+    [MoonSharpHidden]
     public void ConfigureToBattler(BattleEvent battler) {
         GetComponent<CharaEvent>().SetAppearance(battler.GetComponent<CharaEvent>().GetAppearance());
+    }
+
+    // === LUA FUNCTIONS ===========================================================================
+    
+    private void debugLog(DynValue message) {
+        Debug.Log(message.String);
     }
 }

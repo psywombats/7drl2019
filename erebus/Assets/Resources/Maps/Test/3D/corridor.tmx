@@ -32,7 +32,7 @@
    <properties>
     <property name="3d" value=""/>
     <property name="face" value="east"/>
-    <property name="onInteract" value="speakLine('NPC: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.')"/>
+    <property name="onInteract" value="wait(1.0); debugLog('hi'); wait(1.0); debugLog('hey');"/>
     <property name="sprite" value="scientist"/>
    </properties>
   </object>

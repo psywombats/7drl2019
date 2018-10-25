@@ -18,7 +18,7 @@ public class LuaScript {
     }
 
     public IEnumerator RunRoutine() {
-        Run();
+        yield return Global.Instance().Lua.ScriptRoutine(function);
         yield break;
     }
 }

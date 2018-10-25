@@ -75,7 +75,12 @@ public class LuaInterpreter : MonoBehaviour {
 
     // creates an empty table as the lua representation of some c# object
     public LuaMapEvent CreateEvent(MapEvent mapEvent) {
-        return new LuaMapEvent(GlobalContext.DoString("return {}"), mapEvent);
+        return new LuaMapEvent(CreateEmptyTable(), mapEvent);
+    }
+
+    // returns an empty dictionary/tablething in the global context
+    public DynValue CreateEmptyTable() {
+        return GlobalContext.DoString("return {}");
     }
 
     // evaluates a lua function in the global context
@@ -93,7 +98,7 @@ public class LuaInterpreter : MonoBehaviour {
         if (Global.Instance().Maps.Avatar != null) {
             Global.Instance().Maps.Avatar.PauseInput();
         }
-        StartCoroutine(CoUtils.RunWithCallback(ScriptRoutine(function), this, () => {
+        StartCoroutine(CoUtils.RunWithCallback(ScriptRoutine(function), () => {
             if (Global.Instance().Maps.Avatar != null) {
                 Global.Instance().Maps.Avatar.UnpauseInput();
             }
@@ -114,7 +119,7 @@ public class LuaInterpreter : MonoBehaviour {
     public void RunRoutineFromLua(IEnumerator routine) {
         Assert.IsNotNull(activeScript);
         blockingRoutines += 1;
-        StartCoroutine(CoUtils.RunWithCallback(routine, Global.Instance().Lua, () => {
+        StartCoroutine(CoUtils.RunWithCallback(routine, () => {
             blockingRoutines -= 1;
             if (blockingRoutines == 0 && activeScript != null) {
                 activeScript.Resume();
@@ -122,7 +127,7 @@ public class LuaInterpreter : MonoBehaviour {
         }));
     }
 
-    private IEnumerator ScriptRoutine(DynValue function) {
+    public IEnumerator ScriptRoutine(DynValue function) {
         Assert.IsNull(activeScript);
         activeScript = GlobalContext.CreateCoroutine(function).Coroutine;
         activeScript.Resume();

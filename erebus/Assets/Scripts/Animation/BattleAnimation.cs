@@ -13,4 +13,8 @@ public class BattleAnimation : ScriptableObject {
     [TextArea(6, 24)]
     public string script;
 
+    public LuaScript ToScript() {
+        return Global.Instance().Lua.CreateScript(script);
+    }
+
 }

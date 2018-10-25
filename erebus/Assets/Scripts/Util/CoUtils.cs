@@ -17,7 +17,7 @@ public class CoUtils {
     public static IEnumerator RunParallel(IEnumerator[] coroutines, MonoBehaviour runner) {
         int running = coroutines.Length;
         foreach (IEnumerator coroutine in coroutines) {
-            runner.StartCoroutine(RunWithCallback(coroutine, runner, () => {
+            runner.StartCoroutine(RunWithCallback(coroutine, () => {
                 running -= 1;
             }));
         }
@@ -26,8 +26,8 @@ public class CoUtils {
         }
     }
 
-    public static IEnumerator RunWithCallback(IEnumerator coroutine, MonoBehaviour runner, Action toRun) {
-        yield return runner.StartCoroutine(coroutine);
+    public static IEnumerator RunWithCallback(IEnumerator coroutine, Action toRun) {
+        yield return coroutine;
         toRun();
     }
 
