@@ -127,7 +127,7 @@ public class LuaInterpreter : MonoBehaviour {
         }));
     }
 
-    public IEnumerator ScriptRoutine(DynValue function) {
+    private IEnumerator ScriptRoutine(DynValue function) {
         Assert.IsNull(activeScript);
         activeScript = GlobalContext.CreateCoroutine(function).Coroutine;
         activeScript.Resume();

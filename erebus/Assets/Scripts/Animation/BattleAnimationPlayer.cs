@@ -16,14 +16,24 @@ public class BattleAnimationPlayer : MonoBehaviour {
         Global.Instance().Lua.SetGlobal("defender", defender);
     }
 
+    public void EditorReset() {
+        attacker.ResetAfterAnimation();
+        defender.ResetAfterAnimation();
+        isPlayingAnimation = false;
+    }
+
     public IEnumerator PlayAnimationRoutine(BattleAnimation anim) {
         this.anim = anim;
         yield return PlayAnimationRoutine();
     }
 
     public IEnumerator PlayAnimationRoutine() {
+        attacker.PrepareForAnimation();
+        defender.PrepareForAnimation();
         isPlayingAnimation = true;
         yield return anim.ToScript().RunRoutine();
+        attacker.ResetAfterAnimation();
+        defender.ResetAfterAnimation();
         isPlayingAnimation = false;
     }
 }

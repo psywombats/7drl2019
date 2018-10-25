@@ -21,6 +21,10 @@ public class CharaAnimator : MonoBehaviour {
 
     private Vector2 lastPosition;
 
+    private Vector3 preAnimLocalPosition;
+    private OrthoDir preAnimFacing;
+    private string preAnimSprite;
+
     public void Start() {
         lastPosition = gameObject.transform.position;
 
@@ -76,6 +80,18 @@ public class CharaAnimator : MonoBehaviour {
                 break;
             }
         }
+    }
+
+    public void PrepareForAnimation() {
+        preAnimLocalPosition = transform.localPosition;
+        preAnimFacing = parentEvent.GetComponent<CharaEvent>().facing;
+        preAnimSprite = spriteName;
+    }
+
+    public void ResetAfterAnimation() {
+        transform.localPosition = preAnimLocalPosition;
+        parentEvent.GetComponent<CharaEvent>().facing = preAnimFacing;
+        SetSpriteByKey(preAnimSprite);
     }
 
     public IEnumerator DesaturateRoutine(float targetDesat) {
