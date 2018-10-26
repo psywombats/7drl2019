@@ -18,8 +18,6 @@ public class CharaAnimator : MonoBehaviour {
     public bool alwaysAnimates = false;
     public bool dynamicFacing = false;
     public string spriteName = "";
-    public int afterimages = 0;
-    public float afterimageDuration = 0.1f;
 
     private Vector2 lastPosition;
     private List<KeyValuePair<float, Vector3>> afterimageHistory;

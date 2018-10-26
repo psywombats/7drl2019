@@ -86,6 +86,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Animation\AfterimageComponent.cs" />
     <Compile Include="Assets\Scripts\Animation\BattleAnimation.cs" />
     <Compile Include="Assets\Scripts\Animation\BattleAnimationPlayer.cs" />
     <Compile Include="Assets\Scripts\Animation\SimpleSpriteAnimator.cs" />

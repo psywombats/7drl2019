@@ -12,10 +12,15 @@ public class DollTargetEvent : TiledInstantiated {
     private static string ArgSpritesheet = "sheet";
     private static string ArgFrame = "frame";
     private static string ArgFrames = "frames";
+    private static string ArgCount = "count";
+    private static string ArgEnable = "enable";
+    private static string ArgDisable = "disable";
 
     private static float DefaultFrameDuration = 0.12f;
     private static float DefaultJumpHeight = 1.2f;
     private static float DefaultJumpReturnHeight = 0.4f;
+    private static float DefaultAfterimageDuration = 0.075f;
+    private static int DefaultAfterimageCount = 2;
 
     public enum Type {
         Attacker,
@@ -87,6 +92,7 @@ public class DollTargetEvent : TiledInstantiated {
     public void ResetAfterAnimation() {
         animator.ResetAfterAnimation();
         doll.transform.position = originalDollPos;
+        doll.GetComponent<AfterimageComponent>().enabled = false;
     }
 
     [MoonSharpHidden]
@@ -117,6 +123,35 @@ public class DollTargetEvent : TiledInstantiated {
         }
     }
 
+    [MoonSharpHidden]
+    private float FloatArg(DynValue args, string argName, float defaultValue) {
+        if (args == DynValue.Nil || args == null || args.Table == null) {
+            return defaultValue;
+        } else {
+            DynValue value = args.Table.Get(argName);
+            return (value == DynValue.Nil) ? defaultValue : (float)value.Number;
+        }
+    }
+
+    [MoonSharpHidden]
+    private bool BoolArg(DynValue args, string argName, bool defaultValue) {
+        if (args == DynValue.Nil || args == null || args.Table == null) {
+            return defaultValue;
+        } else {
+            DynValue value = args.Table.Get(argName);
+            return (value == DynValue.Nil) ? defaultValue : value.Boolean;
+        }
+    }
+
+    [MoonSharpHidden]
+    private bool EnabledArg(DynValue args, bool defaultValue = true) {
+        if (args == DynValue.Nil || args == null || args.Table == null) {
+            return defaultValue;
+        } else {
+            return BoolArg(args, ArgEnable, !BoolArg(args, ArgDisable, !defaultValue));
+        }
+    }
+
     // === LUA FUNCTIONS ===========================================================================
 
     public void jumpToDefender(DynValue args) { CSRun(cs_jumpToDefender(args), args); }
@@ -135,7 +170,7 @@ public class DollTargetEvent : TiledInstantiated {
                     overallDuration * fraction, 
                     DefaultJumpReturnHeight * fraction);
         yield return JumpRoutine(originalDollPos, 
-                overallDuration * (1.0f - fraction), 
+                overallDuration * (1.0f - fraction) * 1.5f, 
                 DefaultJumpReturnHeight * (1.0f - fraction));
     }
 
@@ -149,13 +184,25 @@ public class DollTargetEvent : TiledInstantiated {
 
     public void setAnim(DynValue args) {
         string spriteName = args.Table.Get(ArgSpritesheet).String;
-        DynValue durationArg = args.Table.Get(ArgDuration);
-        float frameDuration = (durationArg == DynValue.Nil) ? DefaultFrameDuration : (float)durationArg.Number;
+        float frameDuration = FloatArg(args, ArgDuration, DefaultFrameDuration);
         Sprite[] sprites = Resources.LoadAll<Sprite>(AnimPath + spriteName);
         List<Sprite> frames = new List<Sprite>();
         foreach (DynValue value in args.Table.Get(ArgFrames).Table.Values) {
             frames.Add(sprites[(int)value.Number]);
         }
         animator.SetOverrideAnim(frames, frameDuration);
+    }
+
+    public void afterimage(DynValue args) {
+        AfterimageComponent imager = doll.GetComponent<AfterimageComponent>();
+        if (EnabledArg(args)) {
+            float imageDuration = FloatArg(args, ArgDuration, DefaultAfterimageDuration);
+            int count = (int)FloatArg(args, ArgCount, DefaultAfterimageCount);
+            imager.enabled = true;
+            imager.afterimageCount = count;
+            imager.afterimageDuration = imageDuration;
+        } else {
+            imager.enabled = false;
+        }
     }
 }
