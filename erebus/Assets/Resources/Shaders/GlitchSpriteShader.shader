@@ -1,7 +1,8 @@
 ﻿Shader "Erebus/GlitchSpriteShader" {
     Properties {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
-        _Color ("Tint", Color) = (1,1,1,1)
+        [PerRendererData] _Color ("Tint", Color) = (1,1,1,1)
+        [PerRendererData] _Flash ("Flash", Color) = (1,1,1,0)
         [MaterialToggle] PixelSnap ("Pixel snap", Float) = 0
         [HideInInspector] _RendererColor ("RendererColor", Color) = (1,1,1,1)
         [HideInInspector] _Flip ("Flip", Vector) = (1,1,1,1)
@@ -149,6 +150,7 @@
         float _ResolutionY;
         float _Alpha;
         float _Desaturation;
+        fixed4 _Flash;
 
         struct Input {
             float2 uv_MainTex;
@@ -176,6 +178,7 @@
             float avg = (c[0] + c[1] + c[2]) / 3.0;
             float4 desat = float4(avg / 2.0, avg / 2.0, avg / 2.0, c.a);
             o.Albedo = c.rgb * (1.0 - _Desaturation) + desat.rgb * (_Desaturation);
+            o.Albedo = o.Albedo * _Flash.a + _Flash.rgb * (1.0 - _Flash.a);
             o.Alpha = c.a;
         }
         ENDCG

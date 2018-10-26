@@ -135,10 +135,10 @@
         }
 
         Lighting Off
-        Blend One OneMinusSrcAlpha
+        Blend SrcAlpha OneMinusSrcAlpha
 
         CGPROGRAM
-        #pragma surface surf Lambert vertex:vert nofog nolightmap nodynlightmap alphatest:_Cutoff keepalpha noinstancing
+        #pragma surface surf Lambert vertex:vert nofog nolightmap nodynlightmap keepalpha noinstancing
         #pragma multi_compile _ PIXELSNAP_ON
         #pragma multi_compile _ ETC1_EXTERNAL_ALPHA
         #include "Glitch.cginc"

@@ -2,7 +2,6 @@
 using System.Collections;
 using MoonSharp.Interpreter;
 
-[RequireComponent(typeof(DuelMap))]
 public class BattleAnimationPlayer : MonoBehaviour {
 
     public DollTargetEvent attacker = null;
@@ -11,15 +10,16 @@ public class BattleAnimationPlayer : MonoBehaviour {
 
     public bool isPlayingAnimation { get; private set; }
 
-    public void Start() {
-        Global.Instance().Lua.SetGlobal("attacker", attacker);
-        Global.Instance().Lua.SetGlobal("defender", defender);
-    }
-
     public void EditorReset() {
         attacker.ResetAfterAnimation();
         defender.ResetAfterAnimation();
         isPlayingAnimation = false;
+    }
+
+    private void SetUpLua() {
+        Global.Instance().Lua.SetGlobal("attacker", attacker);
+        Global.Instance().Lua.SetGlobal("battle", attacker); // lol, too cheap to set as global
+        Global.Instance().Lua.SetGlobal("defender", defender);
     }
 
     public IEnumerator PlayAnimationRoutine(BattleAnimation anim) {
@@ -28,8 +28,9 @@ public class BattleAnimationPlayer : MonoBehaviour {
     }
 
     public IEnumerator PlayAnimationRoutine() {
-        attacker.PrepareForAnimation();
-        defender.PrepareForAnimation();
+        SetUpLua();
+        attacker.PrepareForAnimation(this);
+        defender.PrepareForAnimation(this);
         isPlayingAnimation = true;
         yield return anim.ToScript().RunRoutine();
         attacker.ResetAfterAnimation();

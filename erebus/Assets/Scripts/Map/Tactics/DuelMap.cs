@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(Map))]
+[RequireComponent(typeof(BattleAnimationPlayer))]
 public class DuelMap : MonoBehaviour {
 
     private Dictionary<DollTargetEvent.Type, DollTargetEvent> targets;
@@ -29,16 +30,19 @@ public class DuelMap : MonoBehaviour {
     public DollTargetEvent Defender() {
         return targets[DollTargetEvent.Type.Defender];
     }
-
-    // these methods should eventually all take an event or something
+    
     public void ConfigureForDuel(BattleEvent attacker, BattleEvent defender) {
         Attacker().ConfigureToBattler(attacker);
         Defender().ConfigureToBattler(defender);
         Attacker().GetComponent<CharaEvent>().facing = OrthoDir.East;
         Defender().GetComponent<CharaEvent>().facing = OrthoDir.West;
+        GetComponent<BattleAnimationPlayer>().attacker = Attacker().GetComponent<DollTargetEvent>();
+        GetComponent<BattleAnimationPlayer>().defender = Defender().GetComponent<DollTargetEvent>();
     }
 
+    // this needs to take an attack command
     public IEnumerator EnterMapRoutine(BattleEvent attacker, BattleEvent defender) {
+        GetComponent<BattleAnimationPlayer>().anim = Resources.Load<BattleAnimation>("Animations/Battle/test_anim");
         ConfigureForDuel(attacker, defender);
         float duration = 0.6f;
         yield return TacticsCam.Instance().SwitchToDuelCamRoutine(
@@ -50,6 +54,10 @@ public class DuelMap : MonoBehaviour {
             CoUtils.Delay(duration/3.0f, Global.Instance().Maps.BlendController.BlendInDuelRoutine(duration*2.0f/3.0f)),
             CoUtils.Delay(duration/3.0f, DuelCam.Instance().TransitionInZoomRoutine(12.0f, duration/2.0f)),
         }, this);
+
+        yield return new WaitForSeconds(0.5f);
+        yield return GetComponent<BattleAnimationPlayer>().PlayAnimationRoutine();
+        yield return new WaitForSeconds(1.0f);
     }
 
     public IEnumerator ExitMapRoutine() {

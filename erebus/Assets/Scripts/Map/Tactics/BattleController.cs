@@ -117,7 +117,6 @@ public class BattleController : MonoBehaviour {
             targetUnit.doll.GetComponent<CharaEvent>().FaceToward(actingUnit.location);
 
             yield return Global.Instance().Maps.ActiveDuelMap.EnterMapRoutine(actingUnit.doll, targetUnit.doll);
-            yield return new WaitForSeconds(2.0f);
 
             actingUnit.MarkActionTaken();
             yield return Global.Instance().Maps.ActiveDuelMap.ExitMapRoutine();

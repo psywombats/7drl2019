@@ -10,12 +10,12 @@ public class AfterimageComponent : MonoBehaviour {
 
     private List<GameObject> renderChildren;
     private List<Afterimage> images;
-    private float lastLength;
+    private int lastLength;
 
     public void OnEnable() {
         images = new List<Afterimage>();
         renderChildren = new List<GameObject>();
-        lastLength = afterimageCount * afterimageDuration;
+        lastLength = afterimageCount;
     }
 
     public void OnDisable() {
@@ -23,21 +23,21 @@ public class AfterimageComponent : MonoBehaviour {
     }
 
     public void Update() {
-        if (lastLength != afterimageDuration * afterimageCount) {
+        if (lastLength != afterimageCount) {
             Clear();
-            lastLength = afterimageDuration * afterimageCount;
+            lastLength = afterimageCount;
         }
 
         SpriteRenderer renderer = GetComponent<SpriteRenderer>();
         images.Add(new Afterimage(Time.time, transform.position, renderer.sprite));
-        float lastRelevantTime = Time.time - afterimageCount * afterimageDuration;
+        float lastRelevantTime = Time.time - (float)(afterimageCount + 1) * afterimageDuration;
         if (images.Count > 1 && images[1].time < lastRelevantTime) {
             images.RemoveAt(0);
         }
         
         for (int i = 0; i < afterimageCount; i += 1) {
-            float time = Time.time - afterimageDuration * (i + 1);
-            if (!HasTimeFor(time)) {
+            float time = Time.time - afterimageDuration * (float)(i + 1);
+            if (images[0].time > time) {
                 break;
             }
 
@@ -50,7 +50,7 @@ public class AfterimageComponent : MonoBehaviour {
                 SpriteRenderer childRenderer = renderChild.AddComponent<SpriteRenderer>();
                 childRenderer.material = renderer.material;
                 FadeoutBehavior fade = renderChild.AddComponent<FadeoutBehavior>();
-                fade.alpha = 0.5f;
+                fade.alpha = .5f * (1.0f - ((float)i / (float)afterimageCount));
             } else {
                 renderChild = renderChildren[i];
             }
@@ -60,10 +60,6 @@ public class AfterimageComponent : MonoBehaviour {
                     (greaterLesser[0].time - time) / (greaterLesser[0].time - greaterLesser[1].time));
             renderChild.GetComponent<SpriteRenderer>().sprite = greaterLesser[0].sprite;
         }
-    }
-
-    private bool HasTimeFor(float time) {
-        return images[0].time < time;
     }
 
     private Afterimage[] ImagesForTime(float time) {
