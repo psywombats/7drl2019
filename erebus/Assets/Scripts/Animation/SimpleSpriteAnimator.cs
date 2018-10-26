@@ -31,8 +31,10 @@ public class SimpleSpriteAnimator : MonoBehaviour {
     }
 
     private void UpdateSprite() {
-        float frameFloat = elapsed * frames.Count / frameDuration;
-        int frame = ((int)Mathf.Floor(frameFloat)) % frames.Count;
-        GetComponent<SpriteRenderer>().sprite = frames[frame];
+        if (frames != null) {
+            float frameFloat = elapsed * frames.Count / frameDuration;
+            int frame = ((int)Mathf.Floor(frameFloat)) % frames.Count;
+            GetComponent<SpriteRenderer>().sprite = frames[frame];
+        }
     }
 }

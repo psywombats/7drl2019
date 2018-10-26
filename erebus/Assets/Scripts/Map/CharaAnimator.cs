@@ -93,6 +93,32 @@ public class CharaAnimator : MonoBehaviour {
         transform.localPosition = preAnimLocalPosition;
         parentEvent.GetComponent<CharaEvent>().facing = preAnimFacing;
         SetSpriteByKey(preAnimSprite);
+        ClearOverrideSprite();
+    }
+
+    public void SetOverrideSprite(Sprite sprite) {
+        ClearOverrideSprite();
+        GetComponent<Animator>().enabled = false;
+        GetComponent<SpriteRenderer>().sprite = sprite;
+    }
+
+    public void SetOverrideAnim(List<Sprite> frames, float frameDuration) {
+        GetComponent<Animator>().enabled = false;
+        SimpleSpriteAnimator animator = GetComponent<SimpleSpriteAnimator>();
+        if (animator == null) {
+            animator = gameObject.AddComponent<SimpleSpriteAnimator>();
+        }
+        animator.frames = frames;
+        animator.frameDuration = frameDuration;
+        animator.enabled = true;
+        animator.Update();
+    }
+
+    public void ClearOverrideSprite() {
+        GetComponent<Animator>().enabled = true;
+        if (GetComponent<SimpleSpriteAnimator>() != null) {
+            GetComponent<SimpleSpriteAnimator>().enabled = false;
+        }
     }
 
     public IEnumerator DesaturateRoutine(float targetDesat) {
@@ -112,7 +138,9 @@ public class CharaAnimator : MonoBehaviour {
     private void CopyShaderValues() {
         SpriteRenderer sprite = GetComponent<SpriteRenderer>();
         Material material = Application.isPlaying ? sprite.material : sprite.sharedMaterial;
-        material.SetFloat("_Desaturation", desaturation);
+        if (material != null) {
+            material.SetFloat("_Desaturation", desaturation);
+        }
     }
 
     private void UpdatePositionMemory() {

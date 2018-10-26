@@ -7,7 +7,15 @@ using System;
 [MoonSharpUserData]
 public class DollTargetEvent : TiledInstantiated {
 
+    private static string AnimPath = "Sprites/Anim/";
     private static string ArgDuration = "duration";
+    private static string ArgSpritesheet = "sheet";
+    private static string ArgFrame = "frame";
+    private static string ArgFrames = "frames";
+
+    private static float DefaultFrameDuration = 0.12f;
+    private static float DefaultJumpHeight = 1.2f;
+    private static float DefaultJumpReturnHeight = 0.4f;
 
     public enum Type {
         Attacker,
@@ -89,25 +97,65 @@ public class DollTargetEvent : TiledInstantiated {
     [MoonSharpHidden]
     private Vector3 CalculateJumpOffset(Vector3 startPos, Vector3 endPos) {
         Vector3 dir = (endPos - startPos).normalized;
-        return endPos - 0.5f * dir;
+        return endPos - 0.75f * dir;
     }
-
-    // === LUA FUNCTIONS ===========================================================================
-
-    public void jumpToDefender(DynValue args) { CSRun(cs_jumpToDefender(args), args); }
-    [MoonSharpHidden] IEnumerator cs_jumpToDefender(DynValue args) {
+    
+    [MoonSharpHidden]
+    private IEnumerator JumpRoutine(Vector3 endPos, float duration, float height) {
         Vector3 startPos = doll.transform.position;
-        Vector3 endPos = CalculateJumpOffset(startPos, player.defender.doll.transform.position);
-        float duration = (float)args.Table.Get(ArgDuration).Number;
         float elapsed = 0.0f;
         while (doll.transform.position != endPos) {
             elapsed += Time.deltaTime;
             Vector3 lerped = Vector3.Lerp(startPos, endPos, elapsed / duration);
             doll.transform.position = new Vector3(
                     lerped.x,
-                    lerped.y + ((elapsed >= duration) ? 0 : Mathf.Sin(elapsed / duration * Mathf.PI) * 1.2f),
+                    lerped.y + ((elapsed >= duration) 
+                            ? 0 
+                            : Mathf.Sin(elapsed / duration * Mathf.PI) * height),
                     lerped.z);
             yield return null;
         }
+    }
+
+    // === LUA FUNCTIONS ===========================================================================
+
+    public void jumpToDefender(DynValue args) { CSRun(cs_jumpToDefender(args), args); }
+    [MoonSharpHidden] IEnumerator cs_jumpToDefender(DynValue args) {
+        Vector3 endPos = CalculateJumpOffset(doll.transform.position, player.defender.doll.transform.position);
+        float duration = (float)args.Table.Get(ArgDuration).Number;
+        yield return JumpRoutine(endPos, duration, DefaultJumpHeight);
+    }
+
+    public void jumpReturn(DynValue args) { CSRun(cs_jumpReturn(args), args); }
+    [MoonSharpHidden] IEnumerator cs_jumpReturn(DynValue args) {
+        float overallDuration = (float)args.Table.Get(ArgDuration).Number;
+        float fraction = (2.0f / 3.0f);
+        Vector3 midPos = Vector3.Lerp(doll.transform.position, originalDollPos, fraction);
+        yield return JumpRoutine(midPos, 
+                    overallDuration * fraction, 
+                    DefaultJumpReturnHeight * fraction);
+        yield return JumpRoutine(originalDollPos, 
+                overallDuration * (1.0f - fraction), 
+                DefaultJumpReturnHeight * (1.0f - fraction));
+    }
+
+    public void setFrame(DynValue args) {
+        string spriteName = args.Table.Get(ArgSpritesheet).String;
+        int spriteFrame = (int)args.Table.Get(ArgFrame).Number;
+        Sprite[] sprites = Resources.LoadAll<Sprite>(AnimPath + spriteName);
+        Sprite sprite = sprites[spriteFrame];
+        animator.SetOverrideSprite(sprite);
+    }
+
+    public void setAnim(DynValue args) {
+        string spriteName = args.Table.Get(ArgSpritesheet).String;
+        DynValue durationArg = args.Table.Get(ArgDuration);
+        float frameDuration = (durationArg == DynValue.Nil) ? DefaultFrameDuration : (float)durationArg.Number;
+        Sprite[] sprites = Resources.LoadAll<Sprite>(AnimPath + spriteName);
+        List<Sprite> frames = new List<Sprite>();
+        foreach (DynValue value in args.Table.Get(ArgFrames).Table.Values) {
+            frames.Add(sprites[(int)value.Number]);
+        }
+        animator.SetOverrideAnim(frames, frameDuration);
     }
 }
