@@ -18,9 +18,11 @@ public class CharaAnimator : MonoBehaviour {
     public bool alwaysAnimates = false;
     public bool dynamicFacing = false;
     public string spriteName = "";
+    public int afterimages = 0;
+    public float afterimageDuration = 0.1f;
 
     private Vector2 lastPosition;
-
+    private List<KeyValuePair<float, Vector3>> afterimageHistory;
     private Vector3 preAnimLocalPosition;
     private OrthoDir preAnimFacing;
     private string preAnimSprite;
@@ -37,6 +39,7 @@ public class CharaAnimator : MonoBehaviour {
     }
 
     public void Update() {
+        CopyShaderValues();
         if (Parent().GetComponent<CharaEvent>() != null) {
             Vector2 position = Parent().transform.position;
             Vector2 delta = position - lastPosition;
@@ -50,8 +53,6 @@ public class CharaAnimator : MonoBehaviour {
             GetComponent<Animator>().SetBool("stepping", alwaysAnimates);
             GetComponent<Animator>().SetInteger("dir", OrthoDir.South.Ordinal());
         }
-
-        CopyShaderValues();
     }
 
     public void OnValidate() {

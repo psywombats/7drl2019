@@ -17,6 +17,8 @@ public class DollTargetEvent : TiledInstantiated {
     public Type type;
     public BattleAnimationPlayer player;
 
+    private Vector3 originalDollPos;
+
     private MapEvent _mapEvent;
     public MapEvent mapEvent {
         get {
@@ -70,11 +72,13 @@ public class DollTargetEvent : TiledInstantiated {
     [MoonSharpHidden]
     public void PrepareForAnimation() {
         animator.PrepareForAnimation();
+        originalDollPos = doll.transform.position;
     }
 
     [MoonSharpHidden]
     public void ResetAfterAnimation() {
         animator.ResetAfterAnimation();
+        doll.transform.position = originalDollPos;
     }
 
     [MoonSharpHidden]

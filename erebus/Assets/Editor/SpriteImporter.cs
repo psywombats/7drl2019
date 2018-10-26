@@ -70,6 +70,29 @@ internal sealed class SpriteImporter : AssetPostprocessor {
                 texSettings.spriteAlignment = (int)SpriteAlignment.Custom;
                 importer.SetTextureSettings(texSettings);
                 importer.spritePivot = new Vector2(0.0f, 0.0f);
+            } else if (path.Contains("Anim")) {
+                IntVector2 textureSize = GetPreprocessedImageSize();
+                int edgeSize = 64;
+                int rows = textureSize.x / edgeSize;
+                int cols = textureSize.y / edgeSize;
+                importer.spritePixelsPerUnit = 24;
+                importer.spriteImportMode = SpriteImportMode.Multiple;
+                importer.spritesheet = new SpriteMetaData[rows * cols];
+                List<SpriteMetaData> spritesheet = new List<SpriteMetaData>();
+                for (int y = 0; y < rows; y += 1) {
+                    for (int x = 0; x < cols; x += 1) {
+                        int index = cols * (cols - y - 1) + x;
+                        SpriteMetaData data = importer.spritesheet[index];
+                        data.rect = new Rect(x * edgeSize, y * edgeSize, edgeSize, edgeSize);
+                        data.alignment = (int)SpriteAlignment.Custom;
+                        data.border = new Vector4(0, 0, 0, 0);
+                        data.name = name + "_" + ((index > 9) ? "" : "0") + index;
+                        float mid = (edgeSize / 2.0f) / (float)edgeSize;
+                        data.pivot = new Vector2(mid, name.Contains("battler") ? 0.0f : mid);
+                        spritesheet.Add(data);
+                    }
+                }
+                importer.spritesheet = spritesheet.ToArray();
             }
         }
     }
