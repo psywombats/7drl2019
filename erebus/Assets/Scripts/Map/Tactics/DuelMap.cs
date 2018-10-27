@@ -55,7 +55,7 @@ public class DuelMap : MonoBehaviour {
             CoUtils.Delay(duration/3.0f, DuelCam.Instance().TransitionInZoomRoutine(12.0f, duration/2.0f)),
         }, this);
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.8f);
         yield return GetComponent<BattleAnimationPlayer>().PlayAnimationRoutine();
         yield return new WaitForSeconds(1.0f);
     }
