@@ -626,4 +626,25 @@ fixed4 glitchFrag(v2f IN) : SV_Target {
     return glitchFragFromCoords(xy, pxXY) * IN.color;
 }
 
+v2f glitchVert(appdata_t IN) {
+    v2f OUT;
+
+    UNITY_SETUP_INSTANCE_ID (IN);
+    UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
+
+    #ifdef UNITY_INSTANCING_ENABLED
+        IN.vertex.xy *= _Flip;
+    #endif
+
+    OUT.vertex = UnityObjectToClipPos(IN.vertex);
+    OUT.texcoord = IN.texcoord;
+    OUT.color = IN.color * _Color * _RendererColor;
+
+    #ifdef PIXELSNAP_ON
+        OUT.vertex = UnityPixelSnap (OUT.vertex);
+    #endif
+
+    return OUT;
+}
+
 #endif

@@ -1,7 +1,5 @@
 fileFormatVersion: 2
 guid: 4f912f4a4331d4445872f768f9894d26
-timeCreated: 1517826764
-licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
     21300000: defragWestLeft
@@ -16,7 +14,8 @@ TextureImporter:
     21300018: defragNorthLeft
     21300020: defragNorthCenter
     21300022: defragNorthRight
-  serializedVersion: 4
+  externalObjects: {}
+  serializedVersion: 7
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -24,6 +23,8 @@ TextureImporter:
     linearTexture: 0
     fadeOut: 0
     borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
     mipMapFadeDistanceStart: 1
     mipMapFadeDistanceEnd: 3
   bumpmap:
@@ -32,6 +33,8 @@ TextureImporter:
     heightScale: 0.25
     normalMapFilter: 0
   isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -39,10 +42,13 @@ TextureImporter:
   textureFormat: 1
   maxTextureSize: 2048
   textureSettings:
+    serializedVersion: 2
     filterMode: 0
     aniso: -1
-    mipBias: -1
-    wrapMode: 1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -51,25 +57,30 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 12, y: 8}
-  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 24
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
   textureType: 8
   textureShape: 1
+  singleChannelComponent: 0
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
   platformSettings:
-  - buildTarget: DefaultTexturePlatform
+  - serializedVersion: 2
+    buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
+    resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    androidETC2FallbackOverride: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -82,10 +93,17 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 0.16666667, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: a77ae11f48508044e8f09429fe356c1f
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: defragWestCenter
       rect:
@@ -95,10 +113,17 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 0.16666667, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: 0f35dcad6791cc843b7505f9eef320e6
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: defragWestRight
       rect:
@@ -108,10 +133,17 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 0.16666667, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: c36f7fac40f66de48b188f6d9c121296
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: defragSouthLeft
       rect:
@@ -121,10 +153,17 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 0.16666667, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: f0ad9c6d5dfa6724fa587db807973b27
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: defragSouthCenter
       rect:
@@ -134,10 +173,17 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 0.16666667, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: 7fd61f886e865d7419b0138f484f226c
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: defragSouthRight
       rect:
@@ -147,10 +193,17 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 0.16666667, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: 8d3bd3b17b2298546bfed38ed78460d1
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: defragEastLeft
       rect:
@@ -160,10 +213,17 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 0.16666667, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: 2fde4f01c8883514e914ca66b8d7d37a
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: defragEastCenter
       rect:
@@ -173,10 +233,17 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 0.16666667, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: 163eb1b054e48d74fa0cd87814583d62
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: defragEastRight
       rect:
@@ -186,10 +253,17 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 0.16666667, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: fbaaf2f957abaa343bd00c7289dc5e70
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: defragNorthLeft
       rect:
@@ -199,10 +273,17 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 0.16666667, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: 7920be0ea3eba6c449b8321ae1b4c7d8
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: defragNorthCenter
       rect:
@@ -212,10 +293,17 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 0.16666667, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: 77ae7368a557a0e499bd93c3eb20ac21
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: defragNorthRight
       rect:
@@ -225,12 +313,28 @@ TextureImporter:
         width: 24
         height: 32
       alignment: 9
-      pivot: {x: 0.16666667, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: 561c6c1bc769a0c49882856308c08485
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
   spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

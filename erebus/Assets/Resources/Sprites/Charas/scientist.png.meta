@@ -1,7 +1,5 @@
 fileFormatVersion: 2
 guid: d542dd618aedf57439e9fa5f3422b9e4
-timeCreated: 1518003108
-licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
     21300000: scientistNorthLeft
@@ -16,7 +14,8 @@ TextureImporter:
     21300018: scientistSouthLeft
     21300020: scientistSouthCenter
     21300022: scientistSouthRight
-  serializedVersion: 4
+  externalObjects: {}
+  serializedVersion: 7
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -24,6 +23,8 @@ TextureImporter:
     linearTexture: 0
     fadeOut: 0
     borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
     mipMapFadeDistanceStart: 1
     mipMapFadeDistanceEnd: 3
   bumpmap:
@@ -32,6 +33,8 @@ TextureImporter:
     heightScale: 0.25
     normalMapFilter: 0
   isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -39,10 +42,13 @@ TextureImporter:
   textureFormat: 1
   maxTextureSize: 2048
   textureSettings:
+    serializedVersion: 2
     filterMode: 0
     aniso: -1
-    mipBias: -1
-    wrapMode: 1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -51,25 +57,30 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 16, y: 8}
-  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
   textureType: 8
   textureShape: 1
+  singleChannelComponent: 0
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
   platformSettings:
-  - buildTarget: DefaultTexturePlatform
+  - serializedVersion: 2
+    buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
+    resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    androidETC2FallbackOverride: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -82,10 +93,17 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: a45513ad9e31ff34396086c468d9e952
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: scientistNorthCenter
       rect:
@@ -95,10 +113,17 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: 3ce06b4bb0bd76f47a85620325a67a80
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: scientistNorthRight
       rect:
@@ -108,10 +133,17 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: 62bc72fa63c09da4a87b3249f44d7627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: scientistEastLeft
       rect:
@@ -121,10 +153,17 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: ed537b4d0b81c634398591239530f022
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: scientistEastCenter
       rect:
@@ -134,10 +173,17 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: 0184c7db2ebaa7c4784c1b70c5b8c200
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: scientistEastRight
       rect:
@@ -147,10 +193,17 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: 5a6ea02802cf2284baf998427de3693f
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: scientistWestLeft
       rect:
@@ -160,10 +213,17 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: 61e32854d9de2944cb8cbfc36769628b
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: scientistWestCenter
       rect:
@@ -173,10 +233,17 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: d73fa1bed4a2d8e4d9a44d89de374950
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: scientistWestRight
       rect:
@@ -186,10 +253,17 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: 2283d974aecf465418a5fdaf4686e231
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: scientistSouthLeft
       rect:
@@ -199,10 +273,17 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: 911acabe491c5064db9fd5fd4310e63e
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: scientistSouthCenter
       rect:
@@ -212,10 +293,17 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: b0730060d7005aa4587a3467d6bf3e78
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: scientistSouthRight
       rect:
@@ -225,12 +313,28 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: 30e88cf3dfddb10409e61483c2048b84
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
   spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

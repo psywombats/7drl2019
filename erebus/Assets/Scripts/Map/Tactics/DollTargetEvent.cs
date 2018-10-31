@@ -296,8 +296,8 @@ public class DollTargetEvent : TiledInstantiated {
         float r = (float)args.Table.Get(ArgRed).Number;
         float g = (float)args.Table.Get(ArgGreen).Number;
         float b = (float)args.Table.Get(ArgBlue).Number;
-        Color color = new Color(r, g, b, 1.0f);
-        yield return ColorRoutine(args, 1.0f - FloatArg(args, ArgPower, 0.9f), () => {
+        Color color = new Color(r, g, b, 0.0f);
+        yield return ColorRoutine(args, FloatArg(args, ArgPower, 0.9f), () => {
             return color;
         }, (Color c) => {
             color = c;

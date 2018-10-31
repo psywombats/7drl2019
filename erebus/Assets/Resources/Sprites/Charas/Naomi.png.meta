@@ -1,7 +1,5 @@
 fileFormatVersion: 2
 guid: b2f42cf59b5a51a4e8e21b4aed9b528b
-timeCreated: 1517217662
-licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
     21300000: NaomiWestLeft
@@ -16,7 +14,8 @@ TextureImporter:
     21300018: NaomiNorthLeft
     21300020: NaomiNorthCenter
     21300022: NaomiNorthRight
-  serializedVersion: 4
+  externalObjects: {}
+  serializedVersion: 7
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -24,6 +23,8 @@ TextureImporter:
     linearTexture: 0
     fadeOut: 0
     borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
     mipMapFadeDistanceStart: 1
     mipMapFadeDistanceEnd: 3
   bumpmap:
@@ -32,6 +33,8 @@ TextureImporter:
     heightScale: 0.25
     normalMapFilter: 0
   isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -39,10 +42,13 @@ TextureImporter:
   textureFormat: 1
   maxTextureSize: 2048
   textureSettings:
+    serializedVersion: 2
     filterMode: 0
     aniso: -1
-    mipBias: -1
-    wrapMode: 1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -51,33 +57,41 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 16, y: 8}
-  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
   textureType: 8
   textureShape: 1
+  singleChannelComponent: 0
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
   platformSettings:
-  - buildTarget: DefaultTexturePlatform
+  - serializedVersion: 2
+    buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
+    resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
-  - buildTarget: Standalone
+    androidETC2FallbackOverride: 0
+  - serializedVersion: 2
+    buildTarget: Standalone
     maxTextureSize: 2048
+    resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    androidETC2FallbackOverride: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -90,10 +104,17 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: bb7ec3fd4be0a2f47986397dd7b2161e
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: NaomiNorthCenter
       rect:
@@ -103,10 +124,17 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: 689e0275f98daa74b8411e2a7ece7d0d
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: NaomiNorthRight
       rect:
@@ -116,10 +144,17 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: 74078bc9f1f62614c8ae2ade63e7d9a5
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: NaomiEastLeft
       rect:
@@ -129,10 +164,17 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: 9bdc3fc60084c5541b26e43cfe36ef85
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: NaomiEastCenter
       rect:
@@ -142,10 +184,17 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: d2392ed9c67f64f488d6f877b314cf50
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: NaomiEastRight
       rect:
@@ -155,10 +204,17 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: 6a7efed3908bed140978a66a86d74d90
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: NaomiWestLeft
       rect:
@@ -168,10 +224,17 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: c775cc2bc347c3f48a70ef60ce389ce4
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: NaomiWestCenter
       rect:
@@ -181,10 +244,17 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: 2a5755c407d5d37429fb6b2634ffbf17
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: NaomiWestRight
       rect:
@@ -194,10 +264,17 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: b72b769812e95e7479e13010a93b20cf
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: NaomiSouthLeft
       rect:
@@ -207,10 +284,17 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: f80163992da82ef419db9e9161d566db
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: NaomiSouthCenter
       rect:
@@ -220,10 +304,17 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: f7108be0ce68ae046a9cc1639c2a95f1
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: NaomiSouthRight
       rect:
@@ -233,12 +324,28 @@ TextureImporter:
         width: 32
         height: 48
       alignment: 9
-      pivot: {x: 0.25, y: 0}
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: -1
+      bones: []
+      spriteID: 6e0d94b5fa6398446a88001d0a7cfac4
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
   spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

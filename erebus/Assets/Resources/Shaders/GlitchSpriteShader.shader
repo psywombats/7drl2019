@@ -178,8 +178,9 @@
             float avg = (c[0] + c[1] + c[2]) / 3.0;
             float4 desat = float4(avg / 2.0, avg / 2.0, avg / 2.0, c.a);
             o.Albedo = c.rgb * (1.0 - _Desaturation) + desat.rgb * (_Desaturation);
-            o.Albedo = o.Albedo * _Flash.a + _Flash.rgb * (1.0 - _Flash.a);
+            o.Albedo = o.Albedo * (1.0 - _Flash.a) + _Flash.rgb * _Flash.a;
             o.Alpha = c.a;
+            o.Albedo *= o.Alpha;
         }
         ENDCG
     }
