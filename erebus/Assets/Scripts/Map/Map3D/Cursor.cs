@@ -4,17 +4,14 @@ using System;
 
 public class Cursor : MonoBehaviour, InputListener {
 
-    public static readonly IntVector2 CanceledLocation = new IntVector2(-1, -1);
-
     private const string InstancePath = "Prefabs/Map3D/Cursor";
     private const float ScrollSnapTime = 0.2f;
 
     public float minTimeBetweenMoves = 0.1f;
     public GameObject reticules;
     
-    private Action<IntVector2> onSelect;
     private float lastStepTime;
-    private bool awaitingSelect;
+    private Result<IntVector2> awaitingSelect;
 
     public static Cursor GetInstance() {
         GameObject prefab = Resources.Load<GameObject>(InstancePath);
@@ -34,17 +31,13 @@ public class Cursor : MonoBehaviour, InputListener {
         }
     }
 
-    // configures the cursor behavior
-    public void Configure(Action<IntVector2> onSelect) {
-        this.onSelect = onSelect;
-    }
-
     // waits for the cursor to select
-    public IEnumerator AwaitSelectionRoutine() {
-        awaitingSelect = true;
-        while (awaitingSelect) {
+    public IEnumerator AwaitSelectionRoutine(Result<IntVector2> result) {
+        awaitingSelect = result;
+        while (!result.finished) {
             yield return null;
         }
+        awaitingSelect = null;
     }
 
     public void EnableReticules() {
@@ -63,23 +56,26 @@ public class Cursor : MonoBehaviour, InputListener {
                 switch (command) {
                     case InputManager.Command.Up:
                         TryStep(OrthoDir.North);
-                        return true;
+                        break;
                     case InputManager.Command.Down:
                         TryStep(OrthoDir.South);
-                        return true;
+                        break;
                     case InputManager.Command.Right:
                         TryStep(OrthoDir.East);
-                        return true;
+                        break;
                     case InputManager.Command.Left:
                         TryStep(OrthoDir.West);
-                        return true;
+                        break;
                     case InputManager.Command.Confirm:
-                        onSelect(GetComponent<MapEvent>().Position);
-                        awaitingSelect = false;
-                        return true;
+                        if (awaitingSelect != null) {
+                            awaitingSelect.Value = GetComponent<MapEvent>().Position;
+                        }
+                        break;
                     case InputManager.Command.Cancel:
-                        onSelect(CanceledLocation);
-                        return true;
+                        if (awaitingSelect != null) {
+                            awaitingSelect.Cancel();
+                        }
+                        break;
                 }
                 break;
         }

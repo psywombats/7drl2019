@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Tiled2Unity;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Object = UnityEngine.Object;
 
 public class MapManager : MonoBehaviour, MemoryPopulater {
 
@@ -92,7 +93,7 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
         Avatar.transform.parent = parentLayer.gameObject.transform;
 
         ActiveMap.OnTeleportAway();
-        GameObject.DestroyObject(ActiveMap.gameObject);
+        Object.Destroy(ActiveMap.gameObject);
         ActiveMap = map;
         ActiveMap.OnTeleportTo();
         Avatar.GetComponent<MapEvent>().SetLocation(location);

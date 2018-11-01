@@ -9,32 +9,17 @@ public class DirectionCursor : MonoBehaviour, InputListener {
 
     private const string InstancePath = "Prefabs/Map3D/DirectionCursor";
 
-    private OrthoDir _dir;
-    public OrthoDir dir {
-        get {
-            return _dir;
-        }
-        set {
-            SetDirection(value);
-        }
-    }
-
+    public OrthoDir currentDir;
     private CharaEvent actor;
-    private Action<IntVector2> onSelect;
-    private bool awaitingSelect;
+    private Result<OrthoDir> awaitingSelect;
 
     public static DirectionCursor GetInstance() {
         GameObject prefab = Resources.Load<GameObject>(InstancePath);
         return UnityEngine.Object.Instantiate<GameObject>(prefab).GetComponent<DirectionCursor>();
     }
 
-    public void Configure(CharaEvent actor, Action<IntVector2> onSelect) {
-        this.actor = actor;
-        this.onSelect = onSelect;
-        this.dir = OrthoDir.North;
-    }
-
     public void OnEnable() {
+        currentDir = OrthoDir.North;
         Global.Instance().Input.PushListener(this);
         TacticsCam.Instance().target = GetComponent<MapEvent>();
     }
@@ -46,11 +31,12 @@ public class DirectionCursor : MonoBehaviour, InputListener {
         }
     }
 
-    public IEnumerator AwaitSelectionRoutine() {
-        awaitingSelect = true;
-        while (awaitingSelect) {
+    public IEnumerator AwaitSelectionRoutine(Result<OrthoDir> result) {
+        awaitingSelect = result;
+        while (!awaitingSelect.finished) {
             yield return null;
         }
+        awaitingSelect = null;
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
@@ -69,12 +55,10 @@ public class DirectionCursor : MonoBehaviour, InputListener {
                     AttemptSetDirection(OrthoDir.North);
                     break;
                 case InputManager.Command.Confirm:
-                    awaitingSelect = false;
-                    onSelect(GetComponent<MapEvent>().Position);
+                    awaitingSelect.Value = currentDir;
                     break;
                 case InputManager.Command.Cancel:
-                    awaitingSelect = false;
-                    onSelect(Cursor.CanceledLocation);
+                    awaitingSelect.Cancel();
                     break;
             }
         }
@@ -86,7 +70,7 @@ public class DirectionCursor : MonoBehaviour, InputListener {
     }
 
     private void SetDirection(OrthoDir dir) {
-        _dir = dir;
+        currentDir = dir;
         actor.facing = dir;
         GetComponent<MapEvent>().Position = actor.GetComponent<MapEvent>().Position + dir.XY();
         GetComponent<MapEvent>().SetScreenPositionToMatchTilePosition();
