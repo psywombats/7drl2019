@@ -16,6 +16,7 @@ Thumbs.db
 #################
 erebus/Library/*
 erebus/Temp/*
+erebus/obj/Debug/*
 
 # Visual Studio garbage #
 #########################
