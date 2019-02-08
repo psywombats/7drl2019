@@ -6,29 +6,29 @@ using System.Collections.Generic;
 [RequireComponent(typeof(BattleAnimationPlayer))]
 public class DuelMap : MonoBehaviour {
 
-    private Dictionary<DollTargetEvent.Type, DollTargetEvent> targets;
+    private Dictionary<Doll.Type, Doll> targets;
 
     public void Start() {
 
         // TODO: presumably we load this from somewhere
         Global.Instance().Maps.ActiveDuelMap = this;
 
-        targets = new Dictionary<DollTargetEvent.Type, DollTargetEvent>();
+        targets = new Dictionary<Doll.Type, Doll>();
         foreach (DollTargetEvent target in GetComponent<Map>().GetEvents<DollTargetEvent>()) {
-            targets[target.type] = target;
+            targets[target.doll.type] = target.doll;
         }
     }
 
-    public DollTargetEvent GetTarget(DollTargetEvent.Type type) {
+    public Doll GetTarget(Doll.Type type) {
         return targets[type];
     }
 
-    public DollTargetEvent Attacker() {
-        return targets[DollTargetEvent.Type.Attacker];
+    public Doll Attacker() {
+        return targets[Doll.Type.Attacker];
     }
 
-    public DollTargetEvent Defender() {
-        return targets[DollTargetEvent.Type.Defender];
+    public Doll Defender() {
+        return targets[Doll.Type.Defender];
     }
     
     public void ConfigureForDuel(BattleEvent attacker, BattleEvent defender) {
@@ -36,8 +36,8 @@ public class DuelMap : MonoBehaviour {
         Defender().ConfigureToBattler(defender);
         Attacker().GetComponent<CharaEvent>().facing = OrthoDir.East;
         Defender().GetComponent<CharaEvent>().facing = OrthoDir.West;
-        GetComponent<BattleAnimationPlayer>().attacker = Attacker().GetComponent<DollTargetEvent>();
-        GetComponent<BattleAnimationPlayer>().defender = Defender().GetComponent<DollTargetEvent>();
+        GetComponent<BattleAnimationPlayer>().attacker = Attacker();
+        GetComponent<BattleAnimationPlayer>().defender = Defender();
     }
 
     // this needs to take an attack command

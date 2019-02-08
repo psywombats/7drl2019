@@ -15,8 +15,6 @@ public class Global : MonoBehaviour {
     public MemoryManager Memory { get; private set; }
     public AudioManager Audio { get; private set; }
     public SettingsCollection Settings { get; private set; }
-    public ScenePlayer ScenePlayer { get; private set; }
-    public UIEngine UIEngine { get; private set; }
     public PartyManager Party { get; private set; }
 
     private IndexDatabase database;
@@ -64,7 +62,6 @@ public class Global : MonoBehaviour {
 
         GameObject module = Instantiate(Resources.Load<GameObject>(UIModulePath));
         module.transform.parent = transform;
-        UIEngine = module.GetComponentInChildren<UIEngine>();
     }
 
     private void SetFullscreenMode() {

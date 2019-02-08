@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using MoonSharp.Interpreter;
 
 [MoonSharpUserData]
+[DisallowMultipleComponent]
 [RequireComponent(typeof(AfterimageComponent))]
 public class Doll : AnimationTarget {
 
@@ -36,8 +37,9 @@ public class Doll : AnimationTarget {
     }
 
     [MoonSharpHidden]
-    public void PrepareForAnimation(BattleAnimationPlayer player) {
+    public void PrepareForBattleAnimation(BattleAnimationPlayer player, Type type) {
         this.player = player;
+        this.type = type;
         animator.PrepareForAnimation();
         originalDollPos = transform.position;
     }

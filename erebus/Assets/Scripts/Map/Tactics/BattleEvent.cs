@@ -28,8 +28,8 @@ public class BattleEvent : TiledInstantiated {
     }
 
     public override void Populate(IDictionary<string, string> properties) {
-        this.unitKey = properties[MapEvent.PropertyUnit];
-        GetComponent<CharaEvent>().doll.AddComponent<BillboardingSpriteComponent>();
+        unitKey = properties[MapEvent.PropertyUnit];
+        GetComponent<CharaEvent>().doll.gameObject.AddComponent<BillboardingSpriteComponent>();
         GetComponent<CharaEvent>().animator.dynamicFacing = true;
     }
 

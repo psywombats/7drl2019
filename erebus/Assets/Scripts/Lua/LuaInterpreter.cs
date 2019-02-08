@@ -8,7 +8,7 @@ using System.IO;
 
 public class LuaInterpreter : MonoBehaviour {
 
-    private static readonly string DefinesPath = "Assets/Resources/Scenes/Defines.lua";
+    private static readonly string DefinesPath = "Assets/Resources/Lua/defines.lua";
 
     public Script GlobalContext { get; private set; }
 
@@ -32,10 +32,6 @@ public class LuaInterpreter : MonoBehaviour {
         GlobalContext.Globals["cs_teleport"] = (Action<DynValue, DynValue>)Teleport;
         GlobalContext.Globals["cs_wait"] = (Action<DynValue>)Wait;
         GlobalContext.Globals["cs_fadeOutBGM"] = (Action<DynValue>)FadeOutBGM;
-        GlobalContext.Globals["cs_playScene"] = (Action<DynValue>)PlayScene;
-        GlobalContext.Globals["cs_speakLine"] = (Action<DynValue>)Speak;
-        GlobalContext.Globals["cs_fadeIn"] = (Action)FadeIn;
-        GlobalContext.Globals["cs_fadeOut"] = (Action)FadeOut;
 
         // global defines lua-side
         LoadDefines(DefinesPath);
@@ -186,31 +182,5 @@ public class LuaInterpreter : MonoBehaviour {
 
     private static void FadeOutBGM(DynValue seconds) {
         RunStaticRoutineFromLua(Global.Instance().Audio.FadeOutRoutine((float)seconds.Number));
-    }
-
-    private static void PlayScene(DynValue sceneName) {
-        RunStaticRoutineFromLua(Global.Instance().ScenePlayer.PlaySceneFromLua(sceneName.String));
-    }
-
-    private static void FadeIn() {
-        RunStaticRoutineFromLua(Global.Instance().UIEngine.GlobalFadeRoutine(false));
-    }
-
-    private static void FadeOut() {
-        RunStaticRoutineFromLua(Global.Instance().UIEngine.GlobalFadeRoutine(true));
-    }
-
-    // Scene interaction routines
-
-    private static void RunSceneCommand(SceneCommand command) {
-        // TODO: get the real title in here
-        SceneScript script = new SceneScript(command, "anonymous command");
-        Global.Instance().ScenePlayer.gameObject.SetActive(true);
-        RunStaticRoutineFromLua(Global.Instance().ScenePlayer.PlayCommandFromLua(script));
-    }
-
-    private static void Speak(DynValue line) {
-        // line is interpreted as either a system command or tagged dialog
-        RunSceneCommand(new SpokenLineCommand(line.String));
     }
 }

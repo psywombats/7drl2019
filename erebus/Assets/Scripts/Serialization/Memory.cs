@@ -9,9 +9,6 @@ public class Memory {
     public SerialDictionary<string, int> variables;
     public SerialDictionary<string, bool> switches;
 
-    // scene data
-    public ScreenMemory screen;
-
     // other state
     public string mapName;
     public IntVector2 position;
@@ -25,5 +22,4 @@ public class Memory {
 
     // rpg
     public RPGMemory rpg;
-
 }

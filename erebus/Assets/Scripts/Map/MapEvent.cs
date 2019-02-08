@@ -141,7 +141,6 @@ public abstract class MapEvent : TiledInstantiated {
         }
         if (properties.ContainsKey(PropertyTarget) && GetComponent<DollTargetEvent>() == null) {
             gameObject.AddComponent<DollTargetEvent>().Populate(properties);
-            gameObject.GetComponent<CharaEvent>().doll.AddComponent<AfterimageComponent>();
         }
 
         SetDepth();

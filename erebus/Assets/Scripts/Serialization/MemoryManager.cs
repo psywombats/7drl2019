@@ -19,7 +19,6 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
     private Dictionary<string, int> variables;
     private Dictionary<string, int> maxSeenCommands;
     private List<MemoryPopulater> listeners;
-    private List<LogItem> messageHistory;
     private Texture2D screenshot;
     private float lastSystemSavedTimestamp;
 
@@ -36,7 +35,6 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
         listeners = new List<MemoryPopulater>();
         variables = new Dictionary<string, int>();
         maxSeenCommands = new Dictionary<string, int>();
-        messageHistory = new List<LogItem>();
         lastSystemSavedTimestamp = Time.realtimeSinceStartup;
         LoadOrCreateSystemMemory();
         RegisterMemoryPopulater(this);
@@ -52,17 +50,6 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
 
     public void RegisterMemoryPopulater(MemoryPopulater populater) {
         listeners.Add(populater);
-    }
-
-    public void AppendLogItem(LogItem item) {
-        messageHistory.Add(item);
-        if (messageHistory.Count > MaxMessages) {
-            messageHistory.RemoveAt(0);
-        }
-    }
-
-    public List<LogItem> GetMessageHistory() {
-        return messageHistory;
     }
 
     public bool GetSwitch(string switchName) {
@@ -171,7 +158,6 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
     }
 
     public void PopulateMemory(Memory memory) {
-        ScenePlayer player = Global.Instance().ScenePlayer;
         AttachScreenshotToMemory(memory);
 
         memory.variables = new SerialDictionary<string, int>(variables);
@@ -279,8 +265,8 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
     }
 
     private IEnumerator LoadActiveMemoryRoutine() {
-        FadeComponent fade = FindObjectOfType<FadeComponent>();
-        yield return fade.FadeToBlackRoutine();
+        //FadeComponent fade = FindObjectOfType<FadeComponent>();
+        //yield return fade.FadeToBlackRoutine();
         yield return new WaitForSeconds(LoadDelaySeconds);
         //ScenePlayer.LoadScreen();
     }
