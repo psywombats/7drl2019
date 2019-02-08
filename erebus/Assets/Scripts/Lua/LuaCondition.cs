@@ -7,13 +7,15 @@ using UnityEngine;
 // represents an eval-able piece of Lua, usually from an event field
 public class LuaCondition {
 
+    private LuaContext context;
     private DynValue function;
 
-	public LuaCondition(DynValue scriptFunction) {
+	public LuaCondition(LuaContext context, DynValue scriptFunction) {
         this.function = scriptFunction;
+        this.context = context;
     }
 
     public DynValue Evaluate() {
-        return Global.Instance().Lua.Evaluate(function);
+        return context.Evaluate(function);
     }
 }

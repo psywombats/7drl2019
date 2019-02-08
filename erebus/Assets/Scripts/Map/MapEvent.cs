@@ -9,6 +9,7 @@ using UnityEngine.Assertions;
  * The generic "thing on the map" class for MGNE2. Usually comes from Tiled.
  */
 [RequireComponent(typeof(Dispatch))]
+[RequireComponent(typeof(LuaContext))]
 [DisallowMultipleComponent]
 public abstract class MapEvent : TiledInstantiated {
     
@@ -146,16 +147,14 @@ public abstract class MapEvent : TiledInstantiated {
         SetDepth();
     }
 
-    public void Start() {
-        luaObject = Global.Instance().Lua.CreateEvent(this);
+    public void Awake() {
+        luaObject = new LuaMapEvent(this);
         luaObject.Set(PropertyCollide, LuaOnCollide);
         luaObject.Set(PropertyInteract, LuaOnInteract);
         luaObject.Set(PropertyCondition, LuaCondition);
+    }
 
-        if (GetComponent<AvatarEvent>() != null) {
-            Global.Instance().Lua.RegisterAvatar(GetComponent<AvatarEvent>());
-        }
-
+    public void Start() {
         GetComponent<Dispatch>().RegisterListener(EventCollide, (object payload) => {
             OnCollide((AvatarEvent)payload);
         });
@@ -252,7 +251,7 @@ public abstract class MapEvent : TiledInstantiated {
         if (lua == null || lua.Length == 0) {
             return null;
         } else {
-            return Global.Instance().Lua.CreateScript(lua);
+            return new LuaScript(GetComponent<LuaContext>(), lua);
         }
     }
 
@@ -260,7 +259,7 @@ public abstract class MapEvent : TiledInstantiated {
         if (lua == null || lua.Length == 0) {
             return null;
         } else {
-            return Global.Instance().Lua.CreateCondition(lua);
+           return GetComponent<LuaContext>().CreateCondition(lua);
         }
     }
 

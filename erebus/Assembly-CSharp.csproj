@@ -61,13 +61,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Animation\AfterimageComponent.cs" />
+    <Compile Include="Assets\Scripts\Animation\AnimationPlayer.cs" />
     <Compile Include="Assets\Scripts\Animation\AnimationTarget.cs" />
-    <Compile Include="Assets\Scripts\Animation\BattleAnimation.cs" />
     <Compile Include="Assets\Scripts\Animation\BattleAnimationPlayer.cs" />
     <Compile Include="Assets\Scripts\Animation\Doll.cs" />
+    <Compile Include="Assets\Scripts\Animation\LuaAnimation.cs" />
     <Compile Include="Assets\Scripts\Animation\SimpleSpriteAnimator.cs" />
     <Compile Include="Assets\Scripts\Audio\AudioManager.cs" />
     <Compile Include="Assets\Scripts\Audio\WaveSource.cs" />
+    <Compile Include="Assets\Scripts\Data\AutoExpandingScriptableObject.cs" />
     <Compile Include="Assets\Scripts\Data\BackgroundIndexData.cs" />
     <Compile Include="Assets\Scripts\Data\BGMIndexData.cs" />
     <Compile Include="Assets\Scripts\Data\CharaIndexData.cs" />
@@ -87,7 +89,8 @@
     <Compile Include="Assets\Scripts\IO\InputListener.cs" />
     <Compile Include="Assets\Scripts\IO\InputManager.cs" />
     <Compile Include="Assets\Scripts\Lua\LuaCondition.cs" />
-    <Compile Include="Assets\Scripts\Lua\LuaInterpreter.cs" />
+    <Compile Include="Assets\Scripts\Lua\LuaContext.cs" />
+    <Compile Include="Assets\Scripts\Lua\LuaCutsceneContext.cs" />
     <Compile Include="Assets\Scripts\Lua\LuaMapEvent.cs" />
     <Compile Include="Assets\Scripts\Lua\LuaScript.cs" />
     <Compile Include="Assets\Scripts\Map\CharaAnimator.cs" />
@@ -175,7 +178,7 @@
     <None Include="Assets\Resources\Shaders\GlitchGeometryShader.shader" />
     <None Include="Assets\Tiled2Unity\Imported\Test\defrag.tiled2unity.xml" />
     <None Include="Assets\Tiled2Unity\Shaders\shaDefault.shader" />
-    <None Include="Assets\Resources\Lua\unimplemented.txt" />
+    <None Include="Assets\Resources\Scripts\unimplemented.txt" />
     <None Include="Assets\Tiled2Unity\Imported\Test\3D\tactics02.tiled2unity.xml" />
     <None Include="Assets\Tiled2Unity\Prefabs\_ReadMe.txt" />
     <None Include="Assets\Tiled2Unity\Shaders\shaTiledMap.shader" />
@@ -184,7 +187,7 @@
     <None Include="Assets\Tiled2Unity\Shaders\shaDepth.shader" />
     <None Include="Assets\Tiled2Unity\Shaders\shaDiffuseDepth.shader" />
     <None Include="Assets\Resources\Shaders\TransitionUIShader.shader" />
-    <None Include="Assets\Resources\Lua\intro.txt" />
+    <None Include="Assets\Resources\Scripts\intro.txt" />
     <None Include="Assets\Resources\Shaders\DiffuseDepthSprite.shader" />
     <None Include="Assets\Tiled2Unity\Imported\Test\Testmap02.tiled2unity.xml" />
     <None Include="Assets\Tiled2Unity\Materials\_ReadMe.txt" />
@@ -197,7 +200,7 @@
     <None Include="Assets\Tiled2Unity\Imported\Test\3D\tactics.tiled2unity.xml" />
     <None Include="Assets\Tiled2Unity\License.txt" />
     <None Include="Assets\Resources\Shaders\TransitionSpriteShader.shader" />
-    <None Include="Assets\Resources\Lua\testScript.txt" />
+    <None Include="Assets\Resources\Scripts\testScript.txt" />
     <None Include="Assets\Tiled2Unity\Imported\_ReadMe.txt" />
     <None Include="Assets\Resources\Shaders\GlitchEffectShader.shader" />
     <None Include="Assets\Tiled2Unity\Imported\Test\3D\corridor.tiled2unity.xml" />

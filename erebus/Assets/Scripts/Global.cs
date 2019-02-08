@@ -4,13 +4,10 @@ using UnityEngine.SceneManagement;
 
 public class Global : MonoBehaviour {
 
-    private static readonly string UIModulePath = "Prefabs/UI/UIModule";
-
     private static Global instance;
     private bool destructing;
     
     public InputManager Input { get; private set; }
-    public LuaInterpreter Lua { get; private set; }
     public MapManager Maps { get; private set; }
     public MemoryManager Memory { get; private set; }
     public AudioManager Audio { get; private set; }
@@ -45,6 +42,7 @@ public class Global : MonoBehaviour {
 
     public void Awake() {
         DontDestroyOnLoad(gameObject);
+        MoonSharp.Interpreter.UserData.RegisterAssembly();
     }
 
     public void OnDestroy() {
@@ -54,14 +52,10 @@ public class Global : MonoBehaviour {
     private void InstantiateManagers() {
         Settings = gameObject.AddComponent<SettingsCollection>();
         Input = gameObject.AddComponent<InputManager>();
-        Lua = gameObject.AddComponent<LuaInterpreter>();
         Maps = gameObject.AddComponent<MapManager>();
         Memory = gameObject.AddComponent<MemoryManager>();
         Audio = gameObject.AddComponent<AudioManager>();
         Party = gameObject.AddComponent<PartyManager>();
-
-        GameObject module = Instantiate(Resources.Load<GameObject>(UIModulePath));
-        module.transform.parent = transform;
     }
 
     private void SetFullscreenMode() {

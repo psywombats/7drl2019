@@ -2,28 +2,32 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
+using Coroutine = MoonSharp.Interpreter.Coroutine;
 
 // represents an runnable piece of Lua, usually from an event field
 public class LuaScript {
+    
+    protected LuaContext context;
 
-    private DynValue function;
+    public Coroutine scriptRoutine { get; private set;  }
+    public bool done { get; private set; }
 
-	public LuaScript(DynValue scriptFunction) {
-        this.function = scriptFunction;
+    public LuaScript(LuaContext context, string scriptString) {
+        this.context = context;
+
+        string fullScript = "return function()\n" + scriptString + "\nend";
+        this.scriptRoutine = context.CreateScript(fullScript);
     }
 
-    public void Run(Action callback = null) {
-        Global.Instance().Lua.RunScript(function, callback);
+    public LuaScript(LuaContext context, DynValue function) {
+        this.scriptRoutine = context.lua.CreateCoroutine(function).Coroutine;
     }
 
     public IEnumerator RunRoutine() {
-        bool done = false;
-        Run(() => {
-            done = true;
-        });
-        while (!done) {
-            yield return null;
-        }
+        done = false;
+        yield return context.RunRoutine(this);
+        done = true;
     }
 }

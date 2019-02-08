@@ -1,19 +1,19 @@
 ﻿using MoonSharp.Interpreter;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [MoonSharpUserData]
 public class LuaMapEvent {
 
-    public DynValue LuaValue { get; private set; }
+    public DynValue luaValue { get; private set; }
 
     private MapEvent mapEvent;
+    private LuaContext context;
 
-    public LuaMapEvent(DynValue value, MapEvent mapEvent) {
-        this.LuaValue = value;
+    public LuaMapEvent(MapEvent mapEvent) {
         this.mapEvent = mapEvent;
+        context = mapEvent.GetComponent<LuaContext>();
+        luaValue = context.CreateObject();
     }
 
     // meant to be called with the key/value of a lualike property on a Tiled object
@@ -21,29 +21,30 @@ public class LuaMapEvent {
     [MoonSharpHidden]
     public void Set(string name, string luaChunk) {
         if (luaChunk != null && luaChunk.Length > 0) {
-            LuaValue.Table.Set(name, Global.Instance().Lua.Load(luaChunk));
+            luaValue.Table.Set(name, context.Load(luaChunk));
         }
     }
 
     [MoonSharpHidden]
     public void Run(string eventName, Action callback = null) {
-        DynValue function = LuaValue.Table.Get(eventName);
+        DynValue function = luaValue.Table.Get(eventName);
         if (function == DynValue.Nil) {
             if (callback != null) {
                 callback();
             }
         } else {
-            Global.Instance().Lua.RunScript(function, callback);
+            LuaScript script = new LuaScript(context, function);
+            mapEvent.StartCoroutine(CoUtils.RunWithCallback(script.RunRoutine(), callback));
         }
     }
 
     [MoonSharpHidden]
     public DynValue Evaluate(string propertyName) {
-        DynValue function = LuaValue.Table.Get(propertyName);
+        DynValue function = luaValue.Table.Get(propertyName);
         if (function == DynValue.Nil) {
             return DynValue.Nil;
         } else {
-            return Global.Instance().Lua.Evaluate(function);
+            return context.Evaluate(function);
         }
     }
 
@@ -80,14 +81,14 @@ public class LuaMapEvent {
     }
 
     public void cs_pathTo(int x, int y) {
-        Global.Instance().Lua.RunRoutineFromLua(mapEvent.GetComponent<CharaEvent>().PathToRoutine(new IntVector2(x, y)));
+        context.RunRoutineFromLua(mapEvent.GetComponent<CharaEvent>().PathToRoutine(new IntVector2(x, y)));
     }
 
     public void cs_walk(string directionName, int count) {
-        Global.Instance().Lua.RunRoutineFromLua(mapEvent.GetComponent<MapEvent>().StepMultiRoutine(OrthoDirExtensions.Parse(directionName), count));
+       context.RunRoutineFromLua(mapEvent.GetComponent<MapEvent>().StepMultiRoutine(OrthoDirExtensions.Parse(directionName), count));
     }
 
     public void cs_step(string directionName) {
-        Global.Instance().Lua.RunRoutineFromLua(mapEvent.GetComponent<MapEvent>().StepRoutine(OrthoDirExtensions.Parse(directionName)));
+        context.RunRoutineFromLua(mapEvent.GetComponent<MapEvent>().StepRoutine(OrthoDirExtensions.Parse(directionName)));
     }
 }

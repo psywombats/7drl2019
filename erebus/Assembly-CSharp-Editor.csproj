@@ -60,14 +60,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Editor\AnimationPlayerEditor.cs" />
     <Compile Include="Assets\Editor\AudioImporter.cs" />
-    <Compile Include="Assets\Editor\BattleAnimationPlayerEditor.cs" />
+    <Compile Include="Assets\Editor\AutoExpandingScriptableDrawer.cs" />
     <Compile Include="Assets\Editor\BattleControllerEditor.cs" />
     <Compile Include="Assets\Editor\ClipInfo.cs" />
     <Compile Include="Assets\Editor\FontImporter.cs" />
     <Compile Include="Assets\Editor\GameEventImporter.cs" />
     <Compile Include="Assets\Editor\InstanceMultiControllerEditor.cs" />
     <Compile Include="Assets\Editor\MapCameraEditor.cs" />
+    <Compile Include="Assets\Editor\PolymorphicFieldEditor.cs" />
     <Compile Include="Assets\Editor\SpriteImporter.cs" />
     <Compile Include="Assets\Editor\StatSetDrawer.cs" />
     <Compile Include="Assets\Editor\TacticsCameraEditor.cs" />
