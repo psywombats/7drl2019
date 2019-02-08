@@ -15,7 +15,7 @@ public class DirectionCursor : MonoBehaviour, InputListener {
 
     public static DirectionCursor GetInstance() {
         GameObject prefab = Resources.Load<GameObject>(InstancePath);
-        return UnityEngine.Object.Instantiate<GameObject>(prefab).GetComponent<DirectionCursor>();
+        return Instantiate(prefab).GetComponent<DirectionCursor>();
     }
 
     public void OnEnable() {
