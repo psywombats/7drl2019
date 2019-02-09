@@ -163,7 +163,7 @@ public class BattleController : MonoBehaviour {
         
         while (!result.finished) {
             Result<OrthoDir> dirResult = new Result<OrthoDir>();
-            yield return dirCursor.AwaitSelectionRoutine(dirResult);
+            yield return dirCursor.AwaitSelectionRoutine(actingUnit.doll, dirResult);
             if (dirResult.canceled) {
                 if (canCancel) {
                     break;

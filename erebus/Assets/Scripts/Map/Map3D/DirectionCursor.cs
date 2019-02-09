@@ -10,7 +10,7 @@ public class DirectionCursor : MonoBehaviour, InputListener {
     private const string InstancePath = "Prefabs/Map3D/DirectionCursor";
 
     public OrthoDir currentDir;
-    private CharaEvent actor;
+    private BattleEvent actor;
     private Result<OrthoDir> awaitingSelect;
 
     public static DirectionCursor GetInstance() {
@@ -31,7 +31,8 @@ public class DirectionCursor : MonoBehaviour, InputListener {
         }
     }
 
-    public IEnumerator AwaitSelectionRoutine(Result<OrthoDir> result) {
+    public IEnumerator AwaitSelectionRoutine(BattleEvent actor, Result<OrthoDir> result) {
+        this.actor = actor;
         awaitingSelect = result;
         while (!awaitingSelect.finished) {
             yield return null;
@@ -71,7 +72,7 @@ public class DirectionCursor : MonoBehaviour, InputListener {
 
     private void SetDirection(OrthoDir dir) {
         currentDir = dir;
-        actor.facing = dir;
+        actor.GetComponent<CharaEvent>().facing = dir;
         GetComponent<MapEvent>().Position = actor.GetComponent<MapEvent>().Position + dir.XY();
         GetComponent<MapEvent>().SetScreenPositionToMatchTilePosition();
         TacticsCam.Instance().ManualUpdate();

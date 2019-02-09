@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using MoonSharp.Interpreter;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(LuaContext))]
 public class BattleAnimationPlayer : AnimationPlayer {
@@ -27,6 +28,16 @@ public class BattleAnimationPlayer : AnimationPlayer {
     }
 
     public override IEnumerator PlayAnimationRoutine() {
+        if (attacker == null || defender == null) {
+            foreach (Doll doll in FindObjectsOfType<Doll>()) {
+                if (doll.type == Doll.Type.Attacker) {
+                    attacker = doll;
+                } else if (doll.type == Doll.Type.Defender) {
+                    defender = doll;
+                }
+            }
+        }
+
         SetUpLua();
         attacker.PrepareForBattleAnimation(this, Doll.Type.Attacker);
         defender.PrepareForBattleAnimation(this, Doll.Type.Defender);

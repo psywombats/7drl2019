@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Tiled2Unity;
+﻿using Tiled2Unity;
 using UnityEngine;
 
 public class MapEvent3D : MapEvent {

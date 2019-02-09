@@ -1,8 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using MoonSharp.Interpreter;
-using System;
 
 [RequireComponent(typeof(CharaEvent))]
 [DisallowMultipleComponent]
@@ -10,25 +7,16 @@ public class DollTargetEvent : TiledInstantiated {
 
     public Doll doll;
 
-    private MapEvent _mapEvent;
-    public MapEvent mapEvent {
-        get {
-            if (_mapEvent == null) {
-                _mapEvent = GetComponent<MapEvent>();
-            }
-            return _mapEvent;
-        }
-    }
-
     public override void Populate(IDictionary<string, string> properties) {
-        GetComponent<CharaEvent>().gameObject.AddComponent<Doll>();
-        gameObject.AddComponent<AfterimageComponent>();
+        doll = GetComponent<CharaEvent>().doll.AddComponent<Doll>();
+        doll.gameObject.AddComponent<AfterimageComponent>();
+        doll.appearance = GetComponent<CharaEvent>().doll.GetComponent<SpriteRenderer>();
         switch (properties[MapEvent.PropertyTarget]) {
             case "attacker":
-                GetComponent<Doll>().type = Doll.Type.Attacker;
+                doll.type = Doll.Type.Attacker;
                 break;
             case "defender":
-                GetComponent<Doll>().type = Doll.Type.Defender;
+                doll.type = Doll.Type.Defender;
                 break;
             default:
                 Debug.Assert(false);

@@ -20,7 +20,7 @@ public class CharaEvent : MonoBehaviour {
     // Editor
     public OrthoDir initialFacing;
     public CharaAnimator animator;
-    public Doll doll;
+    public GameObject doll;
 
     // Public
     public Map parent { get { return GetComponent<MapEvent>().Parent; } }
@@ -53,11 +53,10 @@ public class CharaEvent : MonoBehaviour {
         }
         if (properties.ContainsKey(PropertySprite)) {
             if (GetComponent<MapEvent3D>() != null) {
-                GameObject dollObject = new GameObject("Doll");
-                doll = dollObject.AddComponent<Doll>();
-                dollObject.transform.parent = gameObject.transform;
-                dollObject.transform.localPosition = new Vector3(0.5f, 0.0f, -0.5f);
-                animator = dollObject.AddComponent<CharaAnimator>();
+                doll = new GameObject("Doll");
+                doll.transform.parent = gameObject.transform;
+                doll.transform.localPosition = new Vector3(0.5f, 0.0f, -0.5f);
+                animator = doll.AddComponent<CharaAnimator>();
                 animator.parentEvent = GetComponent<MapEvent>();
             } else {
                 animator = gameObject.AddComponent<CharaAnimator>();
