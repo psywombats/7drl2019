@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="2017.05.26" orientation="orthogonal" renderorder="right-down" width="33" height="27" tilewidth="16" tileheight="16" nextobjectid="16">
  <properties>
+  <property name="3d" value="true"/>
   <property name="displayLayer" value="duel"/>
   <property name="type" value="duel"/>
  </properties>

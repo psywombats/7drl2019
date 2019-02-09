@@ -18,7 +18,7 @@ namespace Tiled2Unity
     // Concentrates on the Xml file being imported
     partial class ImportTiled2Unity
     {
-        private readonly string MaterialShaderName = "Erebus/GlitchGeometryShader";
+        private readonly string Material3DShaderName = "Erebus/GlitchGeometryShader";
 
         // Called when Unity detects the *.tiled2unity.xml file needs to be (re)imported
         public void ImportBegin(string xmlPath, Tiled2Unity.ImportTiled2Unity importTiled2Unity)
@@ -109,9 +109,10 @@ namespace Tiled2Unity
                 keyColor = ImportUtils.GetAttributeAsColor(xml, "alphaColorKey");
                 shaderName += " Color Key";
             }
-            
-            // HAHA PSYCHE we're overriding this for erebus
-            shaderName = MaterialShaderName;
+
+            if (ImportUtils.GetAttributeAsBoolean(xml, "useErebus", false)) {
+                shaderName = Material3DShaderName;
+            }
 
             // Try creating the material with the right shader. Fall back to the built-in Sprites/Default shader if there's a problem.
             UnityEngine.Material material = null;

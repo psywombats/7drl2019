@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 2/9/2019 12:17:50 AM-->
+<!--Last exported: 2/9/2019 4:09:58 AM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="chip04d_castle" />
   <AssignMaterial mesh="mesh_0002" material="chip04d_castle" />
   <Prefab name="duel" orientation="Orthogonal" staggerAxis="Y" staggerIndex="Odd" hexSideLength="0" numLayers="2" numTilesWide="33" numTilesHigh="27" tileWidth="16" tileHeight="16" exportScale="0.0625" mapWidthInPixels="528" mapHeightInPixels="432" backgroundColor="#808080" resourcePath="Test/3D" sortingOrder="1">
+    <Property name="3d" value="true" />
     <Property name="displayLayer" value="duel" />
     <Property name="type" value="duel" />
     <TilesetFirstGid firstGid="1" tilesetName="debug_eris" />

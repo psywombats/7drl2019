@@ -52,15 +52,14 @@ public class CharaEvent : MonoBehaviour {
             facing = initialFacing;
         }
         if (properties.ContainsKey(PropertySprite)) {
+            doll = new GameObject("Doll");
+            doll.transform.parent = gameObject.transform;
             if (GetComponent<MapEvent3D>() != null) {
-                doll = new GameObject("Doll");
-                doll.transform.parent = gameObject.transform;
                 doll.transform.localPosition = new Vector3(0.5f, 0.0f, -0.5f);
-                animator = doll.AddComponent<CharaAnimator>();
-                animator.parentEvent = GetComponent<MapEvent>();
             } else {
-                animator = gameObject.AddComponent<CharaAnimator>();
+                doll.transform.localPosition = new Vector3(0.5f, -1.0f, 0.0f);
             }
+            animator = doll.AddComponent<CharaAnimator>();
             animator.SetSpriteByKey(properties[PropertySprite]);
             animator.Populate(properties);
         }

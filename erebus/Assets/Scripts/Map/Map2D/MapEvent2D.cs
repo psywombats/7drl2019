@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Tiled2Unity;
+﻿using Tiled2Unity;
 using UnityEngine;
 
 public class MapEvent2D : MapEvent {
@@ -15,8 +13,8 @@ public class MapEvent2D : MapEvent {
     }
 
     public override void SetScreenPositionToMatchTilePosition() {
-        // this is probably not correct with our new screenspace measurements
-        Vector2 transform = new Vector2(Map.TileSizePx, Map.TileSizePx);
+        // this is maybe not correct with our new screenspace measurements
+        Vector2 transform = new Vector2(1, 1);
         if (OrthoDir.East.X() != OrthoDir.East.Px2DX()) {
             transform.x = transform.x * -1;
         }
@@ -24,12 +22,6 @@ public class MapEvent2D : MapEvent {
             transform.y = transform.y * -1;
         }
         PositionPx2D = Vector2.Scale(Position, transform);
-        if (OrthoDir.East.X() != OrthoDir.East.Px2DX()) {
-            PositionPx2D = new Vector2(PositionPx.x - Map.TileSizePx, PositionPx.y);
-        }
-        if (OrthoDir.North.Y() != OrthoDir.North.Px2DY()) {
-            PositionPx2D = new Vector2(PositionPx.x, PositionPx.y - Map.TileSizePx);
-        }
     }
 
     protected override void SetDepth() {

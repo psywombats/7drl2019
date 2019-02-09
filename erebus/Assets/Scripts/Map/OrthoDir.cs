@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum OrthoDir {
-    [OrthoDirAttribute("North",     0,  1,  0,      0,  0,  1,      0, -1,      0)] North,
-    [OrthoDirAttribute("East",      1,  0,  0,      1,  0,  0,      1,  0,      1)] East,
-    [OrthoDirAttribute("South",     0, -1,  0,      0,  0, -1,      0,  1,      2)] South,
-    [OrthoDirAttribute("West",     -1,  0,  0,      -1, 0,  0,     -1,  0,      3)] West,
+    [OrthoDir("North",     0,  1,  0,      0,  0,  1,      0, -1,      0)] North,
+    [OrthoDir("East",      1,  0,  0,      1,  0,  0,      1,  0,      1)] East,
+    [OrthoDir("South",     0, -1,  0,      0,  0, -1,      0,  1,      2)] South,
+    [OrthoDir("West",     -1,  0,  0,      -1, 0,  0,     -1,  0,      3)] West,
 }
 
 public class OrthoDirAttribute : Attribute {
@@ -37,11 +35,11 @@ public class OrthoDirAttribute : Attribute {
             int px2DX, int px2DY, int px2DZ,
             int px3DX, int px3DY, int px3DZ,
             int dx, int dy, int ordinal) {
-        this.XY = new IntVector2(dx, dy);
-        this.Px2D = new IntVector3(px2DX, px2DY, px2DZ);
-        this.Px3D = new IntVector3(px3DX, px3DY, px3DZ);
-        this.Ordinal = ordinal;
-        this.DirectionName = directionName;
+        XY = new IntVector2(dx, dy);
+        Px2D = new IntVector3(px2DX, px2DY, px2DZ);
+        Px3D = new IntVector3(px3DX, px3DY, px3DZ);
+        Ordinal = ordinal;
+        DirectionName = directionName;
     }
 }
 

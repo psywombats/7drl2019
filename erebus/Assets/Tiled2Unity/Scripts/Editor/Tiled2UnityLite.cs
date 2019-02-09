@@ -1786,6 +1786,11 @@ namespace Tiled2Unity
                             xmlInternalTexture.SetAttributeValue("alphaColorKey", image.TransparentColor);
                         }
 
+                        if (tmxMap.Properties.GetPropertyValueAsBoolean("3d", false))
+                        {
+                            xmlInternalTexture.SetAttributeValue("useErebus", true);
+                        }
+
                         // Are we using depth shaders on our materials?
                         if (Tiled2Unity.Settings.DepthBufferEnabled)
                         {

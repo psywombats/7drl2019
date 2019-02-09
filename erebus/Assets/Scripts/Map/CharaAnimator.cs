@@ -9,11 +9,11 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class CharaAnimator : MonoBehaviour {
 
-    private const string DefaultMaterialPath = "Materials/SpriteDefault";
+    private const string DefaultMaterial2DPath = "Materials/Sprite2D";
+    private const string DefaultMaterial3DPath = "Materials/Sprite3D";
     private const string AlwaysAnimatesProperty = "step";
     private const float DesaturationDuration = 0.5f;
-
-    public MapEvent parentEvent = null;
+    
     public float desaturation = 0.0f;
     public bool alwaysAnimates = false;
     public bool dynamicFacing = false;
@@ -24,6 +24,8 @@ public class CharaAnimator : MonoBehaviour {
     private Vector3 preAnimLocalPosition;
     private OrthoDir preAnimFacing;
     private string preAnimSprite;
+
+    public MapEvent parentEvent { get { return transform.parent.GetComponent<MapEvent>(); } }
 
     public void Start() {
         lastPosition = gameObject.transform.position;
@@ -69,14 +71,19 @@ public class CharaAnimator : MonoBehaviour {
         RuntimeAnimatorController controller = Resources.Load<RuntimeAnimatorController>(controllerPath);
         GetComponent<Animator>().runtimeAnimatorController = controller;
 
-        GetComponent<SpriteRenderer>().material = Resources.Load<Material>(DefaultMaterialPath);
+        string path = parentEvent.GetComponent<MapEvent3D>() == null ? DefaultMaterial2DPath : DefaultMaterial3DPath;
+        GetComponent<SpriteRenderer>().material = Resources.Load<Material>(path);
 
         string spritePath = "Sprites/Charas/" + spriteName;
         Sprite[] sprites = Resources.LoadAll<Sprite>(spritePath);
-        foreach (Sprite sprite in sprites) {
-            if (sprite.name == spriteName + parentEvent.GetComponent<CharaEvent>().facing.DirectionName() + "Center") {
-                GetComponent<SpriteRenderer>().sprite = sprite;
-                break;
+        if (sprites == null) {
+            Debug.LogError("Unknown sprite " + spriteName);
+        } else {
+            foreach (Sprite sprite in sprites) {
+                if (sprite.name == spriteName + parentEvent.GetComponent<CharaEvent>().facing.DirectionName() + "Center") {
+                    GetComponent<SpriteRenderer>().sprite = sprite;
+                    break;
+                }
             }
         }
     }
