@@ -2,6 +2,7 @@
 using System.Collections;
 
 [RequireComponent(typeof(LuaContext))]
+[DisallowMultipleComponent]
 public class AnimationPlayer : MonoBehaviour {
     
     public AnimationTarget target;

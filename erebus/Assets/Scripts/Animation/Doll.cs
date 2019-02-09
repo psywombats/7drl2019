@@ -18,22 +18,14 @@ public class Doll : AnimationTarget {
 
     public Type type;
     public BattleAnimationPlayer player;
+    public CharaAnimator animator { get { return GetComponent<CharaAnimator>(); } }
+    public CharaEvent chara { get { return transform.parent.GetComponent<CharaEvent>(); } }
 
     private Vector3 originalDollPos;
 
-    private CharaAnimator _animator;
-    public CharaAnimator animator {
-        get {
-            if (_animator == null) {
-                _animator = GetComponent<CharaAnimator>();
-            }
-            return _animator;
-        }
-    }
-
     [MoonSharpHidden]
     public void ConfigureToBattler(BattleEvent battler) {
-        GetComponent<CharaEvent>().SetAppearance(battler.GetComponent<CharaEvent>().GetAppearance());
+        animator.SetSpriteByKey(battler.GetComponent<CharaEvent>().GetAppearance());
     }
 
     [MoonSharpHidden]

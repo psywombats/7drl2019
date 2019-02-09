@@ -18,6 +18,68 @@ public class DirectionCursor : MonoBehaviour, InputListener {
         return Instantiate(prefab).GetComponent<DirectionCursor>();
     }
 
+    // selects an adjacent unit to the actor (provided they meet the rule), cancelable
+    public IEnumerator SelectAdjacentUnitRoutine(Result<BattleUnit> result,
+                BattleUnit actingUnit,
+                Func<BattleUnit, bool> rule,
+                bool canCancel = true) {
+        List<OrthoDir> dirs = new List<OrthoDir>();
+        Map map = actingUnit.battle.controller.map;
+        foreach (OrthoDir dir in Enum.GetValues(typeof(OrthoDir))) {
+            IntVector2 loc = actingUnit.location + dir.XY();
+            BattleEvent doll = map.GetEventAt<BattleEvent>(map.LowestObjectLayer(), loc);
+            if (doll != null && rule(doll.unit)) {
+                dirs.Add(dir);
+            }
+        }
+        if (dirs.Count > 0) {
+            Result<OrthoDir> dirResult = new Result<OrthoDir>();
+            yield return SelectTargetDirRoutine(dirResult, actingUnit, dirs, canCancel);
+            IntVector2 loc = actingUnit.location + dirResult.value.XY();
+            result.value = map.GetEventAt<BattleEvent>(map.LowestObjectLayer(), loc).unit;
+        } else {
+            Debug.Assert(false, "No valid directions");
+            result.Cancel();
+        }
+    }
+
+    // selects a square to be targeted by the acting unit, might be canceled
+    public IEnumerator SelectTargetDirRoutine(Result<OrthoDir> result,
+            BattleUnit actingUnit,
+            List<OrthoDir> allowedDirs,
+            bool canCancel = true) {
+
+        gameObject.SetActive(true);
+        currentDir = allowedDirs[0];
+        actingUnit.controller.cursor.DisableReticules();
+
+        SelectionGrid grid = actingUnit.controller.SpawnSelectionGrid();
+        grid.ConfigureNewGrid(new IntVector2(3, 3), (IntVector2 loc) => {
+            return (loc.x + loc.y) % 2 == 1;
+        });
+        grid.GetComponent<MapEvent>().Position = actingUnit.location - new IntVector2(1, 1);
+        grid.GetComponent<MapEvent>().SetScreenPositionToMatchTilePosition();
+        GetComponent<MapEvent>().Position = actingUnit.location;
+        GetComponent<MapEvent>().SetScreenPositionToMatchTilePosition();
+
+        while (!result.finished) {
+            Result<OrthoDir> dirResult = new Result<OrthoDir>();
+            yield return AwaitSelectionRoutine(actingUnit.doll, dirResult);
+            if (dirResult.canceled) {
+                if (canCancel) {
+                    result.Cancel();
+                    break;
+                }
+            } else {
+                result.value = dirResult.value;
+            }
+        }
+
+        Destroy(grid.gameObject);
+        actingUnit.controller.cursor.EnableReticules();
+        gameObject.SetActive(false);
+    }
+
     public void OnEnable() {
         currentDir = OrthoDir.North;
         Global.Instance().Input.PushListener(this);
@@ -56,7 +118,7 @@ public class DirectionCursor : MonoBehaviour, InputListener {
                     AttemptSetDirection(OrthoDir.North);
                     break;
                 case InputManager.Command.Confirm:
-                    awaitingSelect.Value = currentDir;
+                    awaitingSelect.value = currentDir;
                     break;
                 case InputManager.Command.Cancel:
                     awaitingSelect.Cancel();

@@ -15,7 +15,7 @@ public class Cursor : MonoBehaviour, InputListener {
 
     public static Cursor GetInstance() {
         GameObject prefab = Resources.Load<GameObject>(InstancePath);
-        return UnityEngine.Object.Instantiate<GameObject>(prefab).GetComponent<Cursor>();
+        return Instantiate(prefab).GetComponent<Cursor>();
     }
 
     public void OnEnable() {
@@ -68,7 +68,7 @@ public class Cursor : MonoBehaviour, InputListener {
                         break;
                     case InputManager.Command.Confirm:
                         if (awaitingSelect != null) {
-                            awaitingSelect.Value = GetComponent<MapEvent>().Position;
+                            awaitingSelect.value = GetComponent<MapEvent>().Position;
                         }
                         break;
                     case InputManager.Command.Cancel:

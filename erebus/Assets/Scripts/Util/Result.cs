@@ -10,23 +10,23 @@ public class Result<T> {
     public bool finished { get; private set; }
     public bool canceled { get; private set; }
 
-    private T value;
-    public T Value {
+    private T _value;
+    public T value {
         get {
             Debug.Assert(!canceled, "Accessing canceled result");
             Debug.Assert(finished, "Accessing unset result");
-            return value;
+            return _value;
         }
         set {
             Debug.Assert(!finished, "Can only set result once");
-            this.value = value;
-            this.finished = true;
+            _value = value;
+            finished = true;
         }
     }
 
     public void Cancel() {
         Debug.Assert(!finished, "Can only set result once");
-        this.finished = true;
-        this.canceled = true;
+        finished = true;
+        canceled = true;
     }
 }

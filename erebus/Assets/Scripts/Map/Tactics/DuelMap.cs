@@ -34,8 +34,8 @@ public class DuelMap : MonoBehaviour {
     public void ConfigureForDuel(BattleEvent attacker, BattleEvent defender) {
         Attacker().ConfigureToBattler(attacker);
         Defender().ConfigureToBattler(defender);
-        Attacker().GetComponent<CharaEvent>().facing = OrthoDir.East;
-        Defender().GetComponent<CharaEvent>().facing = OrthoDir.West;
+        Attacker().chara.facing = OrthoDir.East;
+        Defender().chara.facing = OrthoDir.West;
         GetComponent<BattleAnimationPlayer>().attacker = Attacker();
         GetComponent<BattleAnimationPlayer>().defender = Defender();
     }

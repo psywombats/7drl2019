@@ -12,13 +12,20 @@ public class LuaContext : MonoBehaviour {
     private static readonly string DefinesPath = "Assets/Resources/Scripts/global_defines.lua";
     private static string defines;
 
-    public Script lua { get; private set; }
+    private Script _lua;
+    public Script lua {
+        get {
+            if (_lua == null) {
+                _lua = new Script();
+            }
+            return _lua;
+        }
+    }
 
     private LuaScript activeScript;
     private int blockingRoutines;
 
     public void Awake() {
-        lua = new Script();
         LoadDefines(DefinesPath);
         AssignGlobals();
     }

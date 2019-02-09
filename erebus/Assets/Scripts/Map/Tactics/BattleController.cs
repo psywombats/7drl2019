@@ -18,11 +18,11 @@ public class BattleController : MonoBehaviour {
 
     // all of these behaviors read + managed internally
     public Map map { get { return GetComponent<Map>(); } }
+    public Cursor cursor { get; private set; }
+    public DirectionCursor dirCursor { get; private set; }
 
     // internal state
     private Dictionary<BattleUnit, BattleEvent> dolls;
-    private Cursor cursor;
-    private DirectionCursor dirCursor;
 
     // === INITIALIZATION ==========================================================================
 
@@ -42,8 +42,8 @@ public class BattleController : MonoBehaviour {
 
     // this should take a battle memory at some point
     public void Setup(string battleKey) {
-        this.battle = Resources.Load<Battle>("Database/Battles/" + battleKey);
-        Debug.Assert(this.battle != null, "Unknown battle key " + battleKey);
+        battle = Resources.Load<Battle>("Database/Battles/" + battleKey);
+        Debug.Assert(battle != null, "Unknown battle key " + battleKey);
     }
 
     // === GETTERS AND BOOKKEEPING =================================================================
@@ -92,7 +92,7 @@ public class BattleController : MonoBehaviour {
             yield return SelectUnitRoutine(unitResult, (BattleUnit unit) => {
                 return unit.align == Alignment.Hero;
             }, false);
-            actingUnit = unitResult.Value;
+            actingUnit = unitResult.value;
             IntVector2 originalLocation = actingUnit.location;
 
             Result<IntVector2> moveResult = new Result<IntVector2>();
@@ -100,12 +100,12 @@ public class BattleController : MonoBehaviour {
             if (moveResult.canceled) {
                 continue;
             }
-            actingUnit.location = moveResult.Value;
-            yield return actingUnit.doll.GetComponent<CharaEvent>().PathToRoutine(moveResult.Value);
+            actingUnit.location = moveResult.value;
+            yield return actingUnit.doll.GetComponent<CharaEvent>().PathToRoutine(moveResult.value);
 
             // TODO: remove this nonsense
             Result<BattleUnit> targetedResult = new Result<BattleUnit>();
-            yield return SelectAdjacentUnitRoutine(targetedResult, actingUnit, (BattleUnit unit) => {
+            yield return dirCursor.SelectAdjacentUnitRoutine(targetedResult, actingUnit, (BattleUnit unit) => {
                 return unit.align == Alignment.Enemy;
             });
             if (targetedResult.canceled) {
@@ -113,7 +113,7 @@ public class BattleController : MonoBehaviour {
                 actingUnit.location = originalLocation;
                 break;
             }
-            BattleUnit targetUnit = targetedResult.Value;
+            BattleUnit targetUnit = targetedResult.value;
             targetUnit.doll.GetComponent<CharaEvent>().FaceToward(actingUnit.location);
 
             yield return Global.Instance().Maps.ActiveDuelMap.EnterMapRoutine(actingUnit.doll, targetUnit.doll);
@@ -136,68 +136,12 @@ public class BattleController : MonoBehaviour {
                 result.Cancel();
                 break;
             }
-            BattleUnit unit = GetUnitAt(locResult.Value);
+            BattleUnit unit = GetUnitAt(locResult.value);
             if (unit != null && rule(unit)) {
-                result.Value = unit;
+                result.value = unit;
             }
         }
         cursor.gameObject.SetActive(false);
-    }
-
-    // selects a square to be targeted by the acting unit, might be canceled
-    private IEnumerator SelectTargetDirRoutine(Result<OrthoDir> result,
-            BattleUnit actingUnit,
-            List<OrthoDir> allowedDirs,
-            bool canCancel = true) { 
-
-        dirCursor.gameObject.SetActive(true);
-        dirCursor.currentDir = allowedDirs[0];
-        cursor.DisableReticules();
-
-        SelectionGrid grid = SpawnSelectionGrid();
-        grid.ConfigureNewGrid(new IntVector2(3, 3), (IntVector2 loc) => {
-            return (loc.x + loc.y) % 2 == 1;
-        });
-        grid.GetComponent<MapEvent>().Position = actingUnit.location - new IntVector2(1, 1);
-        grid.GetComponent<MapEvent>().SetScreenPositionToMatchTilePosition();
-        
-        while (!result.finished) {
-            Result<OrthoDir> dirResult = new Result<OrthoDir>();
-            yield return dirCursor.AwaitSelectionRoutine(actingUnit.doll, dirResult);
-            if (dirResult.canceled) {
-                if (canCancel) {
-                    break;
-                }
-            } else {
-                result.Value = dirResult.Value;
-            }
-        }
-
-        Destroy(grid.gameObject);
-        cursor.EnableReticules();
-        dirCursor.gameObject.SetActive(false);
-    }
-
-    // selects an adjacent unit to the actor (provided they meet the rule), cancelable
-    private IEnumerator SelectAdjacentUnitRoutine(Result<BattleUnit> result,
-                BattleUnit actingUnit,
-                Func<BattleUnit, bool> rule, 
-                bool canCancel = true) {
-        List<OrthoDir> dirs = new List<OrthoDir>();
-        foreach (OrthoDir dir in Enum.GetValues(typeof(OrthoDir))) {
-            IntVector2 loc = actingUnit.location + dir.XY();
-            BattleEvent doll = map.GetEventAt<BattleEvent>(map.LowestObjectLayer(), loc);
-            if (doll != null && rule(doll.unit)) {
-                dirs.Add(dir);
-            }
-        }
-        if (dirs.Count > 0) {
-            Result<OrthoDir> dirResult = new Result<OrthoDir>();
-            yield return SelectTargetDirRoutine(dirResult, actingUnit, dirs, canCancel);
-        } else {
-            Debug.Assert(false, "No valid directions");
-            result.Cancel();
-        }
     }
 
     // selects a move location for the selected unit, might be canceled
@@ -221,8 +165,8 @@ public class BattleController : MonoBehaviour {
             if (locResult.canceled && canCancel) {
                 result.Cancel();
             } else {
-                if (rule(locResult.Value)) {
-                    result.Value = locResult.Value;
+                if (rule(locResult.value)) {
+                    result.value = locResult.value;
                 }
             }
         }
@@ -237,7 +181,7 @@ public class BattleController : MonoBehaviour {
         TacticsCam.Instance().SetTargetLocation(loc);
     }
 
-    private SelectionGrid SpawnSelectionGrid() {
+    public SelectionGrid SpawnSelectionGrid() {
         SelectionGrid grid = SelectionGrid.GetInstance();
         grid.gameObject.transform.parent = GetComponent<Map>().LowestObjectLayer().transform;
         return grid;

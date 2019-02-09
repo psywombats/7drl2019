@@ -145,6 +145,7 @@
     <Compile Include="Assets\Scripts\Serialization\Settings\SettingsDefaults.cs" />
     <Compile Include="Assets\Scripts\Serialization\SettingsMemory.cs" />
     <Compile Include="Assets\Scripts\Serialization\SystemMemory.cs" />
+    <Compile Include="Assets\Scripts\UI\UISprite.cs" />
     <Compile Include="Assets\Scripts\Util\CoUtils.cs" />
     <Compile Include="Assets\Scripts\Util\Dispatch.cs" />
     <Compile Include="Assets\Scripts\Util\EnumExtensions.cs" />

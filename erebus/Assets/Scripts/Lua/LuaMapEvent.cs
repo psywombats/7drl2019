@@ -29,9 +29,7 @@ public class LuaMapEvent {
     public void Run(string eventName, Action callback = null) {
         DynValue function = luaValue.Table.Get(eventName);
         if (function == DynValue.Nil) {
-            if (callback != null) {
-                callback();
-            }
+            callback?.Invoke();
         } else {
             LuaScript script = new LuaScript(context, function);
             mapEvent.StartCoroutine(CoUtils.RunWithCallback(script.RunRoutine(), callback));

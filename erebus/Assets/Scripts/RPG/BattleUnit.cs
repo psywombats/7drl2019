@@ -6,6 +6,7 @@ public class BattleUnit {
 
     public Unit unit { get; private set; }
     public Battle battle { get; private set; }
+    public BattleController controller { get { return battle.controller; } }
     public Alignment align { get { return unit.align; } }
     public IntVector2 location { get; set; }
     public bool hasActedThisTurn { get; private set; }
