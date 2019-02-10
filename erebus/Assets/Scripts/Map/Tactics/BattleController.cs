@@ -53,7 +53,7 @@ public class BattleController : MonoBehaviour {
     }
 
     public void AddUnitFromTiledEvent(BattleEvent doll, string unitKey) {
-        IntVector2 position = doll.GetComponent<MapEvent3D>().Position;
+        IntVector2 position = doll.GetComponent<MapEvent3D>().position;
         BattleUnit newUnit = battle.AddUnitFromKey(unitKey, position);
         doll.Setup(this, newUnit);
         dolls[newUnit] = doll;

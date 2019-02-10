@@ -23,8 +23,8 @@ public class CharaEvent : MonoBehaviour {
     public GameObject doll;
 
     // Public
-    public Map parent { get { return GetComponent<MapEvent>().Parent; } }
-    public ObjectLayer layer { get { return GetComponent<MapEvent>().Layer; } }
+    public Map parent { get { return GetComponent<MapEvent>().parent; } }
+    public ObjectLayer layer { get { return GetComponent<MapEvent>().layer; } }
 
     private OrthoDir internalFacing;
     public OrthoDir facing {
@@ -63,11 +63,11 @@ public class CharaEvent : MonoBehaviour {
             animator.SetSpriteByKey(properties[PropertySprite]);
             animator.Populate(properties);
         }
-        GetComponent<MapEvent>().Passable = false;
+        GetComponent<MapEvent>().passable = false;
     }
 
     public void FaceToward(IntVector2 pos) {
-        facing = OrthoDirExtensions.DirectionOf(pos - GetComponent<MapEvent>().Position);
+        facing = OrthoDirExtensions.DirectionOf(pos - GetComponent<MapEvent>().position);
     }
 
     public void SetAppearance(string spriteKey) {
@@ -82,7 +82,7 @@ public class CharaEvent : MonoBehaviour {
     // checks if the given location is passable for this character
     // takes into account both chip and event
     public bool CanPassAt(IntVector2 loc) {
-        if (!GetComponent<MapEvent>().SwitchEnabled) {
+        if (!GetComponent<MapEvent>().switchEnabled) {
             return true;
         }
 
@@ -101,7 +101,7 @@ public class CharaEvent : MonoBehaviour {
             yield break;
         }
         foreach (IntVector2 target in path) {
-            OrthoDir dir = OrthoDirExtensions.DirectionOf(target - GetComponent<MapEvent>().Position);
+            OrthoDir dir = OrthoDirExtensions.DirectionOf(target - GetComponent<MapEvent>().position);
             yield return StartCoroutine(GetComponent<MapEvent>().StepRoutine(dir));
         }
     }

@@ -12,6 +12,10 @@ public class MapCamera3D : MapCamera {
         lastFixedZ = transform.position.z;
     }
 
+    public void LateUpdate() {
+        ManualUpdate();
+    }
+
     public override void ManualUpdate() {
         base.ManualUpdate();
         if (FixedZ) {

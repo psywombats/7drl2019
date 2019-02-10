@@ -25,7 +25,7 @@ public class Map : TiledInstantiated {
     public int height { get { return size.y; } }
 
     public string bgmKey { get; private set; }
-    public String resourcePath { get { return GetComponent<TiledMap>().ResourcePath; } }
+    public string resourcePath { get { return GetComponent<TiledMap>().ResourcePath; } }
     public string fullName {
         get {
             string name = gameObject.name;
@@ -37,7 +37,7 @@ public class Map : TiledInstantiated {
     }
 
     // true if the tile at x,y has the x "impassable" property for pathfinding
-    private bool[,] passabilityXMap;
+    private Dictionary<TileLayer, bool[,]> passabilityXMap;
 
     public void Start() {
         // TODO: figure out loading
@@ -73,16 +73,19 @@ public class Map : TiledInstantiated {
     public bool IsChipPassableAt(TileLayer layer, IntVector2 loc) {
         TiledMap tiledMap = GetComponent<TiledMap>();
         if (passabilityXMap == null) {
-            passabilityXMap = new bool[width, height];
+            passabilityXMap = new Dictionary<TileLayer, bool[,]>();
+        }
+        if (!passabilityXMap.ContainsKey(layer)) {
+            passabilityXMap[layer] = new bool[width, height];
             for (int x = 0; x < width; x += 1) {
                 for (int y = 0; y < height; y += 1) {
                     TiledProperty property = tiledMap.GetPropertyForTile("x", layer, x, y);
-                    passabilityXMap[x, y] = (property == null) ? true : (property.GetStringValue() == "false");
+                    passabilityXMap[layer][x, y] = (property == null) ? true : (property.GetStringValue() == "false");
                 }
             }
         }
 
-        return passabilityXMap[loc.x, loc.y];
+        return passabilityXMap[layer][loc.x, loc.y];
     }
 
     // careful, this implementation is straight from MGNE, it's efficiency is questionable, to say the least
@@ -151,7 +154,7 @@ public class Map : TiledInstantiated {
         return FindPath(actor, to, width > height ? width : height);
     }
     public List<IntVector2> FindPath(CharaEvent actor, IntVector2 to, int maxPathLength) {
-        if (IntVector2.ManhattanDistance(actor.GetComponent<MapEvent>().Position, to) > maxPathLength) {
+        if (IntVector2.ManhattanDistance(actor.GetComponent<MapEvent>().position, to) > maxPathLength) {
             return null;
         }
         if (!actor.CanPassAt(to)) {
@@ -161,7 +164,7 @@ public class Map : TiledInstantiated {
         HashSet<IntVector2> visited = new HashSet<IntVector2>();
         List<List<IntVector2>> heads = new List<List<IntVector2>>();
         List<IntVector2> firstHead = new List<IntVector2>();
-        firstHead.Add(actor.GetComponent<MapEvent>().Position);
+        firstHead.Add(actor.GetComponent<MapEvent>().position);
         heads.Add(firstHead);
 
         while (heads.Count > 0) {

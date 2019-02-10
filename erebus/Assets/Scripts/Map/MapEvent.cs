@@ -28,33 +28,33 @@ public abstract class MapEvent : TiledInstantiated {
 
     // Editor properties
     public float tilesPerSecond = 2.0f;
-    public IntVector2 Position;
-    public bool Passable = true;
+    public IntVector2 position;
+    public bool passable = true;
     public string LuaCondition;
-    [TextArea(3, 6)] public string LuaOnInteract;
-    [TextArea(3, 6)] public string LuaOnCollide;
+    [TextArea(3, 6)] public string luaOnInteract;
+    [TextArea(3, 6)] public string luaOnCollide;
 
     // Properties
     public LuaMapEvent luaObject { get; private set; }
     public Vector3 targetPositionPx { get; set; }
     public bool tracking { get; private set; }
 
-    public Vector3 PositionPx {
+    public Vector3 positionPx {
         get { return transform.localPosition; }
         set { transform.localPosition = value; }
     }
 
     private Map _parent;
-    public Map Parent {
+    public Map parent {
         get {
             // this is wiped in update but we'll cache it across frames anyway
             if (_parent != null) {
                 return _parent;
             }
-            GameObject parent = gameObject;
-            while (parent.transform.parent != null) {
-                parent = parent.transform.parent.gameObject;
-                Map map = parent.GetComponent<Map>();
+            GameObject parentObject = gameObject;
+            while (parentObject.transform.parent != null) {
+                parentObject = parentObject.transform.parent.gameObject;
+                Map map = parentObject.GetComponent<Map>();
                 if (map != null) {
                     _parent = map;
                     return map;
@@ -64,29 +64,33 @@ public abstract class MapEvent : TiledInstantiated {
         }
     }
 
-    public ObjectLayer Layer {
+    private ObjectLayer _layer;
+    public ObjectLayer layer {
         get {
-            GameObject parent = gameObject;
-            do {
-                parent = parent.transform.parent.gameObject;
-                ObjectLayer layer = parent.GetComponent<ObjectLayer>();
-                if (layer != null) {
-                    return layer;
-                }
-            } while (parent.transform.parent != null);
-            return null;
+            if (_layer == null) {
+                GameObject parent = gameObject;
+                do {
+                    parent = parent.transform.parent.gameObject;
+                    ObjectLayer objLayer = parent.GetComponent<ObjectLayer>();
+                    if (objLayer != null) {
+                        _layer = objLayer;
+                        break;
+                    }
+                } while (parent.transform.parent != null);
+            }
+            return _layer;
         }
     }
 
     private int _layerIndex = -1;
-    public int LayerIndex {
+    public int layerIndex {
         get {
             // this is a perf optimization -- events can't change layer now
             if (_layerIndex != -1) {
                 return _layerIndex;
             }
-            for (int thisLayerIndex = 0; thisLayerIndex < Parent.transform.childCount; thisLayerIndex += 1) {
-                if (Parent.transform.GetChild(thisLayerIndex).gameObject.GetComponent<ObjectLayer>() == Layer) {
+            for (int thisLayerIndex = 0; thisLayerIndex < parent.transform.childCount; thisLayerIndex += 1) {
+                if (parent.transform.GetChild(thisLayerIndex).gameObject.GetComponent<ObjectLayer>() == layer) {
                     _layerIndex = thisLayerIndex;
                     return thisLayerIndex;
                 }
@@ -96,16 +100,16 @@ public abstract class MapEvent : TiledInstantiated {
         }
     }
 
-    private bool switchEnabled = true;
-    public bool SwitchEnabled {
+    private bool _switchEnabled = true;
+    public bool switchEnabled {
         get {
-            return switchEnabled;
+            return _switchEnabled;
         }
         set {
-            if (value != switchEnabled) {
+            if (value != _switchEnabled) {
                 GetComponent<Dispatch>().Signal(EventEnabled, value);
             }
-            switchEnabled = value;
+            _switchEnabled = value;
         }
     }
 
@@ -118,7 +122,7 @@ public abstract class MapEvent : TiledInstantiated {
 
     public override void Populate(IDictionary<string, string> properties) {
         gameObject.AddComponent<Dispatch>();
-        Position = new IntVector2(0, 0);
+        position = new IntVector2(0, 0);
         RectangleObject rect = GetComponent<RectangleObject>();
         SetInitialLocation(rect);
 
@@ -127,10 +131,10 @@ public abstract class MapEvent : TiledInstantiated {
             LuaCondition = properties[PropertyCondition];
         }
         if (properties.ContainsKey(PropertyCollide)) {
-            LuaOnCollide = properties[PropertyCollide];
+            luaOnCollide = properties[PropertyCollide];
         }
         if (properties.ContainsKey(PropertyInteract)) {
-            LuaOnInteract = properties[PropertyInteract];
+            luaOnInteract = properties[PropertyInteract];
         }
 
         // type assignment
@@ -149,8 +153,8 @@ public abstract class MapEvent : TiledInstantiated {
 
     public void Awake() {
         luaObject = new LuaMapEvent(this);
-        luaObject.Set(PropertyCollide, LuaOnCollide);
-        luaObject.Set(PropertyInteract, LuaOnInteract);
+        luaObject.Set(PropertyCollide, luaOnCollide);
+        luaObject.Set(PropertyInteract, luaOnInteract);
         luaObject.Set(PropertyCondition, LuaCondition);
     }
 
@@ -179,28 +183,26 @@ public abstract class MapEvent : TiledInstantiated {
     }
 
     public void CheckEnabled() {
-        SwitchEnabled = luaObject.EvaluateBool(PropertyCondition, true);
+        switchEnabled = luaObject.EvaluateBool(PropertyCondition, true);
     }
 
     public OrthoDir DirectionTo(MapEvent other) {
-        return OrthoDirExtensions.DirectionOf(other.Position - Position);
+        return OrthoDirExtensions.DirectionOf(other.position - position);
     }
 
     public bool IsPassableBy(CharaEvent chara) {
-        return Passable || !SwitchEnabled;
+        return passable || !switchEnabled;
     }
 
     public bool CanPassAt(IntVector2 loc) {
-        int thisLayerIndex = GetComponent<MapEvent>().LayerIndex;
+        if (loc.x < 0 || loc.x >= parent.width || loc.y < 0 || loc.y >= parent.height) {
+            return false;
+        }
+        int thisLayerIndex = GetComponent<MapEvent>().layerIndex;
         for (int i = thisLayerIndex - 1; i >= 0 && i >= thisLayerIndex - 2; i -= 1) {
-            TileLayer layer = Parent.transform.GetChild(i).GetComponent<TileLayer>();
-            if (loc.x < 0 || loc.x >= Parent.width || loc.y < 0 || loc.y >= Parent.height) {
+            TileLayer layer = parent.transform.GetChild(i).GetComponent<TileLayer>();
+            if (!parent.IsChipPassableAt(layer, loc)) {
                 return false;
-            }
-            if (layer != null) {
-                if (!Parent.IsChipPassableAt(layer, loc)) {
-                    return false;
-                }
             }
         }
 
@@ -209,17 +211,17 @@ public abstract class MapEvent : TiledInstantiated {
 
     public bool ContainsPosition(IntVector2 loc) {
         if (GetComponent<RectangleObject>() == null) {
-            return loc == Position;
+            return loc == position;
         }
-        IntVector2 pos1 = Position;
-        IntVector2 pos2 = Position;
+        IntVector2 pos1 = position;
+        IntVector2 pos2 = position;
         pos2.x += (int)((GetComponent<RectangleObject>().TmxSize.x / Map.TileSizePx) - 1);
         pos2.y += (int)((GetComponent<RectangleObject>().TmxSize.y / Map.TileSizePx) - 1);
         return loc.x >= pos1.x && loc.x <= pos2.x && loc.y >= pos1.y && loc.y <= pos2.y;
     }
 
     public void SetLocation(IntVector2 location) {
-        Position = location;
+        position = location;
         OnValidate();
     }
 
@@ -268,29 +270,22 @@ public abstract class MapEvent : TiledInstantiated {
             yield break;
         }
         tracking = true;
-
-        MapEvent mapEvent = GetComponent<MapEvent>();
-        mapEvent.Position += dir.XY();
-        targetPositionPx = mapEvent.CalculateOffsetPositionPx(dir);
+        
+        position += dir.XY();
+        targetPositionPx = CalculateOffsetPositionPx(dir);
         GetComponent<Dispatch>().Signal(EventMove, dir);
 
         while (true) {
             if (tilesPerSecond > 0) {
-                mapEvent.PositionPx = Vector3.MoveTowards(mapEvent.PositionPx, 
+                positionPx = Vector3.MoveTowards(positionPx, 
                     targetPositionPx, 
                     tilesPerSecond * Time.deltaTime);
             } else {
                 // indicates warp speed, cap'n
-                mapEvent.PositionPx = targetPositionPx;
-            }
-            
-
-            // TODO: ugly, I think we actually want to handle this via prefabs now
-            if (Global.Instance().Maps.Camera.target == GetComponent<MapEvent>()) {
-                Global.Instance().Maps.Camera.ManualUpdate();
+                positionPx = targetPositionPx;
             }
 
-            if (mapEvent.PositionPx == targetPositionPx) {
+            if (positionPx == targetPositionPx) {
                 tracking = false;
                 break;
             } else {

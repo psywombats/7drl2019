@@ -98,6 +98,9 @@ public class LuaContext : MonoBehaviour {
         lua.Globals["debugLog"] = (Action<DynValue>)DebugLog;
         lua.Globals["playSFX"] = (Action<DynValue>)PlaySFX;
         lua.Globals["cs_wait"] = (Action<DynValue>)Wait;
+        lua.Globals["getSwitch"] = (Func<DynValue, DynValue>)GetSwitch;
+        lua.Globals["setSwitch"] = (Action<DynValue, DynValue>)SetSwitch;
+        lua.Globals["eventNamed"] = (Func<DynValue, LuaMapEvent>)EventNamed;
     }
 
     protected void LoadDefines(string definesPath) {
@@ -107,6 +110,24 @@ public class LuaContext : MonoBehaviour {
     }
 
     // === LUA CALLABLE ============================================================================
+
+    private LuaMapEvent EventNamed(DynValue eventName) {
+        MapEvent mapEvent = Global.Instance().Maps.ActiveMap.GetEventNamed(eventName.String);
+        if (mapEvent == null) {
+            return null;
+        } else {
+            return mapEvent.luaObject;
+        }
+    }
+
+    private DynValue GetSwitch(DynValue switchName) {
+        bool value = Global.Instance().Memory.GetSwitch(switchName.String);
+        return Marshal(value);
+    }
+
+    private void SetSwitch(DynValue switchName, DynValue value) {
+        Global.Instance().Memory.SetSwitch(switchName.String, value.Boolean);
+    }
 
     private void DebugLog(DynValue message) {
         Debug.Log(message.CastToString());

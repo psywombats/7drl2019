@@ -57,9 +57,9 @@ public class DirectionCursor : MonoBehaviour, InputListener {
         grid.ConfigureNewGrid(new IntVector2(3, 3), (IntVector2 loc) => {
             return (loc.x + loc.y) % 2 == 1;
         });
-        grid.GetComponent<MapEvent>().Position = actingUnit.location - new IntVector2(1, 1);
+        grid.GetComponent<MapEvent>().position = actingUnit.location - new IntVector2(1, 1);
         grid.GetComponent<MapEvent>().SetScreenPositionToMatchTilePosition();
-        GetComponent<MapEvent>().Position = actingUnit.location;
+        GetComponent<MapEvent>().position = actingUnit.location;
         GetComponent<MapEvent>().SetScreenPositionToMatchTilePosition();
 
         while (!result.finished) {
@@ -135,7 +135,7 @@ public class DirectionCursor : MonoBehaviour, InputListener {
     private void SetDirection(OrthoDir dir) {
         currentDir = dir;
         actor.GetComponent<CharaEvent>().facing = dir;
-        GetComponent<MapEvent>().Position = actor.GetComponent<MapEvent>().Position + dir.XY();
+        GetComponent<MapEvent>().position = actor.GetComponent<MapEvent>().position + dir.XY();
         GetComponent<MapEvent>().SetScreenPositionToMatchTilePosition();
         TacticsCam.Instance().ManualUpdate();
     }

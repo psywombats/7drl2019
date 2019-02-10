@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="lower" tilewidth="16" tileheight="16">
+<tileset name="lower" tilewidth="16" tileheight="16" tilecount="175" columns="7">
  <image source="lower2.PNG" width="112" height="400"/>
  <tile id="3">
   <properties>

@@ -34,7 +34,7 @@ public class BattleEvent : TiledInstantiated {
     }
 
     public void OnEnable() {
-        BattleController controller = GetComponent<MapEvent3D>().Parent.GetComponent<BattleController>();
+        BattleController controller = GetComponent<MapEvent3D>().parent.GetComponent<BattleController>();
         controller.AddUnitFromTiledEvent(this, unitKey);
     }
 

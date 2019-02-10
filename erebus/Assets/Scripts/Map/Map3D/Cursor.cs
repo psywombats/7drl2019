@@ -68,7 +68,7 @@ public class Cursor : MonoBehaviour, InputListener {
                         break;
                     case InputManager.Command.Confirm:
                         if (awaitingSelect != null) {
-                            awaitingSelect.value = GetComponent<MapEvent>().Position;
+                            awaitingSelect.value = GetComponent<MapEvent>().position;
                         }
                         break;
                     case InputManager.Command.Cancel:
@@ -86,7 +86,7 @@ public class Cursor : MonoBehaviour, InputListener {
         if (Time.fixedTime - lastStepTime < minTimeBetweenMoves) {
             return true;
         }
-        IntVector2 target = GetComponent<MapEvent>().Position + dir.XY();
+        IntVector2 target = GetComponent<MapEvent>().position + dir.XY();
         if (GetComponent<MapEvent>().CanPassAt(target)) {
             StartCoroutine(GetComponent<MapEvent>().StepRoutine(dir));
             lastStepTime = Time.fixedTime;

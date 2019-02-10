@@ -97,8 +97,8 @@ public class TacticsCam : MapCamera {
     }
 
     public IEnumerator SwitchToDuelCamRoutine(MapEvent target1, MapEvent target2) {
-        Vector3 targetWorld1 = MapEvent3D.TileToWorldCoords(target1.Position);
-        Vector3 targetWorld2 = MapEvent3D.TileToWorldCoords(target2.Position);
+        Vector3 targetWorld1 = MapEvent3D.TileToWorldCoords(target1.position);
+        Vector3 targetWorld2 = MapEvent3D.TileToWorldCoords(target2.position);
         float angle = Mathf.Atan2(targetWorld1.x - targetWorld2.x, targetWorld1.z - targetWorld2.z);
         angle = angle / 2.0f / Mathf.PI * 360.0f;
         angle += 90.0f;
@@ -128,7 +128,7 @@ public class TacticsCam : MapCamera {
 
     private void CopyTargetPosition() {
         if (target != null) {
-            targetDollyPosition = MapEvent3D.TileToWorldCoords(target.Position);
+            targetDollyPosition = MapEvent3D.TileToWorldCoords(target.position);
         }
         targetCamPosition = PositionForAngleDist();
         targetCamAngles = new Vector3(targetAngles.x, 0.0f, 0.0f);

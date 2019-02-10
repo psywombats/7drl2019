@@ -8,13 +8,13 @@ public class MapEvent3D : MapEvent {
     }
 
     public override Vector3 CalculateOffsetPositionPx(OrthoDir dir) {
-        return PositionPx + dir.Px3D();
+        return positionPx + dir.Px3D();
     }
 
     public override void SetScreenPositionToMatchTilePosition() {
         // this is not correct for all OrthoDir 3DPX setups
         float y = transform.localPosition.y;
-        transform.localPosition = TileToWorldCoords(Position);
+        transform.localPosition = TileToWorldCoords(position);
         transform.localPosition = new Vector3(transform.localPosition.x, y, transform.localPosition.z);
     }
     
@@ -25,7 +25,7 @@ public class MapEvent3D : MapEvent {
 
     protected override void SetInitialLocation(RectangleObject rect) {
         if (rect != null) {
-            Position.Set((int)rect.TmxPosition.x / Map.TileSizePx, (int)rect.TmxPosition.y / Map.TileSizePx);
+            position.Set((int)rect.TmxPosition.x / Map.TileSizePx, (int)rect.TmxPosition.y / Map.TileSizePx);
         }
     }
 }

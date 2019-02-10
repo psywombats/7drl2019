@@ -1,8 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MapCamera2D : MapCamera {
+
+    public void LateUpdate() {
+        ManualUpdate();
+    }
 
     public override void ManualUpdate() {
         base.ManualUpdate();

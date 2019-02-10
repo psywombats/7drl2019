@@ -80,14 +80,14 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
         Assert.IsNotNull(ActiveMap);
         Map newMapInstance = InstantiateMap(mapName);
         MapEvent target = newMapInstance.GetEventNamed(targetEventName);
-        RawTeleport(newMapInstance, target.Position);
+        RawTeleport(newMapInstance, target.position);
     }
 
     private void RawTeleport(Map map, IntVector2 location) {
         Assert.IsNotNull(ActiveMap);
         Assert.IsNotNull(Avatar);
 
-        int layerIndex = Avatar.GetComponent<MapEvent>().LayerIndex;
+        int layerIndex = Avatar.GetComponent<MapEvent>().layerIndex;
         Avatar.transform.parent = null;
         Layer parentLayer = map.LayerAtIndex(layerIndex);
         Avatar.transform.parent = parentLayer.gameObject.transform;
