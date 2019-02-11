@@ -164,7 +164,7 @@ namespace Tiled2Unity
             // Make sure file is not readonly
             if ((info.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
             {
-                throw new UnityException(String.Format("{0} is read-only", path));
+                //throw new UnityException(String.Format("{0} is read-only", path));
             }
         }
 

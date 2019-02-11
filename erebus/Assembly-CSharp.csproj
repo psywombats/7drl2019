@@ -195,6 +195,7 @@
     <None Include="Assets\Tiled2Unity\Textures\_ReadMe.txt" />
     <None Include="Assets\Resources\Shaders\TransitionShader.shader" />
     <None Include="Assets\Resources\Shaders\GlitchSpriteShader.shader" />
+    <None Include="Assets\Tiled2Unity\Imported\Test\icthyotest.tiled2unity.xml" />
     <None Include="Assets\Tiled2Unity\Imported\Test\Testmap01.tiled2unity.xml" />
     <None Include="Assets\Tiled2Unity\Shaders\shaColorKey.shader" />
     <None Include="Assets\Tiled2Unity\Shaders\shaDepthColorKey.shader" />
