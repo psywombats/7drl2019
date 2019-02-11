@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 /**
  * MGNE's big map class, now in MGNE2. Converted from Tiled and now to unity maps.
@@ -12,23 +13,24 @@ public class Map : MonoBehaviour {
 
     public IntVector2 size;
     public string fullName;
-    public int width { get { return size.x; } }
-    public int height { get { return size.y; } }
+    public List<Tilemap> layers;
 
     public string bgmKey { get; private set; }
-    
 
     // true if the tile at x,y has the x "impassable" property for pathfinding
-    private Dictionary<TileLayer, bool[,]> passabilityXMap;
+    private Dictionary<Tilemap, bool[,]> passabilityXMap;
+
+    public int width { get { return size.x; } }
+    public int height { get { return size.y; } }
 
     public void Start() {
         // TODO: figure out loading
         Global.Instance().Maps.ActiveMap = this;
     }
 
-    public bool IsChipPassableAt(TileLayer layer, IntVector2 loc) {
+    public bool IsChipPassableAt(Tilemap layer, IntVector2 loc) {
         if (passabilityXMap == null) {
-            passabilityXMap = new Dictionary<TileLayer, bool[,]>();
+            passabilityXMap = new Dictionary<Tilemap, bool[,]>();
         }
         if (!passabilityXMap.ContainsKey(layer)) {
             passabilityXMap[layer] = new bool[width, height];
@@ -76,8 +78,8 @@ public class Map : MonoBehaviour {
         return GetComponentsInChildren<ObjectLayer>()[0];
     }
 
-    public TileLayer TileLayerAtIndex(int layerIndex) {
-        return GetComponentsInChildren<TileLayer>()[layerIndex];
+    public Tilemap TileLayerAtIndex(int layerIndex) {
+        return GetComponentsInChildren<Tilemap>()[layerIndex];
     }
 
     public MapEvent GetEventNamed(string eventName) {

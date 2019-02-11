@@ -106,7 +106,7 @@ public class InputManager : MonoBehaviour {
 
     public void PushListener(string id, Func<Command, Event, bool> responder) {
         InputListener listener = new AnonymousListener(responder);
-        this.anonymousListeners[id] = listener;
+        anonymousListeners[id] = listener;
         PushListener(listener);
     }
     public void PushListener(InputListener listener) {

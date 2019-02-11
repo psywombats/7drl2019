@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Tilemaps;
 
 /**
  * The generic "thing on the map" class for MGNE2. Usually comes from Tiled.
@@ -159,7 +160,7 @@ public abstract class MapEvent : MonoBehaviour {
         }
         int thisLayerIndex = GetComponent<MapEvent>().layerIndex;
         for (int i = thisLayerIndex - 1; i >= 0 && i >= thisLayerIndex - 2; i -= 1) {
-            TileLayer layer = parent.transform.GetChild(i).GetComponent<TileLayer>();
+            Tilemap layer = parent.transform.GetChild(i).GetComponent<Tilemap>();
             if (!parent.IsChipPassableAt(layer, loc)) {
                 return false;
             }

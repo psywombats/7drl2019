@@ -46,7 +46,7 @@ internal sealed class SpriteImporter : AssetPostprocessor {
                 int stepCount = textureSize.x == 32 ? 2 : 3;
                 int charaWidth = textureSize.x / stepCount;
                 int charaHeight = textureSize.y / 4;
-                importer.spritePixelsPerUnit = charaWidth;
+                //importer.spritePixelsPerUnit = charaWidth;
                 importer.spriteImportMode = SpriteImportMode.Multiple;
                 importer.spritePivot = new Vector2(charaWidth / 2, Map.TileSizePx / 2);
                 importer.spritesheet = new SpriteMetaData[stepCount * 4];
