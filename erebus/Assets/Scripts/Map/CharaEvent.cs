@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Tiled2Unity;
 using UnityEngine;
 using System;
 
@@ -13,9 +12,6 @@ using System;
 public class CharaEvent : MonoBehaviour {
 
     public static readonly string FaceEvent = "eventFace";
-
-    private static readonly string PropertySprite = "sprite";
-    private static readonly string PropertyFacing = "face";
 
     // Editor
     public OrthoDir initialFacing;
@@ -44,26 +40,6 @@ public class CharaEvent : MonoBehaviour {
         GetComponent<Dispatch>().RegisterListener(MapEvent.EventMove, (object payload) => {
             facing = (OrthoDir)payload;
         });
-    }
-
-    public void Populate(IDictionary<string, string> properties) {
-        if (properties.ContainsKey(PropertyFacing)) {
-            initialFacing = OrthoDirExtensions.Parse(properties[PropertyFacing]);
-            facing = initialFacing;
-        }
-        if (properties.ContainsKey(PropertySprite)) {
-            doll = new GameObject("Doll");
-            doll.transform.parent = gameObject.transform;
-            if (GetComponent<MapEvent3D>() != null) {
-                doll.transform.localPosition = new Vector3(0.5f, 0.0f, -0.5f);
-            } else {
-                doll.transform.localPosition = new Vector3(0.5f, -1.0f, 0.0f);
-            }
-            animator = doll.AddComponent<CharaAnimator>();
-            animator.SetSpriteByKey(properties[PropertySprite]);
-            animator.Populate(properties);
-        }
-        GetComponent<MapEvent>().passable = false;
     }
 
     public void FaceToward(IntVector2 pos) {

@@ -1,5 +1,4 @@
-﻿using Tiled2Unity;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MapEvent3D : MapEvent {
 
@@ -21,11 +20,5 @@ public class MapEvent3D : MapEvent {
     protected override void SetDepth() {
         // our global height is identical to the height of the parent layer
         transform.localPosition = new Vector3(gameObject.transform.localPosition.x, 0.0f, gameObject.transform.localPosition.z);
-    }
-
-    protected override void SetInitialLocation(RectangleObject rect) {
-        if (rect != null) {
-            position.Set((int)rect.TmxPosition.x / Map.TileSizePx, (int)rect.TmxPosition.y / Map.TileSizePx);
-        }
     }
 }

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Tiled2Unity;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
-using Object = UnityEngine.Object;
 
 public class MapManager : MonoBehaviour, MemoryPopulater {
 
@@ -84,25 +80,26 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
     }
 
     private void RawTeleport(Map map, IntVector2 location) {
-        Assert.IsNotNull(ActiveMap);
-        Assert.IsNotNull(Avatar);
+        // TODO: tiled replacement
+        //Assert.IsNotNull(ActiveMap);
+        //Assert.IsNotNull(Avatar);
 
-        int layerIndex = Avatar.GetComponent<MapEvent>().layerIndex;
-        Avatar.transform.parent = null;
-        Layer parentLayer = map.LayerAtIndex(layerIndex);
-        Avatar.transform.parent = parentLayer.gameObject.transform;
+        //int layerIndex = Avatar.GetComponent<MapEvent>().layerIndex;
+        //Avatar.transform.parent = null;
+        //Layer parentLayer = map.LayerAtIndex(layerIndex);
+        //Avatar.transform.parent = parentLayer.gameObject.transform;
 
-        ActiveMap.OnTeleportAway();
-        Object.Destroy(ActiveMap.gameObject);
-        ActiveMap = map;
-        ActiveMap.OnTeleportTo();
-        Avatar.GetComponent<MapEvent>().SetLocation(location);
+        //ActiveMap.OnTeleportAway();
+        //Object.Destroy(ActiveMap.gameObject);
+        //ActiveMap = map;
+        //ActiveMap.OnTeleportTo();
+        //Avatar.GetComponent<MapEvent>().SetLocation(location);
     }
 
     private Map InstantiateMap(string mapName) {
         GameObject newMapObject = null;
         if (ActiveMap != null) {
-            string localPath = ActiveMap.resourcePath + "/" + mapName;
+            string localPath = Map.ResourcePath + mapName;
             newMapObject = Resources.Load<GameObject>(localPath);
         }
         if (newMapObject == null) {
@@ -113,7 +110,7 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
     }
 
     private void AddInitialAvatar(Memory memory = null) {
-        Avatar = Instantiate<GameObject>(Resources.Load<GameObject>("Prefabs/Map3D/Avatar3D")).GetComponent<AvatarEvent>();
+        Avatar = Instantiate(Resources.Load<GameObject>("Prefabs/Map3D/Avatar3D")).GetComponent<AvatarEvent>();
         if (memory != null) {
             Avatar.PopulateFromMemory(memory);
         }

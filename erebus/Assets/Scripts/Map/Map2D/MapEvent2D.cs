@@ -1,5 +1,4 @@
-﻿using Tiled2Unity;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MapEvent2D : MapEvent {
 
@@ -31,12 +30,6 @@ public class MapEvent2D : MapEvent {
         if (parent != null) {
             float z = DepthForPosition(position);
             gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, z);
-        }
-    }
-
-    protected override void SetInitialLocation(RectangleObject rect) {
-        if (rect != null) {
-            position.Set((int)rect.TmxPosition.x / Map.TileSizePx, (int)rect.TmxPosition.y / Map.TileSizePx);
         }
     }
 

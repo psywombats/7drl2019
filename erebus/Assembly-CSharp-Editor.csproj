@@ -66,30 +66,12 @@
     <Compile Include="Assets\Editor\BattleControllerEditor.cs" />
     <Compile Include="Assets\Editor\ClipInfo.cs" />
     <Compile Include="Assets\Editor\FontImporter.cs" />
-    <Compile Include="Assets\Editor\GameEventImporter.cs" />
     <Compile Include="Assets\Editor\InstanceMultiControllerEditor.cs" />
     <Compile Include="Assets\Editor\MapCameraEditor.cs" />
     <Compile Include="Assets\Editor\PolymorphicFieldEditor.cs" />
     <Compile Include="Assets\Editor\SpriteImporter.cs" />
     <Compile Include="Assets\Editor\StatSetDrawer.cs" />
     <Compile Include="Assets\Editor\TacticsCameraEditor.cs" />
-    <Compile Include="Assets\Editor\TiledImporter.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\CustomTiledImporterAttribute.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ICustomTiledImporter.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportTiled2Unity.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportTiled2Unity.Material.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportTiled2Unity.Mesh.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportTiled2Unity.Prefab.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportTiled2Unity.Texture.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportTiled2Unity.tmx.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportTiled2Unity.Tsx.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportTiled2Unity.Xml.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ImportUtils.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\SortingLayerExposedEditor.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\SpriteDepthInMapEditor.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\Tiled2UnityLite.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\Tiled2UnityMenuItems.cs" />
-    <Compile Include="Assets\Tiled2Unity\Scripts\Editor\TiledAssetPostProcessor.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>C:/Users/aking_2/erebus/erebus/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
@@ -338,9 +320,6 @@
     </Reference>
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/15.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Drawing">
-      <HintPath>C:/Users/aking_2/erebus/erebus/Assets/Tiled2Unity/Scripts/Editor/System/DLL/System.Drawing.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.Advertisements">
       <HintPath>C:/Users/aking_2/erebus/erebus/Library/PackageCache/com.unity.ads@2.0.8/Editor/UnityEditor.Advertisements.dll</HintPath>

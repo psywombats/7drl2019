@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using Tiled2Unity;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -11,20 +9,16 @@ using UnityEngine.Assertions;
 [RequireComponent(typeof(Dispatch))]
 [RequireComponent(typeof(LuaContext))]
 [DisallowMultipleComponent]
-public abstract class MapEvent : TiledInstantiated {
+public abstract class MapEvent : MonoBehaviour {
     
-    public const string EventEnabled = "enabled";
-    public const string EventCollide = "collide";
-    public const string EventInteract = "interact";
-    public const string EventMove = "move";
-
-    public const string PropertyUnit = "unit";
-    public const string PropertyTarget = "target";
     private const string PropertyCondition = "show";
     private const string PropertyInteract = "onInteract";
     private const string PropertyCollide = "onCollide";
 
-    private static readonly string TypeChara = "Character";
+    public const string EventEnabled = "enabled";
+    public const string EventCollide = "collide";
+    public const string EventInteract = "interact";
+    public const string EventMove = "move";
 
     // Editor properties
     public float tilesPerSecond = 2.0f;
@@ -113,43 +107,8 @@ public abstract class MapEvent : TiledInstantiated {
         }
     }
 
-    // public abstract
-
     // if we moved in this direction, where in screenspace would we end up?
     public abstract Vector3 CalculateOffsetPositionPx(OrthoDir dir);
-
-    // public
-
-    public override void Populate(IDictionary<string, string> properties) {
-        gameObject.AddComponent<Dispatch>();
-        position = new IntVector2(0, 0);
-        RectangleObject rect = GetComponent<RectangleObject>();
-        SetInitialLocation(rect);
-
-        // lua junk
-        if (properties.ContainsKey(PropertyCondition)) {
-            LuaCondition = properties[PropertyCondition];
-        }
-        if (properties.ContainsKey(PropertyCollide)) {
-            luaOnCollide = properties[PropertyCollide];
-        }
-        if (properties.ContainsKey(PropertyInteract)) {
-            luaOnInteract = properties[PropertyInteract];
-        }
-
-        // type assignment
-        if (GetComponent<RuntimeTmxObject>().TmxType == TypeChara && GetComponent<CharaEvent>() == null) {
-            gameObject.AddComponent<CharaEvent>().Populate(properties);
-        }
-        if (properties.ContainsKey(PropertyUnit) && GetComponent<BattleEvent>() == null) {
-            gameObject.AddComponent<BattleEvent>().Populate(properties);
-        }
-        if (properties.ContainsKey(PropertyTarget) && GetComponent<DollTargetEvent>() == null) {
-            gameObject.AddComponent<DollTargetEvent>().Populate(properties);
-        }
-
-        SetDepth();
-    }
 
     public void Awake() {
         luaObject = new LuaMapEvent(this);
@@ -210,14 +169,16 @@ public abstract class MapEvent : TiledInstantiated {
     }
 
     public bool ContainsPosition(IntVector2 loc) {
-        if (GetComponent<RectangleObject>() == null) {
-            return loc == position;
-        }
-        IntVector2 pos1 = position;
-        IntVector2 pos2 = position;
-        pos2.x += (int)((GetComponent<RectangleObject>().TmxSize.x / Map.TileSizePx) - 1);
-        pos2.y += (int)((GetComponent<RectangleObject>().TmxSize.y / Map.TileSizePx) - 1);
-        return loc.x >= pos1.x && loc.x <= pos2.x && loc.y >= pos1.y && loc.y <= pos2.y;
+        // TODO: tiled replacement
+        return false;
+        //if (GetComponent<RectangleObject>() == null) {
+        //    return loc == position;
+        //}
+        //IntVector2 pos1 = position;
+        //IntVector2 pos2 = position;
+        //pos2.x += (int)((GetComponent<RectangleObject>().TmxSize.x / Map.TileSizePx) - 1);
+        //pos2.y += (int)((GetComponent<RectangleObject>().TmxSize.y / Map.TileSizePx) - 1);
+        //return loc.x >= pos1.x && loc.x <= pos2.x && loc.y >= pos1.y && loc.y <= pos2.y;
     }
 
     public void SetLocation(IntVector2 location) {
@@ -230,9 +191,6 @@ public abstract class MapEvent : TiledInstantiated {
 
     // set the one xyz coordinate not controlled by arrow keys
     protected abstract void SetDepth();
-
-    // set the initial place we start in from Tiled
-    protected abstract void SetInitialLocation(RectangleObject rect);
 
     // called when the avatar stumbles into us
     // before the step if impassable, after if passable

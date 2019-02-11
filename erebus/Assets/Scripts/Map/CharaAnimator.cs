@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using Tiled2Unity;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
@@ -57,12 +55,6 @@ public class CharaAnimator : MonoBehaviour {
 
     public void OnValidate() {
         CopyShaderValues();
-    }
-
-    public void Populate(IDictionary<string, string> properties) {
-        if (properties.ContainsKey(AlwaysAnimatesProperty)) {
-            alwaysAnimates = true;
-        }
     }
 
     public void SetSpriteByKey(string spriteName) {

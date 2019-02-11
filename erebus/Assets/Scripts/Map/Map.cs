@@ -1,40 +1,22 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using Tiled2Unity;
 using UnityEngine;
 
 /**
- * MGNE's big map class, now in MGNE2. Converted from Tiled.
+ * MGNE's big map class, now in MGNE2. Converted from Tiled and now to unity maps.
  */
-[RequireComponent(typeof(TiledMap))]
-public class Map : TiledInstantiated {
+public class Map : MonoBehaviour {
 
-    private const string PropertyBGM = "bgm";
-    private const string PropertyBattle = "battle";
-    private const string PropertyLayer = "displayLayer";
-    private const string PropertyType = "type";
-
-    private const string TypeDuel = "duel";
-
+    public const string ResourcePath = "Maps/";
     public const int TileSizePx = 16;
 
     public IntVector2 size;
-    public string displayLayer;
+    public string fullName;
     public int width { get { return size.x; } }
     public int height { get { return size.y; } }
 
     public string bgmKey { get; private set; }
-    public string resourcePath { get { return GetComponent<TiledMap>().ResourcePath; } }
-    public string fullName {
-        get {
-            string name = gameObject.name;
-            if (name.EndsWith("(Clone)")) {
-                name = name.Substring(0, name.Length - "(Clone)".Length);
-            }
-            return resourcePath + "/" + name;
-        }
-    }
+    
 
     // true if the tile at x,y has the x "impassable" property for pathfinding
     private Dictionary<TileLayer, bool[,]> passabilityXMap;
@@ -44,34 +26,7 @@ public class Map : TiledInstantiated {
         Global.Instance().Maps.ActiveMap = this;
     }
 
-    public override void Populate(IDictionary<string, string> properties) {
-        TiledMap tiled = GetComponent<TiledMap>();
-        size = new IntVector2(tiled.NumTilesWide, tiled.NumTilesHigh);
-
-        if (properties.ContainsKey(PropertyBGM)) {
-            bgmKey = properties[PropertyBGM];
-        }
-        if (properties.ContainsKey(PropertyBattle)) {
-            BattleController battleController = gameObject.AddComponent<BattleController>();
-            battleController.Setup(properties[PropertyBattle]);
-        }
-        if (properties.ContainsKey(PropertyLayer)) {
-            displayLayer = properties[PropertyLayer];
-        }
-        if (properties.ContainsKey(PropertyType)) {
-            switch (properties[PropertyType]) {
-                case TypeDuel:
-                    gameObject.AddComponent<DuelMap>();
-                    break;
-                default:
-                    Debug.Assert(false, "Unknown map type " + properties[PropertyType]);
-                    break;
-            }
-        }
-    }
-
     public bool IsChipPassableAt(TileLayer layer, IntVector2 loc) {
-        TiledMap tiledMap = GetComponent<TiledMap>();
         if (passabilityXMap == null) {
             passabilityXMap = new Dictionary<TileLayer, bool[,]>();
         }
@@ -79,8 +34,9 @@ public class Map : TiledInstantiated {
             passabilityXMap[layer] = new bool[width, height];
             for (int x = 0; x < width; x += 1) {
                 for (int y = 0; y < height; y += 1) {
-                    TiledProperty property = tiledMap.GetPropertyForTile("x", layer, x, y);
-                    passabilityXMap[layer][x, y] = (property == null) ? true : (property.GetStringValue() == "false");
+                    // TODO: tiled replacement
+                    //TiledProperty property = tiledMap.GetPropertyForTile("x", layer, x, y);
+                    //passabilityXMap[layer][x, y] = (property == null) ? true : (property.GetStringValue() == "false");
                 }
             }
         }
@@ -114,10 +70,6 @@ public class Map : TiledInstantiated {
     // returns all events that have a component of type t
     public List<T> GetEvents<T>() {
         return new List<T>(LowestObjectLayer().GetComponentsInChildren<T>());
-    }
-
-    public Layer LayerAtIndex(int layerIndex) {
-        return transform.GetChild(layerIndex).GetComponent<Layer>();
     }
 
     public ObjectLayer LowestObjectLayer() {

@@ -7,9 +7,9 @@ using UnityEngine;
  */
 [RequireComponent(typeof(CharaEvent))]
 [DisallowMultipleComponent]
-public class BattleEvent : TiledInstantiated {
+public class BattleEvent : MonoBehaviour {
 
-    private static string InstancePath = "Prefabs/Map3D/Doll";
+    private static readonly string InstancePath = "Prefabs/Map3D/Doll";
 
     public string unitKey;
     public BattleUnit unit { get; private set; }
@@ -25,12 +25,6 @@ public class BattleEvent : TiledInstantiated {
         this.unit = unit;
         this.controller = controller;
         SetScreenPositionToMatchTilePosition();
-    }
-
-    public override void Populate(IDictionary<string, string> properties) {
-        unitKey = properties[MapEvent.PropertyUnit];
-        GetComponent<CharaEvent>().doll.gameObject.AddComponent<BillboardingSpriteComponent>();
-        GetComponent<CharaEvent>().animator.dynamicFacing = true;
     }
 
     public void OnEnable() {
