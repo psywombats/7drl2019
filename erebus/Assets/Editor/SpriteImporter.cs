@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.Reflection;
@@ -27,7 +26,7 @@ internal sealed class SpriteImporter : AssetPostprocessor {
 
     public void OnPreprocessTexture() {
         string path = assetPath;
-        string name = NameFromPath(path);
+        string name = EditorUtils.NameFromPath(path);
 
         if (name.Contains("Placeholder")) {
             return;
@@ -41,12 +40,12 @@ internal sealed class SpriteImporter : AssetPostprocessor {
             //    importer.spritePixelsPerUnit = 16;
             //}
             importer.textureType = TextureImporterType.Sprite;
+            IntVector2 textureSize = EditorUtils.GetPreprocessedImageSize(importer);
             if (path.Contains("Charas")) {
-                IntVector2 textureSize = GetPreprocessedImageSize();
                 int stepCount = textureSize.x == 32 ? 2 : 3;
                 int charaWidth = textureSize.x / stepCount;
                 int charaHeight = textureSize.y / 4;
-                //importer.spritePixelsPerUnit = charaWidth;
+                importer.spritePixelsPerUnit = Mathf.CeilToInt(charaWidth / 16.0f) * 16;
                 importer.spriteImportMode = SpriteImportMode.Multiple;
                 importer.spritePivot = new Vector2(charaWidth / 2, Map.TileSizePx / 2);
                 importer.spritesheet = new SpriteMetaData[stepCount * 4];
@@ -71,7 +70,6 @@ internal sealed class SpriteImporter : AssetPostprocessor {
                 importer.SetTextureSettings(texSettings);
                 importer.spritePivot = new Vector2(0.0f, 0.0f);
             } else if (path.Contains("Anim")) {
-                IntVector2 textureSize = GetPreprocessedImageSize();
                 int edgeSize = 64;
                 int rows = textureSize.x / edgeSize;
                 int cols = textureSize.y / edgeSize;
@@ -108,7 +106,7 @@ internal sealed class SpriteImporter : AssetPostprocessor {
     // in the postprocessor so that hopefully we can create animations from processed textures by now
     public static void CreateAnimations(string assetPath) {
         string path = assetPath;
-        string name = NameFromPath(path);
+        string name = EditorUtils.NameFromPath(path);
 
         if (path.Contains("Charas")) {
             if (!AssetDatabase.IsValidFolder("Assets/Resources/Animations/Charas/Facings/" + name)) {
@@ -202,26 +200,4 @@ internal sealed class SpriteImporter : AssetPostprocessor {
         keyframe.value = sprite;
         return keyframe;
     }
-
-    private static string NameFromPath(string path) {
-        char[] splitters = { '/' };
-        string[] split = path.Split(splitters);
-        string name = split[split.Length - 1];
-        name = name.Substring(0, name.IndexOf('.'));
-        return name;
-    }
-
-    private IntVector2 GetPreprocessedImageSize() {
-        TextureImporter importer = AssetImporter.GetAtPath(assetPath) as TextureImporter;
-
-        if (importer != null) {
-            object[] args = new object[2] { 0, 0 };
-            MethodInfo mi = typeof(TextureImporter).GetMethod("GetWidthAndHeight", BindingFlags.NonPublic | BindingFlags.Instance);
-            mi.Invoke(importer, args);
-            return new IntVector2((int)args[0], (int)args[1]);
-        }
-
-        return new IntVector2(0, 0);
-    }
-
 }
