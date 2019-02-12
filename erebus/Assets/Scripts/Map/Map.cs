@@ -10,18 +10,41 @@ public class Map : MonoBehaviour {
 
     public const string ResourcePath = "Maps/";
     public const int TileSizePx = 16;
-
-    public IntVector2 size;
+    
     public string fullName;
-    public List<Tilemap> layers;
+    public Grid grid;
 
     public string bgmKey { get; private set; }
+    
+    // true if the tile in question is passable at x,y
+    private Dictionary<Tilemap, bool[,]> passabilityMap;
 
-    // true if the tile at x,y has the x "impassable" property for pathfinding
-    private Dictionary<Tilemap, bool[,]> passabilityXMap;
-
+    private IntVector2 _size;
+    public IntVector2 size {
+        get {
+            if (_size.x == 0) {
+                _size = new IntVector2(layers[0].size.x, layers[0].size.y);
+            }
+            return _size;
+        }
+    }
     public int width { get { return size.x; } }
     public int height { get { return size.y; } }
+
+    private List<Tilemap> _layers;
+    public List<Tilemap> layers {
+        get {
+            if (_layers == null) {
+                _layers = new List<Tilemap>();
+                foreach (Transform child in grid.transform) {
+                    if (child.GetComponent<Tilemap>()) {
+                        _layers.Add(child.GetComponent<Tilemap>());
+                    }
+                }
+            }
+            return _layers;
+        }
+    }
 
     public void Start() {
         // TODO: figure out loading
@@ -29,21 +52,20 @@ public class Map : MonoBehaviour {
     }
 
     public bool IsChipPassableAt(Tilemap layer, IntVector2 loc) {
-        if (passabilityXMap == null) {
-            passabilityXMap = new Dictionary<Tilemap, bool[,]>();
+        if (passabilityMap == null) {
+            passabilityMap = new Dictionary<Tilemap, bool[,]>();
         }
-        if (!passabilityXMap.ContainsKey(layer)) {
-            passabilityXMap[layer] = new bool[width, height];
+        if (!passabilityMap.ContainsKey(layer)) {
+            passabilityMap[layer] = new bool[width, height];
             for (int x = 0; x < width; x += 1) {
                 for (int y = 0; y < height; y += 1) {
-                    // TODO: tiled replacement
-                    //TiledProperty property = tiledMap.GetPropertyForTile("x", layer, x, y);
-                    //passabilityXMap[layer][x, y] = (property == null) ? true : (property.GetStringValue() == "false");
+                    PropertiedTile tile = (PropertiedTile)layer.GetTile(new Vector3Int(x, y, 0));
+                    passabilityMap[layer][x, y] = tile == null || tile.GetData().passable;
                 }
             }
         }
 
-        return passabilityXMap[layer][loc.x, loc.y];
+        return passabilityMap[layer][loc.x, loc.y];
     }
 
     // careful, this implementation is straight from MGNE, it's efficiency is questionable, to say the least

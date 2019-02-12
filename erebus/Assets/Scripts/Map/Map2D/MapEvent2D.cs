@@ -27,10 +27,10 @@ public class MapEvent2D : MapEvent {
     }
 
     protected override void SetDepth() {
-        if (parent != null) {
-            float z = DepthForPosition(position);
-            gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, z);
-        }
+        //if (parent != null) {
+        //    float z = DepthForPosition(position);
+        //    gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, z);
+        //}
     }
 
     private float DepthForPosition(IntVector2 position) {
