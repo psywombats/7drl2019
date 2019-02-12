@@ -8,7 +8,7 @@ public class EditorUtils {
         char[] splitters = { '/' };
         string[] split = path.Split(splitters);
         string name = split[split.Length - 1];
-        name = name.Substring(0, name.IndexOf('.'));
+        name = name.IndexOf('.') > 0 ? name.Substring(0, name.IndexOf('.')) : name;
         return name;
     }
 
