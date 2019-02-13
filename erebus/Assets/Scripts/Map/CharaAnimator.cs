@@ -18,6 +18,7 @@ public class CharaAnimator : MonoBehaviour {
     public string spriteName = "";
 
     private Vector2 lastPosition;
+    private bool wasSteppingLastFrame;
     private List<KeyValuePair<float, Vector3>> afterimageHistory;
     private Vector3 preAnimLocalPosition;
     private OrthoDir preAnimFacing;
@@ -39,14 +40,13 @@ public class CharaAnimator : MonoBehaviour {
     public void Update() {
         CopyShaderValues();
         if (Parent().GetComponent<CharaEvent>() != null) {
-            Vector2 position = Parent().transform.position;
-            Vector2 delta = position - lastPosition;
-
-            bool stepping = alwaysAnimates || delta.sqrMagnitude > 0 || Parent().GetComponent<MapEvent>().tracking;
+            bool steppingThisFrame = IsStepping();
+            bool stepping = steppingThisFrame || wasSteppingLastFrame;
+            wasSteppingLastFrame = steppingThisFrame;
             GetComponent<Animator>().SetBool("stepping", stepping);
             GetComponent<Animator>().SetInteger("dir", CalculateDirection().Ordinal());
 
-            lastPosition = position;
+            lastPosition = Parent().transform.position;
         } else {
             GetComponent<Animator>().SetBool("stepping", alwaysAnimates);
             GetComponent<Animator>().SetInteger("dir", OrthoDir.South.Ordinal());
@@ -157,5 +157,11 @@ public class CharaAnimator : MonoBehaviour {
         Vector3 targetScreen = cam.GetCameraComponent().WorldToScreenPoint(targetWorld);
         Vector3 delta = targetScreen - ourScreen;
         return OrthoDirExtensions.DirectionOf(new Vector2(delta.x, -delta.y));
+    }
+
+    private bool IsStepping() {
+        Vector2 position = Parent().transform.position;
+        Vector2 delta = position - lastPosition;
+        return alwaysAnimates || delta.sqrMagnitude > 0 || Parent().GetComponent<MapEvent>().tracking;
     }
 }

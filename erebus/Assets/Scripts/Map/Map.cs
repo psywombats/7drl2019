@@ -54,6 +54,18 @@ public class Map : MonoBehaviour {
         Global.Instance().Maps.ActiveMap = this;
     }
 
+    public Vector3Int TileToTilemapCoords(IntVector2 loc) {
+        return TileToTilemapCoords(loc.x, loc.y);
+    }
+
+    public Vector3Int TileToTilemapCoords(int x, int y) {
+        return new Vector3Int(x, -1 * (y + 1), 0);
+    }
+
+    public PropertiedTile TileAt(Tilemap layer, int x, int y) {
+        return (PropertiedTile)layer.GetTile(TileToTilemapCoords(x, y));
+    }
+
     public bool IsChipPassableAt(Tilemap layer, IntVector2 loc) {
         if (passabilityMap == null) {
             passabilityMap = new Dictionary<Tilemap, bool[,]>();
@@ -62,7 +74,7 @@ public class Map : MonoBehaviour {
             passabilityMap[layer] = new bool[width, height];
             for (int x = 0; x < width; x += 1) {
                 for (int y = 0; y < height; y += 1) {
-                    PropertiedTile tile = (PropertiedTile)layer.GetTile(new Vector3Int(x, y, 0));
+                    PropertiedTile tile = TileAt(layer, x, y);
                     passabilityMap[layer][x, y] = tile == null || tile.GetData().passable;
                 }
             }
