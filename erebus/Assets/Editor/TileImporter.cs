@@ -30,7 +30,7 @@ public class TileImporter : AssetPostprocessor {
         importer.textureCompression = TextureImporterCompression.Uncompressed;
         importer.textureType = TextureImporterType.Sprite;
         importer.spriteImportMode = SpriteImportMode.Multiple;
-        importer.spritePixelsPerUnit = Map.TileSizePx;
+        importer.spritePixelsPerUnit = Map.UnityUnitScale;
         importer.spritePivot = new Vector2(Map.TileSizePx / 2, Map.TileSizePx / 2);
 
         List<SpriteMetaData> newSheet = new List<SpriteMetaData>();
@@ -100,7 +100,7 @@ public class TileImporter : AssetPostprocessor {
             palette = new GameObject();
             Grid grid = palette.AddComponent<Grid>();
             grid.cellLayout = GridLayout.CellLayout.Rectangle;
-            grid.cellSize.Set(1.0f, 1.0f, 0.0f);
+            grid.cellSize.Set(Map.UnityUnitScale, Map.UnityUnitScale, 0.0f);
             grid.cellSwizzle = GridLayout.CellSwizzle.XYZ;
 
             GameObject layer = new GameObject("Layer1");

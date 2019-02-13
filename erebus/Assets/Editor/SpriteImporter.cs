@@ -36,16 +36,15 @@ internal sealed class SpriteImporter : AssetPostprocessor {
             TextureImporter importer = (TextureImporter)assetImporter;
             importer.filterMode = FilterMode.Point;
             importer.textureCompression = TextureImporterCompression.Uncompressed;
-            //if (path.Contains("Sprites")) {
-            //    importer.spritePixelsPerUnit = 16;
-            //}
+            if (path.Contains("Sprites")) {
+                importer.spritePixelsPerUnit = Map.UnityUnitScale;
+            }
             importer.textureType = TextureImporterType.Sprite;
             IntVector2 textureSize = EditorUtils.GetPreprocessedImageSize(importer);
             if (path.Contains("Charas")) {
                 int stepCount = textureSize.x == 32 ? 2 : 3;
                 int charaWidth = textureSize.x / stepCount;
                 int charaHeight = textureSize.y / 4;
-                importer.spritePixelsPerUnit = Mathf.CeilToInt(charaWidth / 16.0f) * 16;
                 importer.spriteImportMode = SpriteImportMode.Multiple;
                 importer.spritePivot = new Vector2(charaWidth / 2, Map.TileSizePx / 2);
                 importer.spritesheet = new SpriteMetaData[stepCount * 4];

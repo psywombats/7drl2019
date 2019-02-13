@@ -34,9 +34,13 @@ public abstract class MapEvent : MonoBehaviour {
     public Vector3 targetPositionPx { get; set; }
     public bool tracking { get; private set; }
 
+    private Vector3 _internalPosition;
     public Vector3 positionPx {
-        get { return transform.localPosition; }
-        set { transform.localPosition = value; }
+        get { return _internalPosition; }
+        set {
+            _internalPosition = value;
+            transform.localPosition = InternalPositionToDisplayPosition(_internalPosition);
+        }
     }
 
     private Map _parent;
@@ -111,6 +115,9 @@ public abstract class MapEvent : MonoBehaviour {
     // if we moved in this direction, where in screenspace would we end up?
     public abstract Vector3 CalculateOffsetPositionPx(OrthoDir dir);
 
+    // perform any pixel-perfect rounding needed for a pixel position
+    public abstract Vector3 InternalPositionToDisplayPosition(Vector3 position);
+
     public void Awake() {
         luaObject = new LuaMapEvent(this);
         luaObject.Set(PropertyCollide, luaOnCollide);
@@ -119,6 +126,8 @@ public abstract class MapEvent : MonoBehaviour {
     }
 
     public void Start() {
+        positionPx = transform.localPosition;
+
         GetComponent<Dispatch>().RegisterListener(EventCollide, (object payload) => {
             OnCollide((AvatarEvent)payload);
         });
@@ -238,7 +247,7 @@ public abstract class MapEvent : MonoBehaviour {
             if (tilesPerSecond > 0) {
                 positionPx = Vector3.MoveTowards(positionPx, 
                     targetPositionPx, 
-                    tilesPerSecond * Time.deltaTime);
+                    (tilesPerSecond * Map.TileSizePx / Map.UnityUnitScale) * Time.deltaTime);
             } else {
                 // indicates warp speed, cap'n
                 positionPx = targetPositionPx;

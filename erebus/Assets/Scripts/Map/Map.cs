@@ -8,8 +8,11 @@ using UnityEngine.Tilemaps;
  */
 public class Map : MonoBehaviour {
 
-    public const string ResourcePath = "Maps/";
+    // some game-wide critical map2d constants
     public const int TileSizePx = 16;
+    public const int UnityUnitScale = 1;
+
+    public const string ResourcePath = "Maps/";
     
     public string fullName;
     public Grid grid;

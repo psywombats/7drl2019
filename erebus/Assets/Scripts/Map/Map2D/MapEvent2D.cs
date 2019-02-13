@@ -9,14 +9,14 @@ public class MapEvent2D : MapEvent {
 
     public override Vector3 CalculateOffsetPositionPx(OrthoDir dir) {
         return new Vector3(
-            positionPx.x + dir.Px2DX(),
-            positionPx.y + dir.Px2DY(),
+            positionPx.x + dir.Px2DX() * Map.TileSizePx / Map.UnityUnitScale,
+            positionPx.y + dir.Px2DY() * Map.TileSizePx / Map.UnityUnitScale,
             DepthForPosition(position + dir.XY()));
     }
 
     public override void SetScreenPositionToMatchTilePosition() {
         // this is maybe not correct with our new screenspace measurements
-        Vector2 transform = new Vector2(1, 1);
+        Vector2 transform = new Vector2(Map.TileSizePx, Map.TileSizePx);
         if (OrthoDir.East.X() != OrthoDir.East.Px2DX()) {
             transform.x = transform.x * -1;
         }
@@ -24,6 +24,10 @@ public class MapEvent2D : MapEvent {
             transform.y = transform.y * -1;
         }
         PositionPx2D = Vector2.Scale(position, transform);
+    }
+
+    public override Vector3 InternalPositionToDisplayPosition(Vector3 position) {
+        return new Vector3(Mathf.Round(position.x), Mathf.Round(position.y), position.z);
     }
 
     protected override void SetDepth() {
