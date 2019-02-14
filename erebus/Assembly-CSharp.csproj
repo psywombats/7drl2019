@@ -71,6 +71,13 @@
     <Compile Include="Assets\2d-extras\Tilemap\Tiles\Rule Tile\Scripts\RuleTile.cs" />
     <Compile Include="Assets\2d-extras\Tilemap\Tiles\Terrain Tile\Scripts\TerrainTile.cs" />
     <Compile Include="Assets\2d-extras\Tilemap\Tiles\Weighted Random Tile\WeightedRandomTile.cs" />
+    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleAudio.cs" />
+    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModulePhysics.cs" />
+    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModulePhysics2D.cs" />
+    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleSprite.cs" />
+    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUI.cs" />
+    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUnityVersion.cs" />
+    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUtils.cs" />
     <Compile Include="Assets\Scripts\Animation\AfterimageComponent.cs" />
     <Compile Include="Assets\Scripts\Animation\AnimationPlayer.cs" />
     <Compile Include="Assets\Scripts\Animation\AnimationTarget.cs" />
@@ -177,6 +184,7 @@
     <None Include="Assets\Resources\Shaders\TransitionUIShader.shader" />
     <None Include="Assets\Resources\Shaders\DiffuseDepthSprite.shader" />
     <None Include="Assets\Resources\Shaders\TransitionShader.shader" />
+    <None Include="Assets\Demigiant\DOTween\readme.txt" />
     <None Include="Assets\Resources\Shaders\GlitchSpriteShader.shader" />
     <None Include="Assets\Resources\Shaders\TransitionSpriteShader.shader" />
     <None Include="Assets\Resources\Shaders\GlitchEffectShader.shader" />
@@ -404,6 +412,9 @@
     </Reference>
     <Reference Include="Unity.Analytics.Tracker">
       <HintPath>C:/Users/aking_2/erebus/erebus/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
+    </Reference>
+    <Reference Include="DOTween">
+      <HintPath>C:/Users/aking_2/erebus/erebus/Assets/Demigiant/DOTween/DOTween.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.1f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>

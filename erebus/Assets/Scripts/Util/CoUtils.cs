@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using DG.Tweening;
 
 public class CoUtils {
     
@@ -26,6 +27,12 @@ public class CoUtils {
         }
     }
 
+    public static IEnumerator RunSequence(IEnumerator[] coroutines) {
+        foreach (IEnumerator routine in coroutines) {
+            yield return routine;
+        }
+    }
+
     public static IEnumerator RunWithCallback(IEnumerator coroutine, Action toRun) {
         yield return coroutine;
         toRun();
@@ -33,5 +40,15 @@ public class CoUtils {
 
     public static IEnumerator Wait(float seconds) {
         yield return new WaitForSeconds(seconds);
+    }
+
+    public static IEnumerator RunTween(Tweener tween) {
+        bool done = false;
+        tween.Play().onComplete = () => {
+            done = true;
+        };
+        while (!done) {
+            yield return null;
+        }
     }
 }
