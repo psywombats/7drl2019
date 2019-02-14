@@ -37,7 +37,7 @@ internal sealed class SpriteImporter : AssetPostprocessor {
             importer.filterMode = FilterMode.Point;
             importer.textureCompression = TextureImporterCompression.Uncompressed;
             if (path.Contains("Sprites")) {
-                importer.spritePixelsPerUnit = Map.UnityUnitScale;
+               importer.spritePixelsPerUnit = Map.UnityUnitScale;
             }
             importer.textureType = TextureImporterType.Sprite;
             IntVector2 textureSize = EditorUtils.GetPreprocessedImageSize(importer);

@@ -9,7 +9,7 @@ using System.IO;
 // a wrapper around Script that represents an environment where a script can execute
 public class LuaContext : MonoBehaviour {
 
-    private static readonly string DefinesPath = "Assets/Resources/Scripts/global_defines.lua";
+    private static readonly string DefinesPath = "Assets/Resources/Lua/global_defines.lua";
     private static string defines;
 
     private Script _lua;

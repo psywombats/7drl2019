@@ -158,6 +158,7 @@
     <Compile Include="Assets\Scripts\Serialization\Settings\SettingsDefaults.cs" />
     <Compile Include="Assets\Scripts\Serialization\SettingsMemory.cs" />
     <Compile Include="Assets\Scripts\Serialization\SystemMemory.cs" />
+    <Compile Include="Assets\Scripts\UI\Textbox.cs" />
     <Compile Include="Assets\Scripts\UI\UISprite.cs" />
     <Compile Include="Assets\Scripts\Util\CoUtils.cs" />
     <Compile Include="Assets\Scripts\Util\Dispatch.cs" />
@@ -173,14 +174,11 @@
     <None Include="Assets\Resources\Shaders\GlitchGeometryShader.shader" />
     <None Include="Assets\2d-extras\Tilemap\Tiles\Rule Tile\ScriptTemplates\NewCustomRuleTile.cs.txt" />
     <None Include="Assets\2d-extras\Tilemap\Brushes\Tint Brush Smooth\Shaders\TintedTilemap.shader" />
-    <None Include="Assets\Resources\Scripts\unimplemented.txt" />
     <None Include="Assets\Resources\Shaders\TransitionUIShader.shader" />
-    <None Include="Assets\Resources\Scripts\intro.txt" />
     <None Include="Assets\Resources\Shaders\DiffuseDepthSprite.shader" />
     <None Include="Assets\Resources\Shaders\TransitionShader.shader" />
     <None Include="Assets\Resources\Shaders\GlitchSpriteShader.shader" />
     <None Include="Assets\Resources\Shaders\TransitionSpriteShader.shader" />
-    <None Include="Assets\Resources\Scripts\testScript.txt" />
     <None Include="Assets\Resources\Shaders\GlitchEffectShader.shader" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>C:/Users/aking_2/erebus/erebus/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
