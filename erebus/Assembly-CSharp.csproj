@@ -116,6 +116,7 @@
     <Compile Include="Assets\Scripts\Map\Map2D\Tiles\Map2DRuleTile.cs" />
     <Compile Include="Assets\Scripts\Map\Map2D\Tiles\Map2DTile.cs" />
     <Compile Include="Assets\Scripts\Map\Map2D\Tiles\PropertiedTile.cs" />
+    <Compile Include="Assets\Scripts\Map\Map2D\TilesetOverlay.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\AvatarEvent3D.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\BillboardingSpriteComponent.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\Cursor.cs" />

@@ -73,21 +73,23 @@
     <Compile Include="Assets\2d-extras\Tilemap\Tiles\Rule Override Tile\Scripts\Editor\RuleOverrideTileEditor.cs" />
     <Compile Include="Assets\2d-extras\Tilemap\Tiles\Rule Tile\Scripts\Editor\CustomRuleTileMenu.cs" />
     <Compile Include="Assets\2d-extras\Tilemap\Tiles\Rule Tile\Scripts\Editor\RuleTileEditor.cs" />
-    <Compile Include="Assets\Editor\AnimationPlayerEditor.cs" />
-    <Compile Include="Assets\Editor\AudioImporter.cs" />
-    <Compile Include="Assets\Editor\AutoExpandingScriptableDrawer.cs" />
-    <Compile Include="Assets\Editor\BattleControllerEditor.cs" />
-    <Compile Include="Assets\Editor\ClipInfo.cs" />
+    <Compile Include="Assets\Editor\Brushes\EditTilesetBrush.cs" />
+    <Compile Include="Assets\Editor\Editors\AnimationPlayerEditor.cs" />
+    <Compile Include="Assets\Editor\Editors\AutoExpandingScriptableDrawer.cs" />
+    <Compile Include="Assets\Editor\Editors\BattleControllerEditor.cs" />
+    <Compile Include="Assets\Editor\Editors\ClipInfo.cs" />
+    <Compile Include="Assets\Editor\Editors\InstanceMultiControllerEditor.cs" />
+    <Compile Include="Assets\Editor\Editors\MapCameraEditor.cs" />
+    <Compile Include="Assets\Editor\Editors\PolymorphicFieldEditor.cs" />
+    <Compile Include="Assets\Editor\Editors\StatSetDrawer.cs" />
+    <Compile Include="Assets\Editor\Editors\TacticsCameraEditor.cs" />
+    <Compile Include="Assets\Editor\Editors\TileEditor.cs" />
+    <Compile Include="Assets\Editor\Editors\TilesetOverlayEditor.cs" />
     <Compile Include="Assets\Editor\EditorUtils.cs" />
-    <Compile Include="Assets\Editor\FontImporter.cs" />
-    <Compile Include="Assets\Editor\InstanceMultiControllerEditor.cs" />
-    <Compile Include="Assets\Editor\MapCameraEditor.cs" />
-    <Compile Include="Assets\Editor\PolymorphicFieldEditor.cs" />
-    <Compile Include="Assets\Editor\SpriteImporter.cs" />
-    <Compile Include="Assets\Editor\StatSetDrawer.cs" />
-    <Compile Include="Assets\Editor\TacticsCameraEditor.cs" />
-    <Compile Include="Assets\Editor\TileEditor.cs" />
-    <Compile Include="Assets\Editor\TileImporter.cs" />
+    <Compile Include="Assets\Editor\Importers\AudioImporter.cs" />
+    <Compile Include="Assets\Editor\Importers\FontImporter.cs" />
+    <Compile Include="Assets\Editor\Importers\SpriteImporter.cs" />
+    <Compile Include="Assets\Editor\Importers\TileImporter.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>C:/Users/aking_2/erebus/erebus/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
