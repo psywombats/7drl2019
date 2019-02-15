@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Image))]
-[RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(SpriteRenderer))]
 public class UISprite : MonoBehaviour {
     
