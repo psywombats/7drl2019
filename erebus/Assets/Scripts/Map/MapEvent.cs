@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Tilemaps;
@@ -9,6 +8,7 @@ using UnityEngine.Tilemaps;
  */
 [RequireComponent(typeof(Dispatch))]
 [RequireComponent(typeof(LuaContext))]
+[RequireComponent(typeof(RectTransform))]
 [DisallowMultipleComponent]
 public abstract class MapEvent : MonoBehaviour {
     
@@ -22,10 +22,16 @@ public abstract class MapEvent : MonoBehaviour {
     public const string EventMove = "move";
 
     // Editor properties
+    [Header("Location (in tiles)")]
+    public IntVector2 position = new IntVector2(0, 0);
+    public IntVector2 size = new IntVector2(1, 1);
+    [Space]
+    [Header("Movement")]
     public float tilesPerSecond = 2.0f;
-    public IntVector2 position;
     public bool passable = true;
-    public string LuaCondition;
+    [Space]
+    [Header("Lua scripting")]
+    public string luaCondition;
     [TextArea(3, 6)] public string luaOnInteract;
     [TextArea(3, 6)] public string luaOnCollide;
 
@@ -122,33 +128,28 @@ public abstract class MapEvent : MonoBehaviour {
         luaObject = new LuaMapEvent(this);
         luaObject.Set(PropertyCollide, luaOnCollide);
         luaObject.Set(PropertyInteract, luaOnInteract);
-        luaObject.Set(PropertyCondition, LuaCondition);
+        luaObject.Set(PropertyCondition, luaCondition);
     }
 
     public void Start() {
-        positionPx = transform.localPosition;
+        if (Application.IsPlaying(this)) {
+            positionPx = transform.localPosition;
 
-        GetComponent<Dispatch>().RegisterListener(EventCollide, (object payload) => {
-            OnCollide((AvatarEvent)payload);
-        });
-        GetComponent<Dispatch>().RegisterListener(EventInteract, (object payload) => {
-            OnInteract((AvatarEvent)payload);
-        });
+            GetComponent<Dispatch>().RegisterListener(EventCollide, (object payload) => {
+                OnCollide((AvatarEvent)payload);
+            });
+            GetComponent<Dispatch>().RegisterListener(EventInteract, (object payload) => {
+                OnInteract((AvatarEvent)payload);
+            });
+        }
 
         CheckEnabled();
     }
 
-    public void Update() {
-        SetDepth();
-        CheckEnabled();
-
-        // TODO: only clear this when we change scene for the avatar
-        _parent = null;
-    }
-
-    public void OnValidate() {
-        SetScreenPositionToMatchTilePosition();
-        SetDepth();
+    public virtual void Update() {
+        if (Application.IsPlaying(this)) {
+            CheckEnabled();
+        }
     }
 
     public void CheckEnabled() {
@@ -179,28 +180,22 @@ public abstract class MapEvent : MonoBehaviour {
     }
 
     public bool ContainsPosition(IntVector2 loc) {
-        // TODO: tiled replacement
-        return false;
-        //if (GetComponent<RectangleObject>() == null) {
-        //    return loc == position;
-        //}
-        //IntVector2 pos1 = position;
-        //IntVector2 pos2 = position;
-        //pos2.x += (int)((GetComponent<RectangleObject>().TmxSize.x / Map.TileSizePx) - 1);
-        //pos2.y += (int)((GetComponent<RectangleObject>().TmxSize.y / Map.TileSizePx) - 1);
-        //return loc.x >= pos1.x && loc.x <= pos2.x && loc.y >= pos1.y && loc.y <= pos2.y;
+        IntVector2 pos1 = position;
+        IntVector2 pos2 = position + size;
+        return loc.x >= pos1.x && loc.x <= pos2.x && loc.y >= pos1.y && loc.y <= pos2.y;
     }
 
     public void SetLocation(IntVector2 location) {
         position = location;
-        OnValidate();
+        SetScreenPositionToMatchTilePosition();
+        SetDepth();
     }
 
     // we have a solid TileX/TileY, please move the doll to the correct screen space
     public abstract void SetScreenPositionToMatchTilePosition();
 
     // set the one xyz coordinate not controlled by arrow keys
-    protected abstract void SetDepth();
+    public abstract void SetDepth();
 
     // called when the avatar stumbles into us
     // before the step if impassable, after if passable

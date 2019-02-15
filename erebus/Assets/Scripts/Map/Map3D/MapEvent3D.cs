@@ -21,7 +21,7 @@ public class MapEvent3D : MapEvent {
         return position;
     }
 
-    protected override void SetDepth() {
+    public override void SetDepth() {
         // our global height is identical to the height of the parent layer
         transform.localPosition = new Vector3(gameObject.transform.localPosition.x, 0.0f, gameObject.transform.localPosition.z);
     }

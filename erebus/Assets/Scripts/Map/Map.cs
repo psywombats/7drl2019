@@ -26,7 +26,8 @@ public class Map : MonoBehaviour {
     public IntVector2 size {
         get {
             if (_size.x == 0) {
-                _size = new IntVector2(layers[0].size.x, layers[0].size.y);
+                Vector3Int v3 = grid.transform.GetChild(0).GetComponent<Tilemap>().size;
+                _size = new IntVector2(v3.x, v3.y);
             }
             return _size;
         }

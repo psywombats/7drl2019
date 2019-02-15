@@ -2,9 +2,9 @@
 using UnityEngine;
 
 public enum OrthoDir {
-    [OrthoDir("North",     0,  1,  0,      0,  0,  1,      0, -1,      0)] North,
+    [OrthoDir("North",     0, -1,  0,      0,  0,  1,      0, -1,      0)] North,
     [OrthoDir("East",      1,  0,  0,      1,  0,  0,      1,  0,      1)] East,
-    [OrthoDir("South",     0, -1,  0,      0,  0, -1,      0,  1,      2)] South,
+    [OrthoDir("South",     0,  1,  0,      0,  0, -1,      0,  1,      2)] South,
     [OrthoDir("West",     -1,  0,  0,      -1, 0,  0,     -1,  0,      3)] West,
 }
 
