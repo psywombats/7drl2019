@@ -14,8 +14,7 @@ public class CharaEvent : MonoBehaviour {
     public static readonly string FaceEvent = "eventFace";
 
     // Editor
-    public OrthoDir initialFacing;
-    public CharaAnimator animator;
+    public OrthoDir initialFacing = OrthoDir.South;
     public GameObject doll;
 
     // Public
@@ -32,6 +31,14 @@ public class CharaEvent : MonoBehaviour {
                 internalFacing = value;
                 GetComponent<Dispatch>().Signal(FaceEvent, value);
             }
+        }
+    }
+
+    private CharaAnimator _animator;
+    public CharaAnimator animator {
+        get {
+            if (_animator == null) _animator = doll.GetComponent<CharaAnimator>();
+            return _animator;
         }
     }
 

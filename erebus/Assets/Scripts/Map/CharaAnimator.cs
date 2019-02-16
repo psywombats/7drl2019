@@ -4,6 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(SpriteRenderer))]
+[ExecuteInEditMode]
 [DisallowMultipleComponent]
 public class CharaAnimator : MonoBehaviour {
 
@@ -26,42 +27,55 @@ public class CharaAnimator : MonoBehaviour {
 
     public MapEvent parentEvent { get { return transform.parent.GetComponent<MapEvent>(); } }
 
-    public void Start() {
-        lastPosition = gameObject.transform.position;
+    private Animator _animator;
+    private Animator animator {
+        get {
+            if (_animator == null) _animator = GetComponent<Animator>();
+            return _animator;
+        }
+    }
 
-        if (Parent().GetComponent<CharaEvent>() != null) {
-            Parent().GetComponent<Dispatch>().RegisterListener(MapEvent.EventEnabled, (object payload) => {
-                bool enabled = (bool)payload;
-                GetComponent<SpriteRenderer>().enabled = enabled;
-            });
+    public void Start() {
+        if (!Application.isEditor) {
+            lastPosition = gameObject.transform.position;
+
+            if (Parent().GetComponent<CharaEvent>() != null) {
+                Parent().GetComponent<Dispatch>().RegisterListener(MapEvent.EventEnabled, (object payload) => {
+                    bool enabled = (bool)payload;
+                    GetComponent<SpriteRenderer>().enabled = enabled;
+                });
+            }
         }
     }
 
     public void Update() {
         CopyShaderValues();
-        if (Parent().GetComponent<CharaEvent>() != null) {
-            bool steppingThisFrame = IsStepping();
-            bool stepping = steppingThisFrame || wasSteppingLastFrame;
-            wasSteppingLastFrame = steppingThisFrame;
-            GetComponent<Animator>().SetBool("stepping", stepping);
-            GetComponent<Animator>().SetInteger("dir", CalculateDirection().Ordinal());
 
-            lastPosition = Parent().transform.position;
+        if (!Application.isEditor) {
+            if (Parent().GetComponent<CharaEvent>() != null) {
+                bool steppingThisFrame = IsStepping();
+                bool stepping = steppingThisFrame || wasSteppingLastFrame;
+                wasSteppingLastFrame = steppingThisFrame;
+                GetComponent<Animator>().SetBool("stepping", stepping);
+                GetComponent<Animator>().SetInteger("dir", CalculateDirection().Ordinal());
+
+                lastPosition = Parent().transform.position;
+            } else {
+                animator.SetBool("stepping", alwaysAnimates);
+                animator.SetInteger("dir", OrthoDir.South.Ordinal());
+            }
         } else {
-            GetComponent<Animator>().SetBool("stepping", alwaysAnimates);
-            GetComponent<Animator>().SetInteger("dir", OrthoDir.South.Ordinal());
+            if (animator.runtimeAnimatorController != null) {
+                SetSpriteByKey(animator.runtimeAnimatorController.name);
+            }
         }
-    }
-
-    public void OnValidate() {
-        CopyShaderValues();
     }
 
     public void SetSpriteByKey(string spriteName) {
         this.spriteName = spriteName;
         string controllerPath = "Animations/Charas/Instances/" + spriteName;
         RuntimeAnimatorController controller = Resources.Load<RuntimeAnimatorController>(controllerPath);
-        GetComponent<Animator>().runtimeAnimatorController = controller;
+        animator.runtimeAnimatorController = controller;
 
         string path = parentEvent.GetComponent<MapEvent3D>() == null ? DefaultMaterial2DPath : DefaultMaterial3DPath;
         GetComponent<SpriteRenderer>().material = Resources.Load<Material>(path);
@@ -72,7 +86,7 @@ public class CharaAnimator : MonoBehaviour {
             Debug.LogError("Unknown sprite " + spriteName);
         } else {
             foreach (Sprite sprite in sprites) {
-                if (sprite.name == spriteName + parentEvent.GetComponent<CharaEvent>().facing.DirectionName() + "Center") {
+                if (sprite.name == spriteName + parentEvent.GetComponent<CharaEvent>().initialFacing.DirectionName() + "Center") {
                     GetComponent<SpriteRenderer>().sprite = sprite;
                     break;
                 }
@@ -95,12 +109,12 @@ public class CharaAnimator : MonoBehaviour {
 
     public void SetOverrideSprite(Sprite sprite) {
         ClearOverrideSprite();
-        GetComponent<Animator>().enabled = false;
+        animator.enabled = false;
         GetComponent<SpriteRenderer>().sprite = sprite;
     }
 
     public void SetOverrideAnim(List<Sprite> frames, float frameDuration) {
-        GetComponent<Animator>().enabled = false;
+        this.animator.enabled = false;
         SimpleSpriteAnimator animator = GetComponent<SimpleSpriteAnimator>();
         if (animator == null) {
             animator = gameObject.AddComponent<SimpleSpriteAnimator>();
@@ -112,7 +126,7 @@ public class CharaAnimator : MonoBehaviour {
     }
 
     public void ClearOverrideSprite() {
-        GetComponent<Animator>().enabled = true;
+        animator.enabled = true;
         if (GetComponent<SimpleSpriteAnimator>() != null) {
             GetComponent<SimpleSpriteAnimator>().enabled = false;
         }

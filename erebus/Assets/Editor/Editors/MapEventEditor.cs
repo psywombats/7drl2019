@@ -4,13 +4,31 @@ using UnityEditor;
 [CustomEditor(typeof(MapEvent), true)]
 public class MapEventEditor : Editor {
 
+    private static readonly string DollPath = "Assets/Resources/Prefabs/Doll.prefab";
+
     public override void OnInspectorGUI() {
-        base.OnInspectorGUI();
+        MapEvent mapEvent = (MapEvent)target;
 
         if (GUI.changed) {
-            MapEvent ev = (MapEvent)target;
-            ev.SetScreenPositionToMatchTilePosition();
-            ev.SetDepth();
+            mapEvent.SetScreenPositionToMatchTilePosition();
+            mapEvent.SetDepth();
         }
+
+        if (!mapEvent.GetComponent<CharaEvent>()) {
+            if (GUILayout.Button("Add Chara Event")) {
+                GameObject doll = Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(DollPath));
+                doll.name = mapEvent.name + " (doll)";
+                GameObjectUtility.SetParentAndAlign(doll, mapEvent.gameObject);
+                mapEvent.gameObject.AddComponent<CharaEvent>().doll = doll;
+                Undo.RegisterCreatedObjectUndo(mapEvent, "Create " + doll.name);
+                Selection.activeObject = doll;
+
+                // hardcode weirdness
+                doll.transform.localPosition = new Vector3(Map.TileSizePx / 2, -Map.TileSizePx, 0.0f);
+            }
+            GUILayout.Space(25.0f);
+        }
+
+        base.OnInspectorGUI();
     }
 }

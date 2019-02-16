@@ -23,6 +23,10 @@ public class MapEvent2D : MapEvent {
         base.Update();
         if (Application.isEditor) {
             position = WorldPositionTileCoords(transform.position);
+            Vector2 sizeDelta = GetComponent<RectTransform>().sizeDelta;
+            size = new IntVector2(
+                Mathf.RoundToInt(sizeDelta.x / Map.TileSizePx),
+                Mathf.RoundToInt(sizeDelta.y / Map.TileSizePx));
         }
         SetDepth();
     }
