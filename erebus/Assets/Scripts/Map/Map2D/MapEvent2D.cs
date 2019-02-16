@@ -4,13 +4,6 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class MapEvent2D : MapEvent {
 
-    public Vector2 PositionPx2D {
-        get { return new Vector2(gameObject.transform.position.x, gameObject.transform.position.y); }
-        private set {
-            gameObject.transform.position = new Vector3(value.x, value.y, DepthForPositionPx(value.y));
-        }
-    }
-
     public static IntVector2 GridLocationTileCoords(BoundsInt gridPosition) {
         return new IntVector2(gridPosition.x, -1 * (gridPosition.y + 1));
     }
@@ -54,7 +47,7 @@ public class MapEvent2D : MapEvent {
         Vector2 transform = new Vector2(Map.TileSizePx, Map.TileSizePx);
         transform.x = transform.x * OrthoDir.East.Px2DX();
         transform.y = transform.y * OrthoDir.North.Px2DY();
-        PositionPx2D = Vector2.Scale(position, transform);
+        positionPx = Vector2.Scale(position, transform);
         GetComponent<RectTransform>().sizeDelta = new Vector2(
             size.x * Map.TileSizePx / Map.UnityUnitScale, 
             size.y * Map.TileSizePx / Map.UnityUnitScale);
@@ -82,14 +75,14 @@ public class MapEvent2D : MapEvent {
         if (GetComponent<CharaEvent>() == null || GetComponent<CharaEvent>().GetAppearance() == null) {
             Gizmos.color = new Color(Gizmos.color.r, Gizmos.color.g, Gizmos.color.b, 0.5f);
             Gizmos.DrawCube(new Vector3(
-                    PositionPx2D.x + size.x * Map.TileSizePx * OrthoDir.East.Px2DX() / 2.0f,
-                    PositionPx2D.y + size.y * Map.TileSizePx * OrthoDir.North.Px2DY() / 2.0f,
+                    positionPx.x + size.x * Map.TileSizePx * OrthoDir.East.Px2DX() / 2.0f,
+                    positionPx.y + size.y * Map.TileSizePx * OrthoDir.North.Px2DY() / 2.0f,
                     transform.position.z - 0.001f),
                 new Vector3((size.x - 0.1f) * Map.TileSizePx, (size.y - 0.1f) * Map.TileSizePx, 0.002f));
             Gizmos.color = Color.white;
             Gizmos.DrawWireCube(new Vector3(
-                    PositionPx2D.x + size.x * Map.TileSizePx * OrthoDir.East.Px2DX() / 2.0f,
-                    PositionPx2D.y + size.y * Map.TileSizePx * OrthoDir.North.Px2DY() / 2.0f,
+                    positionPx.x + size.x * Map.TileSizePx * OrthoDir.East.Px2DX() / 2.0f,
+                    positionPx.y + size.y * Map.TileSizePx * OrthoDir.North.Px2DY() / 2.0f,
                     transform.position.z - 0.001f),
                 new Vector3((size.x - 0.1f) * Map.TileSizePx, (size.y - 0.1f) * Map.TileSizePx, 0.002f));
         }

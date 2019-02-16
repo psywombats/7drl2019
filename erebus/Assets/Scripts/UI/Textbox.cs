@@ -110,6 +110,7 @@ public class Textbox : MonoBehaviour, InputListener {
             CoUtils.Delay(combinedAnimDelaySeconds,
                 CoUtils.RunTween(backer.DOAnchorMax(new Vector2(0.5f, 0.0f), backerAnimationSeconds))),
         }, this);
+        Global.Instance().Input.RemoveListener(this);
     }
 
     private IEnumerator EnableRoutine() {

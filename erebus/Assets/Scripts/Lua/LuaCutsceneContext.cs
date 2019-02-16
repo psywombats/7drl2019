@@ -8,15 +8,15 @@ public class LuaCutsceneContext : LuaContext {
     private static readonly string DefinesPath = "Assets/Resources/Lua/cutscene_defines.lua";
 
     public override IEnumerator RunRoutine(LuaScript script) {
-        if (Global.Instance().Maps.Avatar != null) {
-            Global.Instance().Maps.Avatar.PauseInput();
+        if (Global.Instance().Maps.avatar != null) {
+            Global.Instance().Maps.avatar.PauseInput();
         }
         yield return base.RunRoutine(script);
         if (MapOverlayUI.Instance().textbox.isDisplaying) {
             yield return MapOverlayUI.Instance().textbox.DisableRoutine();
         }
-        if (Global.Instance().Maps.Avatar != null) {
-            Global.Instance().Maps.Avatar.UnpauseInput();
+        if (Global.Instance().Maps.avatar != null) {
+            Global.Instance().Maps.avatar.UnpauseInput();
         }
     }
 

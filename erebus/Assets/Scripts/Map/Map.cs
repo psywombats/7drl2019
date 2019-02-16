@@ -53,7 +53,7 @@ public class Map : MonoBehaviour {
 
     public void Start() {
         // TODO: figure out loading
-        Global.Instance().Maps.ActiveMap = this;
+        Global.Instance().Maps.activeMap = this;
     }
 
     public Vector3Int TileToTilemapCoords(IntVector2 loc) {

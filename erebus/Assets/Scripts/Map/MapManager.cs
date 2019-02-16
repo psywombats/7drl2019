@@ -4,10 +4,10 @@ using UnityEngine.Assertions;
 
 public class MapManager : MonoBehaviour, MemoryPopulater {
 
-    public Map ActiveMap { get; set; }
-    public AvatarEvent Avatar { get; private set; }
-    public DuelMap ActiveDuelMap { get; set; }
-    public SceneBlendController BlendController { get; set; }
+    public Map activeMap { get; set; }
+    public AvatarEvent avatar { get; set; }
+    public DuelMap activeDuelMap { get; set; }
+    public SceneBlendController blendController { get; set; }
 
     private MapCamera mapCamera;
     public MapCamera Camera {
@@ -27,28 +27,28 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
         Global.Instance().Memory.RegisterMemoryPopulater(this);
         DebugMapMarker debugMap = FindObjectOfType<DebugMapMarker>();
         if (debugMap != null) {
-            ActiveMap = FindObjectOfType<Map>();
-            Avatar = ActiveMap.GetComponentInChildren<AvatarEvent>();
+            activeMap = FindObjectOfType<Map>();
+            avatar = activeMap.GetComponentInChildren<AvatarEvent>();
         }
     }
 
     public void SetUpInitialMap(string mapName) {
-        ActiveMap = InstantiateMap(mapName);
+        activeMap = InstantiateMap(mapName);
         AddInitialAvatar();
     }
 
     public void PopulateMemory(Memory memory) {
-        if (ActiveMap != null) {
-            Avatar.PopulateMemory(memory);
-            memory.mapName = ActiveMap.fullName;
+        if (activeMap != null) {
+            avatar.PopulateMemory(memory);
+            memory.mapName = activeMap.fullName;
         }
     }
 
     public void PopulateFromMemory(Memory memory) {
         if (memory.mapName != null) {
             AddInitialAvatar();
-            ActiveMap = InstantiateMap(memory.mapName);
-            Avatar.PopulateFromMemory(memory);
+            activeMap = InstantiateMap(memory.mapName);
+            avatar.PopulateFromMemory(memory);
         }
     }
 
@@ -64,41 +64,35 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
         yield return StartCoroutine(TeleportInRoutine());
     }
     
-    // map path is accepted either as a relative map name "Testmap01" or full path "Test/Testmap01"
-    // the .tmx or whatever extension is not needed
     private void RawTeleport(string mapName, IntVector2 location) {
-        Assert.IsNotNull(ActiveMap);
+        Assert.IsNotNull(activeMap);
         Map newMapInstance = InstantiateMap(mapName);
         RawTeleport(newMapInstance, location);
     }
 
     private void RawTeleport(string mapName, string targetEventName) {
-        Assert.IsNotNull(ActiveMap);
+        Assert.IsNotNull(activeMap);
         Map newMapInstance = InstantiateMap(mapName);
         MapEvent target = newMapInstance.GetEventNamed(targetEventName);
         RawTeleport(newMapInstance, target.position);
     }
 
     private void RawTeleport(Map map, IntVector2 location) {
-        // TODO: tiled replacement
-        //Assert.IsNotNull(ActiveMap);
-        //Assert.IsNotNull(Avatar);
+        Assert.IsNotNull(activeMap);
+        Assert.IsNotNull(avatar);
 
-        //int layerIndex = Avatar.GetComponent<MapEvent>().layerIndex;
-        //Avatar.transform.parent = null;
-        //Layer parentLayer = map.LayerAtIndex(layerIndex);
-        //Avatar.transform.parent = parentLayer.gameObject.transform;
+        avatar.transform.SetParent(map.objectLayer.transform, false);
 
-        //ActiveMap.OnTeleportAway();
-        //Object.Destroy(ActiveMap.gameObject);
-        //ActiveMap = map;
-        //ActiveMap.OnTeleportTo();
-        //Avatar.GetComponent<MapEvent>().SetLocation(location);
+        activeMap.OnTeleportAway();
+        Destroy(activeMap.gameObject);
+        activeMap = map;
+        activeMap.OnTeleportTo();
+        avatar.GetComponent<MapEvent>().SetLocation(location);
     }
 
     private Map InstantiateMap(string mapName) {
         GameObject newMapObject = null;
-        if (ActiveMap != null) {
+        if (activeMap != null) {
             string localPath = Map.ResourcePath + mapName;
             newMapObject = Resources.Load<GameObject>(localPath);
         }
@@ -110,25 +104,23 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
     }
 
     private void AddInitialAvatar(Memory memory = null) {
-        Avatar = Instantiate(Resources.Load<GameObject>("Prefabs/Map3D/Avatar3D")).GetComponent<AvatarEvent>();
+        avatar = Instantiate(Resources.Load<GameObject>("Prefabs/Map3D/Avatar3D")).GetComponent<AvatarEvent>();
         if (memory != null) {
-            Avatar.PopulateFromMemory(memory);
+            avatar.PopulateFromMemory(memory);
         }
-        Avatar.transform.parent = ActiveMap.objectLayer.transform;
-        ActiveMap.OnTeleportTo();
-        Camera.target = Avatar.GetComponent<MapEvent>();
+        avatar.transform.parent = activeMap.objectLayer.transform;
+        activeMap.OnTeleportTo();
+        Camera.target = avatar.GetComponent<MapEvent>();
         Camera.ManualUpdate();
     }
 
     private IEnumerator TeleportOutRoutine() {
-        Avatar.PauseInput();
-        //yield return StartCoroutine(Camera.GetComponent<ColorEffect>().FadeRoutine(Color.black, 0.3f));
+        avatar.PauseInput();
         yield return null;
     }
 
     private IEnumerator TeleportInRoutine() {
-        //yield return StartCoroutine(Camera.GetComponent<ColorEffect>().FadeRoutine(Color.white, 0.3f));
-        Avatar.UnpauseInput();
+        avatar.UnpauseInput();
         yield return null;
     }
 }

@@ -14,6 +14,7 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
     }
 
     public void Start() {
+        Global.Instance().Maps.avatar = this;
         Global.Instance().Input.PushListener(this);
         pauseCount = 0;
     }

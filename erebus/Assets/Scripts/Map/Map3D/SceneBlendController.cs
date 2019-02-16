@@ -10,7 +10,7 @@ public class SceneBlendController : MonoBehaviour {
 
     public void Start() {
         // TODO: how do we keep track of this thing?
-        Global.Instance().Maps.BlendController = this;
+        Global.Instance().Maps.blendController = this;
     }
 
     public IEnumerator BlendInDuelRoutine(float duration) {

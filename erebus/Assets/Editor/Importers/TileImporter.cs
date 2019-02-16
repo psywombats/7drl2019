@@ -100,13 +100,13 @@ public class TileImporter : AssetPostprocessor {
             palette = new GameObject();
             Grid grid = palette.AddComponent<Grid>();
             grid.cellLayout = GridLayout.CellLayout.Rectangle;
-            grid.cellSize.Set(Map.UnityUnitScale, Map.UnityUnitScale, 0.0f);
+            grid.cellSize = new Vector3(Map.UnityUnitScale, Map.UnityUnitScale, 0.0f);
             grid.cellSwizzle = GridLayout.CellSwizzle.XYZ;
 
             GameObject layer = new GameObject("Layer1");
             layer.transform.parent = palette.transform;
             tilemap = layer.AddComponent<Tilemap>();
-            tilemap.tileAnchor.Set(0.5f, 0.5f, 0.0f);
+            tilemap.tileAnchor = new Vector3(0.5f, 0.5f, 0.0f);
 
             TilemapRenderer renderer = layer.AddComponent<TilemapRenderer>();
             renderer.sortOrder = TilemapRenderer.SortOrder.BottomLeft;

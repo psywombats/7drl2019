@@ -32,7 +32,7 @@ public class LuaMapEvent {
             callback?.Invoke();
         } else {
             LuaScript script = new LuaScript(context, function);
-            mapEvent.StartCoroutine(CoUtils.RunWithCallback(script.RunRoutine(), callback));
+            Global.Instance().StartCoroutine(CoUtils.RunWithCallback(script.RunRoutine(), callback));
         }
     }
 

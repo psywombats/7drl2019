@@ -56,7 +56,7 @@ public class LuaContext : MonoBehaviour {
     // all coroutines that are meant to block execution of the script should go through here
     public virtual void RunRoutineFromLua(IEnumerator routine) {
         blockingRoutines += 1;
-        StartCoroutine(CoUtils.RunWithCallback(routine, () => {
+        Global.Instance().StartCoroutine(CoUtils.RunWithCallback(routine, () => {
             blockingRoutines -= 1;
             if (blockingRoutines == 0) {
                 activeScript.scriptRoutine.Resume();
@@ -112,7 +112,7 @@ public class LuaContext : MonoBehaviour {
     // === LUA CALLABLE ============================================================================
 
     private LuaMapEvent EventNamed(DynValue eventName) {
-        MapEvent mapEvent = Global.Instance().Maps.ActiveMap.GetEventNamed(eventName.String);
+        MapEvent mapEvent = Global.Instance().Maps.activeMap.GetEventNamed(eventName.String);
         if (mapEvent == null) {
             return null;
         } else {

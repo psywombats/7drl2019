@@ -11,7 +11,7 @@ public class DuelMap : MonoBehaviour {
     public void Start() {
 
         // TODO: presumably we load this from somewhere
-        Global.Instance().Maps.ActiveDuelMap = this;
+        Global.Instance().Maps.activeDuelMap = this;
 
         targets = new Dictionary<Doll.Type, Doll>();
         foreach (DollTargetEvent target in GetComponent<Map>().GetEvents<DollTargetEvent>()) {
@@ -51,7 +51,7 @@ public class DuelMap : MonoBehaviour {
         yield return new WaitForSeconds(0.6f);
         yield return CoUtils.RunParallel(new IEnumerator[] {
             CoUtils.Delay(0.0f, TacticsCam.Instance().DuelZoomRoutine(8.0f, duration/2.0f)),
-            CoUtils.Delay(duration/3.0f, Global.Instance().Maps.BlendController.BlendInDuelRoutine(duration*2.0f/3.0f)),
+            CoUtils.Delay(duration/3.0f, Global.Instance().Maps.blendController.BlendInDuelRoutine(duration*2.0f/3.0f)),
             CoUtils.Delay(duration/3.0f, DuelCam.Instance().TransitionInZoomRoutine(12.0f, duration/2.0f)),
         }, this);
 
@@ -62,6 +62,6 @@ public class DuelMap : MonoBehaviour {
 
     public IEnumerator ExitMapRoutine() {
         TacticsCam.Instance().ResetToTacticsMode();
-        yield return Global.Instance().Maps.BlendController.FadeInTacticsRoutine(1.2f);
+        yield return Global.Instance().Maps.blendController.FadeInTacticsRoutine(1.2f);
     }
 }

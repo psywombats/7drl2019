@@ -116,10 +116,10 @@ public class BattleController : MonoBehaviour {
             BattleUnit targetUnit = targetedResult.value;
             targetUnit.doll.GetComponent<CharaEvent>().FaceToward(actingUnit.location);
 
-            yield return Global.Instance().Maps.ActiveDuelMap.EnterMapRoutine(actingUnit.doll, targetUnit.doll);
+            yield return Global.Instance().Maps.activeDuelMap.EnterMapRoutine(actingUnit.doll, targetUnit.doll);
 
             actingUnit.MarkActionTaken();
-            yield return Global.Instance().Maps.ActiveDuelMap.ExitMapRoutine();
+            yield return Global.Instance().Maps.activeDuelMap.ExitMapRoutine();
             yield return actingUnit.doll.PostActionRoutine();
         }
     }
