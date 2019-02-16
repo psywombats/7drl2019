@@ -46,9 +46,9 @@ public class TacticsCam : MapCamera {
         targetDollyPosition = transform.localPosition;
         CopyTargetPosition();
         WarpToTarget();
-        if (Application.isPlaying) {
-            Global.Instance().Maps.SetCamera(this);
-        }
+        //if (Application.isPlaying) {
+        //    Global.Instance().Maps.SetCamera(this);
+        //}
     }
 
     public void Update() {

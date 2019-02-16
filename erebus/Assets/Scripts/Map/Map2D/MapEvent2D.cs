@@ -75,14 +75,14 @@ public class MapEvent2D : MapEvent {
         if (GetComponent<CharaEvent>() == null || GetComponent<CharaEvent>().GetAppearance() == null) {
             Gizmos.color = new Color(Gizmos.color.r, Gizmos.color.g, Gizmos.color.b, 0.5f);
             Gizmos.DrawCube(new Vector3(
-                    positionPx.x + size.x * Map.TileSizePx * OrthoDir.East.Px2DX() / 2.0f,
-                    positionPx.y + size.y * Map.TileSizePx * OrthoDir.North.Px2DY() / 2.0f,
+                    transform.position.x + size.x * Map.TileSizePx * OrthoDir.East.Px2DX() / 2.0f,
+                    transform.position.y + size.y * Map.TileSizePx * OrthoDir.North.Px2DY() / 2.0f,
                     transform.position.z - 0.001f),
                 new Vector3((size.x - 0.1f) * Map.TileSizePx, (size.y - 0.1f) * Map.TileSizePx, 0.002f));
             Gizmos.color = Color.white;
             Gizmos.DrawWireCube(new Vector3(
-                    positionPx.x + size.x * Map.TileSizePx * OrthoDir.East.Px2DX() / 2.0f,
-                    positionPx.y + size.y * Map.TileSizePx * OrthoDir.North.Px2DY() / 2.0f,
+                    transform.position.x + size.x * Map.TileSizePx * OrthoDir.East.Px2DX() / 2.0f,
+                    transform.position.y + size.y * Map.TileSizePx * OrthoDir.North.Px2DY() / 2.0f,
                     transform.position.z - 0.001f),
                 new Vector3((size.x - 0.1f) * Map.TileSizePx, (size.y - 0.1f) * Map.TileSizePx, 0.002f));
         }

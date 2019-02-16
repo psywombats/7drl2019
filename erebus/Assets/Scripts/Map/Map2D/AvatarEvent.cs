@@ -124,7 +124,7 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
             }));
         } else {
             foreach (MapEvent targetEvent in toCollide) {
-                if (targetEvent.switchEnabled) {
+                if (targetEvent.switchEnabled && !targetEvent.IsPassableBy(GetComponent<CharaEvent>())) {
                     targetEvent.GetComponent<Dispatch>().Signal(MapEvent.EventCollide, this);
                 }
             }

@@ -97,6 +97,7 @@
     <Compile Include="Assets\Scripts\Data\TransitionIndexData.cs" />
     <Compile Include="Assets\Scripts\Global.cs" />
     <Compile Include="Assets\Scripts\ImageEffects\DurationEffectBehavior.cs" />
+    <Compile Include="Assets\Scripts\ImageEffects\FadeImageEffect.cs" />
     <Compile Include="Assets\Scripts\ImageEffects\FadeoutBehavior.cs" />
     <Compile Include="Assets\Scripts\ImageEffects\GlitchBehavior.cs" />
     <Compile Include="Assets\Scripts\ImageEffects\GlitchImageEffect.cs" />

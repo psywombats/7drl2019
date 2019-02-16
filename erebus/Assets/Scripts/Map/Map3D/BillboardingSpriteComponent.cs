@@ -32,7 +32,7 @@ public class BillboardingSpriteComponent : MonoBehaviour {
 
     private MapCamera GetCamera() {
         if (Application.isPlaying) {
-            return Global.Instance().Maps.Camera;
+            return Global.Instance().Maps.camera;
         } else {
             return FindObjectOfType<MapCamera>();
         }

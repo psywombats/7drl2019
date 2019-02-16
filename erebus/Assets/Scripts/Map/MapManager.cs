@@ -4,32 +4,29 @@ using UnityEngine.Assertions;
 
 public class MapManager : MonoBehaviour, MemoryPopulater {
 
+    private static readonly string DefaultTransitionTag = "default";
+
     public Map activeMap { get; set; }
     public AvatarEvent avatar { get; set; }
     public DuelMap activeDuelMap { get; set; }
     public SceneBlendController blendController { get; set; }
 
-    private MapCamera mapCamera;
-    public MapCamera Camera {
+    private MapCamera _camera;
+    public new MapCamera camera {
         get {
-            if (mapCamera == null) {
-                mapCamera = FindObjectOfType<MapCamera>();
+            if (_camera == null) {
+                _camera = FindObjectOfType<MapCamera>();
             }
-            return mapCamera;
+            return _camera;
         }
-    }
-    public void SetCamera(MapCamera cam) {
-        Debug.Assert(mapCamera == null);
-        mapCamera = cam;
+        set {
+            _camera = value;
+        }
     }
 
     public void Start() {
-        Global.Instance().Memory.RegisterMemoryPopulater(this);
-        DebugMapMarker debugMap = FindObjectOfType<DebugMapMarker>();
-        if (debugMap != null) {
-            activeMap = FindObjectOfType<Map>();
-            avatar = activeMap.GetComponentInChildren<AvatarEvent>();
-        }
+        activeMap = FindObjectOfType<Map>();
+        avatar = activeMap.GetComponentInChildren<AvatarEvent>();
     }
 
     public void SetUpInitialMap(string mapName) {
@@ -53,15 +50,21 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
     }
 
     public IEnumerator TeleportRoutine(string mapName, IntVector2 location) {
-        yield return StartCoroutine(TeleportOutRoutine());
-        RawTeleport(mapName, location);
-        yield return StartCoroutine(TeleportInRoutine());
+        avatar.PauseInput();
+        TransitionData data = Global.Instance().Database.Transitions.GetData(DefaultTransitionTag);
+        yield return camera.GetComponent<FadeImageEffect>().TransitionRoutine(data, () => {
+            RawTeleport(mapName, location);
+        });
+        avatar.UnpauseInput();
     }
 
     public IEnumerator TeleportRoutine(string mapName, string targetEventName) {
-        yield return StartCoroutine(TeleportOutRoutine());
-        RawTeleport(mapName, targetEventName);
-        yield return StartCoroutine(TeleportInRoutine());
+        avatar.PauseInput();
+        TransitionData data = Global.Instance().Database.Transitions.GetData(DefaultTransitionTag);
+        yield return camera.GetComponent<FadeImageEffect>().TransitionRoutine(data, () => {
+            RawTeleport(mapName, targetEventName);
+        });
+        avatar.UnpauseInput();
     }
     
     private void RawTeleport(string mapName, IntVector2 location) {
@@ -104,23 +107,14 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
     }
 
     private void AddInitialAvatar(Memory memory = null) {
+        // TODO:
         avatar = Instantiate(Resources.Load<GameObject>("Prefabs/Map3D/Avatar3D")).GetComponent<AvatarEvent>();
         if (memory != null) {
             avatar.PopulateFromMemory(memory);
         }
         avatar.transform.parent = activeMap.objectLayer.transform;
         activeMap.OnTeleportTo();
-        Camera.target = avatar.GetComponent<MapEvent>();
-        Camera.ManualUpdate();
-    }
-
-    private IEnumerator TeleportOutRoutine() {
-        avatar.PauseInput();
-        yield return null;
-    }
-
-    private IEnumerator TeleportInRoutine() {
-        avatar.UnpauseInput();
-        yield return null;
+        camera.target = avatar.GetComponent<MapEvent>();
+        camera.ManualUpdate();
     }
 }

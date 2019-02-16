@@ -124,9 +124,9 @@ public abstract class MapEvent : MonoBehaviour {
             GetComponent<Dispatch>().RegisterListener(EventInteract, (object payload) => {
                 OnInteract((AvatarEvent)payload);
             });
-        }
 
-        CheckEnabled();
+            CheckEnabled();
+        }
     }
 
     public virtual void Update() {
@@ -164,7 +164,7 @@ public abstract class MapEvent : MonoBehaviour {
     public bool ContainsPosition(IntVector2 loc) {
         IntVector2 pos1 = position;
         IntVector2 pos2 = position + size;
-        return loc.x >= pos1.x && loc.x <= pos2.x && loc.y >= pos1.y && loc.y <= pos2.y;
+        return loc.x >= pos1.x && loc.x < pos2.x && loc.y >= pos1.y && loc.y < pos2.y;
     }
 
     public void SetLocation(IntVector2 location) {
