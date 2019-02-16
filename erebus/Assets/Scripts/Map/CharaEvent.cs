@@ -19,7 +19,6 @@ public class CharaEvent : MonoBehaviour {
 
     // Public
     public Map parent { get { return GetComponent<MapEvent>().parent; } }
-    public ObjectLayer layer { get { return GetComponent<MapEvent>().layer; } }
 
     private OrthoDir internalFacing;
     public OrthoDir facing {
@@ -69,7 +68,7 @@ public class CharaEvent : MonoBehaviour {
             return true;
         }
 
-        foreach (MapEvent mapEvent in parent.GetEventsAt(layer, loc)) {
+        foreach (MapEvent mapEvent in parent.GetEventsAt(loc)) {
             if (!mapEvent.IsPassableBy(this)) {
                 return false;
             }

@@ -87,24 +87,6 @@ public abstract class MapEvent : MonoBehaviour {
         }
     }
 
-    private static int _layerIndex = -1;
-    public int layerIndex {
-        get {
-            // this is a perf optimization -- events can't change layer now
-            if (_layerIndex != -1) {
-                return _layerIndex;
-            }
-            for (int thisLayerIndex = 0; thisLayerIndex < parent.grid.transform.childCount; thisLayerIndex += 1) {
-                if (parent.grid.transform.GetChild(thisLayerIndex).gameObject.GetComponent<ObjectLayer>() == layer) {
-                    _layerIndex = thisLayerIndex;
-                    return thisLayerIndex;
-                }
-            }
-            Assert.IsTrue(false);
-            return -1;
-        }
-    }
-
     private bool _switchEnabled = true;
     public bool switchEnabled {
         get {
@@ -168,10 +150,9 @@ public abstract class MapEvent : MonoBehaviour {
         if (loc.x < 0 || loc.x >= parent.width || loc.y < 0 || loc.y >= parent.height) {
             return false;
         }
-        int thisLayerIndex = GetComponent<MapEvent>().layerIndex;
-        for (int i = thisLayerIndex - 1; i >= 0 && i >= thisLayerIndex - 2; i -= 1) {
-            Tilemap layer = parent.layers[i];
-            if (!parent.IsChipPassableAt(layer, loc)) {
+        foreach (Tilemap layer in parent.layers) {
+            if (layer.transform.position.z >= parent.objectLayer.transform.position.z && 
+                    !parent.IsChipPassableAt(layer, loc)) {
                 return false;
             }
         }

@@ -32,11 +32,11 @@ public class BattleController : MonoBehaviour {
 
     public void Start() {
         cursor = Cursor.GetInstance();
-        cursor.gameObject.transform.parent = GetComponent<Map>().LowestObjectLayer().transform;
+        cursor.gameObject.transform.parent = GetComponent<Map>().objectLayer.transform;
         cursor.gameObject.SetActive(false);
 
         dirCursor = DirectionCursor.GetInstance();
-        dirCursor.gameObject.transform.parent = GetComponent<Map>().LowestObjectLayer().transform;
+        dirCursor.gameObject.transform.parent = GetComponent<Map>().objectLayer.transform;
         dirCursor.gameObject.SetActive(false);
     }
 
@@ -60,7 +60,7 @@ public class BattleController : MonoBehaviour {
     }
 
     public BattleUnit GetUnitAt(IntVector2 position) {
-        foreach (MapEvent mapEvent in map.GetEventsAt(map.LowestObjectLayer(), position)) {
+        foreach (MapEvent mapEvent in map.GetEventsAt(position)) {
             if (mapEvent.GetComponent<BattleEvent>() != null) {
                 return mapEvent.GetComponent<BattleEvent>().unit;
             }
@@ -183,7 +183,7 @@ public class BattleController : MonoBehaviour {
 
     public SelectionGrid SpawnSelectionGrid() {
         SelectionGrid grid = SelectionGrid.GetInstance();
-        grid.gameObject.transform.parent = GetComponent<Map>().LowestObjectLayer().transform;
+        grid.gameObject.transform.parent = GetComponent<Map>().objectLayer.transform;
         return grid;
     }
 

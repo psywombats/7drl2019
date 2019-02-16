@@ -16,6 +16,7 @@ public class Map : MonoBehaviour {
     
     public string fullName;
     public Grid grid;
+    public ObjectLayer objectLayer;
 
     public string bgmKey { get; private set; }
     
@@ -68,27 +69,29 @@ public class Map : MonoBehaviour {
     }
 
     public bool IsChipPassableAt(Tilemap layer, IntVector2 loc) {
-        if (passabilityMap == null) {
-            passabilityMap = new Dictionary<Tilemap, bool[,]>();
-        }
-        if (!passabilityMap.ContainsKey(layer)) {
-            passabilityMap[layer] = new bool[width, height];
-            for (int x = 0; x < width; x += 1) {
-                for (int y = 0; y < height; y += 1) {
-                    PropertiedTile tile = TileAt(layer, x, y);
-                    passabilityMap[layer][x, y] = tile == null || tile.GetData().passable;
-                }
-            }
-        }
+        PropertiedTile tile = TileAt(layer, loc.x, loc.y);
+        return tile == null || tile.GetData().passable;
+        //if (passabilityMap == null) {
+        //    passabilityMap = new Dictionary<Tilemap, bool[,]>();
+        //}
+        //if (!passabilityMap.ContainsKey(layer)) {
+        //    passabilityMap[layer] = new bool[width, height];
+        //    for (int x = 0; x < width; x += 1) {
+        //        for (int y = 0; y < height; y += 1) {
+        //            PropertiedTile tile = TileAt(layer, x, y);
+        //            passabilityMap[layer][x, y] = tile == null || tile.GetData().passable;
+        //        }
+        //    }
+        //}
 
-        return passabilityMap[layer][loc.x, loc.y];
+        //return passabilityMap[layer][loc.x, loc.y];
     }
 
     // careful, this implementation is straight from MGNE, it's efficiency is questionable, to say the least
     // it does support bigger than 1*1 events though
-    public List<MapEvent> GetEventsAt(ObjectLayer layer, IntVector2 loc) {
+    public List<MapEvent> GetEventsAt(IntVector2 loc) {
         List<MapEvent> events = new List<MapEvent>();
-        foreach (MapEvent mapEvent in layer.gameObject.GetComponentsInChildren<MapEvent>()) {
+        foreach (MapEvent mapEvent in objectLayer.GetComponentsInChildren<MapEvent>()) {
             if (mapEvent.ContainsPosition(loc)) {
                 events.Add(mapEvent);
             }
@@ -97,8 +100,8 @@ public class Map : MonoBehaviour {
     }
 
     // returns the first event at loc that implements T
-    public T GetEventAt<T>(ObjectLayer layer, IntVector2 loc) {
-        List<MapEvent> events = GetEventsAt(layer, loc);
+    public T GetEventAt<T>(IntVector2 loc) {
+        List<MapEvent> events = GetEventsAt(loc);
         foreach (MapEvent mapEvent in events) {
             if (mapEvent.GetComponent<T>() != null) {
                 return mapEvent.GetComponent<T>();
@@ -109,11 +112,7 @@ public class Map : MonoBehaviour {
 
     // returns all events that have a component of type t
     public List<T> GetEvents<T>() {
-        return new List<T>(LowestObjectLayer().GetComponentsInChildren<T>());
-    }
-
-    public ObjectLayer LowestObjectLayer() {
-        return GetComponentsInChildren<ObjectLayer>()[0];
+        return new List<T>(objectLayer.GetComponentsInChildren<T>());
     }
 
     public Tilemap TileLayerAtIndex(int layerIndex) {

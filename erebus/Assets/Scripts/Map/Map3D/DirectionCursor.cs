@@ -27,7 +27,7 @@ public class DirectionCursor : MonoBehaviour, InputListener {
         Map map = actingUnit.battle.controller.map;
         foreach (OrthoDir dir in Enum.GetValues(typeof(OrthoDir))) {
             IntVector2 loc = actingUnit.location + dir.XY();
-            BattleEvent doll = map.GetEventAt<BattleEvent>(map.LowestObjectLayer(), loc);
+            BattleEvent doll = map.GetEventAt<BattleEvent>(loc);
             if (doll != null && rule(doll.unit)) {
                 dirs.Add(dir);
             }
@@ -36,7 +36,7 @@ public class DirectionCursor : MonoBehaviour, InputListener {
             Result<OrthoDir> dirResult = new Result<OrthoDir>();
             yield return SelectTargetDirRoutine(dirResult, actingUnit, dirs, canCancel);
             IntVector2 loc = actingUnit.location + dirResult.value.XY();
-            result.value = map.GetEventAt<BattleEvent>(map.LowestObjectLayer(), loc).unit;
+            result.value = map.GetEventAt<BattleEvent>(loc).unit;
         } else {
             Debug.Assert(false, "No valid directions");
             result.Cancel();

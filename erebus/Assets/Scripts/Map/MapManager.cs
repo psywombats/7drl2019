@@ -114,7 +114,7 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
         if (memory != null) {
             Avatar.PopulateFromMemory(memory);
         }
-        Avatar.transform.parent = ActiveMap.LowestObjectLayer().transform;
+        Avatar.transform.parent = ActiveMap.objectLayer.transform;
         ActiveMap.OnTeleportTo();
         Camera.target = Avatar.GetComponent<MapEvent>();
         Camera.ManualUpdate();

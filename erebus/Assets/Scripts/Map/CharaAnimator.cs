@@ -51,7 +51,7 @@ public class CharaAnimator : MonoBehaviour {
     public void Update() {
         CopyShaderValues();
 
-        if (!Application.isEditor) {
+        if (Application.isPlaying) {
             if (Parent().GetComponent<CharaEvent>() != null) {
                 bool steppingThisFrame = IsStepping();
                 bool stepping = steppingThisFrame || wasSteppingLastFrame;

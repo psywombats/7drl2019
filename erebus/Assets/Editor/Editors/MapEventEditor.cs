@@ -19,7 +19,9 @@ public class MapEventEditor : Editor {
                 GameObject doll = Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(DollPath));
                 doll.name = mapEvent.name + " (doll)";
                 GameObjectUtility.SetParentAndAlign(doll, mapEvent.gameObject);
-                mapEvent.gameObject.AddComponent<CharaEvent>().doll = doll;
+                CharaEvent chara = mapEvent.gameObject.AddComponent<CharaEvent>();
+                chara.doll = doll;
+                mapEvent.passable = false;
                 Undo.RegisterCreatedObjectUndo(mapEvent, "Create " + doll.name);
                 Selection.activeObject = doll;
 

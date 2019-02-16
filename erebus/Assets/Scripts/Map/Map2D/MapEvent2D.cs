@@ -6,7 +6,9 @@ public class MapEvent2D : MapEvent {
 
     public Vector2 PositionPx2D {
         get { return new Vector2(gameObject.transform.position.x, gameObject.transform.position.y); }
-        private set { gameObject.transform.position = new Vector3(value.x, value.y, gameObject.transform.position.z); }
+        private set {
+            gameObject.transform.position = new Vector3(value.x, value.y, DepthForPositionPx(value.y));
+        }
     }
 
     public static IntVector2 GridLocationTileCoords(BoundsInt gridPosition) {
@@ -21,7 +23,7 @@ public class MapEvent2D : MapEvent {
 
     public override void Update() {
         base.Update();
-        if (Application.isEditor) {
+        if (!Application.isPlaying) {
             position = WorldPositionTileCoords(transform.position);
             Vector2 sizeDelta = GetComponent<RectTransform>().sizeDelta;
             size = new IntVector2(
@@ -41,10 +43,11 @@ public class MapEvent2D : MapEvent {
     }
 
     public override Vector3 CalculateOffsetPositionPx(OrthoDir dir) {
+        float y = positionPx.y + dir.Px2DY() * Map.TileSizePx / Map.UnityUnitScale * OrthoDir.North.Px2DY();
         return new Vector3(
-            positionPx.x + dir.Px2DX() * Map.TileSizePx / Map.UnityUnitScale,
-            positionPx.y + dir.Px2DY() * Map.TileSizePx / Map.UnityUnitScale,
-            DepthForPosition(position + dir.XY()));
+            positionPx.x + dir.Px2DX() * Map.TileSizePx / Map.UnityUnitScale * OrthoDir.East.Px2DX(),
+            y,
+            DepthForPositionPx(y));
     }
 
     public override void SetScreenPositionToMatchTilePosition() {
@@ -64,13 +67,15 @@ public class MapEvent2D : MapEvent {
 
     public override void SetDepth() {
         if (parent != null) {
-            float z = DepthForPosition(position);
-            gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, z);
+            gameObject.transform.localPosition = new Vector3(
+                gameObject.transform.localPosition.x,
+                gameObject.transform.localPosition.y,
+                DepthForPositionPx(gameObject.transform.localPosition.y));
         }
     }
 
-    private float DepthForPosition(Vector2 position) {
-        return transform.parent.position.z - (position.y / (parent.size.y)) * 0.1f;
+    private float DepthForPositionPx(float y) {
+        return (y / (parent.size.y * Map.TileSizePx)) * 0.1f;
     }
 
     private void DrawGizmoSelf() {
