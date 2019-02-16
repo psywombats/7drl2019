@@ -18,6 +18,7 @@ public class LuaScript {
     }
 
     public LuaScript(LuaContext context, DynValue function) {
+        this.context = context;
         scriptRoutine = context.lua.CreateCoroutine(function).Coroutine;
     }
 

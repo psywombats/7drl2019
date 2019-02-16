@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "IndexDatabase", menuName = "Data/IndexDatabase")]
 public class IndexDatabase : ScriptableObject {
@@ -9,8 +7,6 @@ public class IndexDatabase : ScriptableObject {
     public FadeIndexData Fades;
     public SoundEffectIndexData SFX;
     public BGMIndexData BGM;
-    public BackgroundIndexData Backgrounds;
-    public CharaIndexData Charas;
 
     public static IndexDatabase Instance() {
         return Resources.Load<IndexDatabase>("Database/Database");

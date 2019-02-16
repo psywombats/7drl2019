@@ -25,7 +25,7 @@ public class LuaContext : MonoBehaviour {
     private LuaScript activeScript;
     private int blockingRoutines;
 
-    public void Awake() {
+    public virtual void Awake() {
         LoadDefines(DefinesPath);
         AssignGlobals();
     }
@@ -54,7 +54,7 @@ public class LuaContext : MonoBehaviour {
     }
 
     // all coroutines that are meant to block execution of the script should go through here
-    public void RunRoutineFromLua(IEnumerator routine) {
+    public virtual void RunRoutineFromLua(IEnumerator routine) {
         blockingRoutines += 1;
         StartCoroutine(CoUtils.RunWithCallback(routine, () => {
             blockingRoutines -= 1;
@@ -80,8 +80,8 @@ public class LuaContext : MonoBehaviour {
     }
 
     public virtual IEnumerator RunRoutine(LuaScript script) {
-        Assert.IsNull(this.activeScript);
-        this.activeScript = script;
+        Assert.IsNull(activeScript);
+        activeScript = script;
         try {
             script.scriptRoutine.Resume();
         } catch (Exception e) {
@@ -91,7 +91,7 @@ public class LuaContext : MonoBehaviour {
         while (script.scriptRoutine.State != CoroutineState.Dead) {
             yield return null;
         }
-        this.activeScript = null;
+        activeScript = null;
     }
 
     protected virtual void AssignGlobals() {
@@ -103,8 +103,8 @@ public class LuaContext : MonoBehaviour {
         lua.Globals["eventNamed"] = (Func<DynValue, LuaMapEvent>)EventNamed;
     }
 
-    protected void LoadDefines(string definesPath) {
-        StreamReader reader = new StreamReader(DefinesPath);
+    protected void LoadDefines(string path) {
+        StreamReader reader = new StreamReader(path);
         lua.DoStream(reader.BaseStream);
         reader.Close();
     }

@@ -88,9 +88,7 @@
     <Compile Include="Assets\Scripts\Audio\AudioManager.cs" />
     <Compile Include="Assets\Scripts\Audio\WaveSource.cs" />
     <Compile Include="Assets\Scripts\Data\AutoExpandingScriptableObject.cs" />
-    <Compile Include="Assets\Scripts\Data\BackgroundIndexData.cs" />
     <Compile Include="Assets\Scripts\Data\BGMIndexData.cs" />
-    <Compile Include="Assets\Scripts\Data\CharaIndexData.cs" />
     <Compile Include="Assets\Scripts\Data\FadeIndexData.cs" />
     <Compile Include="Assets\Scripts\Data\GenericDataObject.cs" />
     <Compile Include="Assets\Scripts\Data\GenericIndex.cs" />

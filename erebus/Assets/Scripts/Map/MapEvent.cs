@@ -7,7 +7,7 @@ using UnityEngine.Tilemaps;
  * The generic "thing on the map" class for MGNE2. Usually comes from Tiled.
  */
 [RequireComponent(typeof(Dispatch))]
-[RequireComponent(typeof(LuaContext))]
+[RequireComponent(typeof(LuaCutsceneContext))]
 [RequireComponent(typeof(RectTransform))]
 [DisallowMultipleComponent]
 public abstract class MapEvent : MonoBehaviour {
@@ -108,13 +108,14 @@ public abstract class MapEvent : MonoBehaviour {
 
     public void Awake() {
         luaObject = new LuaMapEvent(this);
-        luaObject.Set(PropertyCollide, luaOnCollide);
-        luaObject.Set(PropertyInteract, luaOnInteract);
-        luaObject.Set(PropertyCondition, luaCondition);
     }
 
     public void Start() {
-        if (Application.IsPlaying(this)) {
+        if (Application.isPlaying) {
+            luaObject.Set(PropertyCollide, luaOnCollide);
+            luaObject.Set(PropertyInteract, luaOnInteract);
+            luaObject.Set(PropertyCondition, luaCondition);
+
             positionPx = transform.localPosition;
 
             GetComponent<Dispatch>().RegisterListener(EventCollide, (object payload) => {

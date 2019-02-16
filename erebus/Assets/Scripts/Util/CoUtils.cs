@@ -35,7 +35,9 @@ public class CoUtils {
 
     public static IEnumerator RunWithCallback(IEnumerator coroutine, Action toRun) {
         yield return coroutine;
-        toRun();
+        if (toRun != null) {
+            toRun();
+        }
     }
 
     public static IEnumerator Wait(float seconds) {
