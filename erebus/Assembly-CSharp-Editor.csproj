@@ -73,6 +73,11 @@
     <Compile Include="Assets\2d-extras\Tilemap\Tiles\Rule Override Tile\Scripts\Editor\RuleOverrideTileEditor.cs" />
     <Compile Include="Assets\2d-extras\Tilemap\Tiles\Rule Tile\Scripts\Editor\CustomRuleTileMenu.cs" />
     <Compile Include="Assets\2d-extras\Tilemap\Tiles\Rule Tile\Scripts\Editor\RuleTileEditor.cs" />
+    <Compile Include="Assets\Editor\_EditorCustomMesh.cs" />
+    <Compile Include="Assets\Editor\_EditorMeshInterface.cs" />
+    <Compile Include="Assets\Editor\_EditorMeshTools.cs" />
+    <Compile Include="Assets\Editor\_TilesetImporter.cs" />
+    <Compile Include="Assets\Editor\_WindowTilesetManager.cs" />
     <Compile Include="Assets\Editor\Brushes\EditTilesetBrush.cs" />
     <Compile Include="Assets\Editor\Editors\AnimationPlayerEditor.cs" />
     <Compile Include="Assets\Editor\Editors\AutoExpandingScriptableDrawer.cs" />
@@ -92,6 +97,9 @@
     <Compile Include="Assets\Editor\Importers\FontImporter.cs" />
     <Compile Include="Assets\Editor\Importers\SpriteImporter.cs" />
     <Compile Include="Assets\Editor\Importers\TileImporter.cs" />
+    <None Include="Assets\Editor\EditorResources\Tilesets\Loading Bay.xml" />
+    <None Include="Assets\Editor\EditorResources\Tilesets\Debug3d.xml" />
+    <None Include="Assets\Editor\MeshEdit\Mesh Edit Settings.txt" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>C:/Users/aking_2/erebus/erebus/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>

@@ -7,7 +7,10 @@ public class TileImporter : AssetPostprocessor {
 
     public static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths) {
         foreach (string assetPath in importedAssets) {
-            if (assetPath.Contains("Tilesets") && assetPath.Contains(".png") && !assetPath.Contains("3D")) {
+            if (assetPath.Contains("Tilesets") && 
+                    assetPath.Contains(".png") && 
+                    !assetPath.Contains("3D") && 
+                    !assetPath.Contains("Constructed")) {
                 CreateTiles(assetPath);
                 AssetDatabase.SaveAssets();
                 CreatePalette(assetPath);

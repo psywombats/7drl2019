@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<Tileset xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <tilesetMappedPoints />
+  <editorMappedPoints />
+  <animationLength>
+    <int>0</int>
+    <int>0</int>
+    <int>0</int>
+    <int>0</int>
+    <int>0</int>
+    <int>0</int>
+    <int>0</int>
+    <int>0</int>
+    <int>0</int>
+    <int>0</int>
+    <int>0</int>
+    <int>0</int>
+    <int>0</int>
+    <int>0</int>
+    <int>0</int>
+    <int>0</int>
+    <int>0</int>
+    <int>0</int>
+    <int>0</int>
+    <int>0</int>
+    <int>0</int>
+    <int>0</int>
+    <int>0</int>
+    <int>0</int>
+    <int>0</int>
+  </animationLength>
+  <tilesetName>Debug3d</tilesetName>
+  <tileWidth>16</tileWidth>
+  <tileHeight>16</tileHeight>
+  <tileOutline>1</tileOutline>
+  <pageWidth>90</pageWidth>
+  <pageHeight>90</pageHeight>
+  <editorTilesetWidth>80</editorTilesetWidth>
+  <editorTilesetHeight>80</editorTilesetHeight>
+  <tilePadding>0</tilePadding>
+  <textureAssets>
+    <string>Assets/Tilesets/3D/debug3d.png</string>
+  </textureAssets>
+  <animationAssets />
+</Tileset>
