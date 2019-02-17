@@ -143,8 +143,6 @@
     <Compile Include="Assets\Scripts\Map\Tactics\DuelMap.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\SelectionGrid.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\TacticsCam.cs" />
-    <Compile Include="Assets\Scripts\MeshEdit.cs" />
-    <Compile Include="Assets\Scripts\MeshMod.cs" />
     <Compile Include="Assets\Scripts\RPG\AIController.cs" />
     <Compile Include="Assets\Scripts\RPG\Alignment.cs" />
     <Compile Include="Assets\Scripts\RPG\Battle.cs" />
@@ -167,7 +165,6 @@
     <Compile Include="Assets\Scripts\Serialization\Settings\SettingsDefaults.cs" />
     <Compile Include="Assets\Scripts\Serialization\SettingsMemory.cs" />
     <Compile Include="Assets\Scripts\Serialization\SystemMemory.cs" />
-    <Compile Include="Assets\Scripts\Tileset.cs" />
     <Compile Include="Assets\Scripts\UI\Textbox.cs" />
     <Compile Include="Assets\Scripts\UI\UISprite.cs" />
     <Compile Include="Assets\Scripts\Util\CoUtils.cs" />
@@ -177,7 +174,6 @@
     <Compile Include="Assets\Scripts\Util\IntVector2.cs" />
     <Compile Include="Assets\Scripts\Util\IntVector3.cs" />
     <Compile Include="Assets\Scripts\Util\ObjectPool.cs" />
-    <Compile Include="Assets\Scripts\Util\OriginSpotter.cs" />
     <Compile Include="Assets\Scripts\Util\Result.cs" />
     <Compile Include="Assets\Scripts\Util\SerialDictionary.cs" />
     <Compile Include="Assets\Scripts\Util\UIUtils.cs" />
