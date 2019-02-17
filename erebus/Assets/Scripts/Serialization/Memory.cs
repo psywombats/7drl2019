@@ -11,7 +11,7 @@ public class Memory {
 
     // other state
     public string mapName;
-    public IntVector2 position;
+    public Vector2Int position;
     public OrthoDir facing;
     public string bgmKey;
 

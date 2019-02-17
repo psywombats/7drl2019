@@ -4,12 +4,12 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class MapEvent2D : MapEvent {
 
-    public static IntVector2 GridLocationTileCoords(BoundsInt gridPosition) {
-        return new IntVector2(gridPosition.x, -1 * (gridPosition.y + 1));
+    public static Vector2Int GridLocationTileCoords(BoundsInt gridPosition) {
+        return new Vector2Int(gridPosition.x, -1 * (gridPosition.y + 1));
     }
 
-    public static IntVector2 WorldPositionTileCoords(Vector3 pos) {
-        return new IntVector2(
+    public static Vector2Int WorldPositionTileCoords(Vector3 pos) {
+        return new Vector2Int(
             Mathf.RoundToInt(pos.x / Map.TileSizePx) * OrthoDir.East.Px2DX(), 
             Mathf.RoundToInt(pos.y / Map.TileSizePx) * OrthoDir.North.Px2DY());
     }
@@ -19,7 +19,7 @@ public class MapEvent2D : MapEvent {
         if (!Application.isPlaying) {
             position = WorldPositionTileCoords(transform.position);
             Vector2 sizeDelta = GetComponent<RectTransform>().sizeDelta;
-            size = new IntVector2(
+            size = new Vector2Int(
                 Mathf.RoundToInt(sizeDelta.x / Map.TileSizePx),
                 Mathf.RoundToInt(sizeDelta.y / Map.TileSizePx));
         }

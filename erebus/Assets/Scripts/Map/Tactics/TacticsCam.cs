@@ -91,7 +91,7 @@ public class TacticsCam : MapCamera {
         WarpToTarget();
     }
 
-    public void SetTargetLocation(IntVector2 loc) {
+    public void SetTargetLocation(Vector2Int loc) {
         target = null;
         targetDollyPosition = MapEvent3D.TileToWorldCoords(loc);
     }

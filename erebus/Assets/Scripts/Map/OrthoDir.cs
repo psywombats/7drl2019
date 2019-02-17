@@ -12,18 +12,18 @@ public class OrthoDirAttribute : Attribute {
 
     // this set is in tile space
     // (xy is public for optimization)
-    public IntVector2 XY;
+    public Vector2Int XY;
     public int X { get { return XY.x; } }
     public int Y { get { return XY.y; } }
 
     // 2D screenspace
-    public IntVector3 Px2D { get; private set; }
+    public Vector3Int Px2D { get; private set; }
     public int Px2DX { get { return Px2D.x; } }
     public int Px2DY { get { return Px2D.y; } }
     public int Px2DZ { get { return Px2D.z; } }
 
     // 3D screenspace
-    public IntVector3 Px3D { get; private set; }
+    public Vector3Int Px3D { get; private set; }
     public int Px3DX { get { return Px3D.x; } }
     public int Px3DY { get { return Px3D.y; } }
     public int Px3DZ { get { return Px3D.z; } }
@@ -35,9 +35,9 @@ public class OrthoDirAttribute : Attribute {
             int px2DX, int px2DY, int px2DZ,
             int px3DX, int px3DY, int px3DZ,
             int dx, int dy, int ordinal) {
-        XY = new IntVector2(dx, dy);
-        Px2D = new IntVector3(px2DX, px2DY, px2DZ);
-        Px3D = new IntVector3(px3DX, px3DY, px3DZ);
+        XY = new Vector2Int(dx, dy);
+        Px2D = new Vector3Int(px2DX, px2DY, px2DZ);
+        Px3D = new Vector3Int(px3DX, px3DY, px3DZ);
         Ordinal = ordinal;
         DirectionName = directionName;
     }
@@ -84,17 +84,17 @@ public static class OrthoDirExtensions {
 
     public static int X(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().X; }
     public static int Y(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().Y; }
-    public static IntVector2 XY(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().XY; }
+    public static Vector2Int XY(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().XY; }
 
     public static int Px2DX(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().Px2DX; }
     public static int Px2DY(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().Px2DY; }
     public static int Px2DZ(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().Px2DY; }
-    public static IntVector3 Px2D(this OrthoDir dir) { return new IntVector3(dir.Px2DX(), dir.Px2DY(), dir.Px2DZ()); }
+    public static Vector3Int Px2D(this OrthoDir dir) { return new Vector3Int(dir.Px2DX(), dir.Px2DY(), dir.Px2DZ()); }
 
     public static int Px3DX(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().Px3DX; }
     public static int Px3DY(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().Px3DY; }
     public static int Px3DZ(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().Px3DZ; }
-    public static IntVector3 Px3D(this OrthoDir dir) { return new IntVector3(dir.Px3DX(), dir.Px3DY(), dir.Px3DZ()); }
+    public static Vector3Int Px3D(this OrthoDir dir) { return new Vector3Int(dir.Px3DX(), dir.Px3DY(), dir.Px3DZ()); }
 
     public static int Ordinal(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().Ordinal; }
     public static string DirectionName(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().DirectionName; }

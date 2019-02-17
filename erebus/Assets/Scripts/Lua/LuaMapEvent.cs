@@ -79,7 +79,7 @@ public class LuaMapEvent {
     }
 
     public void cs_pathTo(int x, int y) {
-        context.RunRoutineFromLua(mapEvent.GetComponent<CharaEvent>().PathToRoutine(new IntVector2(x, y)));
+        context.RunRoutineFromLua(mapEvent.GetComponent<CharaEvent>().PathToRoutine(new Vector2Int(x, y)));
     }
 
     public void cs_walk(string directionName, int count) {

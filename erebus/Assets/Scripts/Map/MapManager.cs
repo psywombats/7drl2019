@@ -49,7 +49,7 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
         }
     }
 
-    public IEnumerator TeleportRoutine(string mapName, IntVector2 location) {
+    public IEnumerator TeleportRoutine(string mapName, Vector2Int location) {
         avatar.PauseInput();
         TransitionData data = Global.Instance().Database.Transitions.GetData(DefaultTransitionTag);
         yield return camera.GetComponent<FadeImageEffect>().TransitionRoutine(data, () => {
@@ -67,7 +67,7 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
         avatar.UnpauseInput();
     }
     
-    private void RawTeleport(string mapName, IntVector2 location) {
+    private void RawTeleport(string mapName, Vector2Int location) {
         Assert.IsNotNull(activeMap);
         Map newMapInstance = InstantiateMap(mapName);
         RawTeleport(newMapInstance, location);
@@ -80,7 +80,7 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
         RawTeleport(newMapInstance, target.position);
     }
 
-    private void RawTeleport(Map map, IntVector2 location) {
+    private void RawTeleport(Map map, Vector2Int location) {
         Assert.IsNotNull(activeMap);
         Assert.IsNotNull(avatar);
 

@@ -26,7 +26,7 @@ public class DirectionCursor : MonoBehaviour, InputListener {
         List<OrthoDir> dirs = new List<OrthoDir>();
         Map map = actingUnit.battle.controller.map;
         foreach (OrthoDir dir in Enum.GetValues(typeof(OrthoDir))) {
-            IntVector2 loc = actingUnit.location + dir.XY();
+            Vector2Int loc = actingUnit.location + dir.XY();
             BattleEvent doll = map.GetEventAt<BattleEvent>(loc);
             if (doll != null && rule(doll.unit)) {
                 dirs.Add(dir);
@@ -35,7 +35,7 @@ public class DirectionCursor : MonoBehaviour, InputListener {
         if (dirs.Count > 0) {
             Result<OrthoDir> dirResult = new Result<OrthoDir>();
             yield return SelectTargetDirRoutine(dirResult, actingUnit, dirs, canCancel);
-            IntVector2 loc = actingUnit.location + dirResult.value.XY();
+            Vector2Int loc = actingUnit.location + dirResult.value.XY();
             result.value = map.GetEventAt<BattleEvent>(loc).unit;
         } else {
             Debug.Assert(false, "No valid directions");
@@ -54,10 +54,10 @@ public class DirectionCursor : MonoBehaviour, InputListener {
         actingUnit.controller.cursor.DisableReticules();
 
         SelectionGrid grid = actingUnit.controller.SpawnSelectionGrid();
-        grid.ConfigureNewGrid(new IntVector2(3, 3), (IntVector2 loc) => {
+        grid.ConfigureNewGrid(new Vector2Int(3, 3), (Vector2Int loc) => {
             return (loc.x + loc.y) % 2 == 1;
         });
-        grid.GetComponent<MapEvent>().position = actingUnit.location - new IntVector2(1, 1);
+        grid.GetComponent<MapEvent>().position = actingUnit.location - new Vector2Int(1, 1);
         grid.GetComponent<MapEvent>().SetScreenPositionToMatchTilePosition();
         GetComponent<MapEvent>().position = actingUnit.location;
         GetComponent<MapEvent>().SetScreenPositionToMatchTilePosition();

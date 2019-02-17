@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
+using UnityEngine;
 
 public class EditorUtils {
 
@@ -18,10 +19,10 @@ public class EditorUtils {
         return string.Join("/", components);
     }
 
-    public static IntVector2 GetPreprocessedImageSize(TextureImporter importer) {
+    public static Vector2Int GetPreprocessedImageSize(TextureImporter importer) {
         object[] args = new object[2] { 0, 0 };
         MethodInfo mi = typeof(TextureImporter).GetMethod("GetWidthAndHeight", BindingFlags.NonPublic | BindingFlags.Instance);
         mi.Invoke(importer, args);
-        return new IntVector2((int)args[0], (int)args[1]);
+        return new Vector2Int((int)args[0], (int)args[1]);
     }
 }

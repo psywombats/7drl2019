@@ -23,8 +23,8 @@ public abstract class MapEvent : MonoBehaviour {
 
     // Editor properties
     [Header("Location (in tiles)")]
-    public IntVector2 position = new IntVector2(0, 0);
-    public IntVector2 size = new IntVector2(1, 1);
+    public Vector2Int position = new Vector2Int(0, 0);
+    public Vector2Int size = new Vector2Int(1, 1);
     [Space]
     [Header("Movement")]
     public float tilesPerSecond = 2.0f;
@@ -147,7 +147,7 @@ public abstract class MapEvent : MonoBehaviour {
         return passable || !switchEnabled;
     }
 
-    public bool CanPassAt(IntVector2 loc) {
+    public bool CanPassAt(Vector2Int loc) {
         if (loc.x < 0 || loc.x >= parent.width || loc.y < 0 || loc.y >= parent.height) {
             return false;
         }
@@ -161,13 +161,13 @@ public abstract class MapEvent : MonoBehaviour {
         return true;
     }
 
-    public bool ContainsPosition(IntVector2 loc) {
-        IntVector2 pos1 = position;
-        IntVector2 pos2 = position + size;
+    public bool ContainsPosition(Vector2Int loc) {
+        Vector2Int pos1 = position;
+        Vector2Int pos2 = position + size;
         return loc.x >= pos1.x && loc.x < pos2.x && loc.y >= pos1.y && loc.y < pos2.y;
     }
 
-    public void SetLocation(IntVector2 location) {
+    public void SetLocation(Vector2Int location) {
         position = location;
         SetScreenPositionToMatchTilePosition();
         SetDepth();

@@ -60,7 +60,7 @@ public class LuaCutsceneContext : LuaContext {
     }
 
     private void Teleport(DynValue mapName, DynValue x, DynValue y) {
-        RunRoutineFromLua(Global.Instance().Maps.TeleportRoutine(mapName.String, new IntVector2((int)x.Number, (int)y.Number)));
+        RunRoutineFromLua(Global.Instance().Maps.TeleportRoutine(mapName.String, new Vector2Int((int)x.Number, (int)y.Number)));
     }
 
     private void Teleport(DynValue mapName, DynValue targetEventName) {

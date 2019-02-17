@@ -79,7 +79,7 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
     }
 
     private void Interact() {
-        IntVector2 target = GetComponent<MapEvent>().position + GetComponent<CharaEvent>().facing.XY();
+        Vector2Int target = GetComponent<MapEvent>().position + GetComponent<CharaEvent>().facing.XY();
         List<MapEvent> targetEvents = GetComponent<MapEvent>().parent.GetEventsAt(target);
         foreach (MapEvent tryTarget in targetEvents) {
             if (tryTarget.switchEnabled && !tryTarget.IsPassableBy(GetComponent<CharaEvent>())) {
@@ -99,9 +99,9 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
     }
 
     private bool TryStep(OrthoDir dir) {
-        IntVector2 vectors = GetComponent<MapEvent>().position;
-        IntVector2 vsd = dir.XY();
-        IntVector2 target = vectors + vsd;
+        Vector2Int vectors = GetComponent<MapEvent>().position;
+        Vector2Int vsd = dir.XY();
+        Vector2Int target = vectors + vsd;
         GetComponent<CharaEvent>().facing = dir;
         List<MapEvent> targetEvents = GetComponent<MapEvent>().parent.GetEventsAt(target);
 

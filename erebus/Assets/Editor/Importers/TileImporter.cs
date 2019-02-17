@@ -24,7 +24,7 @@ public class TileImporter : AssetPostprocessor {
         }
 
         TextureImporter importer = (TextureImporter)assetImporter;
-        IntVector2 textureSize = EditorUtils.GetPreprocessedImageSize(importer);
+        Vector2Int textureSize = EditorUtils.GetPreprocessedImageSize(importer);
         string name = EditorUtils.NameFromPath(assetPath);
         importer.filterMode = FilterMode.Point;
         importer.textureCompression = TextureImporterCompression.Uncompressed;

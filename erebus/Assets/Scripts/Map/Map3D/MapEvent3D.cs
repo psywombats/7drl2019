@@ -2,7 +2,7 @@
 
 public class MapEvent3D : MapEvent {
 
-    public static Vector3 TileToWorldCoords(IntVector2 position) {
+    public static Vector3 TileToWorldCoords(Vector2Int position) {
         return new Vector3(position.x, 0.0f, -1.0f * position.y);
     }
 

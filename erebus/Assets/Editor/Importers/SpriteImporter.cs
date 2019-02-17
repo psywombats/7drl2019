@@ -40,7 +40,7 @@ internal sealed class SpriteImporter : AssetPostprocessor {
                importer.spritePixelsPerUnit = Map.UnityUnitScale;
             }
             importer.textureType = TextureImporterType.Sprite;
-            IntVector2 textureSize = EditorUtils.GetPreprocessedImageSize(importer);
+            Vector2Int textureSize = EditorUtils.GetPreprocessedImageSize(importer);
             if (path.Contains("Charas")) {
                 int stepCount = textureSize.x == 32 ? 2 : 3;
                 int charaWidth = textureSize.x / stepCount;

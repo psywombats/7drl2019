@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEngine;
 
 // representation of a unit in battle
 public class BattleUnit {
@@ -8,7 +7,7 @@ public class BattleUnit {
     public Battle battle { get; private set; }
     public BattleController controller { get { return battle.controller; } }
     public Alignment align { get { return unit.align; } }
-    public IntVector2 location { get; set; }
+    public Vector2Int location { get; set; }
     public bool hasActedThisTurn { get; private set; }
 
     public BattleEvent doll {
@@ -23,7 +22,7 @@ public class BattleUnit {
     //  - unit, this is a keyed by what comes in from tiled and used to look up hero/enemy in db
     //  - battle, the parent battle creating this unit for
     //  - starting location, gleened from the tiled event usually
-    public BattleUnit(Unit unit, Battle battle, IntVector2 location) {
+    public BattleUnit(Unit unit, Battle battle, Vector2Int location) {
         this.unit = unit;
         this.battle = battle;
         this.location = location;

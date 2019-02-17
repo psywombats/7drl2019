@@ -23,12 +23,12 @@ public class Map : MonoBehaviour {
     // true if the tile in question is passable at x,y
     private Dictionary<Tilemap, bool[,]> passabilityMap;
 
-    private IntVector2 _size;
-    public IntVector2 size {
+    private Vector2Int _size;
+    public Vector2Int size {
         get {
             if (_size.x == 0) {
                 Vector3Int v3 = grid.transform.GetChild(0).GetComponent<Tilemap>().size;
-                _size = new IntVector2(v3.x, v3.y);
+                _size = new Vector2Int(v3.x, v3.y);
             }
             return _size;
         }
@@ -56,7 +56,7 @@ public class Map : MonoBehaviour {
         Global.Instance().Maps.activeMap = this;
     }
 
-    public Vector3Int TileToTilemapCoords(IntVector2 loc) {
+    public Vector3Int TileToTilemapCoords(Vector2Int loc) {
         return TileToTilemapCoords(loc.x, loc.y);
     }
 
@@ -68,7 +68,7 @@ public class Map : MonoBehaviour {
         return (PropertiedTile)layer.GetTile(TileToTilemapCoords(x, y));
     }
 
-    public bool IsChipPassableAt(Tilemap layer, IntVector2 loc) {
+    public bool IsChipPassableAt(Tilemap layer, Vector2Int loc) {
         PropertiedTile tile = TileAt(layer, loc.x, loc.y);
         return tile == null || tile.GetData().passable;
         //if (passabilityMap == null) {
@@ -89,7 +89,7 @@ public class Map : MonoBehaviour {
 
     // careful, this implementation is straight from MGNE, it's efficiency is questionable, to say the least
     // it does support bigger than 1*1 events though
-    public List<MapEvent> GetEventsAt(IntVector2 loc) {
+    public List<MapEvent> GetEventsAt(Vector2Int loc) {
         List<MapEvent> events = new List<MapEvent>();
         foreach (MapEvent mapEvent in objectLayer.GetComponentsInChildren<MapEvent>()) {
             if (mapEvent.ContainsPosition(loc)) {
@@ -100,7 +100,7 @@ public class Map : MonoBehaviour {
     }
 
     // returns the first event at loc that implements T
-    public T GetEventAt<T>(IntVector2 loc) {
+    public T GetEventAt<T>(Vector2Int loc) {
         List<MapEvent> events = GetEventsAt(loc);
         foreach (MapEvent mapEvent in events) {
             if (mapEvent.GetComponent<T>() != null) {
@@ -141,32 +141,32 @@ public class Map : MonoBehaviour {
     }
 
     // returns a list of coordinates to step to with the last one being the destination, or null
-    public List<IntVector2> FindPath(CharaEvent actor, IntVector2 to) {
+    public List<Vector2Int> FindPath(CharaEvent actor, Vector2Int to) {
         return FindPath(actor, to, width > height ? width : height);
     }
-    public List<IntVector2> FindPath(CharaEvent actor, IntVector2 to, int maxPathLength) {
-        if (IntVector2.ManhattanDistance(actor.GetComponent<MapEvent>().position, to) > maxPathLength) {
+    public List<Vector2Int> FindPath(CharaEvent actor, Vector2Int to, int maxPathLength) {
+        if (ManhattanDistance(actor.GetComponent<MapEvent>().position, to) > maxPathLength) {
             return null;
         }
         if (!actor.CanPassAt(to)) {
             return null;
         }
 
-        HashSet<IntVector2> visited = new HashSet<IntVector2>();
-        List<List<IntVector2>> heads = new List<List<IntVector2>>();
-        List<IntVector2> firstHead = new List<IntVector2>();
+        HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
+        List<List<Vector2Int>> heads = new List<List<Vector2Int>>();
+        List<Vector2Int> firstHead = new List<Vector2Int>();
         firstHead.Add(actor.GetComponent<MapEvent>().position);
         heads.Add(firstHead);
 
         while (heads.Count > 0) {
-            heads.Sort(delegate (List<IntVector2> pathA, List<IntVector2> pathB) {
-                int pathACost = pathA.Count + IntVector2.ManhattanDistance(pathA[pathA.Count - 1], to);
-                int pathBCost = pathB.Count + IntVector2.ManhattanDistance(pathB[pathB.Count - 1], to);
+            heads.Sort(delegate (List<Vector2Int> pathA, List<Vector2Int> pathB) {
+                int pathACost = pathA.Count + ManhattanDistance(pathA[pathA.Count - 1], to);
+                int pathBCost = pathB.Count + ManhattanDistance(pathB[pathB.Count - 1], to);
                 return pathACost.CompareTo(pathBCost);
             });
-            List<IntVector2> head = heads[0];
+            List<Vector2Int> head = heads[0];
             heads.RemoveAt(0);
-            IntVector2 at = head[head.Count - 1];
+            Vector2Int at = head[head.Count - 1];
 
             if (at == to) {
                 // trim to remove the current location from the beginning
@@ -175,7 +175,7 @@ public class Map : MonoBehaviour {
 
             if (head.Count < maxPathLength) {
                 foreach (OrthoDir dir in Enum.GetValues(typeof(OrthoDir))) {
-                    IntVector2 next = head[head.Count - 1];
+                    Vector2Int next = head[head.Count - 1];
                     // minor perf here, this is critical code
                     switch (dir) {
                         case OrthoDir.East:     next.x += 1;    break;
@@ -184,7 +184,7 @@ public class Map : MonoBehaviour {
                         case OrthoDir.South:    next.y -= 1;    break;
                     }
                     if (!visited.Contains(next) && actor.CanPassAt(next)) {
-                        List<IntVector2> newHead = new List<IntVector2>(head);
+                        List<Vector2Int> newHead = new List<Vector2Int>(head);
                         newHead.Add(next);
                         heads.Add(newHead);
                         visited.Add(next);
@@ -194,5 +194,9 @@ public class Map : MonoBehaviour {
         }
 
         return null;
+    }
+
+    private static int ManhattanDistance(Vector2Int a, Vector2Int b) {
+        return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
     }
 }

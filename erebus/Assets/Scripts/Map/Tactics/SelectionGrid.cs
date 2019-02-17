@@ -18,8 +18,8 @@ public class SelectionGrid : MonoBehaviour {
     public MeshRenderer MeshRenderer;
     public Texture2D GridTexture;
 
-    private IntVector2 size;
-    private Func<IntVector2, Boolean> rule;
+    private Vector2Int size;
+    private Func<Vector2Int, Boolean> rule;
 
     enum TileType {
         SolidN, SolidE, SolidS, SolidW,
@@ -34,14 +34,14 @@ public class SelectionGrid : MonoBehaviour {
     }
 
     public void OnEnable() {
-        ConfigureNewGrid(new IntVector2(5, 3), (IntVector2 loc) => {
+        ConfigureNewGrid(new Vector2Int(5, 3), (Vector2Int loc) => {
             return loc.x > 0 || loc.y > 0;
         });
     }
 
     // set up a new grid with the given size in tiles and rule for turning location into whether a
     // tile is part of the selection grid or not
-    public void ConfigureNewGrid(IntVector2 size, Func<IntVector2, Boolean> rule) {
+    public void ConfigureNewGrid(Vector2Int size, Func<Vector2Int, Boolean> rule) {
         this.size = size;
         this.rule = rule;
         RecalculateGrid();
@@ -49,16 +49,16 @@ public class SelectionGrid : MonoBehaviour {
 
     // redo this grid based on a new rule
     // assumes size has already been configured
-    public void RecalculateRule(Func<IntVector2, Boolean> rule) {
+    public void RecalculateRule(Func<Vector2Int, Boolean> rule) {
         this.rule = rule;
-        IntVector2 gridSize = this.size * 2;
+        Vector2Int gridSize = this.size * 2;
         Mesh mesh = this.Mesh.mesh;
 
         // we'll need to call the rule on each square anyway so just do it once per
         bool[,] ruleGrid = new Boolean[size.x, size.y];
         for (int y = 0; y < size.y; y += 1) {
             for (int x = 0; x < size.x; x += 1) {
-                ruleGrid[x, y] = rule(new IntVector2(x, y));
+                ruleGrid[x, y] = rule(new Vector2Int(x, y));
             }
         }
 
@@ -86,7 +86,7 @@ public class SelectionGrid : MonoBehaviour {
 
     private void RecalculateGrid() {
         // we now have a rule and a size, update the mesh texture to reflect this
-        IntVector2 gridSize = this.size * 2;
+        Vector2Int gridSize = this.size * 2;
 
         MeshFilter filter = this.Mesh;
         if (filter.mesh != null) {

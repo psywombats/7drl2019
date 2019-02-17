@@ -11,7 +11,7 @@ public class Cursor : MonoBehaviour, InputListener {
     public GameObject reticules;
     
     private float lastStepTime;
-    private Result<IntVector2> awaitingSelect;
+    private Result<Vector2Int> awaitingSelect;
 
     public static Cursor GetInstance() {
         GameObject prefab = Resources.Load<GameObject>(InstancePath);
@@ -32,7 +32,7 @@ public class Cursor : MonoBehaviour, InputListener {
     }
 
     // waits for the cursor to select
-    public IEnumerator AwaitSelectionRoutine(Result<IntVector2> result) {
+    public IEnumerator AwaitSelectionRoutine(Result<Vector2Int> result) {
         awaitingSelect = result;
         while (!result.finished) {
             yield return null;
@@ -86,7 +86,7 @@ public class Cursor : MonoBehaviour, InputListener {
         if (Time.fixedTime - lastStepTime < minTimeBetweenMoves) {
             return true;
         }
-        IntVector2 target = GetComponent<MapEvent>().position + dir.XY();
+        Vector2Int target = GetComponent<MapEvent>().position + dir.XY();
         if (GetComponent<MapEvent>().CanPassAt(target)) {
             StartCoroutine(GetComponent<MapEvent>().StepRoutine(dir));
             lastStepTime = Time.fixedTime;

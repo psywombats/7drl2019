@@ -48,7 +48,7 @@ public class CharaEvent : MonoBehaviour {
         });
     }
 
-    public void FaceToward(IntVector2 pos) {
+    public void FaceToward(Vector2Int pos) {
         facing = OrthoDirExtensions.DirectionOf(pos - GetComponent<MapEvent>().position);
     }
 
@@ -63,7 +63,7 @@ public class CharaEvent : MonoBehaviour {
 
     // checks if the given location is passable for this character
     // takes into account both chip and event
-    public bool CanPassAt(IntVector2 loc) {
+    public bool CanPassAt(Vector2Int loc) {
         if (!GetComponent<MapEvent>().switchEnabled) {
             return true;
         }
@@ -77,12 +77,12 @@ public class CharaEvent : MonoBehaviour {
         return GetComponent<MapEvent>().CanPassAt(loc);
     }
 
-    public IEnumerator PathToRoutine(IntVector2 location) {
-        List<IntVector2> path = parent.FindPath(this, location);
+    public IEnumerator PathToRoutine(Vector2Int location) {
+        List<Vector2Int> path = parent.FindPath(this, location);
         if (path == null) {
             yield break;
         }
-        foreach (IntVector2 target in path) {
+        foreach (Vector2Int target in path) {
             OrthoDir dir = OrthoDirExtensions.DirectionOf(target - GetComponent<MapEvent>().position);
             yield return StartCoroutine(GetComponent<MapEvent>().StepRoutine(dir));
         }

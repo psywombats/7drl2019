@@ -53,13 +53,13 @@ public class BattleController : MonoBehaviour {
     }
 
     public void AddUnitFromTiledEvent(BattleEvent doll, string unitKey) {
-        IntVector2 position = doll.GetComponent<MapEvent3D>().position;
+        Vector2Int position = doll.GetComponent<MapEvent3D>().position;
         BattleUnit newUnit = battle.AddUnitFromKey(unitKey, position);
         doll.Setup(this, newUnit);
         dolls[newUnit] = doll;
     }
 
-    public BattleUnit GetUnitAt(IntVector2 position) {
+    public BattleUnit GetUnitAt(Vector2Int position) {
         foreach (MapEvent mapEvent in map.GetEventsAt(position)) {
             if (mapEvent.GetComponent<BattleEvent>() != null) {
                 return mapEvent.GetComponent<BattleEvent>().unit;
@@ -93,9 +93,9 @@ public class BattleController : MonoBehaviour {
                 return unit.align == Alignment.Hero;
             }, false);
             actingUnit = unitResult.value;
-            IntVector2 originalLocation = actingUnit.location;
+            Vector2Int originalLocation = actingUnit.location;
 
-            Result<IntVector2> moveResult = new Result<IntVector2>();
+            Result<Vector2Int> moveResult = new Result<Vector2Int>();
             yield return SelectMoveLocationRoutine(moveResult, actingUnit);
             if (moveResult.canceled) {
                 continue;
@@ -130,7 +130,7 @@ public class BattleController : MonoBehaviour {
             bool allowCancel=true) {
         cursor.gameObject.SetActive(true);
         while (!result.finished) {
-            Result<IntVector2> locResult = new Result<IntVector2>();
+            Result<Vector2Int> locResult = new Result<Vector2Int>();
             yield return cursor.AwaitSelectionRoutine(locResult);
             if (locResult.canceled && allowCancel) {
                 result.Cancel();
@@ -145,13 +145,13 @@ public class BattleController : MonoBehaviour {
     }
 
     // selects a move location for the selected unit, might be canceled
-    private IEnumerator SelectMoveLocationRoutine(Result<IntVector2> result, BattleUnit unit, bool canCancel=true) {
+    private IEnumerator SelectMoveLocationRoutine(Result<Vector2Int> result, BattleUnit unit, bool canCancel=true) {
         cursor.gameObject.SetActive(true);
         cursor.GetComponent<MapEvent>().SetLocation(unit.location);
 
         SelectionGrid grid = SpawnSelectionGrid();
         int range = (int)unit.Get(StatTag.MOVE);
-        Func<IntVector2, bool> rule = (IntVector2 loc) => {
+        Func<Vector2Int, bool> rule = (Vector2Int loc) => {
             if (loc == unit.location) {
                 return false;
             }
@@ -160,7 +160,7 @@ public class BattleController : MonoBehaviour {
         grid.ConfigureNewGrid(map.size, rule);
 
         while (!result.finished) {
-            Result<IntVector2> locResult = new Result<IntVector2>();
+            Result<Vector2Int> locResult = new Result<Vector2Int>();
             yield return cursor.AwaitSelectionRoutine(locResult);
             if (locResult.canceled && canCancel) {
                 result.Cancel();
@@ -177,7 +177,7 @@ public class BattleController : MonoBehaviour {
 
     // === GAMEBOARD AND GRAPHICAL INTERACTION =====================================================
 
-    public void TargetCameraToLocation(IntVector2 loc) {
+    public void TargetCameraToLocation(Vector2Int loc) {
         TacticsCam.Instance().SetTargetLocation(loc);
     }
 

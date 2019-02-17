@@ -41,7 +41,7 @@ public class Battle : ScriptableObject {
         return units.Where(unit => (unit.align == align));
     }
 
-    public BattleUnit AddUnitFromKey(string unitKey, IntVector2 startingLocation) {
+    public BattleUnit AddUnitFromKey(string unitKey, Vector2Int startingLocation) {
         Unit unit = Global.Instance().Party.LookUpUnit(unitKey);
         Debug.Assert(unit != null, "Unknown unit key " + unitKey);
         BattleUnit battleUnit = new BattleUnit(unit, this, startingLocation);
