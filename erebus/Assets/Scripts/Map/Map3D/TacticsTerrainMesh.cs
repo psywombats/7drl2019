@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Tilemaps;
 
 [RequireComponent(typeof(MeshFilter))]
@@ -13,6 +14,11 @@ public class TacticsTerrainMesh : MonoBehaviour {
     public Tile defaultTile;
     [HideInInspector]
     public string paletteName;
+
+    // ugh
+    [HideInInspector]
+    [SerializeField]
+    public Dictionary<Vector3, Dictionary<OrthoDir, Tile>> facingTiles;
 
     public float HeightAt(int x, int y) {
         if (heights == null || heights.Length == 0) {
@@ -47,7 +53,33 @@ public class TacticsTerrainMesh : MonoBehaviour {
         }
     }
 
+    public Tile TileAt(int x, int y, float height, OrthoDir dir) {
+        if (facingTiles == null) {
+            facingTiles = new Dictionary<Vector3, Dictionary<OrthoDir, Tile>>();
+        }
+        Vector3 pos = new Vector3(x, height, y);
+        if (!facingTiles.ContainsKey(pos)) {
+            return defaultTile;
+        }
+        if (!facingTiles[pos].ContainsKey(dir)) {
+            return defaultTile;
+        } else {
+            return facingTiles[pos][dir];
+        }
+    }
+
     public void SetTile(int x, int y, Tile tile) {
         topTiles[y * size.y + x] = tile;
+    }
+
+    public void SetTile(int x, int y, float height, OrthoDir dir, Tile tile) {
+        if (facingTiles == null) {
+            facingTiles = new Dictionary<Vector3, Dictionary<OrthoDir, Tile>>();
+        }
+        Vector3 pos = new Vector3(x, height, y);
+        if (!facingTiles.ContainsKey(pos)) {
+            facingTiles[pos] = new Dictionary<OrthoDir, Tile>();
+        }
+        facingTiles[new Vector3(x, height, y)][dir] = tile;
     }
 }

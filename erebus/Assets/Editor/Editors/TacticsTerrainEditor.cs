@@ -118,9 +118,13 @@ public class TacticsTerrainEditor : Editor {
                         Event.current.Use();
                         selectedHeight = GetHeightAtMouse();
                         break;
+                    case EditMode.None:
+                        PaintTileIfNeeded();
+                        break;
                 }
                 break;
             case EventType.MouseDown:
+                PaintTileIfNeeded();
                 if (mode == EditMode.None) {
                     lastSelected = GetSelectedQuad();
                     if (lastSelected != null && lastSelected.normal.y > 0.0f) {
@@ -133,13 +137,6 @@ public class TacticsTerrainEditor : Editor {
                 }
                 break;
             case EventType.MouseUp:
-                bool dirty = false;
-                int x = Mathf.RoundToInt(lastSelected.pos.x);
-                int y = Mathf.RoundToInt(lastSelected.pos.z);
-                if (selectedTile != null && lastSelected.normal.y > 0.0f) {
-                    terrain.SetTile(x, y, selectedTile);
-                    dirty = true;
-                }
                 switch (mode) {
                     case EditMode.HeightAdjust:
                         GUIUtility.hotControl = 0;
@@ -147,15 +144,14 @@ public class TacticsTerrainEditor : Editor {
 
                         mode = EditMode.None;
 
+                        int x = Mathf.RoundToInt(lastSelected.pos.x);
+                        int y = Mathf.RoundToInt(lastSelected.pos.z);
                         float height = GetHeightAtMouse();
                         if (terrain.HeightAt(x, y) != height) {
                             terrain.SetHeight(x, y, height);
-                            dirty = true;
+                            Rebuild(true);
                         }
                         break;
-                }
-                if (dirty) {
-                    Rebuild(true);
                 }
                 break;
         }
@@ -235,7 +231,7 @@ public class TacticsTerrainEditor : Editor {
                         for (float y = neighborHeight; y < currentHeight; y += 0.5f) {
                             AddQuad(new Vector3(x + off1.x, y, z + off1.y),
                                 new Vector3(x + off2.x, y + 0.5f, z + off2.y),
-                                terrain.defaultTile,
+                                terrain.TileAt(x, z, y, dir),
                                 new Vector3(x, y + 0.5f, z), dir.Px3D());
                         }
                     }
@@ -275,6 +271,9 @@ public class TacticsTerrainEditor : Editor {
 
         Debug.Assert(tile != null);
         Vector2[] spriteUVs = tile.sprite.uv;
+        if (normal.y == 0.0f) {
+            spriteUVs = AdjustZ(spriteUVs, lowerLeft.y, normal.x == 0.0f);
+        }
         uvs.Add(spriteUVs[2]);
         uvs.Add(spriteUVs[0]);
         uvs.Add(spriteUVs[3]);
@@ -345,5 +344,75 @@ public class TacticsTerrainEditor : Editor {
         string palettePath = "Assets/Tilesets/Palettes/" + palette.name + ".prefab";
         GameObject tilesetObject = AssetDatabase.LoadAssetAtPath<GameObject>(palettePath);
         tileset = tilesetObject.transform.GetChild(0).GetComponent<Tilemap>();
+    }
+
+    private void PaintTileIfNeeded() {
+        TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
+        if (selectedTile != null && lastSelected != null) {
+            int x = Mathf.RoundToInt(lastSelected.pos.x);
+            int y = Mathf.RoundToInt(lastSelected.pos.z);
+            if (lastSelected.normal.y > 0.0f) {
+                terrain.SetTile(x, y, selectedTile);
+            } else {
+                float height = lastSelected.pos.y - 0.5f;
+                terrain.SetTile(x, y, height, DirForNormal(lastSelected.normal), selectedTile);
+            }
+            Rebuild(true);
+        }
+    }
+
+    private OrthoDir DirForNormal(Vector3 normal) {
+        Vector3 normalized = normal.normalized;
+        foreach (OrthoDir dir in Enum.GetValues(typeof(OrthoDir))) {
+            if (normalized == dir.Px3D()) {
+                return dir;
+            }
+        }
+        Debug.Assert(false, "bad normal " + normal);
+        return OrthoDir.South;
+    }
+
+    // given some uvs, split them up based on our height
+    // because y can sometimes be split across tiles
+    // xMode is a hack to just get stuff looking right
+    private Vector2[] AdjustZ(Vector2[] origUVs, float lowerHeight, bool xMode) {
+        if (tileset == null) {
+            return origUVs;
+        }
+        float unit = 1.0f / tileset.size.y;
+        if (xMode) {
+            if (Math.Abs(Mathf.Round(lowerHeight) - lowerHeight) > 0.1f) {
+                return new Vector2[] {
+                    origUVs[0],
+                    origUVs[1],
+                    new Vector2(origUVs[2].x, origUVs[2].y + unit / 2.0f),
+                    new Vector2(origUVs[3].x, origUVs[3].y + unit / 2.0f),
+                };
+            } else {
+                return new Vector2[] {
+                    new Vector2(origUVs[0].x, origUVs[0].y - unit / 2.0f),
+                    new Vector2(origUVs[1].x, origUVs[1].y - unit / 2.0f),
+                    origUVs[2],
+                    origUVs[3],
+                };
+            }
+        } else {
+            if (Math.Abs(Mathf.Round(lowerHeight) - lowerHeight) < 0.1f) {
+                return new Vector2[] {
+                    new Vector2(origUVs[2].x, origUVs[2].y),
+                    new Vector2(origUVs[0].x, origUVs[0].y - unit / 2.0f),
+                    new Vector2(origUVs[3].x, origUVs[3].y),
+                    new Vector2(origUVs[1].x, origUVs[1].y - unit / 2.0f),
+                };
+            } else {
+                return new Vector2[] {
+                    new Vector2(origUVs[2].x, origUVs[2].y + unit / 2.0f),
+                    new Vector2(origUVs[0].x, origUVs[0].y),
+                    new Vector2(origUVs[3].x, origUVs[3].y + unit / 2.0f),
+                    new Vector2(origUVs[1].x, origUVs[1].y),
+                };
+            }
+        }
+
     }
 }
