@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 [CustomEditor(typeof(TacticsTerrainMesh))]
 public class TacticsTerrainEditor : Editor {
@@ -21,19 +22,73 @@ public class TacticsTerrainEditor : Editor {
 
     private EditMode mode = EditMode.None;
 
+    private GridPalette palette;
+    private Tilemap tileset;
+    private Tile selectedTile;
+
+    public override bool RequiresConstantRepaint() {
+        return true;
+    }
+
     public override void OnInspectorGUI() {
         base.OnInspectorGUI();
+        TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
 
+        GUILayout.Space(20.0f);
         if (GUILayout.Button("Rebuild")) {
             Rebuild(true);
         }
-    }
+        GUILayout.Space(20.0f);
 
-    public void OnGUI() {
-        switch (Event.current.commandName) {
-            case "UndoRedoPerformed":
-                Rebuild(false);
-                break;
+        if (palette == null) {
+            if (terrain.paletteName != null && terrain.paletteName.Length > 0) {
+                string paletteName = "Assets/Tilesets/Palettes/" + terrain.paletteName + ".prefab";
+                UpdateWithPalette(AssetDatabase.LoadAssetAtPath<GridPalette>(paletteName));
+            }
+        }
+        GridPalette newPalette = (GridPalette)EditorGUILayout.ObjectField("Tileset", palette, typeof(GridPalette), false);
+        if (newPalette != palette) {
+            UpdateWithPalette(newPalette);
+        }
+
+        if (tileset != null) {
+            Texture2D backer = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Resources/Textures/White.png");
+            for (int y = tileset.size.y - 1; y >= 0; y -= 1) {
+                EditorGUILayout.BeginHorizontal();
+                GUILayout.Space(16);
+                GUI.backgroundColor = new Color(0.5f, 0.5f, 1.0f);
+
+                for (int x = 0; x < tileset.size.x; x += 1) {
+                    Rect selectRect = EditorGUILayout.BeginHorizontal(GUILayout.Width(Map.TileSizePx), GUILayout.Height(Map.TileSizePx));
+                    
+                    if (GUILayout.Button("", GUILayout.Width(Map.TileSizePx), GUILayout.Width(Map.TileSizePx))) {
+                        Tile newSelect = tileset.GetTile<Tile>(new Vector3Int(x, y, 0));
+                        if (newSelect == selectedTile) {
+                            selectedTile = null;
+                        } else {
+                            selectedTile = newSelect;
+                        }
+                    }
+
+                    Rect r = GUILayoutUtility.GetLastRect();
+                    
+                    Tile tile = tileset.GetTile<Tile>(new Vector3Int(x, y, 0));
+                    Rect rect = new Rect(tile.sprite.uv[0].x, tile.sprite.uv[3].y,
+                        tile.sprite.uv[3].x - tile.sprite.uv[0].x,
+                        tile.sprite.uv[0].y - tile.sprite.uv[3].y);
+
+                    Rect expanded = new Rect(r.x - 2, r.y - 2, r.width + 4, r.height + 4);
+                    if (r.Contains(Event.current.mousePosition)) {
+                        GUI.DrawTexture(expanded, backer, ScaleMode.ScaleToFit, true, 0.0f, Color.red, 0.0f, 0.0f);
+                    } else if (tileset.GetTile<Tile>(new Vector3Int(x, y, 0)) == selectedTile) {
+                        GUI.DrawTexture(expanded, backer, ScaleMode.ScaleToFit, true, 0.0f, Color.blue, 0.0f, 0.0f);
+                    }
+                    GUI.DrawTextureWithTexCoords(r, tile.sprite.texture, rect, true);
+
+                    EditorGUILayout.EndHorizontal();
+                }
+                EditorGUILayout.EndHorizontal();
+            }
         }
     }
 
@@ -78,6 +133,13 @@ public class TacticsTerrainEditor : Editor {
                 }
                 break;
             case EventType.MouseUp:
+                bool dirty = false;
+                int x = Mathf.RoundToInt(lastSelected.pos.x);
+                int y = Mathf.RoundToInt(lastSelected.pos.z);
+                if (selectedTile != null && lastSelected.normal.y > 0.0f) {
+                    terrain.SetTile(x, y, selectedTile);
+                    dirty = true;
+                }
                 switch (mode) {
                     case EditMode.HeightAdjust:
                         GUIUtility.hotControl = 0;
@@ -86,14 +148,14 @@ public class TacticsTerrainEditor : Editor {
                         mode = EditMode.None;
 
                         float height = GetHeightAtMouse();
-                        int x = Mathf.RoundToInt(lastSelected.pos.x);
-                        int y = Mathf.RoundToInt(lastSelected.pos.z);
-                        if (terrain.heights[x, y] != height) {
-                            terrain.heights[x, y] = height;
-                            Undo.RecordObject(terrain, "Modify terrain height");
-                            Rebuild(true);
+                        if (terrain.HeightAt(x, y) != height) {
+                            terrain.SetHeight(x, y, height);
+                            dirty = true;
                         }
                         break;
+                }
+                if (dirty) {
+                    Rebuild(true);
                 }
                 break;
         }
@@ -173,7 +235,7 @@ public class TacticsTerrainEditor : Editor {
                         for (float y = neighborHeight; y < currentHeight; y += 0.5f) {
                             AddQuad(new Vector3(x + off1.x, y, z + off1.y),
                                 new Vector3(x + off2.x, y + 0.5f, z + off2.y),
-                                (PropertiedTile)terrain.defaultTile,
+                                terrain.defaultTile,
                                 new Vector3(x, y + 0.5f, z), dir.Px3D());
                         }
                     }
@@ -193,7 +255,7 @@ public class TacticsTerrainEditor : Editor {
         }
     }
 
-    private void AddQuad(Vector3 lowerLeft, Vector3 upperRight, PropertiedTile tile, Vector3 pos, Vector3 normal) {
+    private void AddQuad(Vector3 lowerLeft, Vector3 upperRight, Tile tile, Vector3 pos, Vector3 normal) {
         TerrainQuad quad = new TerrainQuad(tris.Count, vertices.Count, pos, normal);
         quads.Add(quad);
 
@@ -212,11 +274,11 @@ public class TacticsTerrainEditor : Editor {
         vertices.Add(upperRight);
 
         Debug.Assert(tile != null);
-        Vector2[] spriteUVs = tile.GetSprite().uv;
-        uvs.Add(spriteUVs[0]);
-        uvs.Add(spriteUVs[1]);
+        Vector2[] spriteUVs = tile.sprite.uv;
         uvs.Add(spriteUVs[2]);
+        uvs.Add(spriteUVs[0]);
         uvs.Add(spriteUVs[3]);
+        uvs.Add(spriteUVs[1]);
         
         tris.Add(i);
         tris.Add(i + 1);
@@ -272,5 +334,16 @@ public class TacticsTerrainEditor : Editor {
         Vector3 hit = ray.GetPoint(enter);
         float height = Mathf.Round(hit.y * 2.0f) / 2.0f;
         return height > 0 ? height : 0;
+    }
+
+    private void UpdateWithPalette(GridPalette newPalette) {
+        selectedTile = null;
+
+        TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
+        palette = newPalette;
+        terrain.paletteName = palette.name;
+        string palettePath = "Assets/Tilesets/Palettes/" + palette.name + ".prefab";
+        GameObject tilesetObject = AssetDatabase.LoadAssetAtPath<GameObject>(palettePath);
+        tileset = tilesetObject.transform.GetChild(0).GetComponent<Tilemap>();
     }
 }

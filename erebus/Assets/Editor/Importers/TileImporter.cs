@@ -137,7 +137,7 @@ public class TileImporter : AssetPostprocessor {
         }
         if (settings == null) {
             settings = ScriptableObject.CreateInstance<GridPalette>();
-            settings.name = "Palette Settings";
+            settings.name = EditorUtils.NameFromPath(assetPath);
             settings.cellSizing = GridPalette.CellSizing.Automatic;
             AssetDatabase.AddObjectToAsset(settings, paletteObject);
             dirty = true;
