@@ -93,6 +93,7 @@
     <Compile Include="Assets\Editor\Importers\FontImporter.cs" />
     <Compile Include="Assets\Editor\Importers\SpriteImporter.cs" />
     <Compile Include="Assets\Editor\Importers\TileImporter.cs" />
+    <Compile Include="Assets\Editor\TerrainQuad.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>C:/Users/aking_2/erebus/erebus/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>

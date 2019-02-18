@@ -12,10 +12,16 @@ public class Map2DRuleTile : RuleTile, PropertiedTile {
             return false;
         }
         Map2DRuleTile other = (Map2DRuleTile)tile;
-        return this.m_DefaultSprite == other.m_DefaultSprite;
+        return m_DefaultSprite == other.m_DefaultSprite;
     }
 
     public TilePropertyData GetData() {
         return properties;
+    }
+
+    public Sprite GetSprite() {
+        // ugly, this is called by the 3d terrain
+        // means rules tiles won't work there right now, TODO?
+        return m_DefaultSprite;
     }
 }

@@ -7,13 +7,17 @@ public class TileImporter : AssetPostprocessor {
 
     public static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths) {
         foreach (string assetPath in importedAssets) {
-            if (assetPath.Contains("Tilesets") && assetPath.Contains(".png") && !assetPath.Contains("3D")) {
+            if (assetPath.Contains("Tilesets") && assetPath.Contains(".png")) {
                 CreateTiles(assetPath);
                 AssetDatabase.SaveAssets();
+                CreateMaterial(assetPath);
                 CreatePalette(assetPath);
             }
             if (assetPath.Contains("Palettes") && assetPath.EndsWith(".prefab")) {
                 PopulatePalette(assetPath);
+            }
+            if (assetPath.Contains("Tilesets/Materials") && assetPath.EndsWith(".mat")) {
+                PopulateMaterial(assetPath);
             }
         }
     }
@@ -164,6 +168,23 @@ public class TileImporter : AssetPostprocessor {
         if (dirty) {
             AssetDatabase.SaveAssets();
         }
+    }
+
+    public static void CreateMaterial(string assetPath) {
+        string name = EditorUtils.NameFromPath(assetPath);
+        string newPath = "Assets/Tilesets/Materials/" + name + ".mat";
+        string defaultPath = "Assets/Tilesets/Materials/BaseMaterial.mat";
+        if (AssetDatabase.LoadAssetAtPath<Material>(newPath)) {
+            AssetDatabase.ImportAsset(newPath, ImportAssetOptions.ForceUpdate);
+        } else {
+            AssetDatabase.CopyAsset(defaultPath, newPath);
+        }
+    }
+
+    public static void PopulateMaterial(string assetPath) {
+        string name = EditorUtils.NameFromPath(assetPath);
+        Material mat = AssetDatabase.LoadAssetAtPath<Material>(assetPath);
+        mat.mainTexture = (Texture2D)AssetDatabase.LoadMainAssetAtPath("Assets/Tilesets/" + name + ".png");
     }
 
     private static string NameForTile(string tilesetName, int x, int y) {

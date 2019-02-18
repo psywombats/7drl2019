@@ -1,4 +1,5 @@
-﻿using UnityEngine.Tilemaps;
+﻿using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class Map2DTile : Tile, PropertiedTile {
 
@@ -17,6 +18,10 @@ public class Map2DTile : Tile, PropertiedTile {
             return false;
         }
         Map2DTile other = (Map2DTile)tile;
-        return this.sprite == other.sprite;
+        return sprite == other.sprite;
+    }
+
+    public Sprite GetSprite() {
+        return sprite;
     }
 }
