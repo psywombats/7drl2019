@@ -131,6 +131,7 @@
     <Compile Include="Assets\Scripts\Map\Map3D\MapCamera3D.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\MapEvent3D.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\SceneBlendController.cs" />
+    <Compile Include="Assets\Scripts\Map\Map3D\TacticsTerrainMesh.cs" />
     <Compile Include="Assets\Scripts\Map\MapCamera.cs" />
     <Compile Include="Assets\Scripts\Map\MapEvent.cs" />
     <Compile Include="Assets\Scripts\Map\MapManager.cs" />

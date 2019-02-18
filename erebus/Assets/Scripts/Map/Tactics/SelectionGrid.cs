@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System;
 using UnityEngine.Profiling;
 
@@ -14,12 +13,11 @@ public class SelectionGrid : MonoBehaviour {
     const string InstancePath = "Prefabs/Map3D/SelectionGrid";
 
     // editor properties
-    public MeshFilter Mesh;
-    public MeshRenderer MeshRenderer;
-    public Texture2D GridTexture;
+    public MeshFilter mesh;
+    public MeshRenderer meshRenderer;
 
     private Vector2Int size;
-    private Func<Vector2Int, Boolean> rule;
+    private Func<Vector2Int, bool> rule;
 
     enum TileType {
         SolidN, SolidE, SolidS, SolidW,
@@ -30,7 +28,7 @@ public class SelectionGrid : MonoBehaviour {
 
     public static SelectionGrid GetInstance() {
         GameObject prefab = Resources.Load<GameObject>(InstancePath);
-        return UnityEngine.Object.Instantiate<GameObject>(prefab).GetComponent<SelectionGrid>();
+        return Instantiate(prefab).GetComponent<SelectionGrid>();
     }
 
     public void OnEnable() {
@@ -41,7 +39,7 @@ public class SelectionGrid : MonoBehaviour {
 
     // set up a new grid with the given size in tiles and rule for turning location into whether a
     // tile is part of the selection grid or not
-    public void ConfigureNewGrid(Vector2Int size, Func<Vector2Int, Boolean> rule) {
+    public void ConfigureNewGrid(Vector2Int size, Func<Vector2Int, bool> rule) {
         this.size = size;
         this.rule = rule;
         RecalculateGrid();
@@ -49,20 +47,19 @@ public class SelectionGrid : MonoBehaviour {
 
     // redo this grid based on a new rule
     // assumes size has already been configured
-    public void RecalculateRule(Func<Vector2Int, Boolean> rule) {
+    public void RecalculateRule(Func<Vector2Int, bool> rule) {
         this.rule = rule;
-        Vector2Int gridSize = this.size * 2;
-        Mesh mesh = this.Mesh.mesh;
+        Vector2Int gridSize = size * 2;
+        Mesh mesh = this.mesh.mesh;
 
         // we'll need to call the rule on each square anyway so just do it once per
-        bool[,] ruleGrid = new Boolean[size.x, size.y];
+        bool[,] ruleGrid = new bool[size.x, size.y];
         for (int y = 0; y < size.y; y += 1) {
             for (int x = 0; x < size.x; x += 1) {
                 ruleGrid[x, y] = rule(new Vector2Int(x, y));
             }
         }
-
-        Profiler.BeginSample("pathfinding");
+        
         // redo the triangle geometry to only reflect where rule evaluates true
         int[] triangles = new int[gridSize.x * gridSize.y * 6];
         for (int ti = 0, vi = 0, y = 0; y < gridSize.y; y++, vi++) {
@@ -81,14 +78,13 @@ public class SelectionGrid : MonoBehaviour {
         }
         mesh.triangles = triangles;
         mesh.RecalculateNormals();
-        Profiler.EndSample();
     }
 
     private void RecalculateGrid() {
         // we now have a rule and a size, update the mesh texture to reflect this
-        Vector2Int gridSize = this.size * 2;
+        Vector2Int gridSize = size * 2;
 
-        MeshFilter filter = this.Mesh;
+        MeshFilter filter = this.mesh;
         if (filter.mesh != null) {
             Destroy(filter.mesh);
         }
@@ -108,6 +104,6 @@ public class SelectionGrid : MonoBehaviour {
         mesh.vertices = vertices;
         mesh.uv = uvs;
 
-        RecalculateRule(this.rule);
+        RecalculateRule(rule);
     }
 }

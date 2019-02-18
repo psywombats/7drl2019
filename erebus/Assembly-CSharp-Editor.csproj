@@ -85,6 +85,7 @@
     <Compile Include="Assets\Editor\Editors\PolymorphicFieldEditor.cs" />
     <Compile Include="Assets\Editor\Editors\StatSetDrawer.cs" />
     <Compile Include="Assets\Editor\Editors\TacticsCameraEditor.cs" />
+    <Compile Include="Assets\Editor\Editors\TacticsTerrainEditor.cs" />
     <Compile Include="Assets\Editor\Editors\TileEditor.cs" />
     <Compile Include="Assets\Editor\Editors\TilesetOverlayEditor.cs" />
     <Compile Include="Assets\Editor\EditorUtils.cs" />
