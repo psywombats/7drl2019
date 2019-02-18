@@ -6,11 +6,20 @@ using UnityEngine;
 [CustomEditor(typeof(TacticsTerrainMesh))]
 public class TacticsTerrainEditor : Editor {
 
+    private enum EditMode {
+        None,
+        HeightAdjust,
+    }
+
     private List<TerrainQuad> quads;
     private List<Vector3> vertices;
     private List<Vector2> uvs;
     private List<int> tris;
+
     private TerrainQuad lastSelected;
+    private float selectedHeight;
+
+    private EditMode mode = EditMode.None;
 
     public override void OnInspectorGUI() {
         base.OnInspectorGUI();
@@ -20,30 +29,102 @@ public class TacticsTerrainEditor : Editor {
         }
     }
 
-    public void OnSceneGUI() {
-        if (Event.current.type == EventType.MouseMove) {
-            Debug.Log("Mouse moved to " + Event.current.mousePosition);
-            if (quads == null) {
+    public void OnGUI() {
+        switch (Event.current.commandName) {
+            case "UndoRedoPerformed":
                 Rebuild(false);
-            }
-            TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
-            TerrainQuad quad = GetSelectedQuad();
-            if (lastSelected != quad) {
-                SceneView.RepaintAll();
-                lastSelected = quad;
-                if (quad != null) {
-                    terrain.selectedNormal = quad.normal;
-                    terrain.selectedPos = quad.pos;
-                } else {
-                    terrain.selectedNormal = Vector2.zero;
-                    terrain.selectedPos = Vector3.zero;
+                break;
+        }
+    }
+
+    public void OnSceneGUI() {
+        TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
+        if (quads == null) {
+            Rebuild(false);
+        }
+
+        int controlId = GUIUtility.GetControlID(FocusType.Passive);
+        switch (Event.current.GetTypeForControl(controlId)) {
+            case EventType.MouseMove:
+                switch (mode) {
+                    case EditMode.None:
+                        TerrainQuad quad = GetSelectedQuad();
+                        if (lastSelected != quad) {
+                            SceneView.RepaintAll();
+                            lastSelected = quad;
+                        }
+                        break;
                 }
+                break;
+            case EventType.MouseDrag:
+                switch (mode) {
+                    case EditMode.HeightAdjust:
+                        GUIUtility.hotControl = controlId;
+                        Event.current.Use();
+                        selectedHeight = GetHeightAtMouse();
+                        break;
+                }
+                break;
+            case EventType.MouseDown:
+                if (mode == EditMode.None) {
+                    lastSelected = GetSelectedQuad();
+                    if (lastSelected != null && lastSelected.normal.y > 0.0f) {
+                        GUIUtility.hotControl = controlId;
+                        Event.current.Use();
+                        mode = EditMode.HeightAdjust;
+                        Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+                        selectedHeight = 0.0f;
+                    }
+                }
+                break;
+            case EventType.MouseUp:
+                switch (mode) {
+                    case EditMode.HeightAdjust:
+                        GUIUtility.hotControl = 0;
+                        Event.current.Use();
+
+                        mode = EditMode.None;
+
+                        float height = GetHeightAtMouse();
+                        int x = Mathf.RoundToInt(lastSelected.pos.x);
+                        int y = Mathf.RoundToInt(lastSelected.pos.z);
+                        if (terrain.heights[x, y] != height) {
+                            terrain.heights[x, y] = height;
+                            Undo.RecordObject(terrain, "Modify terrain height");
+                            Rebuild(true);
+                        }
+                        break;
+                }
+                break;
+        }
+
+        if (selectedHeight > 0.0f && mode == EditMode.HeightAdjust) {
+            int x = Mathf.RoundToInt(lastSelected.pos.x);
+            int y = Mathf.RoundToInt(lastSelected.pos.z);
+            float h = terrain.HeightAt(x, y);
+            Vector3 pos = lastSelected.pos;
+            for (float z = GetHeightAtMouse(); Mathf.Abs(z - h) > 0.1f; z += 0.5f * Mathf.Sign(h - z)) {
+                Handles.DrawWireCube(new Vector3(pos.x + 0.5f, z + 0.25f * Mathf.Sign(h - z), pos.z + 0.5f),
+                    new Vector3(1.0f, 0.5f, 1.0f));
+            }
+        }
+        if (mode == EditMode.None || ( mode == EditMode.HeightAdjust)) {
+            if (lastSelected != null) {
+                Vector3 mid = lastSelected.pos + new Vector3(0.5f, -0.25f, 0.5f) + new Vector3(
+                    lastSelected.normal.x * 0.5f,
+                    lastSelected.normal.y * 0.25f,
+                    lastSelected.normal.z * 0.5f);
+                Vector3 size = new Vector3(
+                    1.01f - Mathf.Abs(lastSelected.normal.x),
+                    0.51f - (Mathf.Abs(lastSelected.normal.y) * 0.5f),
+                    1.01f - Mathf.Abs(lastSelected.normal.z));
+                Handles.color = new Color(1.0f, 1.0f, 1.0f);
+                Handles.DrawWireCube(mid, size);
             }
         }
     }
 
     private void Rebuild(bool regenMesh) {
-        Debug.Log("rebuidling...");
         TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
 
         MeshFilter filter = terrain.GetComponent<MeshFilter>();
@@ -101,6 +182,9 @@ public class TacticsTerrainEditor : Editor {
         }
 
         if (regenMesh) {
+            lastSelected = null;
+
+            mesh.Clear();
             mesh.vertices = vertices.ToArray();
             mesh.triangles = tris.ToArray();
             mesh.uv = uvs.ToArray();
@@ -125,16 +209,15 @@ public class TacticsTerrainEditor : Editor {
             vertices.Add(new Vector3(lowerLeft.x, upperRight.y, lowerLeft.z));
             vertices.Add(new Vector3(upperRight.x, lowerLeft.y, lowerLeft.z));
         }
-
-        if (tile != null) {
-            Vector2[] spriteUVs = tile.GetSprite().uv;
-            uvs.Add(spriteUVs[0]);
-            uvs.Add(spriteUVs[1]);
-            uvs.Add(spriteUVs[2]);
-            uvs.Add(spriteUVs[3]);
-        }
-
         vertices.Add(upperRight);
+
+        Debug.Assert(tile != null);
+        Vector2[] spriteUVs = tile.GetSprite().uv;
+        uvs.Add(spriteUVs[0]);
+        uvs.Add(spriteUVs[1]);
+        uvs.Add(spriteUVs[2]);
+        uvs.Add(spriteUVs[3]);
+        
         tris.Add(i);
         tris.Add(i + 1);
         tris.Add(i + 2);
@@ -154,23 +237,40 @@ public class TacticsTerrainEditor : Editor {
         float bestT = -1.0f;
         TerrainQuad best = null;
         foreach (TerrainQuad quad in quads) {
-            float t1 = EditorUtils.IntersectTri(ray, 
-                vertices[tris[quad.trisIndex + 0]], 
-                vertices[tris[quad.trisIndex + 1]], 
-                vertices[tris[quad.trisIndex + 2]]);
-            float t2 = EditorUtils.IntersectTri(ray,
-                vertices[tris[quad.trisIndex + 3]],
-                vertices[tris[quad.trisIndex + 4]],
-                vertices[tris[quad.trisIndex + 5]]);
-            if ((t1 <= t2 || t2 == -1) && t1 > 0 && (t1 < bestT || bestT == -1.0f)) {
+            float t = RayDistanceForQuad(ray, quad);
+            if (t > 0.0f && (t < bestT || bestT == -1.0f)) {
+                bestT = t;
                 best = quad;
-                bestT = t1;
-            } else if (t2 > 0 && (t2 < bestT || bestT == -1.0f)) {
-                best = quad;
-                bestT = t2;
             }
         }
 
         return best;
+    }
+
+    private float RayDistanceForQuad(Ray ray, TerrainQuad quad) {
+        float t1 = EditorUtils.IntersectTri(ray,
+            vertices[tris[quad.trisIndex + 0]],
+            vertices[tris[quad.trisIndex + 1]],
+            vertices[tris[quad.trisIndex + 2]]);
+        float t2 = EditorUtils.IntersectTri(ray,
+            vertices[tris[quad.trisIndex + 3]],
+            vertices[tris[quad.trisIndex + 4]],
+            vertices[tris[quad.trisIndex + 5]]);
+        if (t1 > 0.0f && t2 > 0.0f) {
+            return t1 < t2 ? t1 : t2;
+        } else {
+            return t1 > t2 ? t1 : t2;
+        }
+    }
+
+    private float GetHeightAtMouse() {
+        Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+        Vector3 midpoint = lastSelected.pos + new Vector3(0.5f, 0.0f, 0.5f);
+        Plane plane = new Plane(-1.0f * Camera.current.transform.forward, midpoint);
+        plane.Raycast(ray, out float enter);
+
+        Vector3 hit = ray.GetPoint(enter);
+        float height = Mathf.Round(hit.y * 2.0f) / 2.0f;
+        return height > 0 ? height : 0;
     }
 }
