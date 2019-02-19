@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 [System.Serializable]
 public class SerialDictionary<K, V> {
@@ -9,8 +7,13 @@ public class SerialDictionary<K, V> {
     public List<V> values;
 
     public SerialDictionary(Dictionary<K, V> dictionary) {
-        keys = new List<K>(dictionary.Keys);
-        values = new List<V>(dictionary.Values);
+        if (dictionary != null) {
+            keys = new List<K>(dictionary.Keys);
+            values = new List<V>(dictionary.Values);
+        } else {
+            keys = new List<K>();
+            values = new List<V>();
+        }
     }
 
     public Dictionary<K, V> ToDictionary() {

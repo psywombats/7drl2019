@@ -38,6 +38,11 @@ public class TacticsTerrainEditor : Editor {
         if (GUILayout.Button("Rebuild")) {
             Rebuild(true);
         }
+        Vector2Int newSize = EditorGUILayout.Vector2IntField("Size", terrain.size);
+        if (newSize != terrain.size) {
+            terrain.Resize(newSize);
+            Rebuild(true);
+        }
         GUILayout.Space(20.0f);
 
         if (palette == null) {

@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using System;
-using System.Collections.Generic;
 
 [CustomPropertyDrawer(typeof(StatSet))]
 public class StatSetDrawer : PropertyDrawer {
