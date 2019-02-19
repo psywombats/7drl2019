@@ -1,12 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "Unit", menuName = "Data/RPG/Unit")]
 public class Unit : ScriptableObject {
 
     public string unitName;
-    public bool unique;
+    public AnimatorOverrideController appearance;
+    public bool unique = true;
     public Alignment align;
     public StatSet stats;
 

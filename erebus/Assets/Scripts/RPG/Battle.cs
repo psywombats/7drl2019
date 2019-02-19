@@ -8,11 +8,9 @@ using UnityEngine;
  * battle visual representation is contained in the BattleController. 
  * 
  * Flow for battles works like this:
- *  - A Tiled map is loaded that has the 'battle' property
- *  - A BattleController is created
- *  - The BattleController loads a serialized instance of this class via key
- *  - All the Tiled events participating in the battle register to the controller using the 'unit'
- *    key, and we then register them here
+ *  - A BattleController exists on a 3d map
+ *  - The BattleController holds an instance of this class
+ *  - At the start of the battle, we pick up all units with a battle event
  */
 [CreateAssetMenu(fileName = "Battle", menuName = "Data/RPG/Battle")]
 public class Battle : ScriptableObject {

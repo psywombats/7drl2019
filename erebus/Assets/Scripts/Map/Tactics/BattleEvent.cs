@@ -9,17 +9,10 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class BattleEvent : MonoBehaviour {
 
-    private static readonly string InstancePath = "Prefabs/Map3D/Doll";
-
-    public string unitKey;
+    [HideInInspector]
+    public Unit unitData;
     public BattleUnit unit { get; private set; }
     public BattleController controller { get; private set; }
-
-    public static BattleEvent GetInstance(BattleController controller, BattleUnit unit) {
-        BattleEvent instance = Instantiate(Resources.Load<GameObject>(InstancePath)).GetComponent<BattleEvent>();
-        instance.Setup(controller, unit);
-        return instance;
-    }
 
     public void Setup(BattleController controller, BattleUnit unit) {
         this.unit = unit;
@@ -27,9 +20,9 @@ public class BattleEvent : MonoBehaviour {
         SetScreenPositionToMatchTilePosition();
     }
 
-    public void OnEnable() {
-        BattleController controller = GetComponent<MapEvent3D>().parent.GetComponent<BattleController>();
-        controller.AddUnitFromTiledEvent(this, unitKey);
+    public void PopulateWithUnitData(Unit unitData) {
+        this.unitData = unitData;
+        GetComponent<CharaEvent>().SetAppearance(unitData.appearance.name);
     }
 
     public void SetScreenPositionToMatchTilePosition() {
