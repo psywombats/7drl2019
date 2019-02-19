@@ -4,14 +4,13 @@ using UnityEngine.Tilemaps;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
+[RequireComponent(typeof(Tilemap))]
 public class TacticsTerrainMesh : MonoBehaviour, ISerializationCallbackReceiver {
     
     [HideInInspector]
     public Vector2Int size;
     [HideInInspector]
     public float[] heights;
-    [HideInInspector]
-    public Tile[] topTiles;
     [HideInInspector]
     public string paletteName;
 
@@ -21,6 +20,14 @@ public class TacticsTerrainMesh : MonoBehaviour, ISerializationCallbackReceiver 
     [HideInInspector]
     public FacingTileDictionary serializedFacingTiles;
     private Dictionary<FacingTileKey, Tile> facingTiles;
+
+    private Tilemap _tilemap;
+    public Tilemap tilemap {
+        get {
+            if (_tilemap == null) _tilemap = GetComponent<Tilemap>();
+            return _tilemap;
+        }
+    }
 
     public void Resize(Vector2Int newSize) {
         List<FacingTileKey> toRemove = new List<FacingTileKey>();
@@ -38,7 +45,7 @@ public class TacticsTerrainMesh : MonoBehaviour, ISerializationCallbackReceiver 
         for (int y = 0; y < (size.y < newSize.y ? size.y : newSize.y); y += 1) {
             for (int x = 0; x < (size.x < newSize.x ? size.x : newSize.x); x += 1) {
                 newHeights[y * newSize.x + x] = heights[y * size.x + x];
-                newTiles[y * newSize.x + x] = topTiles[y * size.x + x];
+                newTiles[y * newSize.x + x] = tilemap.GetTile<Tile>(new Vector3Int(x, y, 0));
             }
         }
         for (int y = size.y; y < newSize.y; y += 1) {
@@ -47,7 +54,12 @@ public class TacticsTerrainMesh : MonoBehaviour, ISerializationCallbackReceiver 
             }
         }
 
-        topTiles = newTiles;
+        tilemap.ClearAllTiles();
+        for (int y = 0; y < (size.y < newSize.y ? size.y : newSize.y); y += 1) {
+            for (int x = 0; x < (size.x < newSize.x ? size.x : newSize.x); x += 1) {
+                tilemap.SetTile(new Vector3Int(x, y, 0), newTiles[y * size.x + x]);
+            }
+        }
         heights = newHeights;
         size = newSize;
     }
@@ -74,10 +86,7 @@ public class TacticsTerrainMesh : MonoBehaviour, ISerializationCallbackReceiver 
     }
 
     public Tile TileAt(int x, int y) {
-        if (topTiles == null) {
-            topTiles = new Tile[size.x * size.y];
-        }
-        Tile tile = topTiles[y * size.x + x];
+        Tile tile = tilemap.GetTile<Tile>(new Vector3Int(x, y, 0));
         if (tile == null) {
             return defaultTopTile;
         } else {
@@ -97,7 +106,7 @@ public class TacticsTerrainMesh : MonoBehaviour, ISerializationCallbackReceiver 
     }
 
     public void SetTile(int x, int y, Tile tile) {
-        topTiles[y * size.x + x] = tile;
+        tilemap.SetTile(new Vector3Int(x, y, 0), tile);
     }
 
     public void SetTile(int x, int y, float height, OrthoDir dir, Tile tile) {

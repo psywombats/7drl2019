@@ -37,7 +37,7 @@ public class MapManager : MonoBehaviour, MemoryPopulater {
     public void PopulateMemory(Memory memory) {
         if (activeMap != null) {
             avatar.PopulateMemory(memory);
-            memory.mapName = activeMap.fullName;
+            memory.mapName = activeMap.name;
         }
     }
 

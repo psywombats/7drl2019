@@ -14,7 +14,6 @@ public class Map : MonoBehaviour {
 
     public const string ResourcePath = "Maps/";
     
-    public string fullName;
     public Grid grid;
     public ObjectLayer objectLayer;
 
@@ -27,12 +26,17 @@ public class Map : MonoBehaviour {
     public Vector2Int size {
         get {
             if (_size.x == 0) {
-                Vector3Int v3 = grid.transform.GetChild(0).GetComponent<Tilemap>().size;
-                _size = new Vector2Int(v3.x, v3.y);
+                if (GetComponent<TacticsTerrainMesh>() != null) {
+                    _size = GetComponent<TacticsTerrainMesh>().size;
+                } else {
+                    Vector3Int v3 = grid.transform.GetChild(0).GetComponent<Tilemap>().size;
+                    _size = new Vector2Int(v3.x, v3.y);
+                }
             }
             return _size;
         }
     }
+    public Vector2 sizePx { get { return size * TileSizePx; } }
     public int width { get { return size.x; } }
     public int height { get { return size.y; } }
 
@@ -41,9 +45,13 @@ public class Map : MonoBehaviour {
         get {
             if (_layers == null) {
                 _layers = new List<Tilemap>();
-                foreach (Transform child in grid.transform) {
-                    if (child.GetComponent<Tilemap>()) {
-                        _layers.Add(child.GetComponent<Tilemap>());
+                if (GetComponent<TacticsTerrainMesh>()) {
+                    _layers.Add(GetComponent<Tilemap>());
+                } else {
+                    foreach (Transform child in grid.transform) {
+                        if (child.GetComponent<Tilemap>()) {
+                            _layers.Add(child.GetComponent<Tilemap>());
+                        }
                     }
                 }
             }
