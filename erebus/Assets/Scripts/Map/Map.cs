@@ -26,7 +26,7 @@ public class Map : MonoBehaviour {
     public Vector2Int size {
         get {
             if (_size.x == 0) {
-                if (GetComponent<TacticsTerrainMesh>() != null) {
+                if (terrain != null) {
                     _size = GetComponent<TacticsTerrainMesh>().size;
                 } else {
                     Vector3Int v3 = grid.transform.GetChild(0).GetComponent<Tilemap>().size;
@@ -45,7 +45,7 @@ public class Map : MonoBehaviour {
         get {
             if (_layers == null) {
                 _layers = new List<Tilemap>();
-                if (GetComponent<TacticsTerrainMesh>()) {
+                if (terrain != null) {
                     _layers.Add(GetComponent<Tilemap>());
                 } else {
                     foreach (Transform child in grid.transform) {
@@ -56,6 +56,14 @@ public class Map : MonoBehaviour {
                 }
             }
             return _layers;
+        }
+    }
+
+    private TacticsTerrainMesh _terrain;
+    public TacticsTerrainMesh terrain {
+        get {
+            if (_terrain == null) _terrain = GetComponent<TacticsTerrainMesh>();
+            return _terrain;
         }
     }
 

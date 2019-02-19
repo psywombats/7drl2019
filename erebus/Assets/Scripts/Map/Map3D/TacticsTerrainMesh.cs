@@ -5,6 +5,7 @@ using UnityEngine.Tilemaps;
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(Tilemap))]
+[RequireComponent(typeof(Map))]
 public class TacticsTerrainMesh : MonoBehaviour, ISerializationCallbackReceiver {
     
     [HideInInspector]
@@ -64,15 +65,10 @@ public class TacticsTerrainMesh : MonoBehaviour, ISerializationCallbackReceiver 
         size = newSize;
     }
 
+    public float HeightAt(Vector2Int pos) {
+        return HeightAt(pos.x, pos.y);
+    }
     public float HeightAt(int x, int y) {
-        if (heights == null || heights.Length == 0) {
-            heights = new float[3* 3];
-            for (int yy = 0; yy < 3; yy += 1) {
-                for (int xx = 0; xx < 3; xx += 1) {
-                    heights[xx + yy * size.x] = 0.5f + 0.5f * (xx + yy);
-                }
-            }
-        }
         if (x < 0 || x >= size.x || y < 0 || y >= size.y) {
             return 0;
         } else {

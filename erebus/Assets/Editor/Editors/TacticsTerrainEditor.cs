@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Random = UnityEngine.Random;
 
 [CustomEditor(typeof(TacticsTerrainMesh))]
 public class TacticsTerrainEditor : Editor {
-    
+
+    private static readonly string GenericPrefabPath = "Assets/Resources/Prefabs/MapEvent3D.prefab";
+    private static readonly string TacticsPrefabPath = "Assets/Resources/Prefabs/Tactics/TacticsDollEvent.prefab";
+
     private enum EditMode {
         None,
         AdjustingHeight,
@@ -81,7 +85,7 @@ public class TacticsTerrainEditor : Editor {
         int selectionIndex = GUILayout.SelectionGrid(ArrayUtility.IndexOf(ordinals, tool), names, names.Length);
         tool = ordinals[selectionIndex];
 
-        if (tileset != null) {
+        if (tileset != null && tool == SelectionTool.Paint) {
             Texture2D backer = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Resources/Textures/White.png");
             for (int y = tileset.size.y - 1; y >= 0; y -= 1) {
                 EditorGUILayout.BeginHorizontal();
@@ -119,6 +123,22 @@ public class TacticsTerrainEditor : Editor {
                 }
                 EditorGUILayout.EndHorizontal();
             }
+        }
+        if (tool == SelectionTool.Select) {
+            EditorGUI.BeginDisabledGroup(mode != EditMode.Selected);
+            if (GUILayout.Button("Create MapEvent3D")) {
+                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(GenericPrefabPath);
+                MapEvent3D mapEvent = Instantiate(prefab).GetComponent<MapEvent3D>();
+                mapEvent.name = "Event" + Random.Range(1000000, 9999999);
+                AddEvent(mapEvent);
+            }
+            if (GUILayout.Button("Create Tactics Doll")) {
+                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(TacticsPrefabPath);
+                MapEvent3D mapEvent = Instantiate(prefab).GetComponent<MapEvent3D>();
+                mapEvent.name = "Doll" + Random.Range(1000000, 9999999);
+                AddEvent(mapEvent);
+            }
+            EditorGUI.EndDisabledGroup();
         }
     }
 
@@ -424,5 +444,14 @@ public class TacticsTerrainEditor : Editor {
     private void ConsumeEvent(int controlId) {
         GUIUtility.hotControl = controlId;
         Event.current.Use();
+    }
+
+    private void AddEvent(MapEvent3D mapEvent) {
+        TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
+        Map map = terrain.GetComponent<Map>();
+        GameObjectUtility.SetParentAndAlign(mapEvent.gameObject, map.objectLayer.gameObject);
+        Undo.RegisterCreatedObjectUndo(mapEvent, "Create " + mapEvent.name);
+        mapEvent.SetLocation(new Vector2Int((int)primarySelection.pos.x, (int)primarySelection.pos.z));
+        Selection.activeObject = mapEvent.gameObject;
     }
 }

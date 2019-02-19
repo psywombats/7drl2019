@@ -1,5 +1,4 @@
-﻿using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 
 [ExecuteInEditMode]
 public class MapEvent2D : MapEvent {
@@ -24,15 +23,6 @@ public class MapEvent2D : MapEvent {
                 Mathf.RoundToInt(sizeDelta.y / Map.TileSizePx));
         }
         SetDepth();
-    }
-
-    public void OnDrawGizmos() {
-        if (Selection.activeGameObject == gameObject) {
-            Gizmos.color = Color.red;
-        } else {
-            Gizmos.color = Color.magenta;
-        }
-        DrawGizmoSelf();
     }
 
     public override Vector3 CalculateOffsetPositionPx(OrthoDir dir) {
@@ -67,11 +57,7 @@ public class MapEvent2D : MapEvent {
         }
     }
 
-    private float DepthForPositionPx(float y) {
-        return (y / (parent.size.y * Map.TileSizePx)) * 0.1f;
-    }
-
-    private void DrawGizmoSelf() {
+    protected override void DrawGizmoSelf() {
         if (GetComponent<CharaEvent>() == null || GetComponent<CharaEvent>().GetAppearance() == null) {
             Gizmos.color = new Color(Gizmos.color.r, Gizmos.color.g, Gizmos.color.b, 0.5f);
             Gizmos.DrawCube(new Vector3(
@@ -86,5 +72,9 @@ public class MapEvent2D : MapEvent {
                     transform.position.z - 0.001f),
                 new Vector3((size.x - 0.1f) * Map.TileSizePx, (size.y - 0.1f) * Map.TileSizePx, 0.002f));
         }
+    }
+
+    private float DepthForPositionPx(float y) {
+        return (y / (parent.size.y * Map.TileSizePx)) * 0.1f;
     }
 }

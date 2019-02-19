@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Tilemaps;
@@ -135,6 +136,15 @@ public abstract class MapEvent : MonoBehaviour {
         }
     }
 
+    public void OnDrawGizmos() {
+        if (Selection.activeGameObject == gameObject) {
+            Gizmos.color = Color.red;
+        } else {
+            Gizmos.color = Color.magenta;
+        }
+        DrawGizmoSelf();
+    }
+
     public void CheckEnabled() {
         switchEnabled = luaObject.EvaluateBool(PropertyCondition, true);
     }
@@ -178,6 +188,8 @@ public abstract class MapEvent : MonoBehaviour {
 
     // set the one xyz coordinate not controlled by arrow keys
     public abstract void SetDepth();
+
+    protected abstract void DrawGizmoSelf();
 
     // called when the avatar stumbles into us
     // before the step if impassable, after if passable

@@ -33,4 +33,16 @@ public class MapEventEditor : Editor {
 
         base.OnInspectorGUI();
     }
+
+    public void OnSceneGUI() {
+        ((MapEvent)target).transform.position = Handles.PositionHandle(((MapEvent)target).transform.position, Quaternion.identity);
+    }
+
+    public void OnEnable() {
+        Tools.hidden = true;
+    }
+
+    public void OnDisable() {
+        Tools.hidden = false;
+    }
 }
