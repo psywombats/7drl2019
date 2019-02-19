@@ -21,10 +21,14 @@ public class TacticsTerrainMesh : MonoBehaviour, ISerializationCallbackReceiver 
     private Dictionary<FacingTileKey, Tile> facingTiles;
 
     public void Resize(Vector2Int newSize) {
+        List<FacingTileKey> toRemove = new List<FacingTileKey>();
         foreach (FacingTileKey key in facingTiles.Keys) {
             if (key.pos.x >= newSize.x || key.pos.z >= newSize.y) {
-                facingTiles.Remove(key);
+                toRemove.Add(key);
             }
+        }
+        foreach (FacingTileKey key in toRemove) {
+            facingTiles.Remove(key);
         }
 
         float[] newHeights = new float[newSize.x * newSize.y];

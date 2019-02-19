@@ -6,19 +6,23 @@ using UnityEngine.Tilemaps;
 
 [CustomEditor(typeof(TacticsTerrainMesh))]
 public class TacticsTerrainEditor : Editor {
-
+    
     private enum EditMode {
         None,
         HeightAdjust,
     }
 
-    private List<TerrainQuad> quads;
+    // tortured data structure
+    // index by pos -> normal ->
+    private Dictionary<Vector3, Dictionary<Vector3, TerrainQuad>> quads;
     private List<Vector3> vertices;
     private List<Vector2> uvs;
     private List<int> tris;
 
-    private TerrainQuad lastSelected;
+    private List<TerrainQuad> selectedQuads = new List<TerrainQuad>();
+    private TerrainQuad primarySelection;
     private float selectedHeight;
+    private float selectionSize = 1;
 
     private EditMode mode = EditMode.None;
 
@@ -44,6 +48,10 @@ public class TacticsTerrainEditor : Editor {
             Rebuild(true);
         }
         GUILayout.Space(20.0f);
+        int newSelectionSize = EditorGUILayout.IntField("Brush size", Mathf.FloorToInt(selectionSize));
+        if (newSelectionSize != Mathf.FloorToInt(selectionSize)) {
+            selectionSize = newSelectionSize > 0 ? newSelectionSize : 1;
+        }
 
         if (palette == null) {
             if (terrain.paletteName != null && terrain.paletteName.Length > 0) {
@@ -99,6 +107,7 @@ public class TacticsTerrainEditor : Editor {
 
     public void OnSceneGUI() {
         TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
+        bool dirty = false;
         if (quads == null) {
             Rebuild(false);
         }
@@ -109,9 +118,10 @@ public class TacticsTerrainEditor : Editor {
                 switch (mode) {
                     case EditMode.None:
                         TerrainQuad quad = GetSelectedQuad();
-                        if (lastSelected != quad) {
+                        if (quad != primarySelection) {
+                            CaptureSelection(quad);
+                            primarySelection = quad;
                             SceneView.RepaintAll();
-                            lastSelected = quad;
                         }
                         break;
                 }
@@ -125,14 +135,18 @@ public class TacticsTerrainEditor : Editor {
                         break;
                     case EditMode.None:
                         PaintTileIfNeeded();
+                        if (selectedTile != null) {
+                            GUIUtility.hotControl = controlId;
+                            Event.current.Use();
+                        }
                         break;
                 }
                 break;
             case EventType.MouseDown:
+                CaptureSelection(GetSelectedQuad());
                 PaintTileIfNeeded();
                 if (mode == EditMode.None) {
-                    lastSelected = GetSelectedQuad();
-                    if (lastSelected != null && lastSelected.normal.y > 0.0f) {
+                    if (selectedQuads.Count > 0 && selectedQuads[0].normal.y > 0.0f) {
                         GUIUtility.hotControl = controlId;
                         Event.current.Use();
                         mode = EditMode.HeightAdjust;
@@ -146,44 +160,49 @@ public class TacticsTerrainEditor : Editor {
                     case EditMode.HeightAdjust:
                         GUIUtility.hotControl = 0;
                         Event.current.Use();
-
                         mode = EditMode.None;
-
-                        int x = Mathf.RoundToInt(lastSelected.pos.x);
-                        int y = Mathf.RoundToInt(lastSelected.pos.z);
+                        
                         float height = GetHeightAtMouse();
-                        if (terrain.HeightAt(x, y) != height) {
-                            terrain.SetHeight(x, y, height);
-                            Rebuild(true);
+                        foreach (TerrainQuad quad in selectedQuads) {
+                            int x = Mathf.RoundToInt(quad.pos.x);
+                            int y = Mathf.RoundToInt(quad.pos.z);
+                            if (terrain.HeightAt(x, y) != height) {
+                                terrain.SetHeight(x, y, height);
+                                dirty = true;
+                            }
                         }
+
                         break;
+                }
+                break;
+            case EventType.ScrollWheel:
+                if (mode == EditMode.None && selectedQuads.Count > 0) {
+                    GUIUtility.hotControl = 0;
+                    Event.current.Use();
+                    selectionSize += -1.0f * Event.current.delta.y / 10.0f;
+                    selectionSize = selectionSize < 1.0f ? 1.0f : selectionSize;
+                    CaptureSelection(primarySelection);
+                    SceneView.RepaintAll();
                 }
                 break;
         }
 
         if (selectedHeight > 0.0f && mode == EditMode.HeightAdjust) {
-            int x = Mathf.RoundToInt(lastSelected.pos.x);
-            int y = Mathf.RoundToInt(lastSelected.pos.z);
+            int x = Mathf.RoundToInt(primarySelection.pos.x);
+            int y = Mathf.RoundToInt(primarySelection.pos.z);
             float h = terrain.HeightAt(x, y);
-            Vector3 pos = lastSelected.pos;
-            for (float z = GetHeightAtMouse(); Mathf.Abs(z - h) > 0.1f; z += 0.5f * Mathf.Sign(h - z)) {
-                Handles.DrawWireCube(new Vector3(pos.x + 0.5f, z + 0.25f * Mathf.Sign(h - z), pos.z + 0.5f),
-                    new Vector3(1.0f, 0.5f, 1.0f));
+            foreach (TerrainQuad quad in selectedQuads) {
+                for (float z = GetHeightAtMouse(); Mathf.Abs(z - h) > 0.1f; z += 0.5f * Mathf.Sign(h - z)) {
+                    Handles.DrawWireCube(new Vector3(quad.pos.x + 0.5f, z + 0.25f * Mathf.Sign(h - z), quad.pos.z + 0.5f),
+                        new Vector3(1.0f, 0.5f, 1.0f));
+                }
             }
         }
-        if (mode == EditMode.None || ( mode == EditMode.HeightAdjust)) {
-            if (lastSelected != null) {
-                Vector3 mid = lastSelected.pos + new Vector3(0.5f, -0.25f, 0.5f) + new Vector3(
-                    lastSelected.normal.x * 0.5f,
-                    lastSelected.normal.y * 0.25f,
-                    lastSelected.normal.z * 0.5f);
-                Vector3 size = new Vector3(
-                    1.01f - Mathf.Abs(lastSelected.normal.x),
-                    0.51f - (Mathf.Abs(lastSelected.normal.y) * 0.5f),
-                    1.01f - Mathf.Abs(lastSelected.normal.z));
-                Handles.color = new Color(1.0f, 1.0f, 1.0f);
-                Handles.DrawWireCube(mid, size);
-            }
+        if (mode == EditMode.None || (mode == EditMode.HeightAdjust)) {
+            DrawSelection();
+        }
+        if (dirty) {
+            Rebuild(true);
         }
     }
 
@@ -198,7 +217,7 @@ public class TacticsTerrainEditor : Editor {
             filter.sharedMesh = mesh;
         }
 
-        quads = new List<TerrainQuad>();
+        quads = new Dictionary<Vector3, Dictionary<Vector3, TerrainQuad>>();
         vertices = new List<Vector3>();
         uvs = new List<Vector2>();
         tris = new List<int>();
@@ -245,9 +264,9 @@ public class TacticsTerrainEditor : Editor {
         }
 
         if (regenMesh) {
-            lastSelected = null;
-
+            selectedQuads.Clear();
             mesh.Clear();
+
             mesh.vertices = vertices.ToArray();
             mesh.triangles = tris.ToArray();
             mesh.uv = uvs.ToArray();
@@ -258,7 +277,10 @@ public class TacticsTerrainEditor : Editor {
 
     private void AddQuad(Vector3 lowerLeft, Vector3 upperRight, Tile tile, Vector3 pos, Vector3 normal) {
         TerrainQuad quad = new TerrainQuad(tris.Count, vertices.Count, pos, normal);
-        quads.Add(quad);
+        if (!quads.ContainsKey(pos)) {
+            quads[pos] = new Dictionary<Vector3, TerrainQuad>();
+        }
+        quads[pos][normal] = quad;
 
         int i = vertices.Count;
         vertices.Add(lowerLeft);
@@ -302,11 +324,13 @@ public class TacticsTerrainEditor : Editor {
 
         float bestT = -1.0f;
         TerrainQuad best = null;
-        foreach (TerrainQuad quad in quads) {
-            float t = RayDistanceForQuad(ray, quad);
-            if (t > 0.0f && (t < bestT || bestT == -1.0f)) {
-                bestT = t;
-                best = quad;
+        foreach (Dictionary<Vector3, TerrainQuad> quadDictionary in quads.Values) {
+            foreach (TerrainQuad quad in quadDictionary.Values) {
+                float t = RayDistanceForQuad(ray, quad);
+                if (t > 0.0f && (t < bestT || bestT == -1.0f)) {
+                    bestT = t;
+                    best = quad;
+                }
             }
         }
 
@@ -331,7 +355,7 @@ public class TacticsTerrainEditor : Editor {
 
     private float GetHeightAtMouse() {
         Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-        Vector3 midpoint = lastSelected.pos + new Vector3(0.5f, 0.0f, 0.5f);
+        Vector3 midpoint = primarySelection.pos + new Vector3(0.5f, 0.0f, 0.5f);
         Plane plane = new Plane(-1.0f * Camera.current.transform.forward, midpoint);
         plane.Raycast(ray, out float enter);
 
@@ -353,16 +377,20 @@ public class TacticsTerrainEditor : Editor {
 
     private void PaintTileIfNeeded() {
         TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
-        if (selectedTile != null && lastSelected != null) {
-            int x = Mathf.RoundToInt(lastSelected.pos.x);
-            int y = Mathf.RoundToInt(lastSelected.pos.z);
-            if (lastSelected.normal.y > 0.0f) {
-                terrain.SetTile(x, y, selectedTile);
-            } else {
-                float height = lastSelected.pos.y - 0.5f;
-                terrain.SetTile(x, y, height, DirForNormal(lastSelected.normal), selectedTile);
+        if (selectedTile != null) {
+            foreach (TerrainQuad quad in selectedQuads) {
+                int x = Mathf.RoundToInt(quad.pos.x);
+                int y = Mathf.RoundToInt(quad.pos.z);
+                if (quad.normal.y > 0.0f) {
+                    terrain.SetTile(x, y, selectedTile);
+                } else {
+                    float height = quad.pos.y - 0.5f;
+                    terrain.SetTile(x, y, height, DirForNormal(quad.normal), selectedTile);
+                }
             }
             Rebuild(true);
+            primarySelection = GetSelectedQuad();
+            CaptureSelection(primarySelection);
         }
     }
 
@@ -418,6 +446,54 @@ public class TacticsTerrainEditor : Editor {
                 };
             }
         }
+    }
 
+    private void CaptureSelection(TerrainQuad quad) {
+        selectedQuads.Clear();
+        if (quad == null) {
+            return;
+        }
+        int d = Mathf.RoundToInt(selectionSize);
+        int low = -1 * Mathf.CeilToInt(d / 2.0f) + 1;
+        int high = Mathf.FloorToInt(d / 2.0f);
+        for (int i = low; i <= high; i += 1) {
+            for (int j = low; j <= high; j += 1) {
+                Vector3 newPos = quad.pos;
+                if (quad.normal.x != 0) {
+                    newPos = new Vector3(
+                        quad.pos.x,
+                        quad.pos.y + i * 0.5f,
+                        quad.pos.z + j);
+                } else if (quad.normal.y != 0) {
+                    newPos = new Vector3(
+                        quad.pos.x + i,
+                        quad.pos.y,
+                        quad.pos.z + j);
+                } else if (quad.normal.z != 0) {
+                    newPos = new Vector3(
+                        quad.pos.x + i,
+                        quad.pos.y + j * 0.5f,
+                        quad.pos.z);
+                }
+                if (quads.ContainsKey(newPos) && quads[newPos].ContainsKey(quad.normal)) {
+                    selectedQuads.Add(quads[newPos][quad.normal]);
+                }
+            }
+        }
+    }
+
+    private void DrawSelection() {
+        foreach (TerrainQuad quad in selectedQuads) {
+            Vector3 mid = quad.pos + new Vector3(0.5f, -0.25f, 0.5f) + new Vector3(
+                quad.normal.x * 0.5f,
+                quad.normal.y * 0.25f,
+                quad.normal.z * 0.5f);
+            Vector3 size = new Vector3(
+                1.01f - Mathf.Abs(quad.normal.x),
+                0.51f - (Mathf.Abs(quad.normal.y) * 0.5f),
+                1.01f - Mathf.Abs(quad.normal.z));
+            Handles.color = new Color(1.0f, 1.0f, 1.0f);
+            Handles.DrawWireCube(mid, size);
+        }
     }
 }
