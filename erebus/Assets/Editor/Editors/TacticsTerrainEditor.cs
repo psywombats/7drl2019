@@ -68,13 +68,13 @@ public class TacticsTerrainEditor : Editor {
             Texture2D backer = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Resources/Textures/White.png");
             for (int y = tileset.size.y - 1; y >= 0; y -= 1) {
                 EditorGUILayout.BeginHorizontal();
-                GUILayout.Space(16);
-                GUI.backgroundColor = new Color(0.5f, 0.5f, 1.0f);
 
                 for (int x = 0; x < tileset.size.x; x += 1) {
                     Rect selectRect = EditorGUILayout.BeginHorizontal(GUILayout.Width(Map.TileSizePx), GUILayout.Height(Map.TileSizePx));
-                    
-                    if (GUILayout.Button("", GUILayout.Width(Map.TileSizePx), GUILayout.Width(Map.TileSizePx))) {
+
+                    GUIStyle style = new GUIStyle();
+                    style.padding = new RectOffset(0, 0, 0, 0);
+                    if (GUILayout.Button("", style, GUILayout.Width(Map.TileSizePx), GUILayout.Height(Map.TileSizePx))) {
                         Tile newSelect = tileset.GetTile<Tile>(new Vector3Int(x, y, 0));
                         if (newSelect == selectedTile) {
                             selectedTile = null;
@@ -89,14 +89,13 @@ public class TacticsTerrainEditor : Editor {
                     Rect rect = new Rect(tile.sprite.uv[0].x, tile.sprite.uv[3].y,
                         tile.sprite.uv[3].x - tile.sprite.uv[0].x,
                         tile.sprite.uv[0].y - tile.sprite.uv[3].y);
-
-                    Rect expanded = new Rect(r.x - 2, r.y - 2, r.width + 4, r.height + 4);
-                    if (r.Contains(Event.current.mousePosition)) {
-                        GUI.DrawTexture(expanded, backer, ScaleMode.ScaleToFit, true, 0.0f, Color.red, 0.0f, 0.0f);
-                    } else if (tileset.GetTile<Tile>(new Vector3Int(x, y, 0)) == selectedTile) {
-                        GUI.DrawTexture(expanded, backer, ScaleMode.ScaleToFit, true, 0.0f, Color.blue, 0.0f, 0.0f);
-                    }
+                    
                     GUI.DrawTextureWithTexCoords(r, tile.sprite.texture, rect, true);
+                    if (r.Contains(Event.current.mousePosition)) {
+                        GUI.DrawTexture(r, backer, ScaleMode.StretchToFill, true, 0.0f, new Color(1, 0, 0, 0.5f), 0.0f, 0.0f);
+                    } else if (tileset.GetTile<Tile>(new Vector3Int(x, y, 0)) == selectedTile) {
+                        GUI.DrawTexture(r, backer, ScaleMode.StretchToFill, true, 0.0f, new Color(1, 1, 1, 0.8f), 0.0f, 0.0f);
+                    }
 
                     EditorGUILayout.EndHorizontal();
                 }
@@ -107,9 +106,18 @@ public class TacticsTerrainEditor : Editor {
 
     public void OnSceneGUI() {
         TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
-        bool dirty = false;
         if (quads == null) {
             Rebuild(false);
+        }
+
+        // rclick
+        switch (Event.current.button) {
+            case 0:
+                HandleLeftclick();
+                break;
+            case 1:
+                HandleRightclick();
+                break;
         }
 
         int controlId = GUIUtility.GetControlID(FocusType.Passive);
@@ -126,83 +134,10 @@ public class TacticsTerrainEditor : Editor {
                         break;
                 }
                 break;
-            case EventType.MouseDrag:
-                switch (mode) {
-                    case EditMode.HeightAdjust:
-                        GUIUtility.hotControl = controlId;
-                        Event.current.Use();
-                        selectedHeight = GetHeightAtMouse();
-                        break;
-                    case EditMode.None:
-                        PaintTileIfNeeded();
-                        if (selectedTile != null) {
-                            GUIUtility.hotControl = controlId;
-                            Event.current.Use();
-                        }
-                        break;
-                }
-                break;
-            case EventType.MouseDown:
-                CaptureSelection(GetSelectedQuad());
-                PaintTileIfNeeded();
-                if (mode == EditMode.None) {
-                    if (selectedQuads.Count > 0 && selectedQuads[0].normal.y > 0.0f) {
-                        GUIUtility.hotControl = controlId;
-                        Event.current.Use();
-                        mode = EditMode.HeightAdjust;
-                        Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-                        selectedHeight = 0.0f;
-                    }
-                }
-                break;
-            case EventType.MouseUp:
-                switch (mode) {
-                    case EditMode.HeightAdjust:
-                        GUIUtility.hotControl = 0;
-                        Event.current.Use();
-                        mode = EditMode.None;
-                        
-                        float height = GetHeightAtMouse();
-                        foreach (TerrainQuad quad in selectedQuads) {
-                            int x = Mathf.RoundToInt(quad.pos.x);
-                            int y = Mathf.RoundToInt(quad.pos.z);
-                            if (terrain.HeightAt(x, y) != height) {
-                                terrain.SetHeight(x, y, height);
-                                dirty = true;
-                            }
-                        }
-
-                        break;
-                }
-                break;
-            case EventType.ScrollWheel:
-                if (mode == EditMode.None && selectedQuads.Count > 0) {
-                    GUIUtility.hotControl = 0;
-                    Event.current.Use();
-                    selectionSize += -1.0f * Event.current.delta.y / 10.0f;
-                    selectionSize = selectionSize < 1.0f ? 1.0f : selectionSize;
-                    CaptureSelection(primarySelection);
-                    SceneView.RepaintAll();
-                }
-                break;
         }
 
-        if (selectedHeight > 0.0f && mode == EditMode.HeightAdjust) {
-            int x = Mathf.RoundToInt(primarySelection.pos.x);
-            int y = Mathf.RoundToInt(primarySelection.pos.z);
-            float h = terrain.HeightAt(x, y);
-            foreach (TerrainQuad quad in selectedQuads) {
-                for (float z = GetHeightAtMouse(); Mathf.Abs(z - h) > 0.1f; z += 0.5f * Mathf.Sign(h - z)) {
-                    Handles.DrawWireCube(new Vector3(quad.pos.x + 0.5f, z + 0.25f * Mathf.Sign(h - z), quad.pos.z + 0.5f),
-                        new Vector3(1.0f, 0.5f, 1.0f));
-                }
-            }
-        }
         if (mode == EditMode.None || (mode == EditMode.HeightAdjust)) {
             DrawSelection();
-        }
-        if (dirty) {
-            Rebuild(true);
         }
     }
 
@@ -213,7 +148,7 @@ public class TacticsTerrainEditor : Editor {
         Mesh mesh = filter.sharedMesh;
         if (mesh == null) {
             mesh = new Mesh();
-            AssetDatabase.CreateAsset(mesh, "Assets/Resources/Meshes/" + UnityEngine.Random.Range(10000000, 99999999) + ".asset");
+            AssetDatabase.CreateAsset(mesh, "Assets/Resources/TacticsMaps/Meshes/" + terrain.gameObject.name + ".asset");
             filter.sharedMesh = mesh;
         }
 
@@ -494,6 +429,112 @@ public class TacticsTerrainEditor : Editor {
                 1.01f - Mathf.Abs(quad.normal.z));
             Handles.color = new Color(1.0f, 1.0f, 1.0f);
             Handles.DrawWireCube(mid, size);
+        }
+    }
+
+    private void HandleLeftclick() {
+        TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
+        int controlId = GUIUtility.GetControlID(FocusType.Passive);
+        switch (Event.current.GetTypeForControl(controlId)) {
+            case EventType.MouseDrag:
+                switch (mode) {
+                    case EditMode.HeightAdjust:
+                        GUIUtility.hotControl = controlId;
+                        Event.current.Use();
+                        selectedHeight = GetHeightAtMouse();
+                        break;
+                    case EditMode.None:
+                        PaintTileIfNeeded();
+                        if (selectedTile != null) {
+                            GUIUtility.hotControl = controlId;
+                            Event.current.Use();
+                        }
+                        break;
+                }
+                break;
+            case EventType.MouseDown:
+                CaptureSelection(GetSelectedQuad());
+                PaintTileIfNeeded();
+                if (mode == EditMode.None) {
+                    if (selectedQuads.Count > 0 && selectedQuads[0].normal.y > 0.0f) {
+                        GUIUtility.hotControl = controlId;
+                        Event.current.Use();
+                        mode = EditMode.HeightAdjust;
+                        Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+                        selectedHeight = 0.0f;
+                    }
+                }
+                break;
+            case EventType.MouseUp:
+                switch (mode) {
+                    case EditMode.HeightAdjust:
+                        GUIUtility.hotControl = 0;
+                        Event.current.Use();
+                        mode = EditMode.None;
+                        bool dirty = false;
+
+                        float height = GetHeightAtMouse();
+                        foreach (TerrainQuad quad in selectedQuads) {
+                            int x = Mathf.RoundToInt(quad.pos.x);
+                            int y = Mathf.RoundToInt(quad.pos.z);
+                            if (terrain.HeightAt(x, y) != height) {
+                                terrain.SetHeight(x, y, height);
+                                dirty = true;
+                            }
+                        }
+                        if (dirty) {
+                            Rebuild(true);
+                        }
+
+                        break;
+                }
+                break;
+            case EventType.ScrollWheel:
+                if (mode == EditMode.None && selectedQuads.Count > 0) {
+                    GUIUtility.hotControl = 0;
+                    Event.current.Use();
+                    selectionSize += -1.0f * Event.current.delta.y / 5.0f;
+                    selectionSize = selectionSize < 1.0f ? 1.0f : selectionSize;
+                    CaptureSelection(primarySelection);
+                    SceneView.RepaintAll();
+                }
+                break;
+        }
+
+        if (selectedHeight >= 0.0f && mode == EditMode.HeightAdjust) {
+            int x = Mathf.RoundToInt(primarySelection.pos.x);
+            int y = Mathf.RoundToInt(primarySelection.pos.z);
+            float h = terrain.HeightAt(x, y);
+            foreach (TerrainQuad quad in selectedQuads) {
+                for (float z = GetHeightAtMouse(); Mathf.Abs(z - h) > 0.1f; z += 0.5f * Mathf.Sign(h - z)) {
+                    Handles.DrawWireCube(new Vector3(quad.pos.x + 0.5f, z + 0.25f * Mathf.Sign(h - z), quad.pos.z + 0.5f),
+                        new Vector3(1.0f, 0.5f, 1.0f));
+                }
+            }
+        }
+    }
+
+    private void HandleRightclick() {
+        TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
+        int controlId = GUIUtility.GetControlID(FocusType.Passive);
+        switch (Event.current.GetTypeForControl(controlId)) {
+            case EventType.MouseUp:
+                switch (mode) {
+                    case EditMode.None:
+                        if (primarySelection != null) {
+                            if (primarySelection.normal.y == 0.0f) {
+                                selectedTile = terrain.TileAt(
+                                    (int)primarySelection.pos.x,
+                                    (int)primarySelection.pos.z,
+                                    primarySelection.pos.y,
+                                    OrthoDirExtensions.DirectionOf(primarySelection.normal));
+                            } else {
+                                selectedTile = terrain.TileAt((int)primarySelection.pos.x, (int)primarySelection.pos.z);
+                            }
+                        }
+                        break;
+                }
+                break;
         }
     }
 }

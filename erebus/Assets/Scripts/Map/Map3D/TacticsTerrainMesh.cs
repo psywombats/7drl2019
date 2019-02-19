@@ -12,9 +12,11 @@ public class TacticsTerrainMesh : MonoBehaviour, ISerializationCallbackReceiver 
     public float[] heights;
     [HideInInspector]
     public Tile[] topTiles;
-    public Tile defaultTile;
     [HideInInspector]
     public string paletteName;
+
+    public Tile defaultTopTile;
+    public Tile defaultFaceTile;
 
     [HideInInspector]
     public FacingTileDictionary serializedFacingTiles;
@@ -39,6 +41,12 @@ public class TacticsTerrainMesh : MonoBehaviour, ISerializationCallbackReceiver 
                 newTiles[y * newSize.x + x] = topTiles[y * size.x + x];
             }
         }
+        for (int y = size.y; y < newSize.y; y += 1) {
+            for (int x = size.x; x < newSize.x; x += 1) {
+                newHeights[y * size.x + x] = 0.5f;
+            }
+        }
+
         topTiles = newTiles;
         heights = newHeights;
         size = newSize;
@@ -71,7 +79,7 @@ public class TacticsTerrainMesh : MonoBehaviour, ISerializationCallbackReceiver 
         }
         Tile tile = topTiles[y * size.x + x];
         if (tile == null) {
-            return defaultTile;
+            return defaultTopTile;
         } else {
             return tile;
         }
@@ -84,12 +92,12 @@ public class TacticsTerrainMesh : MonoBehaviour, ISerializationCallbackReceiver 
         if (facingTiles.ContainsKey(key)) {
             return facingTiles[key];
         } else {
-            return defaultTile;
+            return defaultFaceTile;
         }
     }
 
     public void SetTile(int x, int y, Tile tile) {
-        topTiles[y * size.y + x] = tile;
+        topTiles[y * size.x + x] = tile;
     }
 
     public void SetTile(int x, int y, float height, OrthoDir dir, Tile tile) {
