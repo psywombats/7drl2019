@@ -20,7 +20,7 @@ public class TacticsTerrainMesh : MonoBehaviour, ISerializationCallbackReceiver 
 
     [HideInInspector]
     public FacingTileDictionary serializedFacingTiles;
-    private Dictionary<FacingTileKey, Tile> facingTiles;
+    private Dictionary<FacingTileKey, Tile> facingTiles = new Dictionary<FacingTileKey, Tile>();
 
     private Tilemap _tilemap;
     public Tilemap tilemap {

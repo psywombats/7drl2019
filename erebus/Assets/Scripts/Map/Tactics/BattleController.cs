@@ -34,11 +34,11 @@ public class BattleController : MonoBehaviour {
         AddUnitsFromMap();
 
         cursor = Cursor.GetInstance();
-        cursor.gameObject.transform.parent = GetComponent<Map>().objectLayer.transform;
+        cursor.gameObject.transform.SetParent(GetComponent<Map>().objectLayer.transform);
         cursor.gameObject.SetActive(false);
 
         dirCursor = DirectionCursor.GetInstance();
-        dirCursor.gameObject.transform.parent = GetComponent<Map>().objectLayer.transform;
+        dirCursor.gameObject.transform.SetParent(GetComponent<Map>().objectLayer.transform);
         dirCursor.gameObject.SetActive(false);
     }
 

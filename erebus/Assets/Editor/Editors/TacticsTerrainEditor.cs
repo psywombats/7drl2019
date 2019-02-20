@@ -43,6 +43,7 @@ public class TacticsTerrainEditor : Editor {
     private GridPalette palette;
     private Tilemap tileset;
     private Tile selectedTile;
+    private bool wraparoundPaintMode;
 
     public override bool RequiresConstantRepaint() {
         return true;
@@ -55,6 +56,9 @@ public class TacticsTerrainEditor : Editor {
         GUILayout.Space(20.0f);
         if (GUILayout.Button("Rebuild")) {
             Rebuild(true);
+        }
+        if (GUILayout.Button("Reload")) {
+            PrefabUtility.RevertObjectOverride(terrain, InteractionMode.UserAction);
         }
         Vector2Int newSize = EditorGUILayout.Vector2IntField("Size", terrain.size);
         if (newSize != terrain.size) {
@@ -86,6 +90,7 @@ public class TacticsTerrainEditor : Editor {
         tool = ordinals[selectionIndex];
 
         if (tileset != null && tool == SelectionTool.Paint) {
+            wraparoundPaintMode = EditorGUILayout.Toggle("Paint all faces", wraparoundPaintMode);
             Texture2D backer = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Resources/Textures/White.png");
             for (int y = tileset.size.y - 1; y >= 0; y -= 1) {
                 EditorGUILayout.BeginHorizontal();
@@ -429,7 +434,13 @@ public class TacticsTerrainEditor : Editor {
                     terrain.SetTile(x, y, selectedTile);
                 } else {
                     float height = quad.pos.y - 0.5f;
-                    terrain.SetTile(x, y, height, OrthoDirExtensions.DirectionOfPx(quad.normal), selectedTile);
+                    if (wraparoundPaintMode) {
+                        foreach (OrthoDir dir in Enum.GetValues(typeof(OrthoDir))) {
+                            terrain.SetTile(x, y, height, dir, selectedTile);
+                        }
+                    } else {
+                        terrain.SetTile(x, y, height, OrthoDirExtensions.DirectionOfPx(quad.normal), selectedTile);
+                    }
                 }
             }
             Rebuild(true);

@@ -28,16 +28,18 @@ public class MapEvent3D : MapEvent {
 
     public override void SetDepth() {
         // our global height is identical to the height of the parent layer
-        transform.position = new Vector3(
-            gameObject.transform.position.x,
-            parent.terrain.HeightAt(position),
-            gameObject.transform.position.z);
+        if (GetComponent<Transform>() != null) {
+            transform.localPosition = new Vector3(
+                gameObject.transform.localPosition.x,
+                parent.terrain.HeightAt(position),
+                gameObject.transform.localPosition.z);
+        }
     }
 
     public override void Update() {
         base.Update();
         if (!Application.isPlaying) {
-            position = WorldPositionTileCoords(transform.position);
+            position = WorldPositionTileCoords(transform.localPosition);
             Vector2 sizeDelta = GetComponent<RectTransform>().sizeDelta;
             size = new Vector2Int(
                 Mathf.RoundToInt(sizeDelta.x),

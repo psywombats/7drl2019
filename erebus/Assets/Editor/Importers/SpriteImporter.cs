@@ -98,6 +98,7 @@ internal sealed class SpriteImporter : AssetPostprocessor {
         foreach (string assetPath in importedAssets) {
             if (assetPath.Contains("Sprites/Charas")) {
                 CreateAnimations(assetPath);
+                AssetDatabase.SaveAssets();
             }
         }
     }
@@ -167,7 +168,12 @@ internal sealed class SpriteImporter : AssetPostprocessor {
                 }
             }
 
-            AnimatorOverrideController controller = new AnimatorOverrideController();
+            string overridePath = "Assets/Resources/Animations/Charas/Instances/" + name + ".overrideController";
+            AnimatorOverrideController controller = AssetDatabase.LoadAssetAtPath<AnimatorOverrideController>(overridePath);
+            if (controller == null) {
+                controller = new AnimatorOverrideController();
+                AssetDatabase.CreateAsset(controller, overridePath);
+            }
             controller.runtimeAnimatorController = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>("Assets/Resources/Animations/Charas/CharaController.controller");
             List<KeyValuePair<AnimationClip, AnimationClip>> clips = new List<KeyValuePair<AnimationClip, AnimationClip>>();
             string facingsDir = "Assets/Resources/Animations/Charas/Facings/";
@@ -187,9 +193,6 @@ internal sealed class SpriteImporter : AssetPostprocessor {
                 clips.Add(new KeyValuePair<AnimationClip, AnimationClip>(original, newClip));
             }
             controller.ApplyOverrides(clips);
-            string overridePath = "Assets/Resources/Animations/Charas/Instances/" + name + ".overrideController";
-            AssetDatabase.DeleteAsset(overridePath);
-            AssetDatabase.CreateAsset(controller, overridePath);
         }
     }
 

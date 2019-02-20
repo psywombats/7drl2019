@@ -22,7 +22,10 @@ public class BattleEvent : MonoBehaviour {
 
     public void PopulateWithUnitData(Unit unitData) {
         this.unitData = unitData;
-        GetComponent<CharaEvent>().SetAppearance(unitData.appearance.name);
+        if (unitData != null) {
+            GetComponent<CharaEvent>().SetAppearance(unitData.appearance.name);
+            gameObject.name = unitData.unitName;
+        }
     }
 
     public void SetScreenPositionToMatchTilePosition() {

@@ -7,7 +7,7 @@ using System;
 [RequireComponent(typeof(MapEvent))]
 public class DirectionCursor : MonoBehaviour, InputListener {
 
-    private const string InstancePath = "Prefabs/Map3D/DirectionCursor";
+    private const string InstancePath = "Prefabs/Tactics/DirectionCursor";
 
     public OrthoDir currentDir;
     private BattleEvent actor;
