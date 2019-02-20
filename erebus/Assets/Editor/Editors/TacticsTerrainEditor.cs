@@ -370,6 +370,7 @@ public class TacticsTerrainEditor : Editor {
             mesh.uv = uvs.ToArray();
 
             mesh.RecalculateBounds();
+            mesh.RecalculateNormals();
         }
     }
 

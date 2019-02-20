@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof(TacticsCam))]
@@ -11,7 +9,11 @@ public class TacticsCameraEditor : Editor {
 
         TacticsCam camera = (TacticsCam)target;
         if (GUILayout.Button("Center")) {
-            camera.WarpToTarget();
+            if (Application.isPlaying) {
+                camera.WarpToTarget();
+            } else {
+                camera.WarpToTarget(true);
+            }
         }
     }
 }

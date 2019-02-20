@@ -47,6 +47,9 @@ public class MapEvent3D : MapEvent {
     }
 
     protected override void DrawGizmoSelf() {
+        if (GetComponent<Map3DHandleExists>() != null) {
+            return;
+        }
         Gizmos.color = new Color(Gizmos.color.r, Gizmos.color.g, Gizmos.color.b, 0.5f);
         Gizmos.DrawCube(new Vector3(
                 transform.position.x + size.x * OrthoDir.East.Px3DX() / 2.0f,

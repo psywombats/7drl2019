@@ -31,6 +31,8 @@ public class BattleController : MonoBehaviour {
     }
 
     public void Start() {
+        AddUnitsFromMap();
+
         cursor = Cursor.GetInstance();
         cursor.gameObject.transform.parent = GetComponent<Map>().objectLayer.transform;
         cursor.gameObject.SetActive(false);
@@ -40,23 +42,17 @@ public class BattleController : MonoBehaviour {
         dirCursor.gameObject.SetActive(false);
     }
 
-    // this should take a battle memory at some point
-    public void Setup(string battleKey) {
-        battle = Resources.Load<Battle>("Database/Battles/" + battleKey);
-        Debug.Assert(battle != null, "Unknown battle key " + battleKey);
+    private void AddUnitsFromMap() {
+        foreach (BattleEvent battler in map.GetEvents<BattleEvent>()) {
+            BattleUnit unit = new BattleUnit(battler.unitData, battle, battler.GetComponent<MapEvent>().position);
+            battler.Setup(this, unit);
+        }
     }
 
     // === GETTERS AND BOOKKEEPING =================================================================
 
     public BattleEvent GetDollForUnit(BattleUnit unit) {
         return dolls[unit];
-    }
-
-    public void AddUnitFromTiledEvent(BattleEvent doll, string unitKey) {
-        Vector2Int position = doll.GetComponent<MapEvent3D>().position;
-        BattleUnit newUnit = battle.AddUnitFromKey(unitKey, position);
-        doll.Setup(this, newUnit);
-        dolls[newUnit] = doll;
     }
 
     public BattleUnit GetUnitAt(Vector2Int position) {
@@ -157,7 +153,7 @@ public class BattleController : MonoBehaviour {
             }
             return map.FindPath(unit.doll.GetComponent<CharaEvent>(), loc, range) != null;
         };
-        grid.ConfigureNewGrid(map.size, rule);
+        grid.ConfigureNewGrid(new Vector2Int(range, range), map.terrain, rule);
 
         while (!result.finished) {
             Result<Vector2Int> locResult = new Result<Vector2Int>();

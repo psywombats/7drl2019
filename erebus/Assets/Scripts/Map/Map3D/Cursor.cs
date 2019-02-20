@@ -4,7 +4,7 @@ using System;
 
 public class Cursor : MonoBehaviour, InputListener {
 
-    private const string InstancePath = "Prefabs/Map3D/Cursor";
+    private const string InstancePath = "Prefabs/Tactics/Cursor";
     private const float ScrollSnapTime = 0.2f;
 
     public float minTimeBetweenMoves = 0.1f;

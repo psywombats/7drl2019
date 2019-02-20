@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TacticsCam : MapCamera {
@@ -9,7 +8,7 @@ public class TacticsCam : MapCamera {
 
     public Camera cam;
     public Vector3 targetAngles;
-    public float distance = 12.0f;
+    public float targetDistance = 12.0f;
 
     public float snapTime { get; set; }
 
@@ -77,7 +76,11 @@ public class TacticsCam : MapCamera {
                 snapTime);
     }
 
-    public void WarpToTarget() {
+    public void WarpToTarget(bool requiresRetarget = false) {
+        if (requiresRetarget) {
+            targetDollyPosition = transform.localPosition;
+            CopyTargetPosition();
+        }
         transform.localPosition = targetDollyPosition;
         transform.localEulerAngles = targetDollyAngles;
         cam.transform.localPosition = targetCamPosition;
@@ -85,7 +88,7 @@ public class TacticsCam : MapCamera {
     }
 
     public void ResetToTacticsMode() {
-        distance = standardDistance;
+        targetDistance = standardDistance;
         targetAngles = standardAngles;
         CopyTargetPosition();
         WarpToTarget();
@@ -107,20 +110,20 @@ public class TacticsCam : MapCamera {
     }
     public IEnumerator SwitchToDuelCamRoutine(Vector3 centerPoint, float angle = 0.0f) {
         standardAngles = targetAngles;
-        standardDistance = distance;
+        standardDistance = targetDistance;
 
         snapTime = DuelCamSnapTime;
         targetAngles = new Vector3(5.0f, angle, 0.0f);
         target = null;
         targetDollyPosition = centerPoint;
-        distance = DuelCamDistance;
+        targetDistance = DuelCamDistance;
         CopyTargetPosition();
 
         yield return new WaitForSeconds(DuelCamSnapTime);
     }
 
     public IEnumerator DuelZoomRoutine(float zoomDistance, float duration) {
-        distance = distance - zoomDistance;
+        targetDistance = targetDistance - zoomDistance;
         snapTime = duration;
         CopyTargetPosition();
         yield return new WaitForSeconds(duration);
@@ -139,13 +142,13 @@ public class TacticsCam : MapCamera {
 
     private Vector3 LookTargetForPosition(Vector3 pos) {
         // ugly, makes assumptions about map3d transform
-        return new Vector3(pos.x + 0.5f, pos.y + 1.0f, pos.z - 0.5f);
+        return new Vector3(pos.x + 0.5f, pos.y + 1.0f, pos.z + 0.5f);
     }
 
     private Vector3 PositionForAngleDist() {
         float angle = targetAngles.x;
         return new Vector3(0.0f,
-                Mathf.Sin(angle / 360.0f * 2.0f * Mathf.PI) * distance,
-                -1.0f * Mathf.Cos(angle / 360.0f * 2.0f * Mathf.PI) * distance);
+                Mathf.Sin(angle / 360.0f * 2.0f * Mathf.PI) * targetDistance,
+                -1.0f * Mathf.Cos(angle / 360.0f * 2.0f * Mathf.PI) * targetDistance);
     }
 }

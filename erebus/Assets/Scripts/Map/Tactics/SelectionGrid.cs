@@ -1,16 +1,14 @@
 ﻿using UnityEngine;
 using System;
-using UnityEngine.Profiling;
 
 /**
  *  A purely cosmetic grid that can be configured to display tiles as 'on' or 'off.' It then renders
  *  each cell differently depending on its on/off state. Can also be queried as to the state of a
  *  cell so can control things like "should the cursor extend outside of this zone."
  */
-[ExecuteInEditMode]
 public class SelectionGrid : MonoBehaviour {
 
-    const string InstancePath = "Prefabs/Map3D/SelectionGrid";
+    const string InstancePath = "Prefabs/Tactics/SelectionGrid";
 
     // editor properties
     public MeshFilter mesh;
@@ -31,23 +29,44 @@ public class SelectionGrid : MonoBehaviour {
         return Instantiate(prefab).GetComponent<SelectionGrid>();
     }
 
-    public void OnEnable() {
-        ConfigureNewGrid(new Vector2Int(5, 3), (Vector2Int loc) => {
-            return loc.x > 0 || loc.y > 0;
-        });
-    }
-
     // set up a new grid with the given size in tiles and rule for turning location into whether a
     // tile is part of the selection grid or not
-    public void ConfigureNewGrid(Vector2Int size, Func<Vector2Int, bool> rule) {
+    public void ConfigureNewGrid(Vector2Int size, TacticsTerrainMesh terrain, Func<Vector2Int, bool> rule) {
         this.size = size;
         this.rule = rule;
-        RecalculateGrid();
+        RecalculateGrid(terrain);
+    }
+
+    private void RecalculateGrid(TacticsTerrainMesh terrain) {
+        // we now have a rule and a size, update the mesh texture to reflect this
+        Vector2Int gridSize = size * 2;
+
+        MeshFilter filter = this.mesh;
+        if (filter.mesh != null) {
+            Destroy(filter.mesh);
+        }
+        Mesh mesh = new Mesh();
+        filter.mesh = mesh;
+
+        Vector3[] vertices = new Vector3[(gridSize.x + 1) * (gridSize.y + 1)];
+        Vector2[] uvs = new Vector2[vertices.Length];
+        int i = 0;
+        for (int y = 0; y <= gridSize.y; y += 1) {
+            for (int x = 0; x <= gridSize.x; x += 1) {
+                vertices[i] = new Vector3(0.5f * x, terrain.HeightAt(x, y), 0.5f * y);
+                uvs[i] = new Vector2(x / 2.0f, y / 2.0f);
+                i += 1;
+            }
+        }
+        mesh.vertices = vertices;
+        mesh.uv = uvs;
+
+        RecalculateRule(rule);
     }
 
     // redo this grid based on a new rule
     // assumes size has already been configured
-    public void RecalculateRule(Func<Vector2Int, bool> rule) {
+    private void RecalculateRule(Func<Vector2Int, bool> rule) {
         this.rule = rule;
         Vector2Int gridSize = size * 2;
         Mesh mesh = this.mesh.mesh;
@@ -59,7 +78,7 @@ public class SelectionGrid : MonoBehaviour {
                 ruleGrid[x, y] = rule(new Vector2Int(x, y));
             }
         }
-        
+
         // redo the triangle geometry to only reflect where rule evaluates true
         int[] triangles = new int[gridSize.x * gridSize.y * 6];
         for (int ti = 0, vi = 0, y = 0; y < gridSize.y; y++, vi++) {
@@ -78,32 +97,5 @@ public class SelectionGrid : MonoBehaviour {
         }
         mesh.triangles = triangles;
         mesh.RecalculateNormals();
-    }
-
-    private void RecalculateGrid() {
-        // we now have a rule and a size, update the mesh texture to reflect this
-        Vector2Int gridSize = size * 2;
-
-        MeshFilter filter = this.mesh;
-        if (filter.mesh != null) {
-            Destroy(filter.mesh);
-        }
-        Mesh mesh = new Mesh();
-        filter.mesh = mesh;
-
-        Vector3[] vertices = new Vector3[(gridSize.x + 1) * (gridSize.y + 1)];
-        Vector2[] uvs = new Vector2[vertices.Length];
-        int i = 0;
-        for (int y = 0; y <= gridSize.y; y += 1) {
-            for (int x = 0; x <= gridSize.x; x += 1) {
-                vertices[i] = new Vector3(0.5f * (float)x, 0.5f * (float)y, 0.0f);
-                uvs[i] = new Vector2((float)x / 2.0f, (float)y / 2.0f);
-                i += 1;
-            }
-        }
-        mesh.vertices = vertices;
-        mesh.uv = uvs;
-
-        RecalculateRule(rule);
     }
 }

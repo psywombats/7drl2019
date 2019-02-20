@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof(BattleController))]
@@ -11,13 +8,21 @@ public class BattleControllerEditor : Editor {
         DrawDefaultInspector();
 
         BattleController controller = (BattleController)target;
-        if (GUILayout.Button("Start Battle")) {
-            controller.StartCoroutine(controller.battle.BattleRoutine(controller));
+        if (Application.isPlaying) {
+            if (GUILayout.Button("Start Battle")) {
+                controller.StartCoroutine(controller.battle.BattleRoutine(controller));
+            }
+        } else {
+            GUILayout.Label("Enter play mode to test battle");
         }
 
-        GUILayout.Label("Battle status:");
-        foreach (BattleFaction faction in controller.battle.GetFactions()) {
-            GUILayout.Label("  " + faction);
+        if (controller.battle != null) {
+            GUILayout.Label("Battle status:");
+            foreach (BattleFaction faction in controller.battle.GetFactions()) {
+                GUILayout.Label("  " + faction);
+            }
+        } else {
+            controller.battle = new Battle();
         }
     }
 }

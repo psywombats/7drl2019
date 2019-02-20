@@ -12,8 +12,8 @@ using UnityEngine;
  *  - The BattleController holds an instance of this class
  *  - At the start of the battle, we pick up all units with a battle event
  */
-[CreateAssetMenu(fileName = "Battle", menuName = "Data/RPG/Battle")]
-public class Battle : ScriptableObject {
+ [System.Serializable]
+public class Battle {
 
     public AIController ai;
     
@@ -25,8 +25,8 @@ public class Battle : ScriptableObject {
     // === INITIALIZATION ==========================================================================
 
     public Battle() {
-        this.units = new List<BattleUnit>();
-        this.factions = new Dictionary<Alignment, BattleFaction>();
+        units = new List<BattleUnit>();
+        factions = new Dictionary<Alignment, BattleFaction>();
     }
 
     // === BOOKKEEPING AND GETTERS =================================================================

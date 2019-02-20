@@ -31,6 +31,16 @@ public class MapEventEditor : Editor {
             GUILayout.Space(25.0f);
         }
 
+        Vector2Int newPosition = EditorGUILayout.Vector2IntField("Tiles position", mapEvent.position);
+        if (newPosition != mapEvent.position) {
+            mapEvent.SetLocation(newPosition);
+        }
+
+        Vector2Int newSize = EditorGUILayout.Vector2IntField("Size", mapEvent.size);
+        if (newSize != mapEvent.size) {
+            mapEvent.SetSize(newSize);
+        }
+
         base.OnInspectorGUI();
     }
 
