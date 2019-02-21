@@ -55,7 +55,7 @@ public class DirectionCursor : MonoBehaviour, InputListener {
 
         SelectionGrid grid = actingUnit.controller.SpawnSelectionGrid();
         TacticsTerrainMesh terrain = actingUnit.controller.map.terrain;
-        grid.ConfigureNewGrid(new Vector2Int(3, 3), terrain, (Vector2Int loc) => {
+        grid.ConfigureNewGrid(actingUnit.location, new Vector2Int(3, 3), terrain, (Vector2Int loc) => {
             return (loc.x + loc.y) % 2 == 1;
         });
         grid.GetComponent<MapEvent>().position = actingUnit.location - new Vector2Int(1, 1);

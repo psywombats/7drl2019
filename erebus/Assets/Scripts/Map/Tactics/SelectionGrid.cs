@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 /**
  *  A purely cosmetic grid that can be configured to display tiles as 'on' or 'off.' It then renders
@@ -31,15 +32,9 @@ public class SelectionGrid : MonoBehaviour {
 
     // set up a new grid with the given size in tiles and rule for turning location into whether a
     // tile is part of the selection grid or not
-    public void ConfigureNewGrid(Vector2Int size, TacticsTerrainMesh terrain, Func<Vector2Int, bool> rule) {
+    public void ConfigureNewGrid(Vector2Int at, Vector2Int size, TacticsTerrainMesh terrain, Func<Vector2Int, bool> rule) {
         this.size = size;
         this.rule = rule;
-        RecalculateGrid(terrain);
-    }
-
-    private void RecalculateGrid(TacticsTerrainMesh terrain) {
-        // we now have a rule and a size, update the mesh texture to reflect this
-        Vector2Int gridSize = size * 2;
 
         MeshFilter filter = this.mesh;
         if (filter.mesh != null) {
@@ -48,54 +43,37 @@ public class SelectionGrid : MonoBehaviour {
         Mesh mesh = new Mesh();
         filter.mesh = mesh;
 
-        Vector3[] vertices = new Vector3[(gridSize.x + 1) * (gridSize.y + 1)];
-        Vector2[] uvs = new Vector2[vertices.Length];
-        int i = 0;
-        for (int y = 0; y <= gridSize.y; y += 1) {
-            for (int x = 0; x <= gridSize.x; x += 1) {
-                vertices[i] = new Vector3(0.5f * x, terrain.HeightAt(x, y), 0.5f * y);
-                uvs[i] = new Vector2(x / 2.0f, y / 2.0f);
-                i += 1;
-            }
-        }
-        mesh.vertices = vertices;
-        mesh.uv = uvs;
-
-        RecalculateRule(rule);
-    }
-
-    // redo this grid based on a new rule
-    // assumes size has already been configured
-    private void RecalculateRule(Func<Vector2Int, bool> rule) {
-        this.rule = rule;
-        Vector2Int gridSize = size * 2;
-        Mesh mesh = this.mesh.mesh;
-
-        // we'll need to call the rule on each square anyway so just do it once per
-        bool[,] ruleGrid = new bool[size.x, size.y];
-        for (int y = 0; y < size.y; y += 1) {
-            for (int x = 0; x < size.x; x += 1) {
-                ruleGrid[x, y] = rule(new Vector2Int(x, y));
-            }
-        }
-
-        // redo the triangle geometry to only reflect where rule evaluates true
-        int[] triangles = new int[gridSize.x * gridSize.y * 6];
-        for (int ti = 0, vi = 0, y = 0; y < gridSize.y; y++, vi++) {
-            for (int x = 0; x < gridSize.x; x++, ti += 6, vi++) {
-                // integer division to figure out the tile we're evaluating
-                int tileX = x / 2;
-                int tileY = y / 2;
-                if (!ruleGrid[tileX, tileY]) {
+        List<Vector3> vertices = new List<Vector3>();
+        List<Vector2> uvs = new List<Vector2>();
+        List<int> tris = new List<int>();
+        for (int y = at.y; y < at.y + size.y; y += 1) {
+            for (int x = at.x; x < at.x + size.x; x += 1) {
+                if (!rule(new Vector2Int(x, y))) {
                     continue;
                 }
-                triangles[ti] = vi;
-                triangles[ti + 3] = triangles[ti + 2] = vi + 1;
-                triangles[ti + 4] = triangles[ti + 1] = vi + gridSize.x + 1;
-                triangles[ti + 5] = vi + gridSize.x + 2;
+                int vertIndex = vertices.Count;
+                float height = terrain.HeightAt(x, y);
+                for (int i = 0; i < 4; i += 1) {
+                    vertices.Add(new Vector3(
+                        x + (i % 2 == 0 ? 1 : 0),
+                        height,
+                        y + (i < 2 ? 1 : 0)));
+                    uvs.Add(new Vector2(
+                        i % 2 == 0 ? 1 : 0,
+                        i < 2 ? 1 : 0));
+                }
+                tris.Add(vertIndex);
+                tris.Add(vertIndex + 2);
+                tris.Add(vertIndex + 1);
+                tris.Add(vertIndex + 1);
+                tris.Add(vertIndex + 2);
+                tris.Add(vertIndex + 3);
             }
         }
-        mesh.triangles = triangles;
+
+        mesh.vertices = vertices.ToArray();
+        mesh.uv = uvs.ToArray();
+        mesh.triangles = tris.ToArray();
         mesh.RecalculateNormals();
     }
 }
