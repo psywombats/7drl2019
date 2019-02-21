@@ -46,8 +46,8 @@ public class DuelMap : MonoBehaviour {
         ConfigureForDuel(attacker, defender);
         float duration = 0.6f;
         yield return TacticsCam.Instance().SwitchToDuelCamRoutine(
-            attacker.GetComponent<MapEvent>(), 
-            defender.GetComponent<MapEvent>());
+            attacker.GetComponent<MapEvent3D>(), 
+            defender.GetComponent<MapEvent3D>());
         yield return new WaitForSeconds(0.6f);
         yield return CoUtils.RunParallel(new IEnumerator[] {
             CoUtils.Delay(0.0f, TacticsCam.Instance().DuelZoomRoutine(8.0f, duration/2.0f)),

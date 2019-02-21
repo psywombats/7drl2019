@@ -103,8 +103,12 @@ public abstract class MapEvent : MonoBehaviour {
     // if we moved in this direction, where in screenspace would we end up?
     public abstract Vector3 CalculateOffsetPositionPx(OrthoDir dir);
 
+    public abstract Vector2Int OffsetForTiles(OrthoDir dir);
+
     // perform any pixel-perfect rounding needed for a pixel position
     public abstract Vector3 InternalPositionToDisplayPosition(Vector3 position);
+
+    public abstract OrthoDir DirectionTo(Vector2Int position);
 
     public void Awake() {
         luaObject = new LuaMapEvent(this);
@@ -148,12 +152,12 @@ public abstract class MapEvent : MonoBehaviour {
         switchEnabled = luaObject.EvaluateBool(PropertyCondition, true);
     }
 
-    public OrthoDir DirectionTo(MapEvent other) {
-        return OrthoDirExtensions.DirectionOf(other.position - position);
-    }
-
     public bool IsPassableBy(CharaEvent chara) {
         return passable || !switchEnabled;
+    }
+
+    public OrthoDir DirectionTo(MapEvent other) {
+        return DirectionTo(other.position);
     }
 
     public bool CanPassAt(Vector2Int loc) {
@@ -232,8 +236,8 @@ public abstract class MapEvent : MonoBehaviour {
             yield break;
         }
         tracking = true;
-        
-        position += dir.XY();
+
+        position += OffsetForTiles(dir);
         targetPositionPx = CalculateOffsetPositionPx(dir);
         GetComponent<Dispatch>().Signal(EventMove, dir);
 

@@ -167,10 +167,10 @@ public class CharaAnimator : MonoBehaviour {
         }
 
         Vector3 ourScreen = cam.GetCameraComponent().WorldToScreenPoint(parentEvent.transform.position);
-        Vector3 targetWorld = MapEvent3D.TileToWorldCoords(parentEvent.position + normalDir.XY());
+        Vector3 targetWorld = ((MapEvent3D)parentEvent).TileToWorldCoords(parentEvent.position + normalDir.XY2D());
         Vector3 targetScreen = cam.GetCameraComponent().WorldToScreenPoint(targetWorld);
         Vector3 delta = targetScreen - ourScreen;
-        return OrthoDirExtensions.DirectionOf(new Vector2(delta.x, -delta.y));
+        return OrthoDirExtensions.DirectionOf3D(new Vector2(delta.x, -delta.y));
     }
 
     private bool IsStepping() {

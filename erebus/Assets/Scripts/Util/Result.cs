@@ -29,4 +29,10 @@ public class Result<T> {
         finished = true;
         canceled = true;
     }
+
+    public void Reset() {
+        finished = false;
+        canceled = false;
+        _value = default(T);
+    }
 }

@@ -86,7 +86,7 @@ public class Cursor : MonoBehaviour, InputListener {
         if (Time.fixedTime - lastStepTime < minTimeBetweenMoves) {
             return true;
         }
-        Vector2Int target = GetComponent<MapEvent>().position + dir.XY();
+        Vector2Int target = GetComponent<MapEvent>().position + dir.XY3D();
         if (GetComponent<MapEvent>().CanPassAt(target)) {
             StartCoroutine(GetComponent<MapEvent>().StepRoutine(dir));
             lastStepTime = Time.fixedTime;

@@ -26,7 +26,7 @@ public class DirectionCursor : MonoBehaviour, InputListener {
         List<OrthoDir> dirs = new List<OrthoDir>();
         Map map = actingUnit.battle.controller.map;
         foreach (OrthoDir dir in Enum.GetValues(typeof(OrthoDir))) {
-            Vector2Int loc = actingUnit.location + dir.XY();
+            Vector2Int loc = actingUnit.location + dir.XY2D();
             BattleEvent doll = map.GetEventAt<BattleEvent>(loc);
             if (doll != null && rule(doll.unit)) {
                 dirs.Add(dir);
@@ -35,7 +35,7 @@ public class DirectionCursor : MonoBehaviour, InputListener {
         if (dirs.Count > 0) {
             Result<OrthoDir> dirResult = new Result<OrthoDir>();
             yield return SelectTargetDirRoutine(dirResult, actingUnit, dirs, canCancel);
-            Vector2Int loc = actingUnit.location + dirResult.value.XY();
+            Vector2Int loc = actingUnit.location + dirResult.value.XY2D();
             result.value = map.GetEventAt<BattleEvent>(loc).unit;
         } else {
             Debug.Assert(false, "No valid directions");
@@ -136,7 +136,7 @@ public class DirectionCursor : MonoBehaviour, InputListener {
     private void SetDirection(OrthoDir dir) {
         currentDir = dir;
         actor.GetComponent<CharaEvent>().facing = dir;
-        GetComponent<MapEvent>().position = actor.GetComponent<MapEvent>().position + dir.XY();
+        GetComponent<MapEvent>().position = actor.GetComponent<MapEvent>().position + dir.XY2D();
         GetComponent<MapEvent>().SetScreenPositionToMatchTilePosition();
         TacticsCam.Instance().ManualUpdate();
     }

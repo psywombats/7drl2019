@@ -30,13 +30,13 @@ public class AfterimageComponent : MonoBehaviour {
 
         SpriteRenderer renderer = GetComponent<SpriteRenderer>();
         images.Add(new Afterimage(Time.time, transform.position, renderer.sprite));
-        float lastRelevantTime = Time.time - (float)(afterimageCount + 1) * afterimageDuration;
+        float lastRelevantTime = Time.time - (afterimageCount + 1) * afterimageDuration;
         if (images.Count > 1 && images[1].time < lastRelevantTime) {
             images.RemoveAt(0);
         }
         
         for (int i = 0; i < afterimageCount; i += 1) {
-            float time = Time.time - afterimageDuration * (float)(i + 1);
+            float time = Time.time - afterimageDuration * (i + 1);
             if (images[0].time > time) {
                 break;
             }
@@ -45,6 +45,7 @@ public class AfterimageComponent : MonoBehaviour {
             if (renderChildren.Count <= i) {
                 renderChild = new GameObject("Afterimage");
                 renderChild.transform.parent = transform;
+                renderChild.transform.localScale = transform.localScale;
                 renderChild.layer = gameObject.layer;
                 renderChildren.Add(renderChild);
                 SpriteRenderer childRenderer = renderChild.AddComponent<SpriteRenderer>();

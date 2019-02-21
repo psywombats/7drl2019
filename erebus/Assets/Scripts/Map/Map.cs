@@ -85,22 +85,20 @@ public class Map : MonoBehaviour {
     }
 
     public bool IsChipPassableAt(Tilemap layer, Vector2Int loc) {
-        PropertiedTile tile = TileAt(layer, loc.x, loc.y);
-        return tile == null || tile.GetData().passable;
-        //if (passabilityMap == null) {
-        //    passabilityMap = new Dictionary<Tilemap, bool[,]>();
-        //}
-        //if (!passabilityMap.ContainsKey(layer)) {
-        //    passabilityMap[layer] = new bool[width, height];
-        //    for (int x = 0; x < width; x += 1) {
-        //        for (int y = 0; y < height; y += 1) {
-        //            PropertiedTile tile = TileAt(layer, x, y);
-        //            passabilityMap[layer][x, y] = tile == null || tile.GetData().passable;
-        //        }
-        //    }
-        //}
+        if (passabilityMap == null) {
+            passabilityMap = new Dictionary<Tilemap, bool[,]>();
+        }
+        if (!passabilityMap.ContainsKey(layer)) {
+            passabilityMap[layer] = new bool[width, height];
+            for (int x = 0; x < width; x += 1) {
+                for (int y = 0; y < height; y += 1) {
+                    PropertiedTile tile = TileAt(layer, x, y);
+                    passabilityMap[layer][x, y] = tile == null || tile.GetData().passable;
+                }
+            }
+        }
 
-        //return passabilityMap[layer][loc.x, loc.y];
+        return passabilityMap[layer][loc.x, loc.y];
     }
 
     // careful, this implementation is straight from MGNE, it's efficiency is questionable, to say the least

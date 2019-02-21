@@ -32,6 +32,10 @@ public class TacticsCam : MapCamera {
         return instance;
     }
 
+    private MapEvent3D target3D {
+        get { return (MapEvent3D)target; }
+    }
+
     public override void ManualUpdate() {
         base.ManualUpdate();
         CopyTargetPosition();
@@ -40,7 +44,7 @@ public class TacticsCam : MapCamera {
     public override Camera GetCameraComponent() {
         return cam;
     }
-
+    
     public void Start() {
         targetDollyPosition = transform.localPosition;
         CopyTargetPosition();
@@ -76,6 +80,10 @@ public class TacticsCam : MapCamera {
                 snapTime);
     }
 
+    public void SetTargetLocation(Vector2 targetLocation, float height) {
+        targetDollyPosition = new Vector3(targetLocation.x, height, targetLocation.y);
+    }
+
     public void WarpToTarget(bool requiresRetarget = false) {
         if (requiresRetarget) {
             targetDollyPosition = transform.localPosition;
@@ -94,14 +102,9 @@ public class TacticsCam : MapCamera {
         WarpToTarget();
     }
 
-    public void SetTargetLocation(Vector2Int loc) {
-        target = null;
-        targetDollyPosition = MapEvent3D.TileToWorldCoords(loc);
-    }
-
-    public IEnumerator SwitchToDuelCamRoutine(MapEvent target1, MapEvent target2) {
-        Vector3 targetWorld1 = MapEvent3D.TileToWorldCoords(target1.position);
-        Vector3 targetWorld2 = MapEvent3D.TileToWorldCoords(target2.position);
+    public IEnumerator SwitchToDuelCamRoutine(MapEvent3D target1, MapEvent3D target2) {
+        Vector3 targetWorld1 = target1.TileToWorldCoords(target1.position);
+        Vector3 targetWorld2 = target2.TileToWorldCoords(target2.position);
         float angle = Mathf.Atan2(targetWorld1.x - targetWorld2.x, targetWorld1.z - targetWorld2.z);
         angle = angle / 2.0f / Mathf.PI * 360.0f;
         angle += 90.0f;
@@ -131,7 +134,7 @@ public class TacticsCam : MapCamera {
 
     private void CopyTargetPosition() {
         if (target != null) {
-            targetDollyPosition = MapEvent3D.TileToWorldCoords(target.position);
+            targetDollyPosition = target3D.TileToWorldCoords(target.position);
         }
         targetCamPosition = PositionForAngleDist();
         targetCamAngles = new Vector3(targetAngles.x, 0.0f, 0.0f);

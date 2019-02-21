@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
-using System.Linq;
 
 /**
  * Responsible for user input and rendering during a battle. Control flow is actually handled by
@@ -26,10 +25,6 @@ public class BattleController : MonoBehaviour {
 
     // === INITIALIZATION ==========================================================================
 
-    public BattleController() {
-        dolls = new Dictionary<BattleUnit, BattleEvent>();
-    }
-
     public void Start() {
         AddUnitsFromMap();
 
@@ -43,9 +38,12 @@ public class BattleController : MonoBehaviour {
     }
 
     private void AddUnitsFromMap() {
+        dolls = new Dictionary<BattleUnit, BattleEvent>();
         foreach (BattleEvent battler in map.GetEvents<BattleEvent>()) {
-            BattleUnit unit = new BattleUnit(battler.unitData, battle, battler.GetComponent<MapEvent>().position);
+            BattleUnit unit = battle.AddUnitFromSerializedUnit(battler.unitData, 
+                battler.GetComponent<MapEvent>().position);
             battler.Setup(this, unit);
+            dolls[unit] = battler;
         }
     }
 
@@ -77,53 +75,12 @@ public class BattleController : MonoBehaviour {
         }
         yield return CoUtils.RunParallel(routinesToRun.ToArray(), this);
     }
-
-    // it's a discrete step in the human's turn, they should be able to undo up to this point
-    public IEnumerator PlayNextHumanActionRoutine() {
-        MoveCursorToDefaultUnit();
-
-        BattleUnit actingUnit = null;
-        while (actingUnit == null) {
-            Result<BattleUnit> unitResult = new Result<BattleUnit>();
-            yield return SelectUnitRoutine(unitResult, (BattleUnit unit) => {
-                return unit.align == Alignment.Hero;
-            }, false);
-            actingUnit = unitResult.value;
-            Vector2Int originalLocation = actingUnit.location;
-
-            Result<Vector2Int> moveResult = new Result<Vector2Int>();
-            yield return SelectMoveLocationRoutine(moveResult, actingUnit);
-            if (moveResult.canceled) {
-                continue;
-            }
-            actingUnit.location = moveResult.value;
-            yield return actingUnit.doll.GetComponent<CharaEvent>().PathToRoutine(moveResult.value);
-
-            // TODO: remove this nonsense
-            Result<BattleUnit> targetedResult = new Result<BattleUnit>();
-            yield return dirCursor.SelectAdjacentUnitRoutine(targetedResult, actingUnit, (BattleUnit unit) => {
-                return unit.align == Alignment.Enemy;
-            });
-            if (targetedResult.canceled) {
-                // TODO: reset where they came from
-                actingUnit.location = originalLocation;
-                break;
-            }
-            BattleUnit targetUnit = targetedResult.value;
-            targetUnit.doll.GetComponent<CharaEvent>().FaceToward(actingUnit.location);
-
-            yield return Global.Instance().Maps.activeDuelMap.EnterMapRoutine(actingUnit.doll, targetUnit.doll);
-
-            actingUnit.MarkActionTaken();
-            yield return Global.Instance().Maps.activeDuelMap.ExitMapRoutine();
-            yield return actingUnit.doll.PostActionRoutine();
-        }
-    }
     
     // cancelable, awaits user selecting a unit that matches the rule
-    private IEnumerator SelectUnitRoutine(Result<BattleUnit> result, 
+    public IEnumerator SelectUnitRoutine(Result<BattleUnit> result, 
             Func<BattleUnit, bool> rule, 
             bool allowCancel=true) {
+        MoveCursorToDefaultUnit();
         cursor.gameObject.SetActive(true);
         while (!result.finished) {
             Result<Vector2Int> locResult = new Result<Vector2Int>();
@@ -141,7 +98,7 @@ public class BattleController : MonoBehaviour {
     }
 
     // selects a move location for the selected unit, might be canceled
-    private IEnumerator SelectMoveLocationRoutine(Result<Vector2Int> result, BattleUnit unit, bool canCancel=true) {
+    public IEnumerator SelectMoveLocationRoutine(Result<Vector2Int> result, BattleUnit unit, bool canCancel=true) {
         cursor.gameObject.SetActive(true);
         cursor.GetComponent<MapEvent>().SetLocation(unit.location);
 
@@ -171,15 +128,23 @@ public class BattleController : MonoBehaviour {
         Destroy(grid.gameObject);
     }
 
+    // selects an adjacent unit to the actor (provided they meet the rule), cancelable
+    public IEnumerator SelectAdjacentUnitRoutine(Result<BattleUnit> result,
+                BattleUnit actingUnit,
+                Func<BattleUnit, bool> rule,
+                bool canCancel = true) {
+        yield return dirCursor.SelectAdjacentUnitRoutine(result, actingUnit, rule, canCancel);
+    }
+
     // === GAMEBOARD AND GRAPHICAL INTERACTION =====================================================
 
     public void TargetCameraToLocation(Vector2Int loc) {
-        TacticsCam.Instance().SetTargetLocation(loc);
+        TacticsCam.Instance().SetTargetLocation(loc, map.terrain.HeightAt(loc));
     }
 
     public SelectionGrid SpawnSelectionGrid() {
         SelectionGrid grid = SelectionGrid.GetInstance();
-        grid.gameObject.transform.parent = GetComponent<Map>().objectLayer.transform;
+        grid.gameObject.transform.SetParent(GetComponent<Map>().objectLayer.transform);
         return grid;
     }
 

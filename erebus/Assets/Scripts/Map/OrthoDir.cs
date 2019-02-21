@@ -2,19 +2,18 @@
 using UnityEngine;
 
 public enum OrthoDir {
-    [OrthoDir("North",     0, -1,  0,      0,  0,  1,      0, -1,      0)] North,
-    [OrthoDir("East",      1,  0,  0,      1,  0,  0,      1,  0,      1)] East,
-    [OrthoDir("South",     0,  1,  0,      0,  0, -1,      0,  1,      2)] South,
-    [OrthoDir("West",     -1,  0,  0,      -1, 0,  0,     -1,  0,      3)] West,
+    [OrthoDir("North",     0, -1,  0,      0,  0,  1,      0)] North,
+    [OrthoDir("East",      1,  0,  0,      1,  0,  0,      1)] East,
+    [OrthoDir("South",     0,  1,  0,      0,  0, -1,      2)] South,
+    [OrthoDir("West",     -1,  0,  0,     -1,  0,  0,      3)] West,
 }
 
 public class OrthoDirAttribute : Attribute {
 
-    // this set is in tile space
+    // tile space
     // (xy is public for optimization)
-    public Vector2Int XY;
-    public int X { get { return XY.x; } }
-    public int Y { get { return XY.y; } }
+    public Vector2Int XY2D { get; private set; }
+    public Vector2Int XY3D { get; private set; }
 
     // 2D screenspace
     public Vector3Int Px2D { get; private set; }
@@ -34,8 +33,9 @@ public class OrthoDirAttribute : Attribute {
     internal OrthoDirAttribute(string directionName,
             int px2DX, int px2DY, int px2DZ,
             int px3DX, int px3DY, int px3DZ,
-            int dx, int dy, int ordinal) {
-        XY = new Vector2Int(dx, dy);
+            int ordinal) {
+        XY2D = new Vector2Int(px2DX, px2DY);
+        XY3D = new Vector2Int(px3DX, px3DZ);
         Px2D = new Vector3Int(px2DX, px2DY, px2DZ);
         Px3D = new Vector3Int(px3DX, px3DY, px3DZ);
         Ordinal = ordinal;
@@ -45,16 +45,8 @@ public class OrthoDirAttribute : Attribute {
 
 public static class OrthoDirExtensions {
 
-    public static OrthoDir DirectionOf(Vector2 vector) {
-        if (Mathf.Abs(vector.x) > Mathf.Abs(vector.y)) {
-            return ((vector.x > 0) ^ (OrthoDir.East.X() > 0)) ? OrthoDir.West : OrthoDir.East;
-        } else {
-            return ((vector.y > 0) ^ (OrthoDir.North.Y() > 0)) ? OrthoDir.South : OrthoDir.North;
-        }
-    }
-
     // 2D space
-    public static OrthoDir DirectionOfPx(Vector2 vector) {
+    public static OrthoDir DirectionOf2D(Vector2 vector) {
         if (Mathf.Abs(vector.x) > Mathf.Abs(vector.y)) {
             return ((vector.x > 0) ^ (OrthoDir.East.Px2DX() > 0)) ? OrthoDir.West : OrthoDir.East;
         } else {
@@ -63,7 +55,10 @@ public static class OrthoDirExtensions {
     }
 
     // 3D space
-    public static OrthoDir DirectionOfPx(Vector3 vector) {
+    public static OrthoDir DirectionOf3D(Vector2Int vector) {
+        return DirectionOf3D(new Vector3(vector.x, 0.0f, vector.y));
+    }
+    public static OrthoDir DirectionOf3D(Vector3 vector) {
         if (Mathf.Abs(vector.x) > Mathf.Abs(vector.z)) {
             return ((vector.x > 0) ^ (OrthoDir.East.Px3DX() > 0)) ? OrthoDir.West : OrthoDir.East;
         } else {
@@ -72,7 +67,7 @@ public static class OrthoDirExtensions {
     }
 
     public static OrthoDir Parse(string directionName) {
-        foreach (OrthoDir dir in System.Enum.GetValues(typeof(OrthoDir))) {
+        foreach (OrthoDir dir in Enum.GetValues(typeof(OrthoDir))) {
             if (dir.DirectionName().ToLower() == directionName.ToLower()) {
                 return dir;
             }
@@ -81,10 +76,9 @@ public static class OrthoDirExtensions {
         Debug.Assert(false, "Could not find orthodir matching " + directionName);
         return OrthoDir.North;
     }
-
-    public static int X(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().X; }
-    public static int Y(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().Y; }
-    public static Vector2Int XY(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().XY; }
+    
+    public static Vector2Int XY2D(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().XY2D; }
+    public static Vector2Int XY3D(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().XY3D; }
 
     public static int Px2DX(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().Px2DX; }
     public static int Px2DY(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().Px2DY; }

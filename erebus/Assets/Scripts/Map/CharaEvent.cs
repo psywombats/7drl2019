@@ -48,8 +48,8 @@ public class CharaEvent : MonoBehaviour {
         });
     }
 
-    public void FaceToward(Vector2Int pos) {
-        facing = OrthoDirExtensions.DirectionOf(pos - GetComponent<MapEvent>().position);
+    public void FaceToward(MapEvent other) {
+        facing = GetComponent<MapEvent>().DirectionTo(other);
     }
 
     public void SetAppearance(string spriteKey) {
@@ -82,8 +82,9 @@ public class CharaEvent : MonoBehaviour {
         if (path == null) {
             yield break;
         }
+        MapEvent mapEvent = GetComponent<MapEvent>();
         foreach (Vector2Int target in path) {
-            OrthoDir dir = OrthoDirExtensions.DirectionOf(target - GetComponent<MapEvent>().position);
+            OrthoDir dir = mapEvent.DirectionTo(target);
             yield return StartCoroutine(GetComponent<MapEvent>().StepRoutine(dir));
         }
     }

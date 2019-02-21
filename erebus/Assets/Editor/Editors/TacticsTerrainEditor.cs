@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.Experimental.SceneManagement;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
@@ -56,9 +58,6 @@ public class TacticsTerrainEditor : Editor {
         GUILayout.Space(20.0f);
         if (GUILayout.Button("Rebuild")) {
             Rebuild(true);
-        }
-        if (GUILayout.Button("Reload")) {
-            PrefabUtility.RevertObjectOverride(terrain, InteractionMode.UserAction);
         }
         Vector2Int newSize = EditorGUILayout.Vector2IntField("Size", terrain.size);
         if (newSize != terrain.size) {
@@ -298,7 +297,7 @@ public class TacticsTerrainEditor : Editor {
                                     (int)primarySelection.pos.x,
                                     (int)primarySelection.pos.z,
                                     primarySelection.pos.y,
-                                    OrthoDirExtensions.DirectionOf(primarySelection.normal));
+                                    OrthoDirExtensions.DirectionOf3D(primarySelection.normal));
                             } else {
                                 selectedTile = terrain.TileAt((int)primarySelection.pos.x, (int)primarySelection.pos.z);
                             }
@@ -311,6 +310,11 @@ public class TacticsTerrainEditor : Editor {
 
     private void Rebuild(bool regenMesh) {
         TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
+
+        PrefabStage prefabStage = PrefabStageUtility.GetPrefabStage(terrain.gameObject);
+        if (prefabStage != null) {
+            EditorSceneManager.MarkSceneDirty(prefabStage.scene);
+        }
 
         MeshFilter filter = terrain.GetComponent<MeshFilter>();
         Mesh mesh = filter.sharedMesh;
@@ -439,7 +443,7 @@ public class TacticsTerrainEditor : Editor {
                             terrain.SetTile(x, y, height, dir, selectedTile);
                         }
                     } else {
-                        terrain.SetTile(x, y, height, OrthoDirExtensions.DirectionOfPx(quad.normal), selectedTile);
+                        terrain.SetTile(x, y, height, OrthoDirExtensions.DirectionOf3D(quad.normal), selectedTile);
                     }
                 }
             }

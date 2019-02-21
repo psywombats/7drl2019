@@ -25,12 +25,20 @@ public class MapEvent2D : MapEvent {
         SetDepth();
     }
 
+    public override OrthoDir DirectionTo(Vector2Int position) {
+        return OrthoDirExtensions.DirectionOf2D(position - this.position);
+    }
+
     public override Vector3 CalculateOffsetPositionPx(OrthoDir dir) {
         float y = positionPx.y + dir.Px2DY() * Map.TileSizePx / Map.UnityUnitScale * OrthoDir.North.Px2DY();
         return new Vector3(
             positionPx.x + dir.Px2DX() * Map.TileSizePx / Map.UnityUnitScale * OrthoDir.East.Px2DX(),
             y,
             DepthForPositionPx(y));
+    }
+
+    public override Vector2Int OffsetForTiles(OrthoDir dir) {
+        return dir.XY2D();
     }
 
     public override void SetScreenPositionToMatchTilePosition() {

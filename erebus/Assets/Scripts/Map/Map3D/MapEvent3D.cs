@@ -3,9 +3,8 @@
 [ExecuteInEditMode]
 public class MapEvent3D : MapEvent {
 
-    public static Vector3 TileToWorldCoords(Vector2Int position) {
-        // TODOish, height is zero? shouldn't static
-        return new Vector3(position.x, 0.0f, position.y);
+    public Vector3 TileToWorldCoords(Vector2Int position) {
+        return new Vector3(position.x, parent.terrain.HeightAt(position), position.y);
     }
 
     public static Vector2Int WorldPositionTileCoords(Vector3 pos) {
@@ -16,6 +15,10 @@ public class MapEvent3D : MapEvent {
 
     public override Vector3 CalculateOffsetPositionPx(OrthoDir dir) {
         return positionPx + dir.Px3D();
+    }
+
+    public override Vector2Int OffsetForTiles(OrthoDir dir) {
+        return dir.XY3D();
     }
 
     public override void SetScreenPositionToMatchTilePosition() {
@@ -46,6 +49,10 @@ public class MapEvent3D : MapEvent {
                 Mathf.RoundToInt(sizeDelta.y));
         }
         SetDepth();
+    }
+
+    public override OrthoDir DirectionTo(Vector2Int position) {
+        return OrthoDirExtensions.DirectionOf3D(position - this.position);
     }
 
     protected override void DrawGizmoSelf() {

@@ -39,10 +39,11 @@ public class Battle {
         return units.Where(unit => (unit.align == align));
     }
 
-    public BattleUnit AddUnitFromKey(string unitKey, Vector2Int startingLocation) {
-        Unit unit = Global.Instance().Party.LookUpUnit(unitKey);
-        Debug.Assert(unit != null, "Unknown unit key " + unitKey);
+    // if we see someone with Malu's unit, we should add the Malu instance, eg
+    public BattleUnit AddUnitFromSerializedUnit(Unit unit, Vector2Int startingLocation) { 
+        Unit instance = Global.Instance().Party.LookUpUnit(unit.name);
         BattleUnit battleUnit = new BattleUnit(unit, this, startingLocation);
+
         AddUnit(battleUnit);
 
         if (!factions.ContainsKey(battleUnit.align)) {
@@ -57,7 +58,7 @@ public class Battle {
     }
 
     public BattleFaction GetFaction(Alignment align) {
-        return this.factions[align];
+        return factions[align];
     }
 
     private void AddUnit(BattleUnit unit) {
@@ -69,7 +70,7 @@ public class Battle {
     // runs and executes this battle
     public IEnumerator BattleRoutine(BattleController controller) {
         this.controller = controller;
-        this.ai.ConfigureForBattle(this);
+        ai.ConfigureForBattle(this);
         while (true) {
             yield return NextRoundRoutine();
             if (CheckGameOver() != Alignment.None) {
@@ -120,7 +121,7 @@ public class Battle {
     private IEnumerator PlayNextActionRoutine(Alignment align) {
         switch (align) {
             case Alignment.Hero:
-                yield return controller.PlayNextHumanActionRoutine();
+                yield return PlayNextHumanActionRoutine();
                 break;
             case Alignment.Enemy:
                 yield return ai.PlayNextAIActionRoutine();
@@ -129,5 +130,43 @@ public class Battle {
                 Debug.Assert(false, "bad align " + align);
                 yield break;
         }
+    }
+
+    private IEnumerator PlayNextHumanActionRoutine() {
+        Result<BattleUnit> unitResult = new Result<BattleUnit>();
+        yield return controller.SelectUnitRoutine(unitResult, (BattleUnit unit) => {
+            return unit.align == Alignment.Hero;
+        }, false);
+        BattleUnit actingUnit = unitResult.value;
+        Vector2Int originalLocation = actingUnit.location;
+
+        Result<Vector2Int> moveResult = new Result<Vector2Int>();
+        yield return controller.SelectMoveLocationRoutine(moveResult, actingUnit);
+        if (moveResult.canceled) {
+            yield return PlayNextHumanActionRoutine();
+            yield break;
+        }
+        actingUnit.location = moveResult.value;
+        yield return actingUnit.doll.GetComponent<CharaEvent>().PathToRoutine(moveResult.value);
+
+        // TODO: remove this nonsense
+        Result<BattleUnit> targetedResult = new Result<BattleUnit>();
+        yield return controller.SelectAdjacentUnitRoutine(targetedResult, actingUnit, (BattleUnit unit) => {
+            return unit.align == Alignment.Enemy;
+        });
+        if (targetedResult.canceled) {
+            // TODO: reset where they came from
+            yield return PlayNextHumanActionRoutine();
+            yield break;
+        }
+        BattleUnit targetUnit = targetedResult.value;
+        targetUnit.doll.GetComponent<CharaEvent>().FaceToward(actingUnit.doll.GetComponent<MapEvent>());
+
+        yield return Global.Instance().Maps.activeDuelMap.EnterMapRoutine(actingUnit.doll, targetUnit.doll);
+
+        actingUnit.MarkActionTaken();
+        yield return Global.Instance().Maps.activeDuelMap.ExitMapRoutine();
+        yield return actingUnit.doll.PostActionRoutine();
+
     }
 }
