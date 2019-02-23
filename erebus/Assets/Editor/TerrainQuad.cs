@@ -14,6 +14,8 @@ public class TerrainQuad {
     public Vector3 pos;
     public Vector3 normal;
 
+    private Vector2[] ourUVs;
+
     // creating a new quad mutates the tri/vert/uv arrays
     public TerrainQuad(List<int> tris, List<Vector3> vertices, List<Vector2> uvs,
             Vector3 lowerLeft, Vector3 upperRight, 
@@ -42,10 +44,14 @@ public class TerrainQuad {
         if (normal.y == 0.0f) {
             spriteUVs = MathHelper3D.AdjustZ(spriteUVs, tileset, lowerLeft.y, normal.x == 0.0f);
         }
-        uvs.Add(spriteUVs[2]);
-        uvs.Add(spriteUVs[0]);
-        uvs.Add(spriteUVs[3]);
-        uvs.Add(spriteUVs[1]);
+
+        ourUVs = new Vector2[4] {
+            spriteUVs[2],
+            spriteUVs[0],
+            spriteUVs[3],
+            spriteUVs[1],
+        };
+        uvs.AddRange(ourUVs);
 
         tris.Add(i);
         tris.Add(i + 1);
@@ -53,5 +59,25 @@ public class TerrainQuad {
         tris.Add(i + 1);
         tris.Add(i + 3);
         tris.Add(i + 2);
+    }
+
+    public void UpdateTile(Tile tile, Tilemap tileset, float lowerLeftHeight) {
+        Vector2[] spriteUVs = tile.sprite.uv;
+        if (normal.y == 0.0f) {
+            spriteUVs = MathHelper3D.AdjustZ(spriteUVs, tileset, lowerLeftHeight, normal.x == 0.0f);
+        }
+
+        ourUVs = new Vector2[4] {
+            spriteUVs[2],
+            spriteUVs[0],
+            spriteUVs[3],
+            spriteUVs[1],
+        };
+    }
+
+    public void CopyUVs(Vector2[] uvs) {
+        for (int i = 0; i < 4; i += 1) {
+            uvs[vertsIndex + i] = ourUVs[i];
+        }
     }
 }

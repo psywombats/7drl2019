@@ -392,6 +392,20 @@ public class TacticsTerrainEditor : Editor {
         quads[pos][normal] = quad;
     }
 
+    private void RepaintMesh() {
+        TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
+
+        Vector2[] uvArray = new Vector2[terrain.GetComponent<MeshFilter>().sharedMesh.uv.Length];
+        foreach (Dictionary<Vector3, TerrainQuad> quadDictionary in quads.Values) {
+            foreach (TerrainQuad quad in quadDictionary.Values) {
+                quad.CopyUVs(uvArray);
+            }
+        }
+
+        terrain.GetComponent<MeshFilter>().sharedMesh.uv = uvArray;
+        uvs = new List<Vector2>(uvArray);
+    }
+
     private TerrainQuad GetSelectedQuad() {
         if (quads == null) {
             return null;
@@ -436,19 +450,19 @@ public class TacticsTerrainEditor : Editor {
                 int x = Mathf.RoundToInt(quad.pos.x);
                 int y = Mathf.RoundToInt(quad.pos.z);
                 if (quad.normal.y > 0.0f) {
-                    terrain.SetTile(x, y, selectedTile);
+                    UpdateTile(x, y, selectedTile);
                 } else {
                     float height = quad.pos.y - 0.5f;
                     if (wraparoundPaintMode) {
                         foreach (OrthoDir dir in Enum.GetValues(typeof(OrthoDir))) {
-                            terrain.SetTile(x, y, height, dir, selectedTile);
+                            UpdateTile(x, y, height, dir, selectedTile);
                         }
                     } else {
-                        terrain.SetTile(x, y, height, OrthoDirExtensions.DirectionOf3D(quad.normal), selectedTile);
+                        UpdateTile(x, y, height, OrthoDirExtensions.DirectionOf3D(quad.normal), selectedTile);
                     }
                 }
             }
-            Rebuild(true);
+            RepaintMesh();
             primarySelection = GetSelectedQuad();
             CaptureSelection(primarySelection);
         }
@@ -471,4 +485,17 @@ public class TacticsTerrainEditor : Editor {
         mapEvent.SetLocation(new Vector2Int((int)primarySelection.pos.x, (int)primarySelection.pos.z));
         Selection.activeObject = mapEvent.gameObject;
     }
+
+    private void UpdateTile(int x, int y, Tile tile) {
+        TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
+        quads[new Vector3(x, terrain.HeightAt(x, y), y)][new Vector3(0, 1, 0)].UpdateTile(tile, tileset, 0.0f);
+        terrain.SetTile(x, y, tile);
+    }
+
+    private void UpdateTile(int x, int y, float height, OrthoDir dir, Tile tile) {
+        TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
+        quads[new Vector3(x, height, y)][dir.Px3D()].UpdateTile(tile, tileset, height);
+        terrain.SetTile(x, y, height, dir, tile);
+    }
+
 }
