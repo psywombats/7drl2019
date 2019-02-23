@@ -48,7 +48,7 @@ public class Doll : AnimationTarget {
     
     private Vector3 CalculateJumpOffset(Vector3 startPos, Vector3 endPos) {
         Vector3 dir = (endPos - startPos).normalized;
-        return endPos - 0.85f * dir;
+        return endPos - 1.15f * dir;
     }
     
     private IEnumerator JumpRoutine(Vector3 endPos, float duration, float height) {

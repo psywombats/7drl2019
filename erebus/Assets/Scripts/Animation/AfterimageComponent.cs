@@ -44,7 +44,7 @@ public class AfterimageComponent : MonoBehaviour {
             if (renderChildren.Count <= i) {
                 renderChild = new GameObject("Afterimage");
                 renderChild.transform.parent = transform;
-                renderChild.transform.localScale = transform.localScale;
+                renderChild.transform.localScale = new Vector3(1, 1, 1);
                 renderChild.layer = gameObject.layer;
                 renderChildren.Add(renderChild);
                 SpriteRenderer childRenderer = renderChild.AddComponent<SpriteRenderer>();

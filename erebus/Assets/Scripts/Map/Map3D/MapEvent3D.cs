@@ -14,7 +14,7 @@ public class MapEvent3D : MapEvent {
     }
 
     public override Vector3 CalculateOffsetPositionPx(OrthoDir dir) {
-        return positionPx + dir.Px3D();
+        return TileToWorldCoords(position + dir.XY3D());
     }
 
     public override Vector2Int OffsetForTiles(OrthoDir dir) {

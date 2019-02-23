@@ -133,9 +133,10 @@ public class Battle {
     }
 
     private IEnumerator PlayNextHumanActionRoutine() {
+        controller.MoveCursorToDefaultUnit();
         Result<BattleUnit> unitResult = new Result<BattleUnit>();
         yield return controller.SelectUnitRoutine(unitResult, (BattleUnit unit) => {
-            return unit.align == Alignment.Hero;
+            return unit.align == Alignment.Hero && !unit.hasActedThisTurn;
         }, false);
         BattleUnit actingUnit = unitResult.value;
         Vector2Int originalLocation = actingUnit.location;

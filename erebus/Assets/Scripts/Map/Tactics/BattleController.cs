@@ -80,7 +80,6 @@ public class BattleController : MonoBehaviour {
     public IEnumerator SelectUnitRoutine(Result<BattleUnit> result, 
             Func<BattleUnit, bool> rule, 
             bool allowCancel=true) {
-        MoveCursorToDefaultUnit();
         cursor.gameObject.SetActive(true);
         while (!result.finished) {
             Result<Vector2Int> locResult = new Result<Vector2Int>();
@@ -151,7 +150,7 @@ public class BattleController : MonoBehaviour {
         return grid;
     }
 
-    private void MoveCursorToDefaultUnit() {
+    public void MoveCursorToDefaultUnit() {
         BattleUnit defaultHero = battle.GetFaction(Alignment.Hero).NextMoveableUnit();
         cursor.GetComponent<MapEvent>().SetLocation(defaultHero.location);
     }
