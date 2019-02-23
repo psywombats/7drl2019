@@ -78,7 +78,7 @@ public class CharaEvent : MonoBehaviour {
     }
 
     public IEnumerator PathToRoutine(Vector2Int location) {
-        List<Vector2Int> path = parent.FindPath(this, location);
+        List<Vector2Int> path = parent.FindPath(GetComponent<MapEvent>(), location);
         if (path == null) {
             yield break;
         }

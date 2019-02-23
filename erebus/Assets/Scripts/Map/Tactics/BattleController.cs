@@ -108,12 +108,12 @@ public class BattleController : MonoBehaviour {
             if (loc == unit.location) {
                 return false;
             }
-            return map.FindPath(unit.doll.GetComponent<CharaEvent>(), loc, range+1) != null;
+            return map.FindPath(unit.doll.GetComponent<MapEvent>(), loc, range+1) != null;
         };
         Vector2Int origin = new Vector2Int(
             (int)unit.doll.GetComponent<MapEvent>().positionPx.x - range,
             (int)unit.doll.GetComponent<MapEvent>().positionPx.z - range);
-        grid.ConfigureNewGrid(origin, new Vector2Int(range * 2 + 1, range * 2 + 1), map.terrain, rule);
+        grid.ConfigureNewGrid(unit.location, range, map.terrain, rule);
 
         while (!result.finished) {
             Result<Vector2Int> locResult = new Result<Vector2Int>();

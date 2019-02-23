@@ -14,6 +14,16 @@ public class BattleEvent : MonoBehaviour {
     public BattleUnit unit { get; private set; }
     public BattleController controller { get; private set; }
 
+    private TacticsTerrainMesh _terrain;
+    public TacticsTerrainMesh terrain {
+        get {
+            if (_terrain == null) _terrain = GetComponent<MapEvent>().parent.terrain;
+            return _terrain;
+        }
+    }
+
+    public Vector2Int location { get { return unit.location; } }
+
     public void Setup(BattleController controller, BattleUnit unit) {
         this.unit = unit;
         this.controller = controller;
@@ -38,5 +48,15 @@ public class BattleEvent : MonoBehaviour {
 
     public IEnumerator PostTurnRoutine() {
         yield return GetComponent<CharaEvent>().animator.DesaturateRoutine(0.0f);
+    }
+
+    public bool CanCrossTileGradient(Vector2Int from, Vector2Int to) {
+        float fromHeight = terrain.HeightAt(from);
+        float toHeight = GetComponent<MapEvent>().parent.terrain.HeightAt(to);
+        if (fromHeight < toHeight) {
+            return toHeight - fromHeight <= unit.GetMaxAscent();
+        } else {
+            return fromHeight - toHeight <= unit.GetMaxDescent();
+        }
     }
 }

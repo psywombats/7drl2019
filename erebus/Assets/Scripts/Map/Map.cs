@@ -155,10 +155,10 @@ public class Map : MonoBehaviour {
     }
 
     // returns a list of coordinates to step to with the last one being the destination, or null
-    public List<Vector2Int> FindPath(CharaEvent actor, Vector2Int to) {
+    public List<Vector2Int> FindPath(MapEvent actor, Vector2Int to) {
         return FindPath(actor, to, width > height ? width : height);
     }
-    public List<Vector2Int> FindPath(CharaEvent actor, Vector2Int to, int maxPathLength) {
+    public List<Vector2Int> FindPath(MapEvent actor, Vector2Int to, int maxPathLength) {
         if (ManhattanDistance(actor.GetComponent<MapEvent>().position, to) > maxPathLength) {
             return null;
         }
@@ -197,9 +197,12 @@ public class Map : MonoBehaviour {
                         case OrthoDir.West:     next.x -= 1;    break;
                         case OrthoDir.South:    next.y -= 1;    break;
                     }
-                    if (!visited.Contains(next) && actor.CanPassAt(next)) {
-                        List<Vector2Int> newHead = new List<Vector2Int>(head);
-                        newHead.Add(next);
+                    if (!visited.Contains(next) && actor.CanPassAt(next) &&
+                        (actor.GetComponent<CharaEvent>() == null ||
+                             actor.GetComponent<CharaEvent>().CanPassAt(next)) &&
+                        (actor.GetComponent<BattleEvent>() == null ||
+                             actor.GetComponent<BattleEvent>().CanCrossTileGradient(at, next))) {
+                        List<Vector2Int> newHead = new List<Vector2Int>(head) { next };
                         heads.Add(newHead);
                         visited.Add(next);
                     }

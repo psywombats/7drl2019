@@ -32,9 +32,15 @@ public class SelectionGrid : MonoBehaviour {
 
     // set up a new grid with the given size in tiles and rule for turning location into whether a
     // tile is part of the selection grid or not
+    public void ConfigureNewGrid(Vector2Int at, int range, TacticsTerrainMesh terrain, Func<Vector2Int, bool> rule) {
+        ConfigureNewGrid(at - new Vector2Int(range, range), new Vector2Int(range * 2 + 1, range * 2 + 1), terrain, rule);
+    }
+
     public void ConfigureNewGrid(Vector2Int at, Vector2Int size, TacticsTerrainMesh terrain, Func<Vector2Int, bool> rule) {
         this.size = size;
         this.rule = rule;
+
+        transform.position = new Vector3(0.0f, 0.0f, 0.0f);
 
         MeshFilter filter = this.mesh;
         if (filter.mesh != null) {

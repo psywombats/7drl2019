@@ -36,9 +36,6 @@ internal sealed class SpriteImporter : AssetPostprocessor {
             TextureImporter importer = (TextureImporter)assetImporter;
             importer.filterMode = FilterMode.Point;
             importer.textureCompression = TextureImporterCompression.Uncompressed;
-            if (path.Contains("Sprites")) {
-               importer.spritePixelsPerUnit = Map.UnityUnitScale;
-            }
             importer.textureType = TextureImporterType.Sprite;
             Vector2Int textureSize = EditorUtils.GetPreprocessedImageSize(importer);
             if (path.Contains("Charas")) {
@@ -48,6 +45,7 @@ internal sealed class SpriteImporter : AssetPostprocessor {
                 importer.spriteImportMode = SpriteImportMode.Multiple;
                 importer.spritePivot = new Vector2(charaWidth / 2, Map.TileSizePx / 2);
                 importer.spritesheet = new SpriteMetaData[stepCount * 4];
+                importer.spritePixelsPerUnit = Map.UnityUnitScale;
                 List<SpriteMetaData> spritesheet = new List<SpriteMetaData>();
                 Dictionary<int, string> facingNames = charaWidth >= 32 ? FacingNamesVX : FacingNames2K;
                 for (int y = 0; y < 4; y += 1) {
@@ -62,17 +60,11 @@ internal sealed class SpriteImporter : AssetPostprocessor {
                     }
                 }
                 importer.spritesheet = spritesheet.ToArray();
-            } else if (path.Contains("Events")) {
-                TextureImporterSettings texSettings = new TextureImporterSettings();
-                importer.ReadTextureSettings(texSettings);
-                texSettings.spriteAlignment = (int)SpriteAlignment.Custom;
-                importer.SetTextureSettings(texSettings);
-                importer.spritePivot = new Vector2(0.0f, 0.0f);
             } else if (path.Contains("Anim")) {
                 int edgeSize = 64;
                 int rows = textureSize.x / edgeSize;
                 int cols = textureSize.y / edgeSize;
-                importer.spritePixelsPerUnit = 24;
+                importer.spritePixelsPerUnit = 1;
                 importer.spriteImportMode = SpriteImportMode.Multiple;
                 importer.spritesheet = new SpriteMetaData[rows * cols];
                 List<SpriteMetaData> spritesheet = new List<SpriteMetaData>();
@@ -84,7 +76,7 @@ internal sealed class SpriteImporter : AssetPostprocessor {
                         data.alignment = (int)SpriteAlignment.Custom;
                         data.border = new Vector4(0, 0, 0, 0);
                         data.name = name + "_" + ((index > 9) ? "" : "0") + index;
-                        float mid = (edgeSize / 2.0f) / (float)edgeSize;
+                        float mid = (edgeSize / 2.0f) / edgeSize;
                         data.pivot = new Vector2(mid, name.Contains("battler") ? 0.0f : mid);
                         spritesheet.Add(data);
                     }

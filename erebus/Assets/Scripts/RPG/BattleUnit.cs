@@ -54,4 +54,12 @@ public class BattleUnit {
     public bool IsDead() {
         return unit.stats.Get(StatTag.HP) <= 0;
     }
+
+    public int GetMaxAscent() {
+        return (int)unit.stats.Get(StatTag.JUMP);
+    }
+
+    public int GetMaxDescent() {
+        return (int)unit.stats.Get(StatTag.JUMP) + 1;
+    }
 }

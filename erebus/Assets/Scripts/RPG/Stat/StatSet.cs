@@ -9,7 +9,7 @@ using UnityEngine;
  * */
 [System.Serializable]
 public class StatSet : ISerializationCallbackReceiver {
-    
+
     public StatDictionary serializedStats;
     private Dictionary<StatTag, float> stats;
 
@@ -24,7 +24,13 @@ public class StatSet : ISerializationCallbackReceiver {
     private void InitNewSet() {
         stats = new Dictionary<StatTag, float>();
         foreach (StatTag tag in Enum.GetValues(typeof(StatTag))) {
-            stats[tag] = Stat.Get(tag).combinator.Zero();
+            if (tag != StatTag.None) {
+                Stat stat = Stat.Get(tag);
+                if (stat == null) {
+                    continue;
+                }
+                stats[tag] = stat.combinator.Zero();
+            }
         }
     }
 
@@ -47,11 +53,21 @@ public class StatSet : ISerializationCallbackReceiver {
         set { stats[tag] = value; }
     }
 
-    // === SET OPERATIONS ===
+    // === OPERATIONS ===
+
+    public void Add(StatTag tag, float value) {
+        stats[tag] += value;
+    }
+
+    public void Sub(StatTag tag, float value) {
+        Add(tag, -value);
+    }
 
     public void AddSet(StatSet other) {
         foreach (StatTag tag in Enum.GetValues(typeof(StatTag))) {
-            stats[tag] = Stat.Get(tag).combinator.Combine(stats[tag], other.stats[tag]);
+            if (other.stats.ContainsKey(tag)) {
+                stats[tag] = Stat.Get(tag).combinator.Combine(stats[tag], other.stats[tag]);
+            }
         }
     }
 
@@ -85,4 +101,3 @@ public class StatSet : ISerializationCallbackReceiver {
         }
     }
 }
-

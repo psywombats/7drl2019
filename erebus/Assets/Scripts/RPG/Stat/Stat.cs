@@ -11,7 +11,7 @@ public class Stat {
 
     public CombinationStrategy combinator { get; private set; }
     public StatTag tag { get; private set; }
-    public String nameShort { get; private set; }
+    public string nameShort { get; private set; }
     public bool useBinaryEditor { get; private set; }
 
     private static Dictionary<StatTag, Stat> stats;
@@ -27,6 +27,9 @@ public class Stat {
         if (stats == null) {
             InitializeStats();
         }
+        if (!stats.ContainsKey(tag)) {
+            return null;
+        }
         return stats[tag];
     }
 
@@ -38,12 +41,11 @@ public class Stat {
         stats = new Dictionary<StatTag, Stat>();
         AddStat(StatTag.MHP,        CombinationAdditive.Instance(), "MHP",      false);
         AddStat(StatTag.HP,         CombinationAdditive.Instance(), "HP",       false);
-        AddStat(StatTag.RES_FIRE,   CombinationAdditive.Instance(), "O-FIRE",   true);
-        AddStat(StatTag.WEAK_FIRE,  CombinationAdditive.Instance(), "X-FIRE",   true);
         AddStat(StatTag.MOVE,       CombinationAdditive.Instance(), "MOVE",     false);
+        AddStat(StatTag.JUMP,       CombinationAdditive.Instance(), "JUMP",     false);
     }
 
-    private static void AddStat(StatTag tag, CombinationStrategy combinator, String nameShort, bool useBinaryEditor) {
+    private static void AddStat(StatTag tag, CombinationStrategy combinator, string nameShort, bool useBinaryEditor) {
         stats[tag] = new Stat(tag, combinator, nameShort, useBinaryEditor);
     }
 }

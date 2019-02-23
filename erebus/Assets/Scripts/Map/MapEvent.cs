@@ -110,6 +110,8 @@ public abstract class MapEvent : MonoBehaviour {
 
     public abstract OrthoDir DirectionTo(Vector2Int position);
 
+    public abstract float CalcTilesPerSecond();
+
     public void Awake() {
         luaObject = new LuaMapEvent(this);
     }
@@ -242,10 +244,10 @@ public abstract class MapEvent : MonoBehaviour {
         GetComponent<Dispatch>().Signal(EventMove, dir);
 
         while (true) {
-            if (tilesPerSecond > 0) {
+            if (CalcTilesPerSecond() > 0) {
                 positionPx = Vector3.MoveTowards(positionPx, 
                     targetPositionPx, 
-                    (tilesPerSecond * Map.TileSizePx / Map.UnityUnitScale) * Time.deltaTime);
+                    CalcTilesPerSecond() * Time.deltaTime);
             } else {
                 // indicates warp speed, cap'n
                 positionPx = targetPositionPx;

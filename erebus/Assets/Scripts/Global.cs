@@ -3,7 +3,7 @@
 public class Global : MonoBehaviour {
 
     private static Global instance;
-    private bool destructing;
+    private static bool destructing;
     
     public InputManager Input { get; private set; }
     public MapManager Maps { get; private set; }
@@ -24,7 +24,7 @@ public class Global : MonoBehaviour {
 
     public static Global Instance() {
         if (instance == null) {
-            GameObject globalObject = new GameObject();
+            GameObject globalObject = new GameObject("Globals");
             // debug-ish and we don't serialize scenes
             // globalObject.hideFlags = HideFlags.HideAndDontSave;
             instance = globalObject.AddComponent<Global>();

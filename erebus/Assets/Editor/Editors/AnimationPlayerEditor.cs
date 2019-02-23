@@ -8,7 +8,6 @@ public class AnimationPlayerDrawer : Editor {
         base.OnInspectorGUI();
         AnimationPlayer player = (AnimationPlayer)target;
         if (player.anim != null) {
-            CreateEditor(player.anim).DrawDefaultInspector();
             if (Application.IsPlaying(player)) {
                 if (!player.isPlayingAnimation) {
                     if (GUILayout.Button("Play animation")) {
@@ -24,6 +23,5 @@ public class AnimationPlayerDrawer : Editor {
                 }
             }
         }
-
     }
 }

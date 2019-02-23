@@ -39,6 +39,10 @@ public class MapEvent3D : MapEvent {
         }
     }
 
+    public override float CalcTilesPerSecond() {
+        return tilesPerSecond;
+    }
+
     public override void Update() {
         base.Update();
         if (!Application.isPlaying) {

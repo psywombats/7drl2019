@@ -1,7 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿public enum StatTag {
 
-public enum StatTag {
+    None,
 
     MHP,
     HP,
@@ -10,4 +9,5 @@ public enum StatTag {
     WEAK_FIRE,
 
     MOVE,
+    JUMP,
 }

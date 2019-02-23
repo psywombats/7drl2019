@@ -109,7 +109,12 @@ public class TacticsCam : MapCamera {
         angle = angle / 2.0f / Mathf.PI * 360.0f;
         angle += 90.0f;
         while (angle >= 180.0f) angle -= 180.0f;
-        yield return SwitchToDuelCamRoutine((targetWorld1 + targetWorld2) / 2.0f, angle);
+        Vector3 target = (targetWorld1 + targetWorld2) / 2.0f;
+        target.y += 1.0f; // hard copy from the duel map...
+        if (angle % 180 != 0) {
+            target.z += 0.75f;
+        }
+        yield return SwitchToDuelCamRoutine(target, angle);
     }
     public IEnumerator SwitchToDuelCamRoutine(Vector3 centerPoint, float angle = 0.0f) {
         standardAngles = targetAngles;

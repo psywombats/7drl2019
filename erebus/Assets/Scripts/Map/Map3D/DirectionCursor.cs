@@ -26,7 +26,7 @@ public class DirectionCursor : MonoBehaviour, InputListener {
         List<OrthoDir> dirs = new List<OrthoDir>();
         Map map = actingUnit.battle.controller.map;
         foreach (OrthoDir dir in Enum.GetValues(typeof(OrthoDir))) {
-            Vector2Int loc = actingUnit.location + dir.XY2D();
+            Vector2Int loc = actingUnit.location + dir.XY3D();
             BattleEvent doll = map.GetEventAt<BattleEvent>(loc);
             if (doll != null && rule(doll.unit)) {
                 dirs.Add(dir);
@@ -35,7 +35,7 @@ public class DirectionCursor : MonoBehaviour, InputListener {
         if (dirs.Count > 0) {
             Result<OrthoDir> dirResult = new Result<OrthoDir>();
             yield return SelectTargetDirRoutine(dirResult, actingUnit, dirs, canCancel);
-            Vector2Int loc = actingUnit.location + dirResult.value.XY2D();
+            Vector2Int loc = actingUnit.location + dirResult.value.XY3D();
             result.value = map.GetEventAt<BattleEvent>(loc).unit;
         } else {
             Debug.Assert(false, "No valid directions");
@@ -48,24 +48,21 @@ public class DirectionCursor : MonoBehaviour, InputListener {
             BattleUnit actingUnit,
             List<OrthoDir> allowedDirs,
             bool canCancel = true) {
+        actor = actingUnit.doll;
 
         gameObject.SetActive(true);
-        currentDir = allowedDirs[0];
         actingUnit.controller.cursor.DisableReticules();
 
         SelectionGrid grid = actingUnit.controller.SpawnSelectionGrid();
         TacticsTerrainMesh terrain = actingUnit.controller.map.terrain;
-        grid.ConfigureNewGrid(actingUnit.location, new Vector2Int(3, 3), terrain, (Vector2Int loc) => {
-            return (loc.x + loc.y) % 2 == 1;
+        grid.ConfigureNewGrid(actingUnit.location, 1, terrain, (Vector2Int loc) => {
+            return (loc.x + loc.y + actingUnit.location.x + actingUnit.location.y) % 2 == 1;
         });
-        grid.GetComponent<MapEvent>().position = actingUnit.location - new Vector2Int(1, 1);
-        grid.GetComponent<MapEvent>().SetScreenPositionToMatchTilePosition();
-        GetComponent<MapEvent>().position = actingUnit.location;
-        GetComponent<MapEvent>().SetScreenPositionToMatchTilePosition();
+        AttemptSetDirection(allowedDirs[0]);
 
         while (!result.finished) {
             Result<OrthoDir> dirResult = new Result<OrthoDir>();
-            yield return AwaitSelectionRoutine(actingUnit.doll, dirResult);
+            yield return AwaitSelectionRoutine(actor, dirResult);
             if (dirResult.canceled) {
                 if (canCancel) {
                     result.Cancel();
@@ -136,8 +133,6 @@ public class DirectionCursor : MonoBehaviour, InputListener {
     private void SetDirection(OrthoDir dir) {
         currentDir = dir;
         actor.GetComponent<CharaEvent>().facing = dir;
-        GetComponent<MapEvent>().position = actor.GetComponent<MapEvent>().position + dir.XY2D();
-        GetComponent<MapEvent>().SetScreenPositionToMatchTilePosition();
-        TacticsCam.Instance().ManualUpdate();
+        GetComponent<MapEvent>().SetLocation(actor.location + dir.XY3D());
     }
 }

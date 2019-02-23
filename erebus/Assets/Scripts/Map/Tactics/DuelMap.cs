@@ -42,7 +42,6 @@ public class DuelMap : MonoBehaviour {
 
     // this needs to take an attack command
     public IEnumerator EnterMapRoutine(BattleEvent attacker, BattleEvent defender) {
-        GetComponent<BattleAnimationPlayer>().anim = Resources.Load<LuaAnimation>("Animations/Battle/test_anim");
         ConfigureForDuel(attacker, defender);
         float duration = 0.6f;
         yield return TacticsCam.Instance().SwitchToDuelCamRoutine(

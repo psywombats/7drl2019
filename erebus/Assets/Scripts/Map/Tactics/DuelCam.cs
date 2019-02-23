@@ -33,7 +33,7 @@ public class DuelCam : MonoBehaviour {
         transform.position = new Vector3(
             transform.position.x,
             transform.position.y,
-            transform.position.z + zoomDistance * OrthoDir.North.Px3DZ());
+            transform.position.z - zoomDistance * OrthoDir.North.Px3DZ());
         snapTime = duration;
         yield return new WaitForSeconds(duration);
     }

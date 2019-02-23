@@ -65,6 +65,10 @@ public class MapEvent2D : MapEvent {
         }
     }
 
+    public override float CalcTilesPerSecond() {
+        return (tilesPerSecond * Map.TileSizePx / Map.UnityUnitScale);
+    }
+
     protected override void DrawGizmoSelf() {
         if (GetComponent<CharaEvent>() == null || GetComponent<CharaEvent>().GetAppearance() == null) {
             Gizmos.color = new Color(Gizmos.color.r, Gizmos.color.g, Gizmos.color.b, 0.5f);

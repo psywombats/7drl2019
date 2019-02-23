@@ -153,17 +153,18 @@ public class TacticsTerrainEditor : Editor {
         }
 
         int controlId = GUIUtility.GetControlID(FocusType.Passive);
+        EventType typeForControl = Event.current.GetTypeForControl(controlId);
         switch (Event.current.button) {
             case 0:
-                HandleLeftclick(controlId);
+                HandleLeftclick(typeForControl, controlId);
                 break;
             case 1:
-                HandleRightclick(controlId);
+                HandleRightclick(typeForControl, controlId);
                 break;
         }
 
         TerrainQuad quad = GetSelectedQuad();
-        switch (Event.current.GetTypeForControl(controlId)) {
+        switch (typeForControl) {
             case EventType.MouseMove:
                 switch (mode) {
                     case EditMode.None:
@@ -181,9 +182,9 @@ public class TacticsTerrainEditor : Editor {
         MathHelper3D.DrawQuads(selectedQuads, Color.white);
     }
 
-    private void HandleLeftclick(int controlId) {
+    private void HandleLeftclick(EventType typeForControl, int controlId) {
         TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
-        switch (Event.current.GetTypeForControl(controlId)) {
+        switch (typeForControl) {
             case EventType.MouseDown:
                 switch (tool) {
                     case SelectionTool.HeightAdjust:
@@ -232,7 +233,6 @@ public class TacticsTerrainEditor : Editor {
             case EventType.MouseUp:
                 switch (mode) {
                     case EditMode.AdjustingHeight:
-                        ConsumeEvent(controlId);
                         mode = EditMode.None;
                         bool dirty = false;
 
@@ -250,7 +250,6 @@ public class TacticsTerrainEditor : Editor {
                         }
                         break;
                     case EditMode.Painting:
-                        ConsumeEvent(controlId);
                         mode = EditMode.None;
                         break;
                 }
@@ -281,16 +280,18 @@ public class TacticsTerrainEditor : Editor {
         }
     }
 
-    private void HandleRightclick(int controlId) {
+    private void HandleRightclick(EventType typeForControl, int controlId) {
         TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
-        switch (Event.current.GetTypeForControl(controlId)) {
+        switch (typeForControl) {
             case EventType.MouseUp:
-                switch (tool) {
-                    case SelectionTool.Select:
+                switch (mode) {
+                    case EditMode.Selected:
+                        ConsumeEvent(controlId);
                         mode = EditMode.None;
                         break;
-                    case SelectionTool.Paint:
+                    case EditMode.None:
                         if (primarySelection != null) {
+                            ConsumeEvent(controlId);
                             tool = SelectionTool.Paint;
                             if (primarySelection.normal.y == 0.0f) {
                                 selectedTile = terrain.TileAt(

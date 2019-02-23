@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using MoonSharp.Interpreter;
-using System.Collections.Generic;
 
 [RequireComponent(typeof(LuaContext))]
 public class BattleAnimationPlayer : AnimationPlayer {
