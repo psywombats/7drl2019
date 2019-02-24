@@ -18,6 +18,8 @@ public class TacticsTerrainEditor : Editor {
         AdjustingHeight,
         Painting,
         Selected,
+        PaletteTileDrag,
+        RlickDrag,
     }
 
     private enum SelectionTool {
@@ -37,14 +39,17 @@ public class TacticsTerrainEditor : Editor {
     private TerrainQuad primarySelection;
     private Vector3 paintingNormal;
     private float selectedHeight;
-    private float selectionSize = 1;
+    private Vector2 selectionSize = Vector2Int.zero;
 
     private EditMode mode = EditMode.None;
     private SelectionTool tool = SelectionTool.Select;
 
     private GridPalette palette;
     private Tilemap tileset;
-    private Tile selectedTile;
+    private Vector2 selectedTileStart;
+    private Rect tileSelectRect;
+    private Tile[] paletteBuffer;
+    private Vector2Int paletteBufferSize = new Vector2Int(0, 0);
     private bool wraparoundPaintMode;
 
     public override bool RequiresConstantRepaint() {
@@ -65,9 +70,10 @@ public class TacticsTerrainEditor : Editor {
             Rebuild(true);
         }
         GUILayout.Space(20.0f);
-        int newSelectionSize = EditorGUILayout.IntField("Brush size", Mathf.FloorToInt(selectionSize));
-        if (newSelectionSize != Mathf.FloorToInt(selectionSize)) {
-            selectionSize = newSelectionSize > 0 ? newSelectionSize : 1;
+        Vector2Int flooredSelection = new Vector2Int(Mathf.FloorToInt(selectionSize.x), Mathf.FloorToInt(selectionSize.y));
+        Vector2Int newSelectionSize = EditorGUILayout.Vector2IntField("Brush size", flooredSelection);
+        if (newSelectionSize != flooredSelection) {
+            selectionSize = new Vector2(Mathf.Max(1.0f, newSelectionSize.x), Mathf.Max(1.0f, newSelectionSize.y));
         }
 
         if (palette == null) {
@@ -88,6 +94,13 @@ public class TacticsTerrainEditor : Editor {
         int selectionIndex = GUILayout.SelectionGrid(ArrayUtility.IndexOf(ordinals, tool), names, names.Length);
         tool = ordinals[selectionIndex];
 
+        int controlId = GUIUtility.GetControlID(FocusType.Passive);
+        EventType typeForControl = Event.current.GetTypeForControl(controlId);
+        Vector2 mousePos = Event.current.mousePosition;
+
+        GUIStyle style = new GUIStyle();
+        style.padding = new RectOffset(0, 0, 0, 0);
+
         if (tileset != null && tool == SelectionTool.Paint) {
             wraparoundPaintMode = EditorGUILayout.Toggle("Paint all faces", wraparoundPaintMode);
             Texture2D backer = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Resources/Textures/White.png");
@@ -96,30 +109,43 @@ public class TacticsTerrainEditor : Editor {
 
                 for (int x = 0; x < tileset.size.x; x += 1) {
                     Rect selectRect = EditorGUILayout.BeginHorizontal(GUILayout.Width(Map.TileSizePx), GUILayout.Height(Map.TileSizePx));
+                    Tile tile = tileset.GetTile<Tile>(new Vector3Int(x, y, 0));
 
-                    GUIStyle style = new GUIStyle();
-                    style.padding = new RectOffset(0, 0, 0, 0);
-                    if (GUILayout.Button("", style, GUILayout.Width(Map.TileSizePx), GUILayout.Height(Map.TileSizePx))) {
-                        Tile newSelect = tileset.GetTile<Tile>(new Vector3Int(x, y, 0));
-                        if (newSelect == selectedTile) {
-                            selectedTile = null;
-                        } else {
-                            selectedTile = newSelect;
-                            tool = SelectionTool.Paint;
+                    GUILayout.Box("", style, GUILayout.Width(Map.TileSizePx), GUILayout.Height(Map.TileSizePx));
+                    Rect r = GUILayoutUtility.GetLastRect();
+
+                    if (r.Contains(Event.current.mousePosition)) {
+                        switch (Event.current.type) {
+                            case EventType.MouseDown:
+                                mode = EditMode.PaletteTileDrag;
+                                selectedTileStart = new Vector2(x, y);
+                                tileSelectRect = new Rect(x, y, 1, 1);
+                                paletteBufferSize = Vector2Int.zero;
+                                break;
+                            case EventType.MouseDrag:
+                                if (mode == EditMode.PaletteTileDrag) {
+                                    int minX = (int)Mathf.Min(selectedTileStart.x, x);
+                                    int minY = (int)Mathf.Min(selectedTileStart.y, y);
+                                    tileSelectRect = new Rect(minX, minY,
+                                            (int)Mathf.Max(selectedTileStart.x, x) + 1 - minX,
+                                            (int)Mathf.Max(selectedTileStart.y, y) + 1 - minY);
+                                    selectionSize = new Vector2(tileSelectRect.width, tileSelectRect.height);
+                                }
+                                break;
+                            case EventType.MouseUp:
+                                mode = EditMode.None;
+                                break;
                         }
                     }
 
-                    Rect r = GUILayoutUtility.GetLastRect();
-                    
-                    Tile tile = tileset.GetTile<Tile>(new Vector3Int(x, y, 0));
                     Rect rect = new Rect(tile.sprite.uv[0].x, tile.sprite.uv[3].y,
                         tile.sprite.uv[3].x - tile.sprite.uv[0].x,
                         tile.sprite.uv[0].y - tile.sprite.uv[3].y);
-                    
+
                     GUI.DrawTextureWithTexCoords(r, tile.sprite.texture, rect, true);
                     if (r.Contains(Event.current.mousePosition)) {
                         GUI.DrawTexture(r, backer, ScaleMode.StretchToFill, true, 0.0f, new Color(1, 0, 0, 0.5f), 0.0f, 0.0f);
-                    } else if (tileset.GetTile<Tile>(new Vector3Int(x, y, 0)) == selectedTile) {
+                    } else if (paletteBufferSize == Vector2Int.zero && tileSelectRect.Contains(new Vector2(x, y))) {
                         GUI.DrawTexture(r, backer, ScaleMode.StretchToFill, true, 0.0f, new Color(1, 1, 1, 0.8f), 0.0f, 0.0f);
                     }
 
@@ -226,6 +252,8 @@ public class TacticsTerrainEditor : Editor {
                         break;
                     case EditMode.Painting:
                         ConsumeEvent(controlId);
+                        primarySelection = GetSelectedQuad();
+                        CaptureSelection(primarySelection);
                         PaintTileIfNeeded();
                         break;
                 }
@@ -258,8 +286,11 @@ public class TacticsTerrainEditor : Editor {
                 if (mode == EditMode.None && selectedQuads.Count > 0) {
                     GUIUtility.hotControl = 0;
                     Event.current.Use();
-                    selectionSize += -1.0f * Event.current.delta.y / 5.0f;
-                    selectionSize = selectionSize < 1.0f ? 1.0f : selectionSize;
+                    float maxSelection = Mathf.Max(selectionSize.x, selectionSize.y);
+                    maxSelection += -1.0f * Event.current.delta.y / 5.0f;
+                    selectionSize = new Vector2(maxSelection, maxSelection);
+                    if (Mathf.RoundToInt(selectionSize.x) < 1) selectionSize.x = 1;
+                    if (Mathf.RoundToInt(selectionSize.y) < 1) selectionSize.y = 1;
                     CaptureSelection(primarySelection);
                     SceneView.RepaintAll();
                 }
@@ -283,25 +314,77 @@ public class TacticsTerrainEditor : Editor {
     private void HandleRightclick(EventType typeForControl, int controlId) {
         TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
         switch (typeForControl) {
+            case EventType.MouseDown:
+                Debug.Log("down");
+                if (tool != SelectionTool.Select) {
+                    TerrainQuad quad = GetSelectedQuad();
+                    if (quad != null) {
+                        ConsumeEvent(controlId);
+                        primarySelection = quad;
+                        selectionSize = new Vector2(1.0f, 1.0f);
+                        CaptureSelection(quad);
+                        tool = SelectionTool.Paint;
+                        mode = EditMode.RlickDrag;
+                    }
+                }
+                break;
+            case EventType.MouseDrag:
+                if (mode == EditMode.RlickDrag) {
+                    ConsumeEvent(controlId);
+                    TerrainQuad quad = GetSelectedQuad();
+                    if (quad != null && quad.normal == primarySelection.normal) {
+                        selectedQuads = MathHelper3D.GetQuadsInRect(quads, quad, primarySelection);
+                    }
+                }
+                break;
             case EventType.MouseUp:
+                Debug.Log("up");
                 switch (mode) {
                     case EditMode.Selected:
-                        ConsumeEvent(controlId);
                         mode = EditMode.None;
                         break;
-                    case EditMode.None:
-                        if (primarySelection != null) {
-                            ConsumeEvent(controlId);
-                            tool = SelectionTool.Paint;
-                            if (primarySelection.normal.y == 0.0f) {
-                                selectedTile = terrain.TileAt(
-                                    (int)primarySelection.pos.x,
-                                    (int)primarySelection.pos.z,
-                                    primarySelection.pos.y,
-                                    OrthoDirExtensions.DirectionOf3D(primarySelection.normal));
+                    case EditMode.RlickDrag:
+                        mode = EditMode.None;
+                        TerrainQuad quad = GetSelectedQuad();
+                        if (quad != null && quad.normal == primarySelection.normal) {
+                            selectedQuads = MathHelper3D.GetQuadsInRect(quads, quad, primarySelection);
+                            Vector3 v1 = quad.pos;
+                            Vector3 v2 = primarySelection.pos;
+                            float x1 = Mathf.Min(v1.x, v2.x);
+                            float x2 = Mathf.Max(v1.x, v2.x);
+                            float y1 = Mathf.Min(v1.y, v2.y);
+                            float y2 = Mathf.Max(v1.y, v2.y);
+                            float z1 = Mathf.Min(v1.z, v2.z);
+                            float z2 = Mathf.Max(v1.z, v2.z);
+                            if (z1 != z2 && y1 != y2) {
+                                paletteBufferSize = new Vector2Int((int)(z2 - z1 + 1), (int)((y2 - y1 + 0.5f) * 2.0f));
+                                paletteBuffer = new Tile[paletteBufferSize.x * paletteBufferSize.y];
+                                for (float z = z1; z <= z2; z += 1.0f) {
+                                    for (float y = y1; y <= y2; y += 0.5f) {
+                                        TerrainQuad at = quads[new Vector3(v1.x, y, z)][quad.normal];
+                                        paletteBuffer[(int)(paletteBufferSize.x * (2.0f * (y - y1)) + (z - z1))] = at.tile;
+                                    }
+                                }
+                            } else if (x1 != x2 && y1 != y2) {
+                                paletteBufferSize = new Vector2Int((int)(x2 - x1 + 1), (int)((y2 - y1 + 0.5f) * 2.0f));
+                                paletteBuffer = new Tile[paletteBufferSize.x * paletteBufferSize.y];
+                                for (float x = x1; x <= x2; x += 1.0f) {
+                                    for (float y = y1; y <= y2; y += 0.5f) {
+                                        TerrainQuad at = quads[new Vector3(x, y, v1.z)][quad.normal];
+                                        paletteBuffer[(int)(paletteBufferSize.x * (2.0f * (y - y1)) + (x - x1))] = at.tile;
+                                    }
+                                }
                             } else {
-                                selectedTile = terrain.TileAt((int)primarySelection.pos.x, (int)primarySelection.pos.z);
+                                paletteBufferSize = new Vector2Int((int)(x2 - x1 + 1), (int)(z2 - z1 + 1));
+                                paletteBuffer = new Tile[paletteBufferSize.x * paletteBufferSize.y];
+                                for (float x = x1; x <= x2; x += 1.0f) {
+                                    for (float z = z1; z <= z2; z += 1.0f) {
+                                        TerrainQuad at = quads[new Vector3(x, v1.y, z)][quad.normal];
+                                        paletteBuffer[(int)(paletteBufferSize.x * (z - z1) + (x - x1))] = at.tile;
+                                    }
+                                }
                             }
+                            selectionSize = paletteBufferSize;
                         }
                         break;
                 }
@@ -433,8 +516,8 @@ public class TacticsTerrainEditor : Editor {
     }
 
     private void UpdateWithPalette(GridPalette newPalette) {
-        selectedTile = null;
-
+        tileSelectRect = new Rect(0, 0, 1, 1);
+        paletteBufferSize = Vector2Int.zero;
         TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
         palette = newPalette;
         terrain.paletteName = palette.name;
@@ -445,31 +528,39 @@ public class TacticsTerrainEditor : Editor {
 
     private void PaintTileIfNeeded() {
         TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
-        if (selectedTile != null) {
-            foreach (TerrainQuad quad in selectedQuads) {
-                int x = Mathf.RoundToInt(quad.pos.x);
-                int y = Mathf.RoundToInt(quad.pos.z);
-                if (quad.normal.y > 0.0f) {
-                    UpdateTile(x, y, selectedTile);
+        foreach (TerrainQuad quad in selectedQuads) {
+            if (quad.normal.y > 0.0f) {
+                int originX = (int)primarySelection.pos.x - Mathf.FloorToInt(Mathf.RoundToInt(selectionSize.x) / 2.0f);
+                int originY = (int)primarySelection.pos.z - Mathf.FloorToInt(Mathf.RoundToInt(selectionSize.y) / 2.0f);
+                Tile tile = TileForSelection((int)(quad.pos.x - originX), (int)(quad.pos.z - originY));
+                UpdateTile(quad, tile);
+            } else {
+                Tile tile;
+                if (quad.normal.x != 0.0f) {
+                    int originX = (int)primarySelection.pos.z - Mathf.FloorToInt(Mathf.RoundToInt(selectionSize.x) / 2.0f);
+                    int originY = (int)primarySelection.pos.y - Mathf.FloorToInt(Mathf.RoundToInt(selectionSize.y) / 2.0f);
+                    tile = TileForSelection((int)(quad.pos.z - originX), (int)(quad.pos.y - originY));
                 } else {
-                    float height = quad.pos.y - 0.5f;
-                    if (wraparoundPaintMode) {
-                        foreach (OrthoDir dir in Enum.GetValues(typeof(OrthoDir))) {
-                            UpdateTile(x, y, height, dir, selectedTile);
-                        }
-                    } else {
-                        UpdateTile(x, y, height, OrthoDirExtensions.DirectionOf3D(quad.normal), selectedTile);
+                    int originX = (int)primarySelection.pos.x - Mathf.FloorToInt(Mathf.RoundToInt(selectionSize.x) / 2.0f);
+                    int originY = (int)primarySelection.pos.y - Mathf.FloorToInt(Mathf.RoundToInt(selectionSize.y) / 2.0f);
+                    tile = TileForSelection((int)(quad.pos.x - originX), (int)(quad.pos.y - originY));
+                }
+                if (wraparoundPaintMode) {
+                    foreach (OrthoDir dir in Enum.GetValues(typeof(OrthoDir))) {
+                        UpdateTile(quad, dir, tile);
                     }
+                } else {
+                    UpdateTile(quad, OrthoDirExtensions.DirectionOf3D(quad.normal), tile);
                 }
             }
-            RepaintMesh();
-            primarySelection = GetSelectedQuad();
-            CaptureSelection(primarySelection);
         }
+        RepaintMesh();
+        primarySelection = GetSelectedQuad();
+        CaptureSelection(primarySelection);
     }
 
     private void CaptureSelection(TerrainQuad quad) {
-        selectedQuads = MathHelper3D.GetQuadsInGrid(quads, quad, selectionSize);
+        selectedQuads = MathHelper3D.GetQuadsAroundQuad(quads, quad, selectionSize);
     }
 
     private void ConsumeEvent(int controlId) {
@@ -486,16 +577,29 @@ public class TacticsTerrainEditor : Editor {
         Selection.activeObject = mapEvent.gameObject;
     }
 
-    private void UpdateTile(int x, int y, Tile tile) {
+    private void UpdateTile(TerrainQuad quad, Tile tile) {
         TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
-        quads[new Vector3(x, terrain.HeightAt(x, y), y)][new Vector3(0, 1, 0)].UpdateTile(tile, tileset, 0.0f);
-        terrain.SetTile(x, y, tile);
+        quad.UpdateTile(tile, tileset, 0.0f);
+        terrain.SetTile((int)quad.pos.x, (int)quad.pos.z, tile);
     }
 
-    private void UpdateTile(int x, int y, float height, OrthoDir dir, Tile tile) {
+    private void UpdateTile(TerrainQuad quad, OrthoDir dir, Tile tile) {
         TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
-        quads[new Vector3(x, height, y)][dir.Px3D()].UpdateTile(tile, tileset, height);
-        terrain.SetTile(x, y, height, dir, tile);
+        quad.UpdateTile(tile, tileset, quad.pos.y);
+        terrain.SetTile((int)quad.pos.x, (int)quad.pos.z, quad.pos.y - 0.5f, dir, tile);
     }
 
+    private Tile TileForSelection(int x, int y) {
+        if (paletteBufferSize == Vector2.zero) {
+            return tileset.GetTile<Tile>(new Vector3Int(
+                (int)tileSelectRect.x + (x % (int)tileSelectRect.width),
+                (int)tileSelectRect.y + (y % (int)tileSelectRect.height),
+                0));
+        } else {
+            return paletteBuffer[
+                (x % paletteBufferSize.x) +
+                (y % paletteBufferSize.y) * (paletteBufferSize.x)];
+        }
+
+    }
 }

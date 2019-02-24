@@ -118,17 +118,20 @@ public class MathHelper3D {
         }
     }
 
-    public static List<TerrainQuad> GetQuadsInGrid(Dictionary<Vector3, Dictionary<Vector3, TerrainQuad>> quads, 
-            TerrainQuad quad, float selectionSize) {
+    public static List<TerrainQuad> GetQuadsAroundQuad(Dictionary<Vector3, Dictionary<Vector3, TerrainQuad>> quads, 
+            TerrainQuad quad, Vector2 selectionSize) {
         List<TerrainQuad> selectedQuads = new List<TerrainQuad>();
         if (quad == null) {
             return selectedQuads;
         }
-        int d = Mathf.RoundToInt(selectionSize);
-        int low = -1 * Mathf.CeilToInt(d / 2.0f) + 1;
-        int high = Mathf.FloorToInt(d / 2.0f);
-        for (int i = low; i <= high; i += 1) {
-            for (int j = low; j <= high; j += 1) {
+        int dx = Mathf.RoundToInt(selectionSize.x);
+        int dy = Mathf.RoundToInt(selectionSize.y);
+        int lowX = -1 * Mathf.CeilToInt(dx / 2.0f) + 1;
+        int lowY = -1 * Mathf.CeilToInt(dy / 2.0f) + 1;
+        int highX = Mathf.FloorToInt(dx / 2.0f);
+        int highY = Mathf.FloorToInt(dy / 2.0f);
+        for (int i = lowY; i <= highY; i += 1) {
+            for (int j = lowX; j <= highX; j += 1) {
                 Vector3 newPos = quad.pos;
                 if (quad.normal.x != 0) {
                     newPos = new Vector3(
@@ -137,17 +140,31 @@ public class MathHelper3D {
                         quad.pos.z + j);
                 } else if (quad.normal.y != 0) {
                     newPos = new Vector3(
-                        quad.pos.x + i,
+                        quad.pos.x + j,
                         quad.pos.y,
-                        quad.pos.z + j);
+                        quad.pos.z + i);
                 } else if (quad.normal.z != 0) {
                     newPos = new Vector3(
-                        quad.pos.x + i,
-                        quad.pos.y + j * 0.5f,
+                        quad.pos.x + j,
+                        quad.pos.y + i * 0.5f,
                         quad.pos.z);
                 }
                 if (quads.ContainsKey(newPos) && quads[newPos].ContainsKey(quad.normal)) {
                     selectedQuads.Add(quads[newPos][quad.normal]);
+                }
+            }
+        }
+        return selectedQuads;
+    }
+
+    // assume that q1/q2 share a normal
+    public static List<TerrainQuad> GetQuadsInRect(Dictionary<Vector3, Dictionary<Vector3, TerrainQuad>> quads, 
+            TerrainQuad q1, TerrainQuad q2) {
+        List<TerrainQuad> selectedQuads = new List<TerrainQuad>();
+        for (float x = Mathf.Min(q1.pos.x, q2.pos.x); x <= Math.Max(q1.pos.x, q2.pos.x); x += 1) {
+            for (float z = Mathf.Min(q1.pos.z, q2.pos.z); z <= Math.Max(q1.pos.z, q2.pos.z); z += 1) {
+                for (float y = Mathf.Min(q1.pos.y, q2.pos.y); y <= Math.Max(q1.pos.y, q2.pos.y); y += 0.5f) {
+                    selectedQuads.Add(quads[new Vector3(x, y, z)][q1.normal]);
                 }
             }
         }

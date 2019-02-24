@@ -14,6 +14,8 @@ public class TerrainQuad {
     public Vector3 pos;
     public Vector3 normal;
 
+    public Tile tile;
+
     private Vector2[] ourUVs;
 
     // creating a new quad mutates the tri/vert/uv arrays
@@ -24,6 +26,7 @@ public class TerrainQuad {
         vertsIndex = vertices.Count;
         this.pos = pos;
         this.normal = normal;
+        this.tile = tile;
 
         int i = vertices.Count;
         vertices.Add(lowerLeft);
@@ -64,7 +67,7 @@ public class TerrainQuad {
     public void UpdateTile(Tile tile, Tilemap tileset, float lowerLeftHeight) {
         Vector2[] spriteUVs = tile.sprite.uv;
         if (normal.y == 0.0f) {
-            spriteUVs = MathHelper3D.AdjustZ(spriteUVs, tileset, lowerLeftHeight, normal.x == 0.0f);
+            spriteUVs = MathHelper3D.AdjustZ(spriteUVs, tileset, lowerLeftHeight - 0.5f, normal.x == 0.0f);
         }
 
         ourUVs = new Vector2[4] {

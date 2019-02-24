@@ -112,6 +112,7 @@
     <Compile Include="Assets\Scripts\Lua\LuaScript.cs" />
     <Compile Include="Assets\Scripts\Map\CharaAnimator.cs" />
     <Compile Include="Assets\Scripts\Map\CharaEvent.cs" />
+    <Compile Include="Assets\Scripts\Map\CornerDir.cs" />
     <Compile Include="Assets\Scripts\Map\DebugMapMarker.cs" />
     <Compile Include="Assets\Scripts\Map\EventAppearance.cs" />
     <Compile Include="Assets\Scripts\Map\Map.cs" />
