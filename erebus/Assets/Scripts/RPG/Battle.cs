@@ -149,7 +149,7 @@ public class Battle {
                 yield break;
             }
             actingUnit.location = moveResult.value;
-            yield return actingUnit.doll.GetComponent<CharaEvent>().PathToRoutine(moveResult.value);
+            yield return actingUnit.doll.GetComponent<MapEvent>().PathToRoutine(moveResult.value);
         }
 
 

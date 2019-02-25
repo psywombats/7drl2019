@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 /**
  * Renders the attached sprite as fixed-x at the camera.
@@ -14,6 +13,9 @@ public class BillboardingSpriteComponent : MonoBehaviour {
 
     public void Update() {
         SpriteRenderer sprite = GetComponent<SpriteRenderer>();
+        if (GetCamera() == null) {
+            return;
+        }
         if (billboardX || GetCamera().billboardX) {
             Vector3 angles = sprite.transform.eulerAngles;
             sprite.transform.eulerAngles = new Vector3(

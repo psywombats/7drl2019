@@ -199,7 +199,7 @@ public class Map : MonoBehaviour {
                     }
                     if (!visited.Contains(next) && actor.CanPassAt(next) &&
                         (actor.GetComponent<CharaEvent>() == null ||
-                             actor.GetComponent<CharaEvent>().CanPassAt(next)) &&
+                             actor.CanPassAt(next)) &&
                         (actor.GetComponent<BattleEvent>() == null ||
                              actor.GetComponent<BattleEvent>().CanCrossTileGradient(at, next))) {
                         List<Vector2Int> newHead = new List<Vector2Int>(head) { next };

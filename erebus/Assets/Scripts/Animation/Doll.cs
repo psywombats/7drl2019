@@ -18,27 +18,24 @@ public class Doll : AnimationTarget {
 
     public Type type;
     public BattleAnimationPlayer player;
-    public CharaAnimator animator { get { return GetComponent<CharaAnimator>(); } }
     public CharaEvent chara { get { return transform.parent.GetComponent<CharaEvent>(); } }
 
     private Vector3 originalDollPos;
 
     [MoonSharpHidden]
     public void ConfigureToBattler(BattleEvent battler) {
-        animator.SetSpriteByKey(battler.GetComponent<CharaEvent>().GetAppearance());
+        chara.spritesheet = battler.GetComponent<CharaEvent>().spritesheet;
     }
 
     [MoonSharpHidden]
     public void PrepareForBattleAnimation(BattleAnimationPlayer player, Type type) {
         this.player = player;
         this.type = type;
-        animator.PrepareForAnimation();
         originalDollPos = transform.position;
     }
 
     [MoonSharpHidden]
     public override void ResetAfterAnimation() {
-        animator.ResetAfterAnimation();
         transform.position = originalDollPos;
         GetComponent<AfterimageComponent>().enabled = false;
     }
@@ -91,26 +88,26 @@ public class Doll : AnimationTarget {
                 DefaultJumpReturnHeight * (1.0f - fraction));
     }
 
-    // setFrame({sheet, frame});
-    public void setFrame(DynValue args) {
-        string spriteName = args.Table.Get(ArgSpritesheet).String;
-        int spriteFrame = (int)args.Table.Get(ArgFrame).Number;
-        Sprite[] sprites = Resources.LoadAll<Sprite>(AnimPath + spriteName);
-        Sprite sprite = sprites[spriteFrame];
-        animator.SetOverrideSprite(sprite);
-    }
+    //// setFrame({sheet, frame});
+    //public void setFrame(DynValue args) {
+    //    string spriteName = args.Table.Get(ArgSpritesheet).String;
+    //    int spriteFrame = (int)args.Table.Get(ArgFrame).Number;
+    //    Sprite[] sprites = Resources.LoadAll<Sprite>(AnimPath + spriteName);
+    //    Sprite sprite = sprites[spriteFrame];
+    //    animator.SetOverrideSprite(sprite);
+    //}
 
-    // setAnim({sheet, frame[]}, duration?);
-    public void setAnim(DynValue args) {
-        string spriteName = args.Table.Get(ArgSpritesheet).String;
-        float frameDuration = FloatArg(args, ArgDuration, DefaultFrameDuration);
-        Sprite[] sprites = Resources.LoadAll<Sprite>(AnimPath + spriteName);
-        List<Sprite> frames = new List<Sprite>();
-        foreach (DynValue value in args.Table.Get(ArgFrames).Table.Values) {
-            frames.Add(sprites[(int)value.Number]);
-        }
-        animator.SetOverrideAnim(frames, frameDuration);
-    }
+    //// setAnim({sheet, frame[]}, duration?);
+    //public void setAnim(DynValue args) {
+    //    string spriteName = args.Table.Get(ArgSpritesheet).String;
+    //    float frameDuration = FloatArg(args, ArgDuration, DefaultFrameDuration);
+    //    Sprite[] sprites = Resources.LoadAll<Sprite>(AnimPath + spriteName);
+    //    List<Sprite> frames = new List<Sprite>();
+    //    foreach (DynValue value in args.Table.Get(ArgFrames).Table.Values) {
+    //        frames.Add(sprites[(int)value.Number]);
+    //    }
+    //    animator.SetOverrideAnim(frames, frameDuration);
+    //}
 
     // afterimage({enable?, count?, duration?});
     public void afterimage(DynValue args) {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEditor;
 
 /**
  * For our purposes, a CharaEvent is anything that's going to be moving around the map
@@ -11,86 +12,94 @@ using System;
 [DisallowMultipleComponent]
 public class CharaEvent : MonoBehaviour {
 
-    private static readonly float Gravity = -20.0f;
-    private static readonly float JumpHeightUpMult = 1.2f;
-    private static readonly float JumpHeightDownMult = 1.6f;
+    private const float Gravity = -20.0f;
+    private const float JumpHeightUpMult = 1.2f;
+    private const float JumpHeightDownMult = 1.6f;
+    private const string DefaultMaterial2DPath = "Materials/Sprite2D";
+    private const string DefaultMaterial3DPath = "Materials/Sprite3D";
+    private const float DesaturationDuration = 0.5f;
+    private const float StepsPerSecond = 4.0f;
 
-    public static readonly string FaceEvent = "eventFace";
-
-    public OrthoDir initialFacing = OrthoDir.South;
+    [HideInInspector]
+    public OrthoDir facing = OrthoDir.South;
     public GameObject doll;
+    public SpriteRenderer mainLayer;
+    public float desaturation = 0.0f;
+    public bool alwaysAnimates = false;
+    public bool dynamicFacing = false;
+
+    private Dictionary<string, Sprite> sprites;
+    private Vector2 lastPosition;
+    private bool wasSteppingLastFrame;
+    private List<KeyValuePair<float, Vector3>> afterimageHistory;
+    private Vector3 targetPx;
+    private float moveTime;
+    private bool stepping;
 
     public MapEvent parent { get { return GetComponent<MapEvent>(); } }
     public Map map { get { return parent.parent; } }
 
-    private Vector3 targetPx;
-
-    private OrthoDir internalFacing;
-    public OrthoDir facing {
-        get {
-            return internalFacing;
-        }
+    [SerializeField]
+    [HideInInspector]
+    private Texture2D _spritesheet;
+    public Texture2D spritesheet {
+        get { return _spritesheet; }
         set {
-            if (internalFacing != value) {
-                internalFacing = value;
-                GetComponent<Dispatch>().Signal(FaceEvent, value);
-            }
+            _spritesheet = value;
+            LoadSpritesheetData();
+            UpdateAppearance();
         }
     }
 
-    private CharaAnimator _animator;
-    public CharaAnimator animator {
-        get {
-            if (_animator == null) _animator = doll.GetComponent<CharaAnimator>();
-            return _animator;
-        }
+    public static string NameForFrame(string sheetName, int x, int y) {
+        return sheetName + "_" + x + "_" + y;
     }
 
     public void Start() {
-        facing = initialFacing;
+        CopyShaderValues();
         GetComponent<Dispatch>().RegisterListener(MapEvent.EventMove, (object payload) => {
             facing = (OrthoDir)payload;
         });
+        GetComponent<Dispatch>().RegisterListener(MapEvent.EventEnabled, (object payload) => {
+            bool enabled = (bool)payload;
+            mainLayer.enabled = enabled;
+        });
+    }
+
+    public void Update() {
+        CopyShaderValues();
+        
+        bool steppingThisFrame = IsSteppingThisFrame();
+        stepping = steppingThisFrame || wasSteppingLastFrame;
+        if (steppingThisFrame != wasSteppingLastFrame) {
+            moveTime = 0.0f;
+        }
+        if (stepping) {
+            moveTime += Time.deltaTime;
+        }
+        wasSteppingLastFrame = steppingThisFrame;
+        lastPosition = transform.position;
+
+        UpdateAppearance();
+    }
+
+    public void UpdateAppearance() {
+        if (spritesheet != null) {
+            if (sprites == null || sprites.Count == 0) {
+                LoadSpritesheetData();
+            }
+            mainLayer.sprite = SpriteForCurrent();
+        }
     }
 
     public void FaceToward(MapEvent other) {
-        facing = GetComponent<MapEvent>().DirectionTo(other);
+        facing = parent.DirectionTo(other);
     }
 
-    public void SetAppearance(string spriteKey) {
-        animator.SetSpriteByKey(spriteKey);
-    }
-
-    // returns the sprite key currently in use
-    public string GetAppearance() {
-        return animator.spriteName;
-    }
-
-    // checks if the given location is passable for this character
-    // takes into account both chip and event
-    public bool CanPassAt(Vector2Int loc) {
-        if (!GetComponent<MapEvent>().switchEnabled) {
-            return true;
-        }
-
-        foreach (MapEvent mapEvent in map.GetEventsAt(loc)) {
-            if (!mapEvent.IsPassableBy(this)) {
-                return false;
-            }
-        }
-
-        return GetComponent<MapEvent>().CanPassAt(loc);
-    }
-
-    public IEnumerator PathToRoutine(Vector2Int location) {
-        List<Vector2Int> path = map.FindPath(GetComponent<MapEvent>(), location);
-        if (path == null) {
-            yield break;
-        }
-        MapEvent mapEvent = GetComponent<MapEvent>();
-        foreach (Vector2Int target in path) {
-            OrthoDir dir = mapEvent.DirectionTo(target);
-            yield return StartCoroutine(GetComponent<MapEvent>().StepRoutine(dir));
+    private void CopyShaderValues() {
+        Material material = Application.isPlaying ? mainLayer.material : mainLayer.sharedMaterial;
+        if (material != null) {
+            material.SetFloat("_Desaturation", desaturation);
         }
     }
 
@@ -99,7 +108,7 @@ public class CharaEvent : MonoBehaviour {
         Vector2Int offset = parent.OffsetForTiles(dir);
         Vector3 startPx = parent.positionPx;
         targetPx = parent.TileToWorldCoords(parent.position);
-        if (targetPx.y == startPx.y) {
+        if (targetPx.y == startPx.y || GetComponent<MapEvent3D>() == null) {
             yield return parent.LinearStepRoutine(dir);
         } else if (targetPx.y > startPx.y) {
             // jump up routine routine
@@ -132,6 +141,16 @@ public class CharaEvent : MonoBehaviour {
         }
     }
 
+    public IEnumerator DesaturateRoutine(float targetDesat) {
+        float oldDesat = desaturation;
+        float elapsed = 0.0f;
+        while (desaturation != targetDesat) {
+            elapsed += Time.deltaTime;
+            desaturation = Mathf.Lerp(oldDesat, targetDesat, elapsed / DesaturationDuration);
+            yield return null;
+        }
+    }
+
     private IEnumerator JumpRoutine(Vector3 startPx, Vector3 targetPx, float duration) {
         float elapsed = 0.0f;
         
@@ -150,5 +169,54 @@ public class CharaEvent : MonoBehaviour {
             yield return null;
         }
         parent.SetScreenPositionToMatchTilePosition();
+    }
+
+    private bool IsSteppingThisFrame() {
+        Vector2 position = transform.position;
+        Vector2 delta = position - lastPosition;
+        return alwaysAnimates || (delta.sqrMagnitude > 0 && delta.sqrMagnitude < Map.TileSizePx) || parent.tracking;
+    }
+
+    private void LoadSpritesheetData() {
+        string path = GetComponent<MapEvent3D>() == null ? DefaultMaterial2DPath : DefaultMaterial3DPath;
+        mainLayer.material = Resources.Load<Material>(path);
+
+        sprites = new Dictionary<string, Sprite>();
+        path = AssetDatabase.GetAssetPath(spritesheet);
+        if (path.StartsWith("Assets/Resources/")) {
+            path = path.Substring("Assets/Resources/".Length);
+        }
+        if (path.EndsWith(".png")) {
+            path = path.Substring(0, path.Length - ".png".Length);
+        }
+        foreach (Sprite sprite in Resources.LoadAll<Sprite>(path)) {
+            sprites[sprite.name] = sprite;
+        }
+    }
+
+    private OrthoDir DirectionRelativeToCamera() {
+        MapCamera cam = Application.isPlaying ? Global.Instance().Maps.camera : FindObjectOfType<MapCamera>();
+        if (!cam || !dynamicFacing) {
+            return facing;
+        }
+
+        Vector3 ourScreen = cam.GetCameraComponent().WorldToScreenPoint(transform.position);
+        Vector3 targetWorld = ((MapEvent3D)parent).TileToWorldCoords(parent.position + facing.XY3D());
+        targetWorld.y = parent.transform.position.y;
+        Vector3 targetScreen = cam.GetCameraComponent().WorldToScreenPoint(targetWorld);
+        Vector3 delta = targetScreen - ourScreen;
+        return OrthoDirExtensions.DirectionOf2D(new Vector2(delta.x, -delta.y));
+    }
+
+    private Sprite FrameBySlot(int x, int y) {
+        return sprites[NameForFrame(spritesheet.name, x, y)];
+    }
+
+    private Sprite SpriteForCurrent() {
+        int x = Mathf.FloorToInt(moveTime * StepsPerSecond) % 4;
+        if (x == 3) x = 1;
+        if (!stepping) x = 1;
+        int y = facing.Ordinal();
+        return FrameBySlot(x, y);
     }
 }

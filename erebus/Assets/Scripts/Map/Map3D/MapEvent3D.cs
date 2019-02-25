@@ -28,7 +28,7 @@ public class MapEvent3D : MapEvent {
 
     public override void SetDepth() {
         // our global height is identical to the height of the parent layer
-        if (GetComponent<Transform>() != null) {
+        if (parent != null) {
             transform.localPosition = new Vector3(
                 gameObject.transform.localPosition.x,
                 parent.terrain.HeightAt(position),

@@ -70,7 +70,7 @@ public class MapEvent2D : MapEvent {
     }
 
     protected override void DrawGizmoSelf() {
-        if (GetComponent<CharaEvent>() == null || GetComponent<CharaEvent>().GetAppearance() == null) {
+        if (GetComponent<CharaEvent>() == null || GetComponent<CharaEvent>().spritesheet == null) {
             Gizmos.color = new Color(Gizmos.color.r, Gizmos.color.g, Gizmos.color.b, 0.5f);
             Gizmos.DrawCube(new Vector3(
                     transform.position.x + size.x * Map.TileSizePx * OrthoDir.East.Px2DX() / 2.0f,

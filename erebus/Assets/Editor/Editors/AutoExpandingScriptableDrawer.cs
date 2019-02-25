@@ -30,8 +30,8 @@ public class AutoExpandingScriptableDrawer : PropertyDrawer {
     }
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
-        EditorGUI.BeginProperty(position, label, property);
         if (property.objectReferenceValue != null) {
+            EditorGUI.BeginProperty(position, label, property);
             property.isExpanded = EditorGUI.Foldout(new Rect(
                 position.x, 
                 position.y, 
@@ -75,9 +75,11 @@ public class AutoExpandingScriptableDrawer : PropertyDrawer {
 
                 EditorGUI.indentLevel--;
             }
-        }
 
-        property.serializedObject.ApplyModifiedProperties();
-        EditorGUI.EndProperty();
+            property.serializedObject.ApplyModifiedProperties();
+            EditorGUI.EndProperty();
+        } else {
+            base.OnGUI(position, property, label);
+        }
     }
 }

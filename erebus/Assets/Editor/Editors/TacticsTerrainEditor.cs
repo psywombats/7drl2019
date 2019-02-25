@@ -164,7 +164,7 @@ public class TacticsTerrainEditor : Editor {
             }
             if (GUILayout.Button("Create Tactics Doll")) {
                 GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(TacticsPrefabPath);
-                MapEvent3D mapEvent = Instantiate(prefab).GetComponent<MapEvent3D>();
+                MapEvent3D mapEvent = ((GameObject)PrefabUtility.InstantiatePrefab(prefab)).GetComponent<MapEvent3D>();
                 mapEvent.name = "Doll" + Random.Range(1000000, 9999999);
                 AddEvent(mapEvent);
             }

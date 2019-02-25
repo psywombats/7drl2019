@@ -33,7 +33,7 @@ public class BattleEvent : MonoBehaviour {
     public void PopulateWithUnitData(Unit unitData) {
         this.unitData = unitData;
         if (unitData != null) {
-            GetComponent<CharaEvent>().SetAppearance(unitData.appearance.name);
+            GetComponent<CharaEvent>().spritesheet = unitData.appearance;
             gameObject.name = unitData.unitName;
         }
     }
@@ -43,11 +43,11 @@ public class BattleEvent : MonoBehaviour {
     }
 
     public IEnumerator PostActionRoutine() {
-        yield return GetComponent<CharaEvent>().animator.DesaturateRoutine(1.0f);
+        yield return GetComponent<CharaEvent>().DesaturateRoutine(1.0f);
     }
 
     public IEnumerator PostTurnRoutine() {
-        yield return GetComponent<CharaEvent>().animator.DesaturateRoutine(0.0f);
+        yield return GetComponent<CharaEvent>().DesaturateRoutine(0.0f);
     }
 
     public bool CanCrossTileGradient(Vector2Int from, Vector2Int to) {

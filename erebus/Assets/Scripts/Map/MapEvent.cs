@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -153,7 +154,7 @@ public abstract class MapEvent : MonoBehaviour {
         switchEnabled = luaObject.EvaluateBool(PropertyCondition, true);
     }
 
-    public bool IsPassableBy(CharaEvent chara) {
+    public bool IsPassableBy(MapEvent other) {
         return passable || !switchEnabled;
     }
 
@@ -162,6 +163,9 @@ public abstract class MapEvent : MonoBehaviour {
     }
 
     public bool CanPassAt(Vector2Int loc) {
+        if (!GetComponent<MapEvent>().switchEnabled) {
+            return true;
+        }
         if (loc.x < 0 || loc.x >= parent.width || loc.y < 0 || loc.y >= parent.height) {
             return false;
         }
@@ -171,8 +175,25 @@ public abstract class MapEvent : MonoBehaviour {
                 return false;
             }
         }
+        foreach (MapEvent mapEvent in parent.GetEventsAt(loc)) {
+            if (!mapEvent.IsPassableBy(this)) {
+                return false;
+            }
+        }
 
         return true;
+    }
+
+    public IEnumerator PathToRoutine(Vector2Int location) {
+        List<Vector2Int> path = parent.FindPath(this, location);
+        if (path == null) {
+            yield break;
+        }
+        MapEvent mapEvent = GetComponent<MapEvent>();
+        foreach (Vector2Int target in path) {
+            OrthoDir dir = mapEvent.DirectionTo(target);
+            yield return StartCoroutine(GetComponent<MapEvent>().StepRoutine(dir));
+        }
     }
 
     public bool ContainsPosition(Vector2Int loc) {

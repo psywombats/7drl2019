@@ -78,6 +78,7 @@
     <Compile Include="Assets\Editor\Editors\AutoExpandingScriptableDrawer.cs" />
     <Compile Include="Assets\Editor\Editors\BattleControllerEditor.cs" />
     <Compile Include="Assets\Editor\Editors\BattleEventEditor.cs" />
+    <Compile Include="Assets\Editor\Editors\CharaEventEditor.cs" />
     <Compile Include="Assets\Editor\Editors\ClipInfo.cs" />
     <Compile Include="Assets\Editor\Editors\GridSelectionEditor.cs" />
     <Compile Include="Assets\Editor\Editors\InstanceMultiControllerEditor.cs" />

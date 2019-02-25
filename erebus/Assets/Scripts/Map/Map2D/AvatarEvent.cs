@@ -13,6 +13,8 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
         }
     }
 
+    private MapEvent parent { get { return GetComponent<MapEvent>(); } }
+
     public void Start() {
         Global.Instance().Maps.avatar = this;
         Global.Instance().Input.PushListener(this);
@@ -82,7 +84,7 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
         Vector2Int target = GetComponent<MapEvent>().position + GetComponent<CharaEvent>().facing.XY2D();
         List<MapEvent> targetEvents = GetComponent<MapEvent>().parent.GetEventsAt(target);
         foreach (MapEvent tryTarget in targetEvents) {
-            if (tryTarget.switchEnabled && !tryTarget.IsPassableBy(GetComponent<CharaEvent>())) {
+            if (tryTarget.switchEnabled && !tryTarget.IsPassableBy(parent)) {
                 tryTarget.GetComponent<Dispatch>().Signal(MapEvent.EventInteract, this);
                 return;
             }
@@ -91,7 +93,7 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
         target = GetComponent<MapEvent>().position;
         targetEvents = GetComponent<MapEvent>().parent.GetEventsAt(target);
         foreach (MapEvent tryTarget in targetEvents) {
-            if (tryTarget.switchEnabled && tryTarget.IsPassableBy(GetComponent<CharaEvent>())) {
+            if (tryTarget.switchEnabled && tryTarget.IsPassableBy(parent)) {
                 tryTarget.GetComponent<Dispatch>().Signal(MapEvent.EventInteract, this);
                 return;
             }
@@ -106,10 +108,10 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
         List<MapEvent> targetEvents = GetComponent<MapEvent>().parent.GetEventsAt(target);
 
         List<MapEvent> toCollide = new List<MapEvent>();
-        bool passable = GetComponent<CharaEvent>().CanPassAt(target);
+        bool passable = parent.CanPassAt(target);
         foreach (MapEvent targetEvent in targetEvents) {
             toCollide.Add(targetEvent);
-            if (!GetComponent<CharaEvent>().CanPassAt(target)) {
+            if (!parent.CanPassAt(target)) {
                 passable = false;
             }
         }
@@ -124,7 +126,7 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
             }));
         } else {
             foreach (MapEvent targetEvent in toCollide) {
-                if (targetEvent.switchEnabled && !targetEvent.IsPassableBy(GetComponent<CharaEvent>())) {
+                if (targetEvent.switchEnabled && !targetEvent.IsPassableBy(parent)) {
                     targetEvent.GetComponent<Dispatch>().Signal(MapEvent.EventCollide, this);
                 }
             }
