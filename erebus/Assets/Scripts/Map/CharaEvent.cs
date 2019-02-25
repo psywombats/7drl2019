@@ -19,11 +19,12 @@ public class CharaEvent : MonoBehaviour {
     private const string DefaultMaterial3DPath = "Materials/Sprite3D";
     private const float DesaturationDuration = 0.5f;
     private const float StepsPerSecond = 4.0f;
+    private const float JumpStepsPerSecond = 8.0f;
 
-    [HideInInspector]
-    public OrthoDir facing = OrthoDir.South;
     public GameObject doll;
     public SpriteRenderer mainLayer;
+    public SpriteRenderer armsLayer;
+    public SpriteRenderer itemLayer;
     public float desaturation = 0.0f;
     public bool alwaysAnimates = false;
     public bool dynamicFacing = false;
@@ -34,7 +35,10 @@ public class CharaEvent : MonoBehaviour {
     private List<KeyValuePair<float, Vector3>> afterimageHistory;
     private Vector3 targetPx;
     private float moveTime;
+    private Sprite overrideSprite;
+
     private bool stepping;
+    private bool jumping;
 
     public MapEvent parent { get { return GetComponent<MapEvent>(); } }
     public Map map { get { return parent.parent; } }
@@ -51,6 +55,26 @@ public class CharaEvent : MonoBehaviour {
         }
     }
 
+    [SerializeField]
+    [HideInInspector]
+    private OrthoDir _facing = OrthoDir.South;
+    public OrthoDir facing {
+        get { return _facing; }
+        set {
+            _facing = value;
+            if (facing == OrthoDir.North) {
+                armsLayer.transform.localPosition = new Vector3(0.0f, 0.0f, 0.01f);
+            } else {
+                armsLayer.transform.localPosition = new Vector3(0.0f, 0.0f, -0.01f);
+            }
+            UpdateAppearance();
+        }
+    }
+
+    private SpriteRenderer[] renderers {
+        get { return new SpriteRenderer[] { mainLayer, armsLayer, itemLayer }; }
+    }
+
     public static string NameForFrame(string sheetName, int x, int y) {
         return sheetName + "_" + x + "_" + y;
     }
@@ -62,7 +86,9 @@ public class CharaEvent : MonoBehaviour {
         });
         GetComponent<Dispatch>().RegisterListener(MapEvent.EventEnabled, (object payload) => {
             bool enabled = (bool)payload;
-            mainLayer.enabled = enabled;
+            foreach (SpriteRenderer renderer in renderers) {
+                renderer.enabled = enabled;
+            }
         });
     }
 
@@ -88,7 +114,9 @@ public class CharaEvent : MonoBehaviour {
             if (sprites == null || sprites.Count == 0) {
                 LoadSpritesheetData();
             }
-            mainLayer.sprite = SpriteForCurrent();
+            mainLayer.sprite = SpriteForMain();
+            armsLayer.sprite = SpriteForArms();
+            itemLayer.sprite = SpriteForItem();
         }
     }
 
@@ -97,9 +125,11 @@ public class CharaEvent : MonoBehaviour {
     }
 
     private void CopyShaderValues() {
-        Material material = Application.isPlaying ? mainLayer.material : mainLayer.sharedMaterial;
-        if (material != null) {
-            material.SetFloat("_Desaturation", desaturation);
+        foreach (SpriteRenderer renderer in renderers) {
+            Material material = Application.isPlaying ? renderer.material : renderer.sharedMaterial;
+            if (material != null) {
+                material.SetFloat("_Desaturation", desaturation);
+            } 
         }
     }
 
@@ -114,7 +144,9 @@ public class CharaEvent : MonoBehaviour {
             // jump up routine routine
             float duration = (targetPx - startPx).magnitude / parent.CalcTilesPerSecond() / 2.0f * JumpHeightUpMult;
             yield return JumpRoutine(startPx, targetPx, duration);
+            overrideSprite = FrameBySlot(0, facing.Ordinal()); // "prone" frame
             yield return CoUtils.Wait(1.0f / parent.CalcTilesPerSecond() / 2.0f);
+            overrideSprite = null;
         } else {
             // jump down routine
             float elapsed = 0.0f;
@@ -134,9 +166,12 @@ public class CharaEvent : MonoBehaviour {
             }
             float dy = targetPx.y - startPx.y;
             float jumpDuration = Mathf.Sqrt(dy / Gravity) * JumpHeightDownMult;
-            yield return JumpRoutine(parent.transform.position, targetPx, jumpDuration);
-            if (dy <= -1.0f) {
+            bool isBigDrop = dy <= -1.0f;
+            yield return JumpRoutine(parent.transform.position, targetPx, jumpDuration, isBigDrop);
+            if (isBigDrop) {
+                overrideSprite = FrameBySlot(2, facing.Ordinal()); // "prone" frame
                 yield return CoUtils.Wait(JumpHeightDownMult / parent.CalcTilesPerSecond() / 2.0f);
+                overrideSprite = null;
             }
         }
     }
@@ -151,7 +186,8 @@ public class CharaEvent : MonoBehaviour {
         }
     }
 
-    private IEnumerator JumpRoutine(Vector3 startPx, Vector3 targetPx, float duration) {
+    private IEnumerator JumpRoutine(Vector3 startPx, Vector3 targetPx, float duration, bool useJumpFrames = true) {
+        jumping = useJumpFrames;
         float elapsed = 0.0f;
         
         float dy = (targetPx.y - startPx.y);
@@ -168,6 +204,7 @@ public class CharaEvent : MonoBehaviour {
             }
             yield return null;
         }
+        jumping = false;
         parent.SetScreenPositionToMatchTilePosition();
     }
 
@@ -179,7 +216,9 @@ public class CharaEvent : MonoBehaviour {
 
     private void LoadSpritesheetData() {
         string path = GetComponent<MapEvent3D>() == null ? DefaultMaterial2DPath : DefaultMaterial3DPath;
-        mainLayer.material = Resources.Load<Material>(path);
+        foreach (SpriteRenderer renderer in renderers) {
+            renderer.material = Resources.Load<Material>(path);
+        }
 
         sprites = new Dictionary<string, Sprite>();
         path = AssetDatabase.GetAssetPath(spritesheet);
@@ -212,11 +251,34 @@ public class CharaEvent : MonoBehaviour {
         return sprites[NameForFrame(spritesheet.name, x, y)];
     }
 
-    private Sprite SpriteForCurrent() {
-        int x = Mathf.FloorToInt(moveTime * StepsPerSecond) % 4;
-        if (x == 3) x = 1;
-        if (!stepping) x = 1;
+    private Sprite SpriteForMain() {
+        if (overrideSprite != null) {
+            return overrideSprite;
+        }
+
+        int x;
         int y = facing.Ordinal();
+        if (jumping) {
+            x = Mathf.FloorToInt(moveTime * JumpStepsPerSecond) % 2 + 3;
+        } else {
+            x = Mathf.FloorToInt(moveTime * StepsPerSecond) % 4;
+            if (x == 3) x = 1;
+            if (!stepping) x = 1;
+        }
         return FrameBySlot(x, y);
+    }
+
+    private Sprite SpriteForArms() {
+        if (jumping) {
+            int x = 6; // TODO? multiple arm positions
+            int y = facing.Ordinal();
+            return FrameBySlot(x, y);
+        } else {
+            return null;
+        }
+    }
+
+    private Sprite SpriteForItem() {
+        return null;
     }
 }

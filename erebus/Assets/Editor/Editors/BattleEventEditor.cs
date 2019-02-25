@@ -9,6 +9,7 @@ public class BattleEventEditor : Editor {
         Unit unit = (Unit)EditorGUILayout.ObjectField("Unit", battler.unitData, typeof(Unit), false);
         if (unit != battler.unitData) {
             battler.PopulateWithUnitData(unit);
+            EditorUtility.SetDirty(battler);
         }
 
         if (GUILayout.Button("Edit unit")) {

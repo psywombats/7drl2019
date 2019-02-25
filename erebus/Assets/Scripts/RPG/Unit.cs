@@ -9,4 +9,6 @@ public class Unit : ScriptableObject {
     public Alignment align;
     public StatSet stats;
 
+    // tempish
+    public Item equippedItem;
 }

@@ -30,7 +30,7 @@ internal sealed class SpriteImporter : AssetPostprocessor {
                 for (int y = 0; y < rows; y += 1) {
                     for (int x = 0; x < cols; x += 1) {
                         SpriteMetaData data = importer.spritesheet[y * cols + x];
-                        data.rect = new Rect(x * edgeSizeX, (cols - y) * edgeSizeY, edgeSizeX, edgeSizeY);
+                        data.rect = new Rect(x * edgeSizeX, (rows - y - 1) * edgeSizeY, edgeSizeX, edgeSizeY);
                         data.alignment = (int)SpriteAlignment.Custom;
                         data.border = new Vector4(0, 0, 0, 0);
                         data.name = CharaEvent.NameForFrame(name, x, y);

@@ -151,6 +151,7 @@
     <Compile Include="Assets\Scripts\RPG\BattleFaction.cs" />
     <Compile Include="Assets\Scripts\RPG\BattleUnit.cs" />
     <Compile Include="Assets\Scripts\RPG\Data\RPGMemory.cs" />
+    <Compile Include="Assets\Scripts\RPG\Item.cs" />
     <Compile Include="Assets\Scripts\RPG\PartyManager.cs" />
     <Compile Include="Assets\Scripts\RPG\Stat\CombinationAdditive.cs" />
     <Compile Include="Assets\Scripts\RPG\Stat\CombinationStrategy.cs" />

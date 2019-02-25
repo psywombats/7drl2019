@@ -337,7 +337,6 @@ public class TacticsTerrainEditor : Editor {
                 }
                 break;
             case EventType.MouseUp:
-                Debug.Log("up");
                 switch (mode) {
                     case EditMode.Selected:
                         mode = EditMode.None;
