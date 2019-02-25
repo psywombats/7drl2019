@@ -11,14 +11,19 @@ using System;
 [DisallowMultipleComponent]
 public class CharaEvent : MonoBehaviour {
 
+    private static readonly float Gravity = -20.0f;
+    private static readonly float JumpHeightUpMult = 1.2f;
+    private static readonly float JumpHeightDownMult = 1.6f;
+
     public static readonly string FaceEvent = "eventFace";
 
-    // Editor
     public OrthoDir initialFacing = OrthoDir.South;
     public GameObject doll;
 
-    // Public
-    public Map parent { get { return GetComponent<MapEvent>().parent; } }
+    public MapEvent parent { get { return GetComponent<MapEvent>(); } }
+    public Map map { get { return parent.parent; } }
+
+    private Vector3 targetPx;
 
     private OrthoDir internalFacing;
     public OrthoDir facing {
@@ -68,7 +73,7 @@ public class CharaEvent : MonoBehaviour {
             return true;
         }
 
-        foreach (MapEvent mapEvent in parent.GetEventsAt(loc)) {
+        foreach (MapEvent mapEvent in map.GetEventsAt(loc)) {
             if (!mapEvent.IsPassableBy(this)) {
                 return false;
             }
@@ -78,7 +83,7 @@ public class CharaEvent : MonoBehaviour {
     }
 
     public IEnumerator PathToRoutine(Vector2Int location) {
-        List<Vector2Int> path = parent.FindPath(GetComponent<MapEvent>(), location);
+        List<Vector2Int> path = map.FindPath(GetComponent<MapEvent>(), location);
         if (path == null) {
             yield break;
         }
@@ -87,5 +92,63 @@ public class CharaEvent : MonoBehaviour {
             OrthoDir dir = mapEvent.DirectionTo(target);
             yield return StartCoroutine(GetComponent<MapEvent>().StepRoutine(dir));
         }
+    }
+
+    public IEnumerator StepRoutine(OrthoDir dir) {
+        facing = dir;
+        Vector2Int offset = parent.OffsetForTiles(dir);
+        Vector3 startPx = parent.positionPx;
+        targetPx = parent.TileToWorldCoords(parent.position);
+        if (targetPx.y == startPx.y) {
+            yield return parent.LinearStepRoutine(dir);
+        } else if (targetPx.y > startPx.y) {
+            // jump up routine routine
+            float duration = (targetPx - startPx).magnitude / parent.CalcTilesPerSecond() / 2.0f * JumpHeightUpMult;
+            yield return JumpRoutine(startPx, targetPx, duration);
+            yield return CoUtils.Wait(1.0f / parent.CalcTilesPerSecond() / 2.0f);
+        } else {
+            // jump down routine
+            float elapsed = 0.0f;
+            float walkRatio = 0.65f;
+            float walkDuration = walkRatio / parent.CalcTilesPerSecond();
+            while (true) {
+                float t = elapsed / walkDuration;
+                elapsed += Time.deltaTime;
+                parent.transform.position = new Vector3(
+                    startPx.x + t * (targetPx.x - startPx.x) * walkRatio,
+                    startPx.y,
+                    startPx.z + t * (targetPx.z - startPx.z) * walkRatio);
+                if (elapsed >= walkDuration) {
+                    break;
+                }
+                yield return null;
+            }
+            float dy = targetPx.y - startPx.y;
+            float jumpDuration = Mathf.Sqrt(dy / Gravity) * JumpHeightDownMult;
+            yield return JumpRoutine(parent.transform.position, targetPx, jumpDuration);
+            if (dy <= -1.0f) {
+                yield return CoUtils.Wait(JumpHeightDownMult / parent.CalcTilesPerSecond() / 2.0f);
+            }
+        }
+    }
+
+    private IEnumerator JumpRoutine(Vector3 startPx, Vector3 targetPx, float duration) {
+        float elapsed = 0.0f;
+        
+        float dy = (targetPx.y - startPx.y);
+        float b = (dy - Gravity * (duration * duration)) / duration;
+        while (true) {
+            float t = elapsed / duration;
+            elapsed += Time.deltaTime;
+            parent.transform.position = new Vector3(
+                startPx.x + t * (targetPx.x - startPx.x),
+                startPx.y + Gravity * (elapsed * elapsed) + b * elapsed,
+                startPx.z + t * (targetPx.z - startPx.z));
+            if (elapsed >= duration) {
+                break;
+            }
+            yield return null;
+        }
+        parent.SetScreenPositionToMatchTilePosition();
     }
 }

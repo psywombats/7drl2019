@@ -100,8 +100,7 @@ public abstract class MapEvent : MonoBehaviour {
         }
     }
 
-    // if we moved in this direction, where in screenspace would we end up?
-    public abstract Vector3 CalculateOffsetPositionPx(OrthoDir dir);
+    public abstract Vector3 TileToWorldCoords(Vector2Int location);
 
     public abstract Vector2Int OffsetForTiles(OrthoDir dir);
 
@@ -237,16 +236,29 @@ public abstract class MapEvent : MonoBehaviour {
         if (tracking) {
             yield break;
         }
-        tracking = true;
-
+        
         position += OffsetForTiles(dir);
-        targetPositionPx = CalculateOffsetPositionPx(dir);
-        GetComponent<Dispatch>().Signal(EventMove, dir);
 
+        if (GetComponent<CharaEvent>() == null) {
+            yield return LinearStepRoutine(dir);
+        } else {
+            yield return GetComponent<CharaEvent>().StepRoutine(dir);
+        }
+    }
+
+    public IEnumerator StepMultiRoutine(OrthoDir dir, int count) {
+        for (int i = 0; i < count; i += 1) {
+            yield return StartCoroutine(StepRoutine(dir));
+        }
+    }
+
+    public IEnumerator LinearStepRoutine(OrthoDir dir) {
+        tracking = true;
+        targetPositionPx = TileToWorldCoords(position);
         while (true) {
             if (CalcTilesPerSecond() > 0) {
-                positionPx = Vector3.MoveTowards(positionPx, 
-                    targetPositionPx, 
+                positionPx = Vector3.MoveTowards(positionPx,
+                    targetPositionPx,
                     CalcTilesPerSecond() * Time.deltaTime);
             } else {
                 // indicates warp speed, cap'n
@@ -259,12 +271,6 @@ public abstract class MapEvent : MonoBehaviour {
             } else {
                 yield return null;
             }
-        }
-    }
-
-    public IEnumerator StepMultiRoutine(OrthoDir dir, int count) {
-        for (int i = 0; i < count; i += 1) {
-            yield return StartCoroutine(StepRoutine(dir));
         }
     }
 }

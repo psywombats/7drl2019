@@ -133,41 +133,44 @@ public class Battle {
     }
 
     private IEnumerator PlayNextHumanActionRoutine() {
-        controller.MoveCursorToDefaultUnit();
-        Result<BattleUnit> unitResult = new Result<BattleUnit>();
-        yield return controller.SelectUnitRoutine(unitResult, (BattleUnit unit) => {
-            return unit.align == Alignment.Hero && !unit.hasActedThisTurn;
-        }, false);
-        BattleUnit actingUnit = unitResult.value;
-        Vector2Int originalLocation = actingUnit.location;
+        while (true) {
+            controller.MoveCursorToDefaultUnit();
+            Result<BattleUnit> unitResult = new Result<BattleUnit>();
+            yield return controller.SelectUnitRoutine(unitResult, (BattleUnit unit) => {
+                return unit.align == Alignment.Hero && !unit.hasActedThisTurn;
+            }, false);
+            BattleUnit actingUnit = unitResult.value;
+            Vector2Int originalLocation = actingUnit.location;
 
-        Result<Vector2Int> moveResult = new Result<Vector2Int>();
-        yield return controller.SelectMoveLocationRoutine(moveResult, actingUnit);
-        if (moveResult.canceled) {
-            yield return PlayNextHumanActionRoutine();
-            yield break;
+            Result<Vector2Int> moveResult = new Result<Vector2Int>();
+            yield return controller.SelectMoveLocationRoutine(moveResult, actingUnit);
+            if (moveResult.canceled) {
+                yield return PlayNextHumanActionRoutine();
+                yield break;
+            }
+            actingUnit.location = moveResult.value;
+            yield return actingUnit.doll.GetComponent<CharaEvent>().PathToRoutine(moveResult.value);
         }
-        actingUnit.location = moveResult.value;
-        yield return actingUnit.doll.GetComponent<CharaEvent>().PathToRoutine(moveResult.value);
 
-        // TODO: remove this nonsense
-        Result<BattleUnit> targetedResult = new Result<BattleUnit>();
-        yield return controller.SelectAdjacentUnitRoutine(targetedResult, actingUnit, (BattleUnit unit) => {
-            return unit.align == Alignment.Enemy;
-        });
-        if (targetedResult.canceled) {
-            // TODO: reset where they came from
-            yield return PlayNextHumanActionRoutine();
-            yield break;
-        }
-        BattleUnit targetUnit = targetedResult.value;
-        targetUnit.doll.GetComponent<CharaEvent>().FaceToward(actingUnit.doll.GetComponent<MapEvent>());
 
-        yield return Global.Instance().Maps.activeDuelMap.EnterMapRoutine(actingUnit.doll, targetUnit.doll);
+        //// TODO: remove this nonsense
+        //Result<BattleUnit> targetedResult = new Result<BattleUnit>();
+        //yield return controller.SelectAdjacentUnitRoutine(targetedResult, actingUnit, (BattleUnit unit) => {
+        //    return unit.align == Alignment.Enemy;
+        //});
+        //if (targetedResult.canceled) {
+        //    // TODO: reset where they came from
+        //    yield return PlayNextHumanActionRoutine();
+        //    yield break;
+        //}
+        //BattleUnit targetUnit = targetedResult.value;
+        //targetUnit.doll.GetComponent<CharaEvent>().FaceToward(actingUnit.doll.GetComponent<MapEvent>());
 
-        actingUnit.MarkActionTaken();
-        yield return Global.Instance().Maps.activeDuelMap.ExitMapRoutine();
-        yield return actingUnit.doll.PostActionRoutine();
+        //yield return Global.Instance().Maps.activeDuelMap.EnterMapRoutine(actingUnit.doll, targetUnit.doll);
+
+        //actingUnit.MarkActionTaken();
+        //yield return Global.Instance().Maps.activeDuelMap.ExitMapRoutine();
+        //yield return actingUnit.doll.PostActionRoutine();
 
     }
 }

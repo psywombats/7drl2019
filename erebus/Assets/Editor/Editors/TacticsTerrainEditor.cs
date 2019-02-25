@@ -39,7 +39,7 @@ public class TacticsTerrainEditor : Editor {
     private TerrainQuad primarySelection;
     private Vector3 paintingNormal;
     private float selectedHeight;
-    private Vector2 selectionSize = Vector2Int.zero;
+    private Vector2 selectionSize = new Vector2Int(1, 1);
 
     private EditMode mode = EditMode.None;
     private SelectionTool tool = SelectionTool.Select;
@@ -49,7 +49,7 @@ public class TacticsTerrainEditor : Editor {
     private Vector2 selectedTileStart;
     private Rect tileSelectRect;
     private Tile[] paletteBuffer;
-    private Vector2Int paletteBufferSize = new Vector2Int(0, 0);
+    private Vector2Int paletteBufferSize = Vector2Int.zero;
     private bool wraparoundPaintMode;
 
     public override bool RequiresConstantRepaint() {
@@ -315,7 +315,6 @@ public class TacticsTerrainEditor : Editor {
         TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
         switch (typeForControl) {
             case EventType.MouseDown:
-                Debug.Log("down");
                 if (tool != SelectionTool.Select) {
                     TerrainQuad quad = GetSelectedQuad();
                     if (quad != null) {

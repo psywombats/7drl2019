@@ -168,6 +168,7 @@ public class CharaAnimator : MonoBehaviour {
 
         Vector3 ourScreen = cam.GetCameraComponent().WorldToScreenPoint(parentEvent.transform.position);
         Vector3 targetWorld = ((MapEvent3D)parentEvent).TileToWorldCoords(parentEvent.position + normalDir.XY3D());
+        targetWorld.y = parentEvent.transform.position.y;
         Vector3 targetScreen = cam.GetCameraComponent().WorldToScreenPoint(targetWorld);
         Vector3 delta = targetScreen - ourScreen;
         return OrthoDirExtensions.DirectionOf2D(new Vector2(delta.x, -delta.y));

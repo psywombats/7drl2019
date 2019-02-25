@@ -29,10 +29,10 @@ public class MapEvent2D : MapEvent {
         return OrthoDirExtensions.DirectionOf2D(position - this.position);
     }
 
-    public override Vector3 CalculateOffsetPositionPx(OrthoDir dir) {
-        float y = positionPx.y + dir.Px2DY() * Map.TileSizePx / Map.UnityUnitScale * OrthoDir.North.Px2DY();
+    public override Vector3 TileToWorldCoords(Vector2Int position) {
+        float y = position.y * Map.TileSizePx / Map.UnityUnitScale * OrthoDir.North.Px2DY();
         return new Vector3(
-            positionPx.x + dir.Px2DX() * Map.TileSizePx / Map.UnityUnitScale * OrthoDir.East.Px2DX(),
+            position.x * Map.TileSizePx / Map.UnityUnitScale * OrthoDir.East.Px2DX(),
             y,
             DepthForPositionPx(y));
     }

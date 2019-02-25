@@ -3,7 +3,7 @@
 [ExecuteInEditMode]
 public class MapEvent3D : MapEvent {
 
-    public Vector3 TileToWorldCoords(Vector2Int position) {
+    public override Vector3 TileToWorldCoords(Vector2Int position) {
         return new Vector3(position.x, parent.terrain.HeightAt(position), position.y);
     }
 
@@ -13,16 +13,13 @@ public class MapEvent3D : MapEvent {
             Mathf.RoundToInt(pos.z) * OrthoDir.North.Px3DZ());
     }
 
-    public override Vector3 CalculateOffsetPositionPx(OrthoDir dir) {
-        return TileToWorldCoords(position + dir.XY3D());
-    }
-
     public override Vector2Int OffsetForTiles(OrthoDir dir) {
         return dir.XY3D();
     }
 
     public override void SetScreenPositionToMatchTilePosition() {
         transform.localPosition = new Vector3(position.x, parent.terrain.HeightAt(position), position.y);
+        positionPx = transform.localPosition;
     }
 
     public override Vector3 InternalPositionToDisplayPosition(Vector3 position) {
