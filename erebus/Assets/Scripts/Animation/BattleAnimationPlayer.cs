@@ -4,8 +4,9 @@ using System.Collections;
 [RequireComponent(typeof(LuaContext))]
 public class BattleAnimationPlayer : AnimationPlayer {
 
-    public Doll attacker = null;
-    public Doll defender = null;
+    public CharaAnimationTarget attacker = null;
+    public CharaAnimationTarget defender = null;
+    public Item debugItem;
 
     public override void EditorReset() {
         base.EditorReset();
@@ -19,7 +20,7 @@ public class BattleAnimationPlayer : AnimationPlayer {
         GetComponent<LuaContext>().SetGlobal("battle", defender);
     }
 
-    public IEnumerator PlayAnimationRoutine(LuaAnimation anim, Doll attacker, Doll defender) {
+    public IEnumerator PlayAnimationRoutine(LuaAnimation anim, CharaAnimationTarget attacker, CharaAnimationTarget defender) {
         this.attacker = attacker;
         this.defender = defender;
         yield return PlayAnimationRoutine(anim);
@@ -27,18 +28,23 @@ public class BattleAnimationPlayer : AnimationPlayer {
 
     public override IEnumerator PlayAnimationRoutine() {
         if (attacker == null || defender == null) {
-            foreach (Doll doll in FindObjectsOfType<Doll>()) {
-                if (doll.type == Doll.Type.Attacker) {
+            foreach (CharaAnimationTarget doll in FindObjectsOfType<CharaAnimationTarget>()) {
+                if (doll.type == CharaAnimationTarget.Type.Attacker) {
                     attacker = doll;
-                } else if (doll.type == Doll.Type.Defender) {
+                } else if (doll.type == CharaAnimationTarget.Type.Defender) {
                     defender = doll;
                 }
             }
         }
 
+        if (debugItem != null) {
+            attacker.chara.itemSprite = debugItem.sprite;
+            defender.chara.itemSprite = debugItem.sprite;
+        }
+
         SetUpLua();
-        attacker.PrepareForBattleAnimation(this, Doll.Type.Attacker);
-        defender.PrepareForBattleAnimation(this, Doll.Type.Defender);
+        attacker.PrepareForBattleAnimation(this, CharaAnimationTarget.Type.Attacker);
+        defender.PrepareForBattleAnimation(this, CharaAnimationTarget.Type.Defender);
         yield return base.PlayAnimationRoutine();
         attacker.ResetAfterAnimation();
         defender.ResetAfterAnimation();

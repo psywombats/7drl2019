@@ -1,15 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 using MoonSharp.Interpreter;
 using System;
+using System.Collections.Generic;
 
 [MoonSharpUserData]
 public class AnimationTarget : MonoBehaviour {
 
     protected static readonly string AnimPath = "Sprites/Anim/";
     protected static readonly string ArgDuration = "duration";
-    protected static readonly string ArgSpritesheet = "sheet";
     protected static readonly string ArgFrame = "frame";
     protected static readonly string ArgFrames = "frames";
     protected static readonly string ArgCount = "count";
@@ -23,7 +22,7 @@ public class AnimationTarget : MonoBehaviour {
     protected static readonly string ArgAlpha = "a";
     protected static readonly float DefaultFrameDuration = 0.12f;
 
-    public SpriteRenderer appearance;
+    public List<SpriteRenderer> renderers;
 
     protected Vector3 originalPos;
 
@@ -49,6 +48,15 @@ public class AnimationTarget : MonoBehaviour {
         } else {
             DynValue value = args.Table.Get(argName);
             return (value == DynValue.Nil) ? defaultValue : (float)value.Number;
+        }
+    }
+
+    protected int IntArg(DynValue args, string argName, int defaultValue) {
+        if (args == DynValue.Nil || args == null || args.Table == null) {
+            return defaultValue;
+        } else {
+            DynValue value = args.Table.Get(argName);
+            return (value == DynValue.Nil) ? defaultValue : (int)value.Number;
         }
     }
 
@@ -131,11 +139,13 @@ public class AnimationTarget : MonoBehaviour {
     // tint({r, g, b, a?, duration?, speed?})
     public void tint(DynValue args) { CSRun(cs_tint(args), args); }
     private IEnumerator cs_tint(DynValue args) {
-        float a = FloatArg(args, ArgAlpha, appearance.color.a);
+        float a = FloatArg(args, ArgAlpha, renderers[0].color.a);
         yield return ColorRoutine(args, a, () => {
-            return appearance.color;
+            return renderers[0].color;
         }, (Color c) => {
-            appearance.color = c;
+            foreach (SpriteRenderer renderer in renderers) {
+                renderer.color = c;
+            }
         });
     }
 
@@ -150,7 +160,9 @@ public class AnimationTarget : MonoBehaviour {
             return color;
         }, (Color c) => {
             color = c;
-            appearance.material.SetColor("_Flash", c);
+            foreach (SpriteRenderer renderer in renderers) {
+                renderer.material.SetColor("_Flash", c);
+            }
         });
     }
 }

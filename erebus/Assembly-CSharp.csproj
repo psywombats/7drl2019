@@ -81,8 +81,10 @@
     <Compile Include="Assets\Scripts\Animation\AfterimageComponent.cs" />
     <Compile Include="Assets\Scripts\Animation\AnimationPlayer.cs" />
     <Compile Include="Assets\Scripts\Animation\AnimationTarget.cs" />
+    <Compile Include="Assets\Scripts\Animation\ArmMode.cs" />
     <Compile Include="Assets\Scripts\Animation\BattleAnimationPlayer.cs" />
-    <Compile Include="Assets\Scripts\Animation\Doll.cs" />
+    <Compile Include="Assets\Scripts\Animation\CharaAnimationTarget.cs" />
+    <Compile Include="Assets\Scripts\Animation\ItemMode.cs" />
     <Compile Include="Assets\Scripts\Animation\LuaAnimation.cs" />
     <Compile Include="Assets\Scripts\Animation\SimpleSpriteAnimator.cs" />
     <Compile Include="Assets\Scripts\Audio\AudioManager.cs" />
@@ -140,7 +142,6 @@
     <Compile Include="Assets\Scripts\Map\OrthoDir.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\BattleController.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\BattleEvent.cs" />
-    <Compile Include="Assets\Scripts\Map\Tactics\DollTargetEvent.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\DuelCam.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\DuelMap.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\SelectionGrid.cs" />
@@ -182,6 +183,7 @@
     <None Include="Assets\Resources\Shaders\GlitchGeometryShader.shader" />
     <None Include="Assets\2d-extras\Tilemap\Tiles\Rule Tile\ScriptTemplates\NewCustomRuleTile.cs.txt" />
     <None Include="Assets\2d-extras\Tilemap\Brushes\Tint Brush Smooth\Shaders\TintedTilemap.shader" />
+    <None Include="Assets\Resources\Shaders\RotationBlurShader.shader" />
     <None Include="Assets\Resources\Shaders\TransitionUIShader.shader" />
     <None Include="Assets\Resources\Shaders\DiffuseDepthSprite.shader" />
     <None Include="Assets\Resources\Shaders\TransitionShader.shader" />

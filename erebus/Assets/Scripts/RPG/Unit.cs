@@ -7,8 +7,11 @@ public class Unit : ScriptableObject {
     public Texture2D appearance;
     public bool unique = true;
     public Alignment align;
-    public StatSet stats;
+    
 
     // tempish
     public Item equippedItem;
+
+    // last for shitty reasons
+    public StatSet stats;
 }

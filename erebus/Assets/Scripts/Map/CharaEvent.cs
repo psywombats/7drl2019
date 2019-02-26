@@ -35,13 +35,15 @@ public class CharaEvent : MonoBehaviour {
     private List<KeyValuePair<float, Vector3>> afterimageHistory;
     private Vector3 targetPx;
     private float moveTime;
-    private Sprite overrideSprite;
-
     private bool stepping;
-    private bool jumping;
 
     public MapEvent parent { get { return GetComponent<MapEvent>(); } }
     public Map map { get { return parent.parent; } }
+    public Sprite overrideBodySprite { get; set; }
+    public Sprite itemSprite { get; set; }
+    public ArmMode armMode { get; set; }
+    public ItemMode itemMode { get; set; }
+    public bool jumping { get; set; }
 
     [SerializeField]
     [HideInInspector]
@@ -117,11 +119,26 @@ public class CharaEvent : MonoBehaviour {
             mainLayer.sprite = SpriteForMain();
             armsLayer.sprite = SpriteForArms();
             itemLayer.sprite = SpriteForItem();
+
+            if (itemLayer.sprite != null) {
+                itemLayer.transform.localPosition = new Vector3(
+                    armMode.ItemAnchor().x, 
+                    armMode.ItemAnchor().y, 
+                    itemLayer.transform.localPosition.z);
+                itemLayer.transform.localEulerAngles = new Vector3(0.0f, 0.0f, itemMode.Rotation());
+            }
         }
     }
 
     public void FaceToward(MapEvent other) {
         facing = parent.DirectionTo(other);
+    }
+
+    public Sprite FrameBySlot(int x) {
+        return sprites[NameForFrame(spritesheet.name, x, facing.Ordinal())];
+    }
+    public Sprite FrameBySlot(int x, int y) {
+        return sprites[NameForFrame(spritesheet.name, x, y)];
     }
 
     private void CopyShaderValues() {
@@ -144,9 +161,9 @@ public class CharaEvent : MonoBehaviour {
             // jump up routine routine
             float duration = (targetPx - startPx).magnitude / parent.CalcTilesPerSecond() / 2.0f * JumpHeightUpMult;
             yield return JumpRoutine(startPx, targetPx, duration);
-            overrideSprite = FrameBySlot(0, facing.Ordinal()); // "prone" frame
+            overrideBodySprite = FrameBySlot(0, facing.Ordinal()); // "prone" frame
             yield return CoUtils.Wait(1.0f / parent.CalcTilesPerSecond() / 2.0f);
-            overrideSprite = null;
+            overrideBodySprite = null;
         } else {
             // jump down routine
             float elapsed = 0.0f;
@@ -169,9 +186,9 @@ public class CharaEvent : MonoBehaviour {
             bool isBigDrop = dy <= -1.0f;
             yield return JumpRoutine(parent.transform.position, targetPx, jumpDuration, isBigDrop);
             if (isBigDrop) {
-                overrideSprite = FrameBySlot(2, facing.Ordinal()); // "prone" frame
+                overrideBodySprite = FrameBySlot(2, facing.Ordinal()); // "prone" frame
                 yield return CoUtils.Wait(JumpHeightDownMult / parent.CalcTilesPerSecond() / 2.0f);
-                overrideSprite = null;
+                overrideBodySprite = null;
             }
         }
     }
@@ -247,13 +264,9 @@ public class CharaEvent : MonoBehaviour {
         return OrthoDirExtensions.DirectionOf2D(new Vector2(delta.x, -delta.y));
     }
 
-    private Sprite FrameBySlot(int x, int y) {
-        return sprites[NameForFrame(spritesheet.name, x, y)];
-    }
-
     private Sprite SpriteForMain() {
-        if (overrideSprite != null) {
-            return overrideSprite;
+        if (overrideBodySprite != null) {
+            return overrideBodySprite;
         }
 
         int x;
@@ -269,16 +282,21 @@ public class CharaEvent : MonoBehaviour {
     }
 
     private Sprite SpriteForArms() {
-        if (jumping) {
-            int x = 6; // TODO? multiple arm positions
-            int y = facing.Ordinal();
-            return FrameBySlot(x, y);
+        if (armMode == ArmMode.Disabled && jumping) {
+            return FrameBySlot(ArmMode.Raised.FrameIndex());
+        }
+        if (armMode.Show()) {
+            return FrameBySlot(armMode.FrameIndex());
         } else {
             return null;
         }
     }
 
     private Sprite SpriteForItem() {
-        return null;
+        if (itemMode.Show()) {
+            return itemSprite;
+        } else {
+            return null;
+        }
     }
 }

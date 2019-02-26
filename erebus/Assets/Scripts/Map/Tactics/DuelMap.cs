@@ -6,29 +6,29 @@ using System.Collections.Generic;
 [RequireComponent(typeof(BattleAnimationPlayer))]
 public class DuelMap : MonoBehaviour {
 
-    private Dictionary<Doll.Type, Doll> targets;
+    private Dictionary<CharaAnimationTarget.Type, CharaAnimationTarget> targets;
 
     public void Start() {
 
         // TODO: presumably we load this from somewhere
         Global.Instance().Maps.activeDuelMap = this;
 
-        targets = new Dictionary<Doll.Type, Doll>();
-        foreach (DollTargetEvent target in GetComponent<Map>().GetEvents<DollTargetEvent>()) {
-            targets[target.doll.type] = target.doll;
+        targets = new Dictionary<CharaAnimationTarget.Type, CharaAnimationTarget>();
+        foreach (CharaAnimationTarget doll in GetComponent<Map>().GetEvents<CharaAnimationTarget>()) {
+            targets[doll.type] = doll;
         }
     }
 
-    public Doll GetTarget(Doll.Type type) {
+    public CharaAnimationTarget GetTarget(CharaAnimationTarget.Type type) {
         return targets[type];
     }
 
-    public Doll Attacker() {
-        return targets[Doll.Type.Attacker];
+    public CharaAnimationTarget Attacker() {
+        return targets[CharaAnimationTarget.Type.Attacker];
     }
 
-    public Doll Defender() {
-        return targets[Doll.Type.Defender];
+    public CharaAnimationTarget Defender() {
+        return targets[CharaAnimationTarget.Type.Defender];
     }
     
     public void ConfigureForDuel(BattleEvent attacker, BattleEvent defender) {

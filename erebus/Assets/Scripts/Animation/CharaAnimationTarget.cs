@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 using MoonSharp.Interpreter;
 
 [MoonSharpUserData]
 [DisallowMultipleComponent]
-[RequireComponent(typeof(AfterimageComponent))]
-public class Doll : AnimationTarget {
+public class CharaAnimationTarget : AnimationTarget {
+
+    private static string ArgLayer = "layer";
+    private static string ArgMode = "mode";
 
     private static float DefaultJumpHeight = 1.2f;
     private static float DefaultJumpReturnHeight = 0.4f;
@@ -25,6 +26,7 @@ public class Doll : AnimationTarget {
     [MoonSharpHidden]
     public void ConfigureToBattler(BattleEvent battler) {
         chara.spritesheet = battler.GetComponent<CharaEvent>().spritesheet;
+        chara.itemSprite = battler.unit.unit.equippedItem.sprite;
     }
 
     [MoonSharpHidden]
@@ -37,7 +39,13 @@ public class Doll : AnimationTarget {
     [MoonSharpHidden]
     public override void ResetAfterAnimation() {
         transform.position = originalDollPos;
-        GetComponent<AfterimageComponent>().enabled = false;
+        foreach (SpriteRenderer renderer in renderers) {
+            renderer.GetComponent<AfterimageComponent>().enabled = false;
+        }
+        chara.overrideBodySprite = null;
+        chara.itemSprite = null;
+        chara.armMode = ArmMode.Disabled;
+        chara.itemMode = ItemMode.Disabled;
     }
 
     // === COMMAND HELPERS =========================================================================
@@ -69,9 +77,11 @@ public class Doll : AnimationTarget {
     // jumpToDefender({});
     public void jumpToDefender(DynValue args) { CSRun(cs_jumpToDefender(args), args); }
     private IEnumerator cs_jumpToDefender(DynValue args) {
+        chara.jumping = true;
         Vector3 endPos = CalculateJumpOffset(transform.position, player.defender.transform.position);
         float duration = (float)args.Table.Get(ArgDuration).Number;
         yield return JumpRoutine(endPos, duration, DefaultJumpHeight);
+        chara.jumping = false;
     }
 
     // jumpReturn({duration?});
@@ -88,38 +98,26 @@ public class Doll : AnimationTarget {
                 DefaultJumpReturnHeight * (1.0f - fraction));
     }
 
-    //// setFrame({sheet, frame});
-    //public void setFrame(DynValue args) {
-    //    string spriteName = args.Table.Get(ArgSpritesheet).String;
-    //    int spriteFrame = (int)args.Table.Get(ArgFrame).Number;
-    //    Sprite[] sprites = Resources.LoadAll<Sprite>(AnimPath + spriteName);
-    //    Sprite sprite = sprites[spriteFrame];
-    //    animator.SetOverrideSprite(sprite);
-    //}
-
-    //// setAnim({sheet, frame[]}, duration?);
-    //public void setAnim(DynValue args) {
-    //    string spriteName = args.Table.Get(ArgSpritesheet).String;
-    //    float frameDuration = FloatArg(args, ArgDuration, DefaultFrameDuration);
-    //    Sprite[] sprites = Resources.LoadAll<Sprite>(AnimPath + spriteName);
-    //    List<Sprite> frames = new List<Sprite>();
-    //    foreach (DynValue value in args.Table.Get(ArgFrames).Table.Values) {
-    //        frames.Add(sprites[(int)value.Number]);
-    //    }
-    //    animator.SetOverrideAnim(frames, frameDuration);
-    //}
+    // setFrame({frame, layer=0});
+    public void setBody(DynValue args) {
+        int spriteFrame = (int)args.Table.Get(ArgFrame).Number;
+        int index = (int)args.Table.Get(ArgLayer).Number;
+        chara.overrideBodySprite = chara.FrameBySlot(spriteFrame);
+    }
 
     // afterimage({enable?, count?, duration?});
     public void afterimage(DynValue args) {
-        AfterimageComponent imager = GetComponent<AfterimageComponent>();
-        if (EnabledArg(args)) {
-            float imageDuration = FloatArg(args, ArgDuration, 0.05f);
-            int count = (int)FloatArg(args, ArgCount, 3);
-            imager.enabled = true;
-            imager.afterimageCount = count;
-            imager.afterimageDuration = imageDuration;
-        } else {
-            imager.enabled = false;
+        foreach (SpriteRenderer renderer in renderers) {
+            AfterimageComponent imager = renderer.GetComponent<AfterimageComponent>();
+            if (EnabledArg(args)) {
+                float imageDuration = FloatArg(args, ArgDuration, 0.05f);
+                int count = (int)FloatArg(args, ArgCount, 3);
+                imager.enabled = true;
+                imager.afterimageCount = count;
+                imager.afterimageDuration = imageDuration;
+            } else {
+                imager.enabled = false;
+            }
         }
     }
 
@@ -133,11 +131,21 @@ public class Doll : AnimationTarget {
         while (elapsed < duration) {
             elapsed += Time.deltaTime;
             transform.localPosition = new Vector3(
-                    startPos.x + UnityEngine.Random.Range(-power, power),
+                    startPos.x + Random.Range(-power, power),
                     startPos.y,
                     startPos.z);
             yield return null;
         }
         transform.localPosition = startPos;
+    }
+
+    // setItem({mode})
+    public void setItem(DynValue args) {
+        chara.itemMode = ItemModeExtensions.Parse(args.Table.Get(ArgMode).String);
+    }
+
+    // setArms({mode})
+    public void setArms(DynValue args) {
+        chara.armMode = ArmModeExtensions.Parse(args.Table.Get(ArgMode).String);
     }
 }
