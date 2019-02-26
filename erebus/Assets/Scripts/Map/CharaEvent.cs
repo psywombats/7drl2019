@@ -65,9 +65,9 @@ public class CharaEvent : MonoBehaviour {
         set {
             _facing = value;
             if (facing == OrthoDir.North) {
-                armsLayer.transform.localPosition = new Vector3(0.0f, 0.0f, 0.01f);
+                armsLayer.sortingOrder = -1;
             } else {
-                armsLayer.transform.localPosition = new Vector3(0.0f, 0.0f, -0.01f);
+                armsLayer.sortingOrder = 1;
             }
             UpdateAppearance();
         }
@@ -122,8 +122,8 @@ public class CharaEvent : MonoBehaviour {
 
             if (itemLayer.sprite != null) {
                 itemLayer.transform.localPosition = new Vector3(
-                    armMode.ItemAnchor().x, 
-                    armMode.ItemAnchor().y, 
+                    (float)armMode.ItemAnchor().x / Map.TileSizePx,
+                    (float)armMode.ItemAnchor().y / Map.TileSizePx, 
                     itemLayer.transform.localPosition.z);
                 itemLayer.transform.localEulerAngles = new Vector3(0.0f, 0.0f, itemMode.Rotation());
             }

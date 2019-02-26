@@ -3,10 +3,10 @@ using UnityEngine;
 
 public enum ArmMode {
     [ArmMode("disabled",    false,      0,  0,      5)] Disabled,
-    [ArmMode("neutral",     true,       16, 9,      5)] Neutral,
-    [ArmMode("overhead",    true,       17, 15,     6)] Overhead,
-    [ArmMode("lowered",     true,       21, 10,     7)] Lowered,
-    [ArmMode("raised",      true,       22, 12,     8)] Raised,
+    [ArmMode("neutral",     true,       0,  9,      5)] Neutral,
+    [ArmMode("overhead",    true,       1,  15,     6)] Overhead,
+    [ArmMode("lowered",     true,       5,  8,      7)] Lowered,
+    [ArmMode("raised",      true,       6,  10,     8)] Raised,
 }
 
 public class ArmModeAttribute : Attribute {

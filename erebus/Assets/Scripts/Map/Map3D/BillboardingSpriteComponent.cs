@@ -3,7 +3,6 @@
 /**
  * Renders the attached sprite as fixed-x at the camera.
  */
-[RequireComponent(typeof(SpriteRenderer))]
 [ExecuteInEditMode]
 [DisallowMultipleComponent]
 public class BillboardingSpriteComponent : MonoBehaviour {
@@ -12,20 +11,19 @@ public class BillboardingSpriteComponent : MonoBehaviour {
     public bool billboardY;
 
     public void Update() {
-        SpriteRenderer sprite = GetComponent<SpriteRenderer>();
         if (GetCamera() == null) {
             return;
         }
         if (billboardX || GetCamera().billboardX) {
-            Vector3 angles = sprite.transform.eulerAngles;
-            sprite.transform.eulerAngles = new Vector3(
+            Vector3 angles = transform.eulerAngles;
+            transform.eulerAngles = new Vector3(
                     GetCamera().GetCameraComponent().transform.eulerAngles.x,
                     angles.y,
                     angles.z);
         }
         if (billboardY || GetCamera().billboardY) {
-            Vector3 angles = sprite.transform.eulerAngles;
-            sprite.transform.eulerAngles = new Vector3(
+            Vector3 angles = transform.eulerAngles;
+            transform.eulerAngles = new Vector3(
                     angles.x,
                     GetCamera().GetCameraComponent().transform.eulerAngles.y,
                     angles.z);

@@ -4,8 +4,8 @@ using UnityEngine;
 public enum ItemMode {
     [ItemMode("disabled",   false,  0.0f    )] Disabled,
     [ItemMode("overhead",   true,   0.0f    )] Overhead,
-    [ItemMode("swinging",   true,   90.0f   )] Swinging,
-    [ItemMode("swung",      true,   90.0f   )] Swung,
+    [ItemMode("swinging",   true,   270.0f  )] Swinging,
+    [ItemMode("swung",      true,   270.0f  )] Swung,
 }
 
 public class ItemModeAttribute : Attribute {

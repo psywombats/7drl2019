@@ -50,7 +50,8 @@ public class AfterimageComponent : MonoBehaviour {
                 SpriteRenderer childRenderer = renderChild.AddComponent<SpriteRenderer>();
                 childRenderer.material = renderer.material;
                 FadeoutBehavior fade = renderChild.AddComponent<FadeoutBehavior>();
-                fade.alpha = .5f * (1.0f - ((float)i / (float)afterimageCount));
+                fade.alpha = .75f * (1.0f - ((float)i / (float)afterimageCount));
+                fade.Update();
             } else {
                 renderChild = renderChildren[i];
             }
