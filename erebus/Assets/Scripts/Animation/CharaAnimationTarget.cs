@@ -49,13 +49,13 @@ public class CharaAnimationTarget : AnimationTarget {
     }
 
     // === COMMAND HELPERS =========================================================================
-    
-    
+
+
     private Vector3 CalculateJumpOffset(Vector3 startPos, Vector3 endPos) {
         Vector3 dir = (endPos - startPos).normalized;
         return endPos - 1.15f * dir;
     }
-    
+
     private IEnumerator JumpRoutine(Vector3 endPos, float duration, float height) {
         Vector3 startPos = transform.position;
         float elapsed = 0.0f;
@@ -64,8 +64,8 @@ public class CharaAnimationTarget : AnimationTarget {
             Vector3 lerped = Vector3.Lerp(startPos, endPos, elapsed / duration);
             transform.position = new Vector3(
                     lerped.x,
-                    lerped.y + ((elapsed >= duration) 
-                            ? 0 
+                    lerped.y + ((elapsed >= duration)
+                            ? 0
                             : Mathf.Sin(elapsed / duration * Mathf.PI) * height),
                     lerped.z);
             yield return null;
@@ -90,11 +90,11 @@ public class CharaAnimationTarget : AnimationTarget {
         float overallDuration = (float)args.Table.Get(ArgDuration).Number;
         float fraction = (2.0f / 3.0f);
         Vector3 midPos = Vector3.Lerp(transform.position, originalDollPos, fraction);
-        yield return JumpRoutine(midPos, 
-                    overallDuration * fraction, 
+        yield return JumpRoutine(midPos,
+                    overallDuration * fraction,
                     DefaultJumpReturnHeight * fraction);
-        yield return JumpRoutine(originalDollPos, 
-                overallDuration * (1.0f - fraction) * 1.5f, 
+        yield return JumpRoutine(originalDollPos,
+                overallDuration * (1.0f - fraction) * 1.5f,
                 DefaultJumpReturnHeight * (1.0f - fraction));
     }
 
@@ -147,5 +147,12 @@ public class CharaAnimationTarget : AnimationTarget {
     // setArms({mode})
     public void setArms(DynValue args) {
         chara.armMode = ArmModeExtensions.Parse(args.Table.Get(ArgMode).String);
+    }
+
+    // animateSwing({duration=0.2f})
+    public void animateSwing(DynValue args) { CSRun(cs_animateSwing(args), args); }
+    private IEnumerator cs_animateSwing(DynValue args) {
+        float duration = FloatArg(args, ArgDuration, 0.2f);
+        yield return chara.itemLayer.GetComponent<SmearBehavior>().AnimateSlash(duration);
     }
 }

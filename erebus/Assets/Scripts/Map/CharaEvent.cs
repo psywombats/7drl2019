@@ -234,7 +234,9 @@ public class CharaEvent : MonoBehaviour {
     private void LoadSpritesheetData() {
         string path = GetComponent<MapEvent3D>() == null ? DefaultMaterial2DPath : DefaultMaterial3DPath;
         foreach (SpriteRenderer renderer in renderers) {
-            renderer.material = Resources.Load<Material>(path);
+            if (renderer.material == null) {
+                renderer.material = Resources.Load<Material>(path);
+            }
         }
 
         sprites = new Dictionary<string, Sprite>();

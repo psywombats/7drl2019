@@ -1,8 +1,13 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
+using DG.Tweening;
 
 [RequireComponent(typeof(SpriteRenderer))]
 [ExecuteInEditMode]
 public class SmearBehavior : MonoBehaviour {
+
+    public float arcSize = 1.0f;
+    public float arcExponent = 0.0f;
 
     private Material material;
     private Sprite sprite;
@@ -12,9 +17,9 @@ public class SmearBehavior : MonoBehaviour {
     private float[] smearHighs;
     private int tipRow;
 
-    public void Awake() {
+    public void Start() {
         SpriteRenderer renderer = GetComponent<SpriteRenderer>();
-        material = renderer.sharedMaterial;
+        material = Application.isPlaying ? renderer.material : renderer.sharedMaterial;
         RedrawSmearMap();
     }
 
@@ -23,6 +28,22 @@ public class SmearBehavior : MonoBehaviour {
             RedrawSmearMap();
         }
         AssignCommonShaderVariables();
+    }
+
+    public IEnumerator AnimateSlash(float duration) {
+        arcSize = 1.0f;
+        arcExponent = 3.0f;
+        yield return CoUtils.Wait(duration);
+        //Tweener t = DOTween.To(() => { return arcExponent; }, (float x) => { arcExponent = x; }, 5.0f, duration);
+        //t.SetEase(Ease.Linear);
+        //StartCoroutine(CoUtils.RunTween(t));
+
+        //Tweener t2 = DOTween.To(() => { return arcSize; }, (float x) => { arcSize = x; }, 0.0f, duration * 0.5f);
+        //t2.SetEase(Ease.Linear);
+        //yield return CoUtils.Wait(duration * 0.5f);
+        //yield return CoUtils.RunTween(t2);
+        arcSize = 0.0f;
+        arcExponent = 0.0f;
     }
 
     private void RedrawSmearMap() {
@@ -68,12 +89,14 @@ public class SmearBehavior : MonoBehaviour {
     }
 
     private void AssignCommonShaderVariables() {
-        if (smearLows != null && smearLows.Length > 0) {
+        if (smearLows != null && smearLows.Length > 0 && sprite != null) {
             material.SetInt("_PivotX", (int)sprite.pivot.x);
             material.SetInt("_PivotY", (int)sprite.pivot.y);
             material.SetFloatArray("_SmearLows", smearLows);
             material.SetFloatArray("_SmearHighs", smearHighs);
             material.SetInt("_TipRow", tipRow);
+            material.SetFloat("_SwingArcSize", arcSize);
+            material.SetFloat("_SwingArcExponent", arcExponent);
         }
     }
 

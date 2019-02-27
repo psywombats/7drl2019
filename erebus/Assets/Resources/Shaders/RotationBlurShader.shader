@@ -3,8 +3,7 @@ Shader "Sprites/Smear" {
     Properties {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
         [PerRendererData] _Color ("Tint", Color) = (1,1,1,1)
-        _SwingArcSize ("Swing Arc Size", Range(0, 1)) = 1
-        _SwingArcExponent ("Swing Arc Exponent", Range(0, 10)) = 1
+        // _SwingArcExponent ("Swing Arc Exponent", Range(0, 10)) = 1
     }
     
     SubShader {
