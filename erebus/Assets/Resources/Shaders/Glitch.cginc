@@ -1,6 +1,4 @@
 #ifndef __GLITCH_CGINC_INCLUDED__
-// Upgrade NOTE: excluded shader from DX11, OpenGL ES 2.0 because it uses unsized arrays
-#pragma exclude_renderers d3d11 gles
 #define __GLITCH_CGINC_INCLUDED__
 
 #include "UnityShaderVariables.cginc"

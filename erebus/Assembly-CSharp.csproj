@@ -103,6 +103,7 @@
     <Compile Include="Assets\Scripts\ImageEffects\FadeoutBehavior.cs" />
     <Compile Include="Assets\Scripts\ImageEffects\GlitchBehavior.cs" />
     <Compile Include="Assets\Scripts\ImageEffects\GlitchImageEffect.cs" />
+    <Compile Include="Assets\Scripts\ImageEffects\SmearBehavior.cs" />
     <Compile Include="Assets\Scripts\ImageEffects\TimeScaleSlider.cs" />
     <Compile Include="Assets\Scripts\IO\AnonymousListener.cs" />
     <Compile Include="Assets\Scripts\IO\InputListener.cs" />
