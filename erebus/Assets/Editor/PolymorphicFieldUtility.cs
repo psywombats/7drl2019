@@ -1,34 +1,39 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEditor;
 using System.Reflection;
 using System.Linq;
 
-public abstract class PolymorphicFieldEditor : Editor {
+public class PolymorphicFieldUtility {
 
+    private Type baseType;
+    private string pathForTarget;
     private Dictionary<string, Type> cachedSubclasses;
 
-    protected T DrawSelector<T>(T obj) where T : ScriptableObject {
+    public PolymorphicFieldUtility(Type baseType, string pathForTarget) {
+        this.baseType = baseType;
+        this.pathForTarget = pathForTarget;
+    }
+
+    public T DrawSelector<T>(T obj) where T : ScriptableObject {
         string[] names = GetSubclasses().Keys.ToArray();
 
         int index = 0;
         if (obj != null) {
             index = GetSubclasses().Values.ToList().IndexOf(obj.GetType());
         }
-        int selectedIndex = EditorGUILayout.Popup(GetBaseType().Name + " Type", index, names);
+        int selectedIndex = EditorGUILayout.Popup(baseType.Name + " Type", index, names);
 
         if (selectedIndex != index) {
             if (obj != null) {
-                AssetDatabase.DeleteAsset(PathForTarget());
+                AssetDatabase.DeleteAsset(pathForTarget);
                 return null;
             }
             if (selectedIndex != 0) {
                 Type type = GetSubclasses().Values.ToArray()[selectedIndex];
-                T instance = (T) CreateInstance(type);
-                string name = target.name + "_warhead";
-                AssetDatabase.CreateAsset(instance, PathForTarget());
+                T instance = (T)ScriptableObject.CreateInstance(type);
+                AssetDatabase.CreateAsset(instance, pathForTarget);
                 return instance;
             }
         }
@@ -42,7 +47,7 @@ public abstract class PolymorphicFieldEditor : Editor {
             };
             foreach (Assembly ass in AppDomain.CurrentDomain.GetAssemblies()) {
                 foreach (Type type in ass.GetTypes()) {
-                    if (GetBaseType().IsAssignableFrom(type) && !type.IsAbstract) {
+                    if (baseType.IsAssignableFrom(type) && !type.IsAbstract) {
                         cachedSubclasses.Add(type.Name, type);
                     }
                 }
@@ -50,8 +55,4 @@ public abstract class PolymorphicFieldEditor : Editor {
         }
         return cachedSubclasses;
     }
-
-    protected abstract Type GetBaseType();
-
-    protected abstract string PathForTarget();
 }

@@ -55,7 +55,7 @@ Shader "Sprites/Smear" {
             float2 xy = IN.uv_MainTex;
             float4 pxXY = float4(int(xy[0] * 32.0), int(xy[1] * 32.0), 0.0, 0.0);
             fixed4 c;
-            if (pxXY.y > _PivotY && pxXY.x < _SmearHighs[pxXY.y] - 1 && _SmearLows[pxXY.y] > _PivotX) {
+            if (pxXY.y > _PivotY && pxXY.x < _SmearHighs[pxXY.y] - 1) {
                 float dx = pxXY.x - _PivotX;
                 float dy = pxXY.y - _PivotY;
                 float distPivot = sqrt(dx*dx + dy*dy);

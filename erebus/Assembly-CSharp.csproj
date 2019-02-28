@@ -141,6 +141,7 @@
     <Compile Include="Assets\Scripts\Map\MapManager.cs" />
     <Compile Include="Assets\Scripts\Map\ObjectLayer.cs" />
     <Compile Include="Assets\Scripts\Map\OrthoDir.cs" />
+    <Compile Include="Assets\Scripts\Map\Skill.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\BattleController.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\BattleEvent.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\DuelCam.cs" />
@@ -153,6 +154,8 @@
     <Compile Include="Assets\Scripts\RPG\BattleFaction.cs" />
     <Compile Include="Assets\Scripts\RPG\BattleUnit.cs" />
     <Compile Include="Assets\Scripts\RPG\Data\RPGMemory.cs" />
+    <Compile Include="Assets\Scripts\RPG\Effector.cs" />
+    <Compile Include="Assets\Scripts\RPG\Effectors\WalkEffect.cs" />
     <Compile Include="Assets\Scripts\RPG\Item.cs" />
     <Compile Include="Assets\Scripts\RPG\PartyManager.cs" />
     <Compile Include="Assets\Scripts\RPG\Stat\CombinationAdditive.cs" />
@@ -160,6 +163,9 @@
     <Compile Include="Assets\Scripts\RPG\Stat\Stat.cs" />
     <Compile Include="Assets\Scripts\RPG\Stat\StatSet.cs" />
     <Compile Include="Assets\Scripts\RPG\Stat\StatTag.cs" />
+    <Compile Include="Assets\Scripts\RPG\Targeter.cs" />
+    <Compile Include="Assets\Scripts\RPG\Targeters\CellTargeter.cs" />
+    <Compile Include="Assets\Scripts\RPG\Targeters\WalkRouteTargeter.cs" />
     <Compile Include="Assets\Scripts\RPG\Unit.cs" />
     <Compile Include="Assets\Scripts\Serialization\Memory.cs" />
     <Compile Include="Assets\Scripts\Serialization\MemoryManager.cs" />

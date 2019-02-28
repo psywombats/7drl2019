@@ -84,7 +84,7 @@
     <Compile Include="Assets\Editor\Editors\InstanceMultiControllerEditor.cs" />
     <Compile Include="Assets\Editor\Editors\MapCameraEditor.cs" />
     <Compile Include="Assets\Editor\Editors\MapEventEditor.cs" />
-    <Compile Include="Assets\Editor\Editors\PolymorphicFieldEditor.cs" />
+    <Compile Include="Assets\Editor\Editors\SkillEditor.cs" />
     <Compile Include="Assets\Editor\Editors\StatSetDrawer.cs" />
     <Compile Include="Assets\Editor\Editors\TacticsCameraEditor.cs" />
     <Compile Include="Assets\Editor\Editors\TacticsTerrainEditor.cs" />
@@ -96,6 +96,7 @@
     <Compile Include="Assets\Editor\Importers\SpriteImporter.cs" />
     <Compile Include="Assets\Editor\Importers\TileImporter.cs" />
     <Compile Include="Assets\Editor\MathHelper3D.cs" />
+    <Compile Include="Assets\Editor\PolymorphicFieldUtility.cs" />
     <Compile Include="Assets\Editor\TerrainQuad.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>C:/Users/aking_2/erebus/erebus/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>

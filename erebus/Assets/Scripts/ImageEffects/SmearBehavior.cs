@@ -85,6 +85,9 @@ public class SmearBehavior : MonoBehaviour {
             if (IsBlackish(pixels[(int)smearHighs[y]]) && smearHighs[y] - smearLows[y] > 1.0f) {
                 smearHighs[y] -= 1;
             }
+            if (smearHighs[y] - smearLows[y] > 4) {
+                smearHighs[y] = smearLows[y] + 4;
+            }
         }
     }
 
