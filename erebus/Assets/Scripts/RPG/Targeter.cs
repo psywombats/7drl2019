@@ -5,23 +5,22 @@ using UnityEngine;
  * Abstract to cover single-empty-square-at-range vs one-direction. Serialized props on each
  * instance are stuff like range, radius... mostly simple.
  **/
-public abstract class Targeter {
+public abstract class Targeter : ActorScriptableObject {
 
     /**
-     * The targeter is responsible for doing whatever it needs to do to be ready to be consumed by a
-     * warhead. The result is true if the targeting succeeded, false if the player canceled it. If
-     * the result isn't canceled, there targeter instance can be passed to a warhead and consumed.
+     * Acquire the targets, pass them to the effector via the appropriate method.
      */
-    public abstract IEnumerator AcquireTargets(Result<bool> result);
-
-    /**
-     * All properties common to parameters for targeters. Subclasses should subclass this usually.
-     */
-    public abstract class TargeterParams : ScriptableObject {
-
-        /**
-         * Return an targetor of the appropriate subclass.
-         */
-        public abstract Targeter Instantiate();
+    public IEnumerator ExecuteRoutine(Effector effect, Result<Effector> effectResult) {
+        Result<bool> executedResult = new Result<bool>();
+        yield return InternalExecuteRoutine(effect, executedResult);
+        if (executedResult.canceled) {
+            effectResult.Cancel();
+        } else if (executedResult.value) {
+            effectResult.value = effect;
+        } else {
+            yield return ExecuteRoutine(effect, effectResult);
+        }
     }
+
+    protected abstract IEnumerator InternalExecuteRoutine(Effector effect, Result<bool> result);
 }

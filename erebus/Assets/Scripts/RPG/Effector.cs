@@ -7,37 +7,23 @@ using UnityEngine;
  * under the sun. The range of the teleport, element of the damage, etc, are the serialized props.
  * Individual instaces of the effector are generated once per useage of the underlying skill.
  */
-public abstract class Effector {
+public abstract class Effector : ActorScriptableObject {
 
     /**
-     * Once the targeter has done its thing and locked in the target locations or units or w/e,
-     * the warhead executes and performs the actual skill on whatever the target picked up.
+     * Stuff like walking should be able to reverse and refund energy points. The result will be
+     * false if the action is actually not undoable, true if it succeeded.
      */
-    public abstract IEnumerator Execute(Targeter targeterInstance);
-
-    /**
-     * Can this effect be undone? Stuff like walking should be able to reverse and refund energy
-     * points. If returns true, need to implement undo.
-     */
-    public virtual bool CanUndo() {
-        return false;
+    public virtual IEnumerator Undo(Result<bool> undoableResult) {
+        undoableResult.value = false;
+        yield return null;
     }
 
-    /**
-     * Reset the battle back to the state it was before this effect took place.
-     */
-    public virtual void Undo() {
-        Debug.LogError(GetType() + " doesn't support undo");
-    }
+    // === TARGETER HOOKUPS ========================================================================
+    // subclasses override as they support
 
-    /**
-     * All properties common to parameters for effectors. Subclasses should subclass this usually.
-     */
-    public abstract class EffectorParams : ScriptableObject {
-
-        /**
-         * Return an effector of the appropriate subclass.
-         */
-        public abstract Effector Instantiate();
+    public virtual IEnumerator ExecuteSingleCellRoutine(Result<bool> result, Vector2Int location) {
+        Debug.LogError(GetType() + " does not support single cell targeters");
+        result.Cancel();
+        yield return null;
     }
 }

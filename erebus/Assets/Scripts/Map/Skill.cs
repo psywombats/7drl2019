@@ -7,6 +7,14 @@ public class Skill : ScriptableObject {
     public string skillName;
     public int apCost;
 
-    public Targeter.TargeterParams targeter;
-    public Effector.EffectorParams effect;
+    public Targeter targeter;
+    public Effector effect;
+
+    public IEnumerator PlaySkillRoutine(BattleUnit actor, Result<Effector> effectResult) {
+        Targeter targeter = Instantiate(this.targeter);
+        Effector effect = Instantiate(this.effect);
+        effect.actor = actor;
+        targeter.actor = actor;
+        yield return targeter.ExecuteRoutine(effect, effectResult);
+    }
 }

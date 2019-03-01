@@ -25,9 +25,5 @@ public class AIController : ScriptableObject {
         yield return new WaitForSeconds(0.8f);
 
         // TODO: the ai
-
-        actor.MarkActionTaken();
-        yield return actor.doll.PostActionRoutine();
-        yield return new WaitForSeconds(0.8f);
     }
 }

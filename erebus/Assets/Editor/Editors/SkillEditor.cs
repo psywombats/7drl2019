@@ -7,9 +7,9 @@ public class SkillEditor : Editor {
     private PolymorphicFieldUtility effectorUtil;
 
     public void OnEnable() {
-        targeterUtil = new PolymorphicFieldUtility(typeof(Targeter.TargeterParams),
+        targeterUtil = new PolymorphicFieldUtility(typeof(Targeter),
             "Assets/Resources/Database/Targeters/" + ((Skill)target).name + "_targeter.asset");
-        effectorUtil = new PolymorphicFieldUtility(typeof(Effector.EffectorParams),
+        effectorUtil = new PolymorphicFieldUtility(typeof(Effector),
             "Assets/Resources/Database/Effectors/" + ((Skill)target).name + "_effector.asset");
     }
 

@@ -71,7 +71,7 @@ public class BattleController : MonoBehaviour {
     public IEnumerator TurnEndAnimationRoutine(Alignment align) {
         List<IEnumerator> routinesToRun = new List<IEnumerator>();
         foreach (BattleUnit unit in battle.UnitsByAlignment(align)) {
-            routinesToRun.Add(unit.doll.PostTurnRoutine());
+            routinesToRun.Add(unit.battler.PostTurnRoutine());
         }
         yield return CoUtils.RunParallel(routinesToRun.ToArray(), this);
     }
@@ -96,40 +96,6 @@ public class BattleController : MonoBehaviour {
         cursor.gameObject.SetActive(false);
     }
 
-    // selects a move location for the selected unit, might be canceled
-    public IEnumerator SelectMoveLocationRoutine(Result<Vector2Int> result, BattleUnit unit, bool canCancel=true) {
-        cursor.gameObject.SetActive(true);
-        cursor.GetComponent<MapEvent>().SetLocation(unit.location);
-
-        SelectionGrid grid = SpawnSelectionGrid();
-        int range = (int)unit.Get(StatTag.MOVE);
-        Func<Vector2Int, bool> rule = (Vector2Int loc) => {
-            if (loc == unit.location) {
-                return false;
-            }
-            return map.FindPath(unit.doll.GetComponent<MapEvent>(), loc, range+1) != null;
-        };
-        Vector2Int origin = new Vector2Int(
-            (int)unit.doll.GetComponent<MapEvent>().positionPx.x - range,
-            (int)unit.doll.GetComponent<MapEvent>().positionPx.z - range);
-        grid.ConfigureNewGrid(unit.location, range, map.terrain, rule);
-
-        while (!result.finished) {
-            Result<Vector2Int> locResult = new Result<Vector2Int>();
-            yield return cursor.AwaitSelectionRoutine(locResult);
-            if (locResult.canceled && canCancel) {
-                result.Cancel();
-            } else {
-                if (rule(locResult.value)) {
-                    result.value = locResult.value;
-                }
-            }
-        }
-
-        cursor.gameObject.SetActive(false);
-        Destroy(grid.gameObject);
-    }
-
     // selects an adjacent unit to the actor (provided they meet the rule), cancelable
     public IEnumerator SelectAdjacentUnitRoutine(Result<BattleUnit> result,
                 BattleUnit actingUnit,
@@ -139,6 +105,16 @@ public class BattleController : MonoBehaviour {
     }
 
     // === GAMEBOARD AND GRAPHICAL INTERACTION =====================================================
+
+    public Cursor SpawnCursor(Vector2Int location) {
+        cursor.gameObject.SetActive(true);
+        cursor.GetComponent<MapEvent>().SetLocation(location);
+        return cursor;
+    }
+
+    public void DespawnCursor() {
+        cursor.gameObject.SetActive(false);
+    }
 
     public void TargetCameraToLocation(Vector2Int loc) {
         TacticsCam.Instance().SetTargetLocation(loc, map.terrain.HeightAt(loc));

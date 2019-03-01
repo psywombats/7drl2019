@@ -48,7 +48,7 @@ public class DirectionCursor : MonoBehaviour, InputListener {
             BattleUnit actingUnit,
             List<OrthoDir> allowedDirs,
             bool canCancel = true) {
-        actor = actingUnit.doll;
+        actor = actingUnit.battler;
 
         gameObject.SetActive(true);
         actingUnit.controller.cursor.DisableReticules();

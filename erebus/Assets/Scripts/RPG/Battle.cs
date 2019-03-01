@@ -110,7 +110,7 @@ public class Battle {
         if (!factions.ContainsKey(align)) {
             yield break;
         }
-        factions[align].ResetForNewTurn();
+        yield return factions[align].OnNewTurnRoutine();
         yield return controller.TurnBeginAnimationRoutine(align);
         while (factions[align].HasUnitsLeftToAct()) {
             yield return PlayNextActionRoutine(align);
@@ -133,24 +133,14 @@ public class Battle {
     }
 
     private IEnumerator PlayNextHumanActionRoutine() {
-        while (true) {
-            controller.MoveCursorToDefaultUnit();
-            Result<BattleUnit> unitResult = new Result<BattleUnit>();
-            yield return controller.SelectUnitRoutine(unitResult, (BattleUnit unit) => {
-                return unit.align == Alignment.Hero && !unit.hasActedThisTurn;
-            }, false);
-            BattleUnit actingUnit = unitResult.value;
-            Vector2Int originalLocation = actingUnit.location;
+        controller.MoveCursorToDefaultUnit();
 
-            Result<Vector2Int> moveResult = new Result<Vector2Int>();
-            yield return controller.SelectMoveLocationRoutine(moveResult, actingUnit);
-            if (moveResult.canceled) {
-                yield return PlayNextHumanActionRoutine();
-                yield break;
-            }
-            actingUnit.location = moveResult.value;
-            yield return actingUnit.doll.GetComponent<MapEvent>().PathToRoutine(moveResult.value);
-        }
+        Result<BattleUnit> unitResult = new Result<BattleUnit>();
+        yield return controller.SelectUnitRoutine(unitResult, (BattleUnit unit) => {
+            return unit.align == Alignment.Hero && !unit.hasActedThisTurn;
+        }, false);
+        BattleUnit actingUnit = unitResult.value;
+        yield return actingUnit.PlayNextActionRoutine(PlayNextHumanActionRoutine());
 
 
         //// TODO: remove this nonsense
@@ -167,10 +157,7 @@ public class Battle {
         //targetUnit.doll.GetComponent<CharaEvent>().FaceToward(actingUnit.doll.GetComponent<MapEvent>());
 
         //yield return Global.Instance().Maps.activeDuelMap.EnterMapRoutine(actingUnit.doll, targetUnit.doll);
-
-        //actingUnit.MarkActionTaken();
         //yield return Global.Instance().Maps.activeDuelMap.ExitMapRoutine();
-        //yield return actingUnit.doll.PostActionRoutine();
 
     }
 }

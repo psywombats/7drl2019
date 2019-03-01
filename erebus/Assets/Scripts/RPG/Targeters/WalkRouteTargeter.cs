@@ -1,21 +1,44 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class WalkRouteTargeter : Targeter {
 
-    private WalkRouteTargeterParams data;
+    private Vector2Int targetLocation;
 
-    public class WalkRouteTargeterParams : TargeterParams {
-        public override Targeter Instantiate() {
-            return new WalkRouteTargeter(this);
+    protected override IEnumerator InternalExecuteRoutine(Effector effect, Result<bool> result) {
+        Cursor cursor = controller.SpawnCursor(actor.location);
+        SelectionGrid grid = controller.SpawnSelectionGrid();
+        int range = (int)actor.Get(StatTag.MOVE);
+        Func<Vector2Int, bool> rule = (Vector2Int loc) => {
+            if (loc == actor.location) {
+                return false;
+            }
+            return map.FindPath(mapEvent, loc, range + 1) != null;
+        };
+        Vector2Int origin = new Vector2Int(
+            (int)mapEvent.positionPx.x - range,
+            (int)mapEvent.positionPx.z - range);
+        grid.ConfigureNewGrid(actor.location, range, map.terrain, rule);
+
+        Result<Vector2Int> locResult = new Result<Vector2Int>();
+        while (!locResult.finished) {
+            yield return controller.cursor.AwaitSelectionRoutine(locResult);
+            if (!locResult.canceled) {
+                if (!rule(locResult.value)) {
+                    Global.Instance().Audio.PlaySFX(SFX.error);
+                    locResult.Reset();
+                }
+            }
         }
-    }
 
-    public WalkRouteTargeter(WalkRouteTargeterParams data) {
-        this.data = data;
-    }
+        controller.DespawnCursor();
+        Destroy(grid.gameObject);
 
-    public override IEnumerator AcquireTargets(Result<bool> result) {
-        throw new System.NotImplementedException();
+        if (locResult.canceled) {
+            result.Cancel();
+        } else {
+            yield return effect.ExecuteSingleCellRoutine(result, locResult.value);
+        }
     }
 }

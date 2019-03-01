@@ -41,6 +41,9 @@ public class AudioManager : MonoBehaviour, MemoryPopulater {
         sfxSource.volume = sfxVolumeSetting.Value * baseVolume;
     }
 
+    public void PlaySFX(Enum enumValue) {
+        PlaySFX(enumValue.ToString());
+    }
     public void PlaySFX(string key) {
         AudioClip clip = Global.Instance().Database.SFX.GetData(key).clip;
         StartCoroutine(PlaySFXRoutine(sfxSource, clip));

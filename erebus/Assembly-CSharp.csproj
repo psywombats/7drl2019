@@ -88,6 +88,7 @@
     <Compile Include="Assets\Scripts\Animation\LuaAnimation.cs" />
     <Compile Include="Assets\Scripts\Animation\SimpleSpriteAnimator.cs" />
     <Compile Include="Assets\Scripts\Audio\AudioManager.cs" />
+    <Compile Include="Assets\Scripts\Audio\SFX.cs" />
     <Compile Include="Assets\Scripts\Audio\WaveSource.cs" />
     <Compile Include="Assets\Scripts\Data\AutoExpandingScriptableObject.cs" />
     <Compile Include="Assets\Scripts\Data\BGMIndexData.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="Assets\Scripts\Map\Tactics\DuelMap.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\SelectionGrid.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\TacticsCam.cs" />
+    <Compile Include="Assets\Scripts\RPG\ActorScriptableObject.cs" />
     <Compile Include="Assets\Scripts\RPG\AIController.cs" />
     <Compile Include="Assets\Scripts\RPG\Alignment.cs" />
     <Compile Include="Assets\Scripts\RPG\Battle.cs" />
@@ -164,7 +166,6 @@
     <Compile Include="Assets\Scripts\RPG\Stat\StatSet.cs" />
     <Compile Include="Assets\Scripts\RPG\Stat\StatTag.cs" />
     <Compile Include="Assets\Scripts\RPG\Targeter.cs" />
-    <Compile Include="Assets\Scripts\RPG\Targeters\CellTargeter.cs" />
     <Compile Include="Assets\Scripts\RPG\Targeters\WalkRouteTargeter.cs" />
     <Compile Include="Assets\Scripts\RPG\Unit.cs" />
     <Compile Include="Assets\Scripts\Serialization\Memory.cs" />

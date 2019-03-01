@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /**
@@ -7,19 +6,10 @@ using UnityEngine;
  */
 public class WalkEffect : Effector {
 
-    private WalkEffectParams data;
+    private Vector2Int target;
 
-    public class WalkEffectParams : EffectorParams {
-        public override Effector Instantiate() {
-            return new WalkEffect(this);
-        }
-    }
-
-    public WalkEffect(WalkEffectParams data) {
-        this.data = data;
-    }
-
-    public override IEnumerator Execute(Targeter targeterInstance) {
-        throw new System.NotImplementedException();
+    public override IEnumerator ExecuteSingleCellRoutine(Result<bool> result, Vector2Int location) {
+        yield return mapEvent.PathToRoutine(location);
+        result.value = true;
     }
 }

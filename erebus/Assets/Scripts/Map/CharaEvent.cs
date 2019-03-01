@@ -138,7 +138,11 @@ public class CharaEvent : MonoBehaviour {
         return sprites[NameForFrame(spritesheet.name, x, facing.Ordinal())];
     }
     public Sprite FrameBySlot(int x, int y) {
-        return sprites[NameForFrame(spritesheet.name, x, y)];
+        string name = NameForFrame(spritesheet.name, x, y);
+        if (!sprites.ContainsKey(name)) {
+            Debug.LogError(this + " doesn't contain frame " + name);
+        }
+        return sprites[name];
     }
 
     private void CopyShaderValues() {
