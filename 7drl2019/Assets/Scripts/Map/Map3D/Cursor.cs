@@ -18,17 +18,29 @@ public class Cursor : MonoBehaviour, InputListener {
         return Instantiate(prefab).GetComponent<Cursor>();
     }
 
-    public void OnEnable() {
+    public void Enable() {
+        if (gameObject.activeSelf) {
+            return;
+        }
+        gameObject.SetActive(true);
+
         Global.Instance().Input.PushListener(this);
-        TacticsCam.Instance().target = GetComponent<MapEvent>();
-        TacticsCam.Instance().snapTime = ScrollSnapTime;
+        Global.Instance().Maps.camera.target = GetComponent<MapEvent3D>();
+        Global.Instance().Maps.camera.snapTime = ScrollSnapTime;
     }
 
-    public void OnDisable() {
-        Global.Instance().Input.RemoveListener(this);
-        if (TacticsCam.Instance() != null && TacticsCam.Instance().target == GetComponent<MapEvent>()) {
-            TacticsCam.Instance().target = null;
+    public void Disable() {
+        if (!gameObject.activeSelf) {
+            return;
         }
+
+        Global.Instance().Input.RemoveListener(this);
+        if (Global.Instance().Maps.camera.target == GetComponent<MapEvent3D>()) {
+            // 7drl hack alert
+            Global.Instance().Maps.camera.target = FindObjectOfType<BattleController>().heroEvent.GetComponent<MapEvent3D>();
+        }
+
+        gameObject.SetActive(false);
     }
 
     // waits for the cursor to select
@@ -68,7 +80,7 @@ public class Cursor : MonoBehaviour, InputListener {
                         break;
                     case InputManager.Command.Confirm:
                         if (awaitingSelect != null) {
-                            awaitingSelect.value = GetComponent<MapEvent>().position;
+                            awaitingSelect.value = GetComponent<MapEvent>().location;
                         }
                         break;
                     case InputManager.Command.Cancel:
@@ -86,7 +98,7 @@ public class Cursor : MonoBehaviour, InputListener {
         if (Time.fixedTime - lastStepTime < minTimeBetweenMoves) {
             return true;
         }
-        Vector2Int target = GetComponent<MapEvent>().position + dir.XY3D();
+        Vector2Int target = GetComponent<MapEvent>().location + dir.XY3D();
         if (GetComponent<MapEvent>().CanPassAt(target)) {
             StartCoroutine(GetComponent<MapEvent>().StepRoutine(dir));
             lastStepTime = Time.fixedTime;

@@ -159,7 +159,7 @@ public class Map : MonoBehaviour {
         return FindPath(actor, to, width > height ? width : height);
     }
     public List<Vector2Int> FindPath(MapEvent actor, Vector2Int to, int maxPathLength) {
-        if (ManhattanDistance(actor.GetComponent<MapEvent>().position, to) > maxPathLength) {
+        if (ManhattanDistance(actor.GetComponent<MapEvent>().location, to) > maxPathLength) {
             return null;
         }
         if (!actor.CanPassAt(to)) {
@@ -169,7 +169,7 @@ public class Map : MonoBehaviour {
         HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
         List<List<Vector2Int>> heads = new List<List<Vector2Int>>();
         List<Vector2Int> firstHead = new List<Vector2Int>();
-        firstHead.Add(actor.GetComponent<MapEvent>().position);
+        firstHead.Add(actor.GetComponent<MapEvent>().location);
         heads.Add(firstHead);
 
         while (heads.Count > 0) {

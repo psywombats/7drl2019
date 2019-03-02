@@ -11,7 +11,7 @@ public class BattleEvent : MonoBehaviour {
 
     [HideInInspector]
     public Unit unitData;
-    public BattleUnit unit { get; private set; }
+    public BattleUnit unit { get; set; }
     public BattleController controller { get; private set; }
 
     private TacticsTerrainMesh _terrain;

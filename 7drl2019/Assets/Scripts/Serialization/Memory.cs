@@ -19,7 +19,4 @@ public class Memory {
     public int saveVersion;
     public double savedAt;
     public string base64ScreenshotPNG;
-
-    // rpg
-    public RPGMemory rpg;
 }

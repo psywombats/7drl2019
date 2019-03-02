@@ -1,15 +1,17 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class TacticsCam : MapCamera {
-
-    private float DuelCamSnapTime = 0.5f;
-    private float DuelCamDistance = 8.0f;
+public class MapCamera : MonoBehaviour {
 
     public Camera cam;
+    public MapEvent3D initialTarget;
     public Vector3 targetAngles;
     public float targetDistance = 12.0f;
 
+    [Space]
+    // these are read by sprites, not actually enforced by the cameras
+    public bool billboardX;
+    public bool billboardY;
+    
     public float snapTime { get; set; }
 
     private Vector3 targetCamPosition;
@@ -24,34 +26,22 @@ public class TacticsCam : MapCamera {
     private float standardDistance;
     private Vector3 standardAngles;
 
-    private static TacticsCam instance;
-    public static TacticsCam Instance() {
-        if (instance == null) {
-            instance = FindObjectOfType<TacticsCam>();
+    private MapEvent3D _target;
+    public MapEvent3D target {
+        get {
+            return _target;
         }
-        return instance;
-    }
-
-    private MapEvent3D target3D {
-        get { return (MapEvent3D)target; }
-    }
-
-    public override void ManualUpdate() {
-        base.ManualUpdate();
-        CopyTargetPosition();
-    }
-
-    public override Camera GetCameraComponent() {
-        return cam;
+        set {
+            _target = value;
+            CopyTargetPosition();
+        }
     }
     
     public void Start() {
+        target = initialTarget;
         targetDollyPosition = transform.localPosition;
         CopyTargetPosition();
         WarpToTarget();
-        //if (Application.isPlaying) {
-        //    Global.Instance().Maps.SetCamera(this);
-        //}
     }
 
     public void Update() {
@@ -85,6 +75,9 @@ public class TacticsCam : MapCamera {
     }
 
     public void WarpToTarget(bool requiresRetarget = false) {
+        if (target == null) {
+            target = initialTarget;
+        }
         if (requiresRetarget) {
             targetDollyPosition = transform.localPosition;
             CopyTargetPosition();
@@ -95,51 +88,9 @@ public class TacticsCam : MapCamera {
         cam.transform.localEulerAngles = targetCamAngles;
     }
 
-    public void ResetToTacticsMode() {
-        targetDistance = standardDistance;
-        targetAngles = standardAngles;
-        CopyTargetPosition();
-        WarpToTarget();
-    }
-
-    public IEnumerator SwitchToDuelCamRoutine(MapEvent3D target1, MapEvent3D target2) {
-        Vector3 targetWorld1 = target1.TileToWorldCoords(target1.position);
-        Vector3 targetWorld2 = target2.TileToWorldCoords(target2.position);
-        float angle = Mathf.Atan2(targetWorld1.x - targetWorld2.x, targetWorld1.z - targetWorld2.z);
-        angle = angle / 2.0f / Mathf.PI * 360.0f;
-        angle += 90.0f;
-        while (angle >= 180.0f) angle -= 180.0f;
-        Vector3 target = (targetWorld1 + targetWorld2) / 2.0f;
-        target.y += 1.0f; // hard copy from the duel map...
-        if (angle % 180 != 0) {
-            target.z += 0.75f;
-        }
-        yield return SwitchToDuelCamRoutine(target, angle);
-    }
-    public IEnumerator SwitchToDuelCamRoutine(Vector3 centerPoint, float angle = 0.0f) {
-        standardAngles = targetAngles;
-        standardDistance = targetDistance;
-
-        snapTime = DuelCamSnapTime;
-        targetAngles = new Vector3(5.0f, angle, 0.0f);
-        target = null;
-        targetDollyPosition = centerPoint;
-        targetDistance = DuelCamDistance;
-        CopyTargetPosition();
-
-        yield return new WaitForSeconds(DuelCamSnapTime);
-    }
-
-    public IEnumerator DuelZoomRoutine(float zoomDistance, float duration) {
-        targetDistance = targetDistance - zoomDistance;
-        snapTime = duration;
-        CopyTargetPosition();
-        yield return new WaitForSeconds(duration);
-    }
-
     private void CopyTargetPosition() {
         if (target != null) {
-            targetDollyPosition = target3D.TileToWorldCoords(target.position);
+            targetDollyPosition = target.positionPx;
         }
         targetCamPosition = PositionForAngleDist();
         targetCamAngles = new Vector3(targetAngles.x, 0.0f, 0.0f);

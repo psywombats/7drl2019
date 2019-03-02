@@ -10,19 +10,10 @@ public class BattleControllerEditor : Editor {
         BattleController controller = (BattleController)target;
         if (Application.isPlaying) {
             if (GUILayout.Button("Start Battle")) {
-                controller.StartCoroutine(controller.battle.BattleRoutine(controller));
+                controller.StartCoroutine(controller.BattleRoutine());
             }
         } else {
             GUILayout.Label("Enter play mode to test battle");
-        }
-
-        if (controller.battle != null) {
-            GUILayout.Label("Battle status:");
-            foreach (BattleFaction faction in controller.battle.GetFactions()) {
-                GUILayout.Label("  " + faction);
-            }
-        } else {
-            controller.battle = new Battle();
         }
     }
 }

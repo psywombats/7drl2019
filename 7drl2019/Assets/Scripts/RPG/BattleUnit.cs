@@ -5,15 +5,13 @@ using UnityEngine;
 public class BattleUnit {
 
     public Unit unit { get; private set; }
-    public Battle battle { get; private set; }
-    public BattleController controller { get { return battle.controller; } }
+    public BattleController battle { get; set; }
     public Alignment align { get { return unit.align; } }
     public Vector2Int location { get; set; }
-    public bool hasActedThisTurn { get; private set; }
 
     public BattleEvent battler {
         get {
-            return battle.controller.GetDollForUnit(this);
+            return battle.GetEventForBattler(this);
         }
     }
 
@@ -23,7 +21,7 @@ public class BattleUnit {
     //  - unit, this is a keyed by what comes in from tiled and used to look up hero/enemy in db
     //  - battle, the parent battle creating this unit for
     //  - starting location, gleened from the tiled event usually
-    public BattleUnit(Unit unit, Battle battle, Vector2Int location) {
+    public BattleUnit(Unit unit, BattleController battle, Vector2Int location) {
         this.unit = unit;
         this.battle = battle;
         this.location = location;
@@ -54,12 +52,6 @@ public class BattleUnit {
 
     // === STATE MACHINE ===========================================================================
 
-    // called at the beginning of this unit's faction's turn
-    public IEnumerator OnTurnRoutine() {
-        yield return null;
-        hasActedThisTurn = false;
-    }
-
     // actually do the menu
     public IEnumerator SelectSkillRoutine(Result<Skill> result) {
         // TODO: ui
@@ -69,8 +61,6 @@ public class BattleUnit {
 
     // select + execute a skill
     public IEnumerator PlayNextActionRoutine(Result<Effector> effectResult) {
-        int energyExpended = 0;
-
         Result<Skill> skillResult = new Result<Skill>();
         yield return SelectSkillRoutine(skillResult);
         if (skillResult.canceled) {
@@ -87,6 +77,5 @@ public class BattleUnit {
     // called at the end of this unit's action
     private IEnumerator PostActionRoutine() {
         yield return battler.PostActionRoutine();
-        hasActedThisTurn = true;
     }
 }

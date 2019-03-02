@@ -10,7 +10,6 @@ public class Global : MonoBehaviour {
     public MemoryManager Memory { get; private set; }
     public AudioManager Audio { get; private set; }
     public SettingsCollection Settings { get; private set; }
-    public PartyManager Party { get; private set; }
 
     private IndexDatabase database;
     public IndexDatabase Database {
@@ -53,7 +52,6 @@ public class Global : MonoBehaviour {
         Maps = gameObject.AddComponent<MapManager>();
         Memory = gameObject.AddComponent<MemoryManager>();
         Audio = gameObject.AddComponent<AudioManager>();
-        Party = gameObject.AddComponent<PartyManager>();
     }
 
     private void SetFullscreenMode() {

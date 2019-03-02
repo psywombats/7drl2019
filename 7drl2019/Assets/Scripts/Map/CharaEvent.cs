@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 using UnityEditor;
 
 /**
@@ -98,7 +97,7 @@ public class CharaEvent : MonoBehaviour {
         CopyShaderValues();
         
         bool steppingThisFrame = IsSteppingThisFrame();
-        stepping = steppingThisFrame || wasSteppingLastFrame;
+        stepping = steppingThisFrame; // || wasSteppingLastFrame;
         if (steppingThisFrame != wasSteppingLastFrame) {
             moveTime = 0.0f;
         }
@@ -158,7 +157,7 @@ public class CharaEvent : MonoBehaviour {
         facing = dir;
         Vector2Int offset = parent.OffsetForTiles(dir);
         Vector3 startPx = parent.positionPx;
-        targetPx = parent.TileToWorldCoords(parent.position);
+        targetPx = parent.TileToWorldCoords(parent.location);
         if (targetPx.y == startPx.y || GetComponent<MapEvent3D>() == null) {
             yield return parent.LinearStepRoutine(dir);
         } else if (targetPx.y > startPx.y) {
@@ -262,10 +261,10 @@ public class CharaEvent : MonoBehaviour {
             return facing;
         }
 
-        Vector3 ourScreen = cam.GetCameraComponent().WorldToScreenPoint(transform.position);
-        Vector3 targetWorld = ((MapEvent3D)parent).TileToWorldCoords(parent.position + facing.XY3D());
+        Vector3 ourScreen = cam.cam.WorldToScreenPoint(transform.position);
+        Vector3 targetWorld = ((MapEvent3D)parent).TileToWorldCoords(parent.location + facing.XY3D());
         targetWorld.y = parent.transform.position.y;
-        Vector3 targetScreen = cam.GetCameraComponent().WorldToScreenPoint(targetWorld);
+        Vector3 targetScreen = cam.cam.WorldToScreenPoint(targetWorld);
         Vector3 delta = targetScreen - ourScreen;
         return OrthoDirExtensions.DirectionOf2D(new Vector2(delta.x, -delta.y));
     }

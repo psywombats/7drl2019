@@ -123,7 +123,7 @@ public class AnimationTarget : MonoBehaviour {
         float elapsed = 0.0f;
         float duration = FloatArg(args, ArgDuration, 0.25f);
         float power = FloatArg(args, ArgPower, 0.2f);
-        DuelCam cam = DuelCam.Instance();
+        MapCamera cam = Global.Instance().Maps.camera;
         Vector3 camPosition = cam.transform.localPosition;
         while (elapsed < duration) {
             elapsed += Time.deltaTime;

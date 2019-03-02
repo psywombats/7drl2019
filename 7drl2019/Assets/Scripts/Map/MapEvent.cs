@@ -24,7 +24,7 @@ public abstract class MapEvent : MonoBehaviour {
     public const string EventMove = "move";
 
     // Editor properties
-    [HideInInspector] public Vector2Int position = new Vector2Int(0, 0);
+    [HideInInspector] public Vector2Int location = new Vector2Int(0, 0);
     [HideInInspector] public Vector2Int size = new Vector2Int(1, 1);
     [Space]
     [Header("Movement")]
@@ -159,7 +159,7 @@ public abstract class MapEvent : MonoBehaviour {
     }
 
     public OrthoDir DirectionTo(MapEvent other) {
-        return DirectionTo(other.position);
+        return DirectionTo(other.location);
     }
 
     public bool CanPassAt(Vector2Int loc) {
@@ -197,13 +197,13 @@ public abstract class MapEvent : MonoBehaviour {
     }
 
     public bool ContainsPosition(Vector2Int loc) {
-        Vector2Int pos1 = position;
-        Vector2Int pos2 = position + size;
+        Vector2Int pos1 = location;
+        Vector2Int pos2 = location + size;
         return loc.x >= pos1.x && loc.x < pos2.x && loc.y >= pos1.y && loc.y < pos2.y;
     }
 
     public void SetLocation(Vector2Int location) {
-        position = location;
+        this.location = location;
         SetScreenPositionToMatchTilePosition();
         SetDepth();
     }
@@ -258,7 +258,7 @@ public abstract class MapEvent : MonoBehaviour {
             yield break;
         }
         
-        position += OffsetForTiles(dir);
+        location += OffsetForTiles(dir);
 
         if (GetComponent<CharaEvent>() == null) {
             yield return LinearStepRoutine(dir);
@@ -275,7 +275,7 @@ public abstract class MapEvent : MonoBehaviour {
 
     public IEnumerator LinearStepRoutine(OrthoDir dir) {
         tracking = true;
-        targetPositionPx = TileToWorldCoords(position);
+        targetPositionPx = TileToWorldCoords(location);
         while (true) {
             if (CalcTilesPerSecond() > 0) {
                 positionPx = Vector3.MoveTowards(positionPx,

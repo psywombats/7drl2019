@@ -7,8 +7,8 @@ public class WalkRouteTargeter : Targeter {
     private Vector2Int targetLocation;
 
     protected override IEnumerator InternalExecuteRoutine(Effector effect, Result<bool> result) {
-        Cursor cursor = controller.SpawnCursor(actor.location);
-        SelectionGrid grid = controller.SpawnSelectionGrid();
+        Cursor cursor = battle.SpawnCursor(actor.location);
+        SelectionGrid grid = battle.SpawnSelectionGrid();
         int range = (int)actor.Get(StatTag.MOVE);
         Func<Vector2Int, bool> rule = (Vector2Int loc) => {
             if (loc == actor.location) {
@@ -23,7 +23,7 @@ public class WalkRouteTargeter : Targeter {
 
         Result<Vector2Int> locResult = new Result<Vector2Int>();
         while (!locResult.finished) {
-            yield return controller.cursor.AwaitSelectionRoutine(locResult);
+            yield return battle.cursor.AwaitSelectionRoutine(locResult);
             if (!locResult.canceled) {
                 if (!rule(locResult.value)) {
                     Global.Instance().Audio.PlaySFX(SFX.error);
@@ -32,7 +32,7 @@ public class WalkRouteTargeter : Targeter {
             }
         }
 
-        controller.DespawnCursor();
+        battle.DespawnCursor();
         Destroy(grid.gameObject);
 
         if (locResult.canceled) {

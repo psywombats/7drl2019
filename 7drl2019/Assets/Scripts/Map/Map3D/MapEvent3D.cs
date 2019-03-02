@@ -18,7 +18,7 @@ public class MapEvent3D : MapEvent {
     }
 
     public override void SetScreenPositionToMatchTilePosition() {
-        transform.localPosition = new Vector3(position.x, parent.terrain.HeightAt(position), position.y);
+        transform.localPosition = new Vector3(location.x, parent.terrain.HeightAt(location), location.y);
         positionPx = transform.localPosition;
     }
 
@@ -31,7 +31,7 @@ public class MapEvent3D : MapEvent {
         if (parent != null) {
             transform.localPosition = new Vector3(
                 gameObject.transform.localPosition.x,
-                parent.terrain.HeightAt(position),
+                parent.terrain.HeightAt(location),
                 gameObject.transform.localPosition.z);
         }
     }
@@ -43,7 +43,7 @@ public class MapEvent3D : MapEvent {
     public override void Update() {
         base.Update();
         if (!Application.isPlaying) {
-            position = WorldPositionTileCoords(transform.localPosition);
+            location = WorldPositionTileCoords(transform.localPosition);
             Vector2 sizeDelta = GetComponent<RectTransform>().sizeDelta;
             size = new Vector2Int(
                 Mathf.RoundToInt(sizeDelta.x),
@@ -53,7 +53,7 @@ public class MapEvent3D : MapEvent {
     }
 
     public override OrthoDir DirectionTo(Vector2Int position) {
-        return OrthoDirExtensions.DirectionOf3D(position - this.position);
+        return OrthoDirExtensions.DirectionOf3D(position - this.location);
     }
 
     protected override void DrawGizmoSelf() {

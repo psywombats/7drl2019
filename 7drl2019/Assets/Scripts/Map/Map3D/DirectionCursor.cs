@@ -24,7 +24,7 @@ public class DirectionCursor : MonoBehaviour, InputListener {
                 Func<BattleUnit, bool> rule,
                 bool canCancel = true) {
         List<OrthoDir> dirs = new List<OrthoDir>();
-        Map map = actingUnit.battle.controller.map;
+        Map map = actingUnit.battle.map;
         foreach (OrthoDir dir in Enum.GetValues(typeof(OrthoDir))) {
             Vector2Int loc = actingUnit.location + dir.XY3D();
             BattleEvent doll = map.GetEventAt<BattleEvent>(loc);
@@ -51,10 +51,10 @@ public class DirectionCursor : MonoBehaviour, InputListener {
         actor = actingUnit.battler;
 
         gameObject.SetActive(true);
-        actingUnit.controller.cursor.DisableReticules();
+        actingUnit.battle.cursor.DisableReticules();
 
-        SelectionGrid grid = actingUnit.controller.SpawnSelectionGrid();
-        TacticsTerrainMesh terrain = actingUnit.controller.map.terrain;
+        SelectionGrid grid = actingUnit.battle.SpawnSelectionGrid();
+        TacticsTerrainMesh terrain = actingUnit.battle.map.terrain;
         grid.ConfigureNewGrid(actingUnit.location, 1, terrain, (Vector2Int loc) => {
             return (loc.x + loc.y + actingUnit.location.x + actingUnit.location.y) % 2 == 1;
         });
@@ -74,21 +74,29 @@ public class DirectionCursor : MonoBehaviour, InputListener {
         }
 
         Destroy(grid.gameObject);
-        actingUnit.controller.cursor.EnableReticules();
+        actingUnit.battle.cursor.EnableReticules();
         gameObject.SetActive(false);
     }
 
-    public void OnEnable() {
+    public void Enable() {
+        if (gameObject.activeSelf) {
+            return;
+        }
+        gameObject.SetActive(true);
         currentDir = OrthoDir.North;
         Global.Instance().Input.PushListener(this);
-        TacticsCam.Instance().target = GetComponent<MapEvent>();
+        Global.Instance().Maps.camera.target = GetComponent<MapEvent3D>();
     }
 
-    public void OnDisable() {
-        Global.Instance().Input.RemoveListener(this);
-        if (TacticsCam.Instance() != null && TacticsCam.Instance().target == GetComponent<MapEvent>()) {
-            TacticsCam.Instance().target = null;
+    public void Disable() {
+        if (!gameObject.activeSelf) {
+            return;
         }
+        Global.Instance().Input.RemoveListener(this);
+        if (Global.Instance().Maps.camera.target == GetComponent<MapEvent3D>()) {
+            Global.Instance().Maps.camera.target = actor.GetComponent<MapEvent3D>();
+        }
+        gameObject.SetActive(false);
     }
 
     public IEnumerator AwaitSelectionRoutine(BattleEvent actor, Result<OrthoDir> result) {

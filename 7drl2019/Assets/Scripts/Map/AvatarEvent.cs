@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CharaEvent))]
@@ -68,7 +66,7 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
     }
 
     public void PopulateMemory(Memory memory) {
-        memory.position = GetComponent<MapEvent>().position;
+        memory.position = GetComponent<MapEvent>().location;
         memory.facing = GetComponent<CharaEvent>().facing;
     }
 
@@ -81,7 +79,7 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
     }
 
     private void Interact() {
-        Vector2Int target = GetComponent<MapEvent>().position + GetComponent<CharaEvent>().facing.XY2D();
+        Vector2Int target = GetComponent<MapEvent>().location + GetComponent<CharaEvent>().facing.XY2D();
         List<MapEvent> targetEvents = GetComponent<MapEvent>().parent.GetEventsAt(target);
         foreach (MapEvent tryTarget in targetEvents) {
             if (tryTarget.switchEnabled && !tryTarget.IsPassableBy(parent)) {
@@ -90,7 +88,7 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
             }
         }
 
-        target = GetComponent<MapEvent>().position;
+        target = GetComponent<MapEvent>().location;
         targetEvents = GetComponent<MapEvent>().parent.GetEventsAt(target);
         foreach (MapEvent tryTarget in targetEvents) {
             if (tryTarget.switchEnabled && tryTarget.IsPassableBy(parent)) {
@@ -101,11 +99,15 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
     }
 
     private bool TryStep(OrthoDir dir) {
-        Vector2Int vectors = GetComponent<MapEvent>().position;
-        Vector2Int vsd = dir.XY2D();
+        Vector2Int vectors = GetComponent<MapEvent>().location;
+        Vector2Int vsd = dir.XY3D();
         Vector2Int target = vectors + vsd;
         GetComponent<CharaEvent>().facing = dir;
         List<MapEvent> targetEvents = GetComponent<MapEvent>().parent.GetEventsAt(target);
+
+        if (GetComponent<BattleEvent>() && !GetComponent<BattleEvent>().CanCrossTileGradient(parent.location, target)) {
+            return false;
+        }
 
         List<MapEvent> toCollide = new List<MapEvent>();
         bool passable = parent.CanPassAt(target);

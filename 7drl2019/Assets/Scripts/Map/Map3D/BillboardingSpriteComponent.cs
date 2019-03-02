@@ -17,7 +17,7 @@ public class BillboardingSpriteComponent : MonoBehaviour {
         if (billboardX || GetCamera().billboardX) {
             Vector3 angles = transform.eulerAngles;
             transform.eulerAngles = new Vector3(
-                    GetCamera().GetCameraComponent().transform.eulerAngles.x,
+                    GetCamera().cam.transform.eulerAngles.x,
                     angles.y,
                     angles.z);
         }
@@ -25,7 +25,7 @@ public class BillboardingSpriteComponent : MonoBehaviour {
             Vector3 angles = transform.eulerAngles;
             transform.eulerAngles = new Vector3(
                     angles.x,
-                    GetCamera().GetCameraComponent().transform.eulerAngles.y,
+                    GetCamera().cam.transform.eulerAngles.y,
                     angles.z);
         }
     }
