@@ -77,7 +77,7 @@ public static class EightDirExtensions {
             case InputManager.Command.Right:        return EightDir.E;
             case InputManager.Command.DownRight:    return EightDir.SE;
             case InputManager.Command.Down:         return EightDir.S;
-            case InputManager.Command.DownLeft:     return EightDir.SE;
+            case InputManager.Command.DownLeft:     return EightDir.SW;
             case InputManager.Command.Left:         return EightDir.W;
             case InputManager.Command.UpLeft:       return EightDir.NW;
         }

@@ -9,6 +9,7 @@ public class BattleController : MonoBehaviour {
     public Map map { get { return GetComponent<Map>(); } }
     public Cursor cursor { get; private set; }
     public DirectionCursor dirCursor { get; private set; }
+    public RogueUI ui { get; private set; }
 
     public BattleEvent heroEvent;
     public BattleUnit hero { get; private set; }
@@ -33,6 +34,8 @@ public class BattleController : MonoBehaviour {
         dirCursor = DirectionCursor.GetInstance();
         dirCursor.gameObject.transform.SetParent(GetComponent<Map>().objectLayer.transform);
         dirCursor.gameObject.SetActive(false);
+
+        ui = FindObjectOfType<RogueUI>();
     }
 
     // === GETTERS AND BOOKKEEPING =================================================================
@@ -59,11 +62,17 @@ public class BattleController : MonoBehaviour {
     }
 
     private IEnumerator PlayNextHumanActionRoutine() {
-        Result<Effector> effectResult = new Result<Effector>();
-        yield return hero.PlayNextActionRoutine(effectResult);
-        if (effectResult.canceled) {
-            yield return PlayNextHumanActionRoutine();
+        Result<bool> executeResult = new Result<bool>();
+        yield return ui.PlayNextCommand(executeResult);
+        if (executeResult.value) {
+            // TODO: 7drl: ai and turn processing
         }
+
+        //Result<Effector> effectResult = new Result<Effector>();
+        //yield return hero.PlayNextActionRoutine(effectResult);
+        //if (effectResult.canceled) {
+        //    yield return PlayNextHumanActionRoutine();
+        //}
     }
 
     // === GAMEBOARD AND GRAPHICAL INTERACTION =====================================================

@@ -179,6 +179,7 @@ public class CharaEvent : MonoBehaviour {
                     startPx.x + t * (targetPx.x - startPx.x) * walkRatio,
                     startPx.y,
                     startPx.z + t * (targetPx.z - startPx.z) * walkRatio);
+                parent.SetCameraTrackerLocation(parent.transform.position);
                 if (elapsed >= walkDuration) {
                     break;
                 }
@@ -219,6 +220,7 @@ public class CharaEvent : MonoBehaviour {
                 startPx.x + t * (targetPx.x - startPx.x),
                 startPx.y + Gravity * (elapsed * elapsed) + b * elapsed,
                 startPx.z + t * (targetPx.z - startPx.z));
+            parent.SetCameraTrackerLocation(startPx + (targetPx - startPx) * t);
             if (elapsed >= duration) {
                 break;
             }

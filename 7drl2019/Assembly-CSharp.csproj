@@ -168,6 +168,7 @@
     <Compile Include="Assets\Scripts\Serialization\Settings\SettingsDefaults.cs" />
     <Compile Include="Assets\Scripts\Serialization\SettingsMemory.cs" />
     <Compile Include="Assets\Scripts\Serialization\SystemMemory.cs" />
+    <Compile Include="Assets\Scripts\UI\RogueUI.cs" />
     <Compile Include="Assets\Scripts\UI\Textbox.cs" />
     <Compile Include="Assets\Scripts\UI\UISprite.cs" />
     <Compile Include="Assets\Scripts\Util\CoUtils.cs" />

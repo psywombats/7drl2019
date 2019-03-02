@@ -196,6 +196,10 @@ public abstract class MapEvent : MonoBehaviour {
         }
     }
 
+    public void SetCameraTrackerLocation(Vector3 loc) {
+        _internalPosition = InternalPositionToDisplayPosition(loc);
+    }
+
     public bool ContainsPosition(Vector2Int loc) {
         Vector2Int pos1 = location;
         Vector2Int pos2 = location + size;

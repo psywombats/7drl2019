@@ -84,6 +84,7 @@ public class AvatarEvent : MonoBehaviour {
                 }
             }
         }
+        result.value = true;
     }
 
     private void ShowMenu() {
