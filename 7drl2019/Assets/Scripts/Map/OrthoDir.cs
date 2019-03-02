@@ -2,10 +2,10 @@
 using UnityEngine;
 
 public enum OrthoDir {
-    [OrthoDir("North",     0, -1,  0,      0,  0,  1,      0)] North,
-    [OrthoDir("East",      1,  0,  0,      1,  0,  0,      1)] East,
-    [OrthoDir("South",     0,  1,  0,      0,  0, -1,      2)] South,
-    [OrthoDir("West",     -1,  0,  0,     -1,  0,  0,      3)] West,
+    [OrthoDir("North", 0, -1, 0, 0, 0, 1, 0)] North,
+    [OrthoDir("East", 1, 0, 0, 1, 0, 0, 1)] East,
+    [OrthoDir("South", 0, 1, 0, 0, 0, -1, 2)] South,
+    [OrthoDir("West", -1, 0, 0, -1, 0, 0, 3)] West,
 }
 
 public class OrthoDirAttribute : Attribute {
@@ -76,7 +76,30 @@ public static class OrthoDirExtensions {
         Debug.Assert(false, "Could not find orthodir matching " + directionName);
         return OrthoDir.North;
     }
-    
+
+    public static OrthoDir FromEight(EightDir dir, OrthoDir currentDir) {
+        switch (dir) {
+            case EightDir.N:
+                return OrthoDir.North;
+            case EightDir.E:
+                return OrthoDir.East;
+            case EightDir.S:
+                return OrthoDir.South;
+            case EightDir.W:
+                return OrthoDir.West;
+            case EightDir.NE:
+                return currentDir == OrthoDir.North ? OrthoDir.North : OrthoDir.East;
+            case EightDir.SE:
+                return currentDir == OrthoDir.South ? OrthoDir.South : OrthoDir.East;
+            case EightDir.NW:
+                return currentDir == OrthoDir.North ? OrthoDir.North : OrthoDir.West;
+            case EightDir.SW:
+                return currentDir == OrthoDir.South ? OrthoDir.South : OrthoDir.West;
+            default:
+                return 0;
+        }
+    }
+
     public static Vector2Int XY2D(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().XY2D; }
     public static Vector2Int XY3D(this OrthoDir dir) { return dir.GetAttribute<OrthoDirAttribute>().XY3D; }
 

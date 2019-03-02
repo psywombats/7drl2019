@@ -130,7 +130,7 @@ public class CharaEvent : MonoBehaviour {
     }
 
     public void FaceToward(MapEvent other) {
-        facing = parent.DirectionTo(other);
+        facing = parent.OrthoDirTo(other);
     }
 
     public Sprite FrameBySlot(int x) {
@@ -153,9 +153,9 @@ public class CharaEvent : MonoBehaviour {
         }
     }
 
-    public IEnumerator StepRoutine(OrthoDir dir) {
-        facing = dir;
-        Vector2Int offset = parent.OffsetForTiles(dir);
+    public IEnumerator StepRoutine(EightDir dir) {
+        facing = OrthoDirExtensions.FromEight(dir, facing);
+        Vector2Int offset = dir.XY();
         Vector3 startPx = parent.positionPx;
         targetPx = parent.TileToWorldCoords(parent.location);
         if (targetPx.y == startPx.y || GetComponent<MapEvent3D>() == null) {

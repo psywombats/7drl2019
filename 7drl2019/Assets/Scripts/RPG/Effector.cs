@@ -26,4 +26,10 @@ public abstract class Effector : ActorScriptableObject {
         result.Cancel();
         yield return null;
     }
+
+    public virtual IEnumerator ExecuteDirectionRoutine(Result<bool> result, EightDir dir) {
+        Debug.LogError(GetType() + " does not support single dir targeters");
+        result.Cancel();
+        yield return null;
+    }
 }

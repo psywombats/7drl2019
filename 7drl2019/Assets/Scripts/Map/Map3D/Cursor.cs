@@ -67,16 +67,14 @@ public class Cursor : MonoBehaviour, InputListener {
             case InputManager.Event.Down:
                 switch (command) {
                     case InputManager.Command.Up:
-                        TryStep(OrthoDir.North);
-                        break;
                     case InputManager.Command.Down:
-                        TryStep(OrthoDir.South);
-                        break;
                     case InputManager.Command.Right:
-                        TryStep(OrthoDir.East);
-                        break;
                     case InputManager.Command.Left:
-                        TryStep(OrthoDir.West);
+                    case InputManager.Command.UpLeft:
+                    case InputManager.Command.DownLeft:
+                    case InputManager.Command.DownRight:
+                    case InputManager.Command.UpRight:
+                        TryStep(EightDirExtensions.FromCommand(command));
                         break;
                     case InputManager.Command.Confirm:
                         if (awaitingSelect != null) {
@@ -94,11 +92,11 @@ public class Cursor : MonoBehaviour, InputListener {
         return true;
     }
 
-    private bool TryStep(OrthoDir dir) {
+    private bool TryStep(EightDir dir) {
         if (Time.fixedTime - lastStepTime < minTimeBetweenMoves) {
             return true;
         }
-        Vector2Int target = GetComponent<MapEvent>().location + dir.XY3D();
+        Vector2Int target = GetComponent<MapEvent>().location + dir.XY();
         if (GetComponent<MapEvent>().CanPassAt(target)) {
             StartCoroutine(GetComponent<MapEvent>().StepRoutine(dir));
             lastStepTime = Time.fixedTime;

@@ -63,7 +63,7 @@ public class LuaMapEvent {
     }
 
     public void faceToward(LuaMapEvent other) {
-        mapEvent.GetComponent<CharaEvent>().facing = mapEvent.DirectionTo(other.mapEvent);
+        mapEvent.GetComponent<CharaEvent>().facing = mapEvent.OrthoDirTo(other.mapEvent);
     }
 
     public int x() {
@@ -83,10 +83,10 @@ public class LuaMapEvent {
     }
 
     public void cs_walk(string directionName, int count) {
-       context.RunRoutineFromLua(mapEvent.GetComponent<MapEvent>().StepMultiRoutine(OrthoDirExtensions.Parse(directionName), count));
+       context.RunRoutineFromLua(mapEvent.GetComponent<MapEvent>().StepMultiRoutine(EightDirExtensions.Parse(directionName), count));
     }
 
     public void cs_step(string directionName) {
-        context.RunRoutineFromLua(mapEvent.GetComponent<MapEvent>().StepRoutine(OrthoDirExtensions.Parse(directionName)));
+        context.RunRoutineFromLua(mapEvent.GetComponent<MapEvent>().StepRoutine(EightDirExtensions.Parse(directionName)));
     }
 }

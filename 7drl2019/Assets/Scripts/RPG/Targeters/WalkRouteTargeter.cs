@@ -14,11 +14,11 @@ public class WalkRouteTargeter : Targeter {
             if (loc == actor.location) {
                 return false;
             }
-            return map.FindPath(mapEvent, loc, range + 1) != null;
+            return map.FindPath(actorEvent, loc, range + 1) != null;
         };
         Vector2Int origin = new Vector2Int(
-            (int)mapEvent.positionPx.x - range,
-            (int)mapEvent.positionPx.z - range);
+            (int)actorEvent.positionPx.x - range,
+            (int)actorEvent.positionPx.z - range);
         grid.ConfigureNewGrid(actor.location, range, map.terrain, rule);
 
         Result<Vector2Int> locResult = new Result<Vector2Int>();

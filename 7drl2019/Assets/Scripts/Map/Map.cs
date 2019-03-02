@@ -155,11 +155,11 @@ public class Map : MonoBehaviour {
     }
 
     // returns a list of coordinates to step to with the last one being the destination, or null
-    public List<Vector2Int> FindPath(MapEvent actor, Vector2Int to) {
+    public List<Vector2Int> FindPath(MapEvent actor, Vector2Int to, bool useEight = true) {
         return FindPath(actor, to, width > height ? width : height);
     }
-    public List<Vector2Int> FindPath(MapEvent actor, Vector2Int to, int maxPathLength) {
-        if (ManhattanDistance(actor.GetComponent<MapEvent>().location, to) > maxPathLength) {
+    public List<Vector2Int> FindPath(MapEvent actor, Vector2Int to, int maxPathLength, bool useEight = true) {
+        if (Vector2.Distance(actor.GetComponent<MapEvent>().location, to) > maxPathLength) {
             return null;
         }
         if (!actor.CanPassAt(to)) {
@@ -188,14 +188,18 @@ public class Map : MonoBehaviour {
             }
 
             if (head.Count < maxPathLength) {
-                foreach (OrthoDir dir in Enum.GetValues(typeof(OrthoDir))) {
+                foreach (EightDir dir in Enum.GetValues(typeof(EightDir))) {
                     Vector2Int next = head[head.Count - 1];
                     // minor perf here, this is critical code
                     switch (dir) {
-                        case OrthoDir.East:     next.x += 1;    break;
-                        case OrthoDir.North:    next.y += 1;    break;
-                        case OrthoDir.West:     next.x -= 1;    break;
-                        case OrthoDir.South:    next.y -= 1;    break;
+                        case EightDir.N:    next.y += 1;                    break;
+                        case EightDir.E:    next.x += 1;                    break;
+                        case EightDir.S:    next.y -= 1;                    break;
+                        case EightDir.W:    next.x -= 1;                    break;
+                        case EightDir.NE:   next.y += 1;    next.x += 1;    break;
+                        case EightDir.SE:   next.y -= 1;    next.x += 1;    break;
+                        case EightDir.SW:   next.y -= 1;    next.x -= 1;    break;
+                        case EightDir.NW:   next.y += 1;    next.x -= 1;    break;
                     }
                     if (!visited.Contains(next) && actor.CanPassAt(next) &&
                         (actor.GetComponent<CharaEvent>() == null ||

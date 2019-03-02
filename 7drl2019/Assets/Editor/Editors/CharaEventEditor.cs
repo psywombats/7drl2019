@@ -33,10 +33,10 @@ public class CharaEventEditor : Editor {
     private IEnumerator WalkTestRoutine(CharaEvent chara) {
         while (true) {
             yield return CoUtils.RunSequence(new IEnumerator[] {
-                    chara.parent.StepMultiRoutine(OrthoDir.North, 4),
-                    chara.parent.StepMultiRoutine(OrthoDir.East, 4),
-                    chara.parent.StepMultiRoutine(OrthoDir.South, 4),
-                    chara.parent.StepMultiRoutine(OrthoDir.West, 4)
+                    chara.parent.StepMultiRoutine(EightDir.NE, 2),
+                    chara.parent.StepMultiRoutine(EightDir.SE, 2),
+                    chara.parent.StepMultiRoutine(EightDir.SW, 2),
+                    chara.parent.StepMultiRoutine(EightDir.NW, 2)
                 });
         }
     }

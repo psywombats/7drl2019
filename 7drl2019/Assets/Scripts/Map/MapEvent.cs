@@ -103,12 +103,12 @@ public abstract class MapEvent : MonoBehaviour {
 
     public abstract Vector3 TileToWorldCoords(Vector2Int location);
 
-    public abstract Vector2Int OffsetForTiles(OrthoDir dir);
-
     // perform any pixel-perfect rounding needed for a pixel position
     public abstract Vector3 InternalPositionToDisplayPosition(Vector3 position);
 
-    public abstract OrthoDir DirectionTo(Vector2Int position);
+    public EightDir DirectionTo(Vector2Int location) {
+        return EightDirExtensions.DirectionOf(this.location - location);
+    }
 
     public abstract float CalcTilesPerSecond();
 
@@ -158,8 +158,8 @@ public abstract class MapEvent : MonoBehaviour {
         return passable || !switchEnabled;
     }
 
-    public OrthoDir DirectionTo(MapEvent other) {
-        return DirectionTo(other.location);
+    public OrthoDir OrthoDirTo(MapEvent other) {
+        return OrthoDirExtensions.DirectionOf3D(location - other.location);
     }
 
     public bool CanPassAt(Vector2Int loc) {
@@ -191,7 +191,7 @@ public abstract class MapEvent : MonoBehaviour {
         }
         MapEvent mapEvent = GetComponent<MapEvent>();
         foreach (Vector2Int target in path) {
-            OrthoDir dir = mapEvent.DirectionTo(target);
+            EightDir dir = mapEvent.DirectionTo(target);
             yield return StartCoroutine(GetComponent<MapEvent>().StepRoutine(dir));
         }
     }
@@ -232,7 +232,7 @@ public abstract class MapEvent : MonoBehaviour {
     // facing us if impassable, on top of us if passable
     private void OnInteract(AvatarEvent avatar) {
         if (GetComponent<CharaEvent>() != null) {
-            GetComponent<CharaEvent>().facing = DirectionTo(avatar.GetComponent<MapEvent>());
+            GetComponent<CharaEvent>().facing = OrthoDirTo(avatar.GetComponent<MapEvent>());
         }
         luaObject.Run(PropertyInteract);
     }
@@ -253,12 +253,12 @@ public abstract class MapEvent : MonoBehaviour {
         }
     }
 
-    public IEnumerator StepRoutine(OrthoDir dir) {
+    public IEnumerator StepRoutine(EightDir dir) {
         if (tracking) {
             yield break;
         }
-        
-        location += OffsetForTiles(dir);
+
+        location += dir.XY();
 
         if (GetComponent<CharaEvent>() == null) {
             yield return LinearStepRoutine(dir);
@@ -267,13 +267,13 @@ public abstract class MapEvent : MonoBehaviour {
         }
     }
 
-    public IEnumerator StepMultiRoutine(OrthoDir dir, int count) {
+    public IEnumerator StepMultiRoutine(EightDir dir, int count) {
         for (int i = 0; i < count; i += 1) {
             yield return StartCoroutine(StepRoutine(dir));
         }
     }
 
-    public IEnumerator LinearStepRoutine(OrthoDir dir) {
+    public IEnumerator LinearStepRoutine(EightDir dir) {
         tracking = true;
         targetPositionPx = TileToWorldCoords(location);
         while (true) {

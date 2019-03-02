@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CharaEvent))]
-public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
+public class AvatarEvent : MonoBehaviour {
 
     private int pauseCount;
     public bool InputPaused {
@@ -15,59 +16,7 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
 
     public void Start() {
         Global.Instance().Maps.avatar = this;
-        Global.Instance().Input.PushListener(this);
         pauseCount = 0;
-    }
-
-    public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
-        if (GetComponent<MapEvent>().tracking || InputPaused) {
-            return true;
-        }
-        switch (eventType) {
-            case InputManager.Event.Hold:
-                switch (command) {
-                    case InputManager.Command.Up:
-                        TryStep(OrthoDir.North);
-                        return false;
-                    case InputManager.Command.Down:
-                        TryStep(OrthoDir.South);
-                        return false;
-                    case InputManager.Command.Right:
-                        TryStep(OrthoDir.East);
-                        return false;
-                    case InputManager.Command.Left:
-                        TryStep(OrthoDir.West);
-                        return false;
-                    default:
-                        return false;
-                }
-            case InputManager.Event.Up:
-                switch (command) {
-                    case InputManager.Command.Confirm:
-                        Interact();
-                        return false;
-                    case InputManager.Command.Cancel:
-                        ShowMenu();
-                        return false;
-                    case InputManager.Command.Debug:
-                        Global.Instance().Memory.SaveToSlot(0);
-                        return false;
-                    default:
-                        return false;
-                }
-            default:
-                return false;
-        }
-    }
-
-    public void PopulateFromMemory(Memory memory) {
-        GetComponent<MapEvent>().SetLocation(memory.position);
-        GetComponent<CharaEvent>().facing = memory.facing;
-    }
-
-    public void PopulateMemory(Memory memory) {
-        memory.position = GetComponent<MapEvent>().location;
-        memory.facing = GetComponent<CharaEvent>().facing;
     }
 
     public void PauseInput() {
@@ -98,17 +47,19 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
         }
     }
 
-    private bool TryStep(OrthoDir dir) {
+    // result is true if the action consumed a turn
+    public IEnumerator TryStepRoutine(EightDir dir, Result<bool> result) {
         Vector2Int vectors = GetComponent<MapEvent>().location;
-        Vector2Int vsd = dir.XY3D();
+        Vector2Int vsd = dir.XY();
         Vector2Int target = vectors + vsd;
-        GetComponent<CharaEvent>().facing = dir;
+        GetComponent<CharaEvent>().facing = OrthoDirExtensions.FromEight(dir, GetComponent<CharaEvent>().facing);
         List<MapEvent> targetEvents = GetComponent<MapEvent>().parent.GetEventsAt(target);
 
-        if (GetComponent<BattleEvent>() && !GetComponent<BattleEvent>().CanCrossTileGradient(parent.location, target)) {
-            return false;
+        if (!GetComponent<BattleEvent>().CanCrossTileGradient(parent.location, target)) {
+            result.value = false;
+            yield break;
         }
-
+        
         List<MapEvent> toCollide = new List<MapEvent>();
         bool passable = parent.CanPassAt(target);
         foreach (MapEvent targetEvent in targetEvents) {
@@ -118,14 +69,14 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
             }
         }
 
+        // TODO: 7DRL: attack!!
         if (passable) {
-            StartCoroutine(CoUtils.RunWithCallback(GetComponent<MapEvent>().StepRoutine(dir), () => {
-                foreach (MapEvent targetEvent in toCollide) {
-                    if (targetEvent.switchEnabled) {
-                        targetEvent.GetComponent<Dispatch>().Signal(MapEvent.EventCollide, this);
-                    }
+            yield return GetComponent<MapEvent>().StepRoutine(dir);
+            foreach (MapEvent targetEvent in toCollide) {
+                if (targetEvent.switchEnabled) {
+                    targetEvent.GetComponent<Dispatch>().Signal(MapEvent.EventCollide, this);
                 }
-            }));
+            }
         } else {
             foreach (MapEvent targetEvent in toCollide) {
                 if (targetEvent.switchEnabled && !targetEvent.IsPassableBy(parent)) {
@@ -133,8 +84,6 @@ public class AvatarEvent : MonoBehaviour, InputListener, MemoryPopulater {
                 }
             }
         }
-        
-        return true;
     }
 
     private void ShowMenu() {

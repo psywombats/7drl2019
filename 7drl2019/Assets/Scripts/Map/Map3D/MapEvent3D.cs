@@ -13,10 +13,6 @@ public class MapEvent3D : MapEvent {
             Mathf.RoundToInt(pos.z) * OrthoDir.North.Px3DZ());
     }
 
-    public override Vector2Int OffsetForTiles(OrthoDir dir) {
-        return dir.XY3D();
-    }
-
     public override void SetScreenPositionToMatchTilePosition() {
         transform.localPosition = new Vector3(location.x, parent.terrain.HeightAt(location), location.y);
         positionPx = transform.localPosition;
@@ -50,10 +46,6 @@ public class MapEvent3D : MapEvent {
                 Mathf.RoundToInt(sizeDelta.y));
         }
         SetDepth();
-    }
-
-    public override OrthoDir DirectionTo(Vector2Int position) {
-        return OrthoDirExtensions.DirectionOf3D(position - this.location);
     }
 
     protected override void DrawGizmoSelf() {

@@ -59,8 +59,6 @@ public class BattleController : MonoBehaviour {
     }
 
     private IEnumerator PlayNextHumanActionRoutine() {
-        MoveCursorToHero();
-
         Result<Effector> effectResult = new Result<Effector>();
         yield return hero.PlayNextActionRoutine(effectResult);
         if (effectResult.canceled) {
