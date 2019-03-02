@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -14,6 +16,8 @@ public class TacticsTerrainMesh : MonoBehaviour, ISerializationCallbackReceiver 
     public float[] heights;
     [HideInInspector]
     public string paletteName;
+    [HideInInspector]
+    public Tilemap tileset;
 
     public Tile defaultTopTile;
     public Tile defaultFaceTile;
@@ -28,6 +32,15 @@ public class TacticsTerrainMesh : MonoBehaviour, ISerializationCallbackReceiver 
             if (_tilemap == null) _tilemap = GetComponent<Tilemap>();
             return _tilemap;
         }
+    }
+
+    // === CONSTRUCTION  ===========================================================================
+
+    public void Generate() {
+        facingTiles.Clear();
+
+        MapGenerator gen = new MapGenerator();
+        gen.GenerateMesh(this);
     }
 
     public void Resize(Vector2Int newSize) {
@@ -58,12 +71,108 @@ public class TacticsTerrainMesh : MonoBehaviour, ISerializationCallbackReceiver 
         tilemap.ClearAllTiles();
         for (int y = 0; y < (size.y < newSize.y ? size.y : newSize.y); y += 1) {
             for (int x = 0; x < (size.x < newSize.x ? size.x : newSize.x); x += 1) {
-                tilemap.SetTile(new Vector3Int(x, y, 0), newTiles[y * size.x + x]);
+                tilemap.SetTile(new Vector3Int(x, y, 0), newTiles[y * (size.x < newSize.x ? size.x : newSize.x) + x]);
             }
         }
         heights = newHeights;
         size = newSize;
     }
+
+    // === MESH GENERATION =========================================================================
+
+    public MeshGenerationResult Rebuild(bool regenMesh) {
+        MeshFilter filter = GetComponent<MeshFilter>();
+        
+        if (!Application.isPlaying) {
+            if (filter.sharedMesh == null) {
+                filter.sharedMesh = new Mesh();
+                AssetDatabase.CreateAsset(filter.sharedMesh,
+                    "Assets/Resources/TacticsMaps/Meshes/" + gameObject.name + ".asset");
+            }
+        } else {
+            if (filter.mesh == null) {
+                filter.mesh = new Mesh();
+            }
+        }
+
+        Mesh mesh;
+        if (!Application.isPlaying) {
+            mesh = filter.sharedMesh;
+        } else {
+            mesh = filter.mesh;
+        }
+
+        MeshGenerationResult result = new MeshGenerationResult();
+        result.quads = new Dictionary<Vector3, Dictionary<Vector3, TerrainQuad>>();
+        result.vertices = new List<Vector3>();
+        result.uvs = new List<Vector2>();
+        result.tris = new List<int>();
+        for (int z = 0; z < size.y; z += 1) {
+            for (int x = 0; x < size.x; x += 1) {
+                // top vertices
+                float height = HeightAt(x, z);
+                AddQuad(result, new Vector3(x, height, z), new Vector3(x + 1, height, z + 1),
+                    TileAt(x, z), new Vector3(x, height, z), new Vector3(0, 1, 0));
+
+                // side vertices
+                foreach (OrthoDir dir in Enum.GetValues(typeof(OrthoDir))) {
+                    float currentHeight = HeightAt(x, z);
+                    float neighborHeight = HeightAt(x + dir.Px3DX(), z + dir.Px3DZ());
+                    if (currentHeight > neighborHeight) {
+                        Vector2 off1 = Vector2.zero, off2 = Vector2.zero;
+                        switch (dir) {
+                            case OrthoDir.South:
+                                off1 = new Vector2(0, 0);
+                                off2 = new Vector2(1, 0);
+                                break;
+                            case OrthoDir.East:
+                                off1 = new Vector2(1, 1);
+                                off2 = new Vector2(1, 0);
+                                break;
+                            case OrthoDir.North:
+                                off1 = new Vector2(1, 1);
+                                off2 = new Vector2(0, 1);
+                                break;
+                            case OrthoDir.West:
+                                off1 = new Vector2(0, 0);
+                                off2 = new Vector2(0, 1);
+                                break;
+                        }
+                        for (float y = neighborHeight; y < currentHeight; y += 0.5f) {
+                            AddQuad(result, new Vector3(x + off1.x, y, z + off1.y),
+                                new Vector3(x + off2.x, y + 0.5f, z + off2.y),
+                                TileAt(x, z, y, dir),
+                                new Vector3(x, y + 0.5f, z), dir.Px3D());
+                        }
+                    }
+                }
+            }
+        }
+
+        if (regenMesh) {
+            mesh.Clear();
+
+            mesh.vertices = result.vertices.ToArray();
+            mesh.triangles = result.tris.ToArray();
+            mesh.uv = result.uvs.ToArray();
+
+            mesh.RecalculateBounds();
+            mesh.RecalculateNormals();
+        }
+        return result;
+    }
+
+    private void AddQuad(MeshGenerationResult result, Vector3 lowerLeft, Vector3 upperRight, 
+            Tile tile, Vector3 pos, Vector3 normal) {
+        TerrainQuad quad = new TerrainQuad(result.tris, result.vertices, result.uvs, 
+            lowerLeft, upperRight, tile, tileset, pos, normal);
+        if (!result.quads.ContainsKey(pos)) {
+            result.quads[pos] = new Dictionary<Vector3, TerrainQuad>();
+        }
+        result.quads[pos][normal] = quad;
+    }
+
+    // === EDITOR-Y THINGS =========================================================================
 
     public float HeightAt(Vector2Int pos) {
         return HeightAt(pos.x, pos.y);

@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
-[CustomEditor(typeof(TacticsTerrainMesh))]
+[CustomEditor(typeof(TacticsTerrainMesh), true)]
 public class TacticsTerrainEditor : Editor {
 
     private static readonly string GenericPrefabPath = "Assets/Resources/Prefabs/MapEvent3D.prefab";
@@ -45,7 +45,6 @@ public class TacticsTerrainEditor : Editor {
     private SelectionTool tool = SelectionTool.Select;
 
     private GridPalette palette;
-    private Tilemap tileset;
     private Vector2 selectedTileStart;
     private Rect tileSelectRect;
     private Tile[] paletteBuffer;
@@ -62,6 +61,10 @@ public class TacticsTerrainEditor : Editor {
 
         GUILayout.Space(20.0f);
         if (GUILayout.Button("Rebuild")) {
+            Rebuild(true);
+        }
+        if (GUILayout.Button("Procedurally generate")) {
+            terrain.Generate();
             Rebuild(true);
         }
         Vector2Int newSize = EditorGUILayout.Vector2IntField("Size", terrain.size);
@@ -101,15 +104,15 @@ public class TacticsTerrainEditor : Editor {
         GUIStyle style = new GUIStyle();
         style.padding = new RectOffset(0, 0, 0, 0);
 
-        if (tileset != null && tool == SelectionTool.Paint) {
+        if (terrain.tileset != null && tool == SelectionTool.Paint) {
             wraparoundPaintMode = EditorGUILayout.Toggle("Paint all faces", wraparoundPaintMode);
             Texture2D backer = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Resources/Textures/White.png");
-            for (int y = tileset.size.y - 1; y >= 0; y -= 1) {
+            for (int y = terrain.tileset.size.y - 1; y >= 0; y -= 1) {
                 EditorGUILayout.BeginHorizontal();
 
-                for (int x = 0; x < tileset.size.x; x += 1) {
+                for (int x = 0; x < terrain.tileset.size.x; x += 1) {
                     Rect selectRect = EditorGUILayout.BeginHorizontal(GUILayout.Width(Map.TileSizePx), GUILayout.Height(Map.TileSizePx));
-                    Tile tile = tileset.GetTile<Tile>(new Vector3Int(x, y, 0));
+                    Tile tile = terrain.tileset.GetTile<Tile>(new Vector3Int(x, y, 0));
 
                     GUILayout.Box("", style, GUILayout.Width(Map.TileSizePx), GUILayout.Height(Map.TileSizePx));
                     Rect r = GUILayoutUtility.GetLastRect();
@@ -398,79 +401,15 @@ public class TacticsTerrainEditor : Editor {
             EditorSceneManager.MarkSceneDirty(prefabStage.scene);
         }
 
-        MeshFilter filter = terrain.GetComponent<MeshFilter>();
-        Mesh mesh = filter.sharedMesh;
-        if (mesh == null) {
-            mesh = new Mesh();
-            AssetDatabase.CreateAsset(mesh, "Assets/Resources/TacticsMaps/Meshes/" + terrain.gameObject.name + ".asset");
-            filter.sharedMesh = mesh;
-        }
-
-        quads = new Dictionary<Vector3, Dictionary<Vector3, TerrainQuad>>();
-        vertices = new List<Vector3>();
-        uvs = new List<Vector2>();
-        tris = new List<int>();
-        for (int z = 0; z < terrain.size.y; z += 1) {
-            for (int x = 0; x < terrain.size.x; x += 1) {
-                // top vertices
-                float height = terrain.HeightAt(x, z);
-                AddQuad(new Vector3(x, height, z), new Vector3(x + 1, height, z + 1), terrain.TileAt(x, z),
-                    new Vector3(x, height, z), new Vector3(0, 1, 0));
-
-                // side vertices
-                foreach (OrthoDir dir in Enum.GetValues(typeof(OrthoDir))) {
-                    float currentHeight = terrain.HeightAt(x, z);
-                    float neighborHeight = terrain.HeightAt(x + dir.Px3DX(), z + dir.Px3DZ());
-                    if (currentHeight > neighborHeight) {
-                        Vector2 off1 = Vector2.zero, off2 = Vector2.zero;
-                        switch (dir) {
-                            case OrthoDir.South:
-                                off1 = new Vector2(0, 0);
-                                off2 = new Vector2(1, 0);
-                                break;
-                            case OrthoDir.East:
-                                off1 = new Vector2(1, 1);
-                                off2 = new Vector2(1, 0);
-                                break;
-                            case OrthoDir.North:
-                                off1 = new Vector2(1, 1);
-                                off2 = new Vector2(0, 1);
-                                break;
-                            case OrthoDir.West:
-                                off1 = new Vector2(0, 0);
-                                off2 = new Vector2(0, 1);
-                                break;
-                        }
-                        for (float y = neighborHeight; y < currentHeight; y += 0.5f) {
-                            AddQuad(new Vector3(x + off1.x, y, z + off1.y),
-                                new Vector3(x + off2.x, y + 0.5f, z + off2.y),
-                                terrain.TileAt(x, z, y, dir),
-                                new Vector3(x, y + 0.5f, z), dir.Px3D());
-                        }
-                    }
-                }
-            }
-        }
+        MeshGenerationResult result = terrain.Rebuild(regenMesh);
+        quads = result.quads;
+        tris = result.tris;
+        uvs = result.uvs;
+        vertices = result.vertices;
 
         if (regenMesh) {
             selectedQuads.Clear();
-            mesh.Clear();
-
-            mesh.vertices = vertices.ToArray();
-            mesh.triangles = tris.ToArray();
-            mesh.uv = uvs.ToArray();
-
-            mesh.RecalculateBounds();
-            mesh.RecalculateNormals();
         }
-    }
-
-    private void AddQuad(Vector3 lowerLeft, Vector3 upperRight, Tile tile, Vector3 pos, Vector3 normal) {
-        TerrainQuad quad = new TerrainQuad(tris, vertices, uvs, lowerLeft, upperRight, tile, tileset, pos, normal);
-        if (!quads.ContainsKey(pos)) {
-            quads[pos] = new Dictionary<Vector3, TerrainQuad>();
-        }
-        quads[pos][normal] = quad;
     }
 
     private void RepaintMesh() {
@@ -521,7 +460,7 @@ public class TacticsTerrainEditor : Editor {
         terrain.paletteName = palette.name;
         string palettePath = "Assets/Tilesets/Palettes/" + palette.name + ".prefab";
         GameObject tilesetObject = AssetDatabase.LoadAssetAtPath<GameObject>(palettePath);
-        tileset = tilesetObject.transform.GetChild(0).GetComponent<Tilemap>();
+        terrain.tileset = tilesetObject.transform.GetChild(0).GetComponent<Tilemap>();
     }
 
     private void PaintTileIfNeeded() {
@@ -577,19 +516,20 @@ public class TacticsTerrainEditor : Editor {
 
     private void UpdateTile(TerrainQuad quad, Tile tile) {
         TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
-        quad.UpdateTile(tile, tileset, 0.0f);
+        quad.UpdateTile(tile, terrain.tileset, 0.0f);
         terrain.SetTile((int)quad.pos.x, (int)quad.pos.z, tile);
     }
 
     private void UpdateTile(TerrainQuad quad, OrthoDir dir, Tile tile) {
         TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
-        quad.UpdateTile(tile, tileset, quad.pos.y);
+        quad.UpdateTile(tile, terrain.tileset, quad.pos.y);
         terrain.SetTile((int)quad.pos.x, (int)quad.pos.z, quad.pos.y - 0.5f, dir, tile);
     }
 
     private Tile TileForSelection(int x, int y) {
+        TacticsTerrainMesh terrain = (TacticsTerrainMesh)target;
         if (paletteBufferSize == Vector2.zero) {
-            return tileset.GetTile<Tile>(new Vector3Int(
+            return terrain.tileset.GetTile<Tile>(new Vector3Int(
                 (int)tileSelectRect.x + (x % (int)tileSelectRect.width),
                 (int)tileSelectRect.y + (y % (int)tileSelectRect.height),
                 0));
