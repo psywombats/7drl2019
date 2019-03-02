@@ -68,19 +68,18 @@ public class BattleUnit {
     }
 
     // select + execute a skill
-    public IEnumerator PlayNextActionRoutine(IEnumerator cancelRoutine) {
+    public IEnumerator PlayNextActionRoutine(Result<Effector> effectResult) {
+        int energyExpended = 0;
+
         Result<Skill> skillResult = new Result<Skill>();
         yield return SelectSkillRoutine(skillResult);
         if (skillResult.canceled) {
-            yield return cancelRoutine;
+            effectResult.Cancel();
         } else {
-            Result<Effector> effectResult = new Result<Effector>();
             yield return skillResult.value.PlaySkillRoutine(this, effectResult);
             if (effectResult.canceled) {
-                yield return PlayNextActionRoutine(cancelRoutine);
-            } else {
-                // TODO: add the effect to the undo stack
-                yield return PostActionRoutine();
+                effectResult.Reset();
+                yield return PlayNextActionRoutine(effectResult);
             }
         }
     }

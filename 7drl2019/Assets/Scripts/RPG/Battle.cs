@@ -140,7 +140,12 @@ public class Battle {
             return unit.align == Alignment.Hero && !unit.hasActedThisTurn;
         }, false);
         BattleUnit actingUnit = unitResult.value;
-        yield return actingUnit.PlayNextActionRoutine(PlayNextHumanActionRoutine());
+
+        Result<Effector> effectResult = new Result<Effector>();
+        yield return actingUnit.PlayNextActionRoutine(effectResult);
+        if (effectResult.canceled) {
+            yield return PlayNextHumanActionRoutine();
+        }
 
 
         //// TODO: remove this nonsense
