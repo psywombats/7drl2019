@@ -224,7 +224,8 @@ public class MathHelper3D {
             }
             if (mesh.HeightAt(Mathf.FloorToInt(atX), Mathf.FloorToInt(atZ)) > atY) {
                 // translucency would go here but, no
-                if (Math.Abs(atX - start.x) > float.Epsilon || Math.Abs(atZ - start.z) > float.Epsilon) {
+                if (Math.Abs(Mathf.Floor(atX) - Mathf.Floor(start.x)) > 0.0f || 
+                        Math.Abs(Mathf.Floor(atZ) - Mathf.Floor(start.z)) > 0.0f) {
                     return false;
                 }
             }

@@ -46,9 +46,19 @@ public class BattleEvent : MonoBehaviour {
         float fromHeight = terrain.HeightAt(from);
         float toHeight = GetComponent<MapEvent>().parent.terrain.HeightAt(to);
         if (fromHeight < toHeight) {
-            return toHeight - fromHeight <= unit.GetMaxAscent();
+            if (toHeight - fromHeight > unit.GetMaxAscent()) {
+                return false;
+            }
         } else {
-            return fromHeight - toHeight <= unit.GetMaxDescent();
+            if (fromHeight - toHeight > unit.GetMaxDescent()) {
+                return false;
+            }
+        }
+        if ((from - to).sqrMagnitude > 1.0f) {
+            return CanCrossTileGradient(from, new Vector2Int(from.x, to.y)) &&
+                CanCrossTileGradient(from, new Vector2Int(to.x, from.y));
+        } else {
+            return true;
         }
     }
 
