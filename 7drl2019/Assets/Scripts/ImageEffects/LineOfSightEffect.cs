@@ -27,6 +27,16 @@ public class LineOfSightEffect : MonoBehaviour {
         AssignCommonShaderVariables();
     }
 
+    public void Erase() {
+        Destroy(losTexture);
+        if (oldLosTexture != null) {
+            Destroy(oldLosTexture);
+        }
+        losTexture = null;
+        oldLosTexture = null;
+        seenMap = null;
+    }
+
     public void TransitionFromOldLos(float duration) {
         visBlend = 0.0f;
         Tweener tween = DOTween.To(() => visBlend, x => visBlend = x, 1.0f, duration);
@@ -38,7 +48,7 @@ public class LineOfSightEffect : MonoBehaviour {
         Profiler.BeginSample("los");
         TacticsTerrainMesh mesh = GetComponent<TacticsTerrainMesh>();
 
-        if (hero == null) {
+        if (seenMap == null) {
             seenMap = new bool[mesh.size.x, mesh.size.y];
             for (int y = 0; y < mesh.size.y; y += 1) {
                 for (int x = 0; x < mesh.size.x; x += 1) {

@@ -1,5 +1,6 @@
 ﻿using MoonSharp.Interpreter;
 using System;
+using System.Collections;
 using UnityEngine;
 
 [MoonSharpUserData]
@@ -26,13 +27,11 @@ public class LuaMapEvent {
     }
 
     [MoonSharpHidden]
-    public void Run(string eventName, Action callback = null) {
+    public IEnumerator RunRoutine(string eventName) {
         DynValue function = luaValue.Table.Get(eventName);
-        if (function == DynValue.Nil) {
-            callback?.Invoke();
-        } else {
+        if (function != DynValue.Nil) {
             LuaScript script = new LuaScript(context, function);
-            Global.Instance().StartCoroutine(CoUtils.RunWithCallback(script.RunRoutine(), callback));
+            yield return script.RunRoutine();
         }
     }
 

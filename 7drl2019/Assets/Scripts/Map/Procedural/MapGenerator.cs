@@ -8,37 +8,73 @@ public class MapGenerator : MonoBehaviour {
 
     private int MaxHeightDelta = 2;
 
+    public Vector2Int sizeInRooms;
+    public int stairLength = 3;
+
     public Vector2Int entryRoomCoords = new Vector2Int(0, 0);
     public Vector2Int exitRoomCoords = new Vector2Int(4, 4);
 
-    public Vector2Int sizeInRooms;
-    public int stairLength = 3;
     [HideInInspector] public Vector2Int sizeInCells { get; private set; }
     [HideInInspector] public CellInfo[,] cells { get; private set; }
     [HideInInspector] public RoomInfo[,] rooms { get; private set; }
     [HideInInspector] public int[] widths { get; private set; }
     [HideInInspector] public int[] heights { get; private set; }
 
-    public void GenerateMesh() {
+    [Space]
+    public MapEvent3D startEventPrefab;
+    public MapEvent3D endEventPrefab;
+
+    public bool startStairsSW, endStairsNW;
+
+    public void GenerateMesh(MapGenerator lastMap = null) {
+
+        // copy oldbie values if needed
+        if (lastMap != null) {
+            sizeInRooms = lastMap.sizeInRooms;
+            stairLength = lastMap.stairLength;
+            startEventPrefab = lastMap.startEventPrefab;
+            endEventPrefab = lastMap.endEventPrefab;
+        }
+        
+        // wipe what's already there
         TacticsTerrainMesh mesh = GetComponent<TacticsTerrainMesh>();
         mesh.ClearTiles();
+        foreach (MapEvent toRemove in GetComponent<Map>().GetEvents<MapEvent>()) {
+            if (toRemove.GetComponent<AvatarEvent>() == null) {
+                GetComponent<Map>().RemoveEvent(toRemove, true);
+            }
+        }
 
+        // work out some constants
         int seed =  (int)DateTime.Now.Ticks;
         Random.InitState(seed);
         Debug.Log("using seed " + seed);
-        
         rooms = new RoomInfo[sizeInRooms.x, sizeInRooms.y];
-
         sizeInCells = sizeInRooms * 2 - new Vector2Int(1, 1);
         cells = new CellInfo[sizeInCells.x, sizeInCells.y];
 
         // are we going to add the starting stairwell on the left or right?
-        bool startStairsSW, endStairsNW;
-        if (entryRoomCoords == Vector2Int.zero) startStairsSW = Flip();
-        else if (entryRoomCoords.y > 0) startStairsSW = true;
-        else startStairsSW = false;
+        if (lastMap != null) {
+            if (lastMap.endStairsNW) {
+                entryRoomCoords = new Vector2Int(Random.Range(0, 2), 0);
+                startStairsSW = false;
+            } else {
+                entryRoomCoords = new Vector2Int(0, Random.Range(0, 2));
+                startStairsSW = true;
+            }
+            exitRoomCoords = new Vector2Int(sizeInRooms.x - 1, sizeInRooms.y - 1);
+            if (Flip()) {
+                exitRoomCoords.x -= Random.Range(0, 2);
+            } else {
+                exitRoomCoords.y -= Random.Range(0, 2);
+            }
+        } else {
+            if (entryRoomCoords == Vector2Int.zero) startStairsSW = Flip();
+            else if (entryRoomCoords.y > 0) startStairsSW = true;
+            else startStairsSW = false;
+        }
         if (exitRoomCoords == new Vector2Int(sizeInRooms.x - 1, sizeInRooms.y - 1)) endStairsNW = Flip();
-        else if (exitRoomCoords.y < sizeInRooms.y - 1) endStairsNW = true;
+        else if (exitRoomCoords.x < sizeInRooms.x - 1) endStairsNW = true;
         else endStairsNW = false;
 
         // set the size and start of each room and hallway
@@ -231,6 +267,9 @@ public class MapGenerator : MonoBehaviour {
             stairZ = startRoom.cell.startY - 1;
         }
         float stairY = startRoom.z - 0.5f;
+        MapEvent3D startEvent = Instantiate(startEventPrefab);
+        GetComponent<Map>().AddEvent(startEvent);
+        startEvent.SetLocation(new Vector2Int(stairX, stairZ));
         for (int i = 0; i < stairLength; i += 1) {
             mesh.SetHeight(stairX, stairZ, stairY);
             stairY -= 0.5f;
@@ -248,6 +287,9 @@ public class MapGenerator : MonoBehaviour {
             stairZ = endRoom.cell.startY + (endRoom.cell.sizeY / 2);
         }
         stairY = endRoom.z + 0.5f;
+        MapEvent3D endEvent = Instantiate(endEventPrefab);
+        GetComponent<Map>().AddEvent(endEvent);
+        endEvent.SetLocation(new Vector2Int(stairX, stairZ));
         for (int i = 0; i < stairLength; i += 1) {
             mesh.SetHeight(stairX, stairZ, stairY);
             stairY += 0.5f;

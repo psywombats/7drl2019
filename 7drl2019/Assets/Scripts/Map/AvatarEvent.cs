@@ -52,7 +52,7 @@ public class AvatarEvent : MonoBehaviour {
         Vector2Int vectors = GetComponent<MapEvent>().location;
         Vector2Int vsd = dir.XY();
         Vector2Int target = vectors + vsd;
-        GetComponent<CharaEvent>().facing = GetComponent<CharaEvent>().facing;
+        GetComponent<CharaEvent>().facing = dir;
         List<MapEvent> targetEvents = GetComponent<MapEvent>().parent.GetEventsAt(target);
 
         if (!GetComponent<BattleEvent>().CanCrossTileGradient(parent.location, target)) {
@@ -69,18 +69,18 @@ public class AvatarEvent : MonoBehaviour {
             }
         }
 
-        // TODO: 7DRL: attack!!
+        // TODO: 7DRL: attack!?
         if (passable) {
             yield return GetComponent<MapEvent>().StepRoutine(dir);
             foreach (MapEvent targetEvent in toCollide) {
                 if (targetEvent.switchEnabled) {
-                    targetEvent.GetComponent<Dispatch>().Signal(MapEvent.EventCollide, this);
+                    yield return targetEvent.CollideRoutine(this);
                 }
             }
         } else {
             foreach (MapEvent targetEvent in toCollide) {
                 if (targetEvent.switchEnabled && !targetEvent.IsPassableBy(parent)) {
-                    targetEvent.GetComponent<Dispatch>().Signal(MapEvent.EventCollide, this);
+                    yield return targetEvent.CollideRoutine(this);
                 }
             }
         }

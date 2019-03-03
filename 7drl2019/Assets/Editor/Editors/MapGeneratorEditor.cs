@@ -11,5 +11,8 @@ public class MapGeneratorEditor : Editor {
         if (GUILayout.Button("Regenerate")) {
             generator.GenerateMesh();
         }
+        if (GUILayout.Button("Regenerate from last")) {
+            generator.GenerateMesh(generator);
+        }
     }
 }

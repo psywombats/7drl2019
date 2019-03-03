@@ -51,6 +51,7 @@ public class LuaCutsceneContext : LuaContext {
         lua.Globals["cs_teleport"] = (Action<DynValue, DynValue>)Teleport;
         lua.Globals["cs_fadeOutBGM"] = (Action<DynValue>)FadeOutBGM;
         lua.Globals["cs_speak"] = (Action<DynValue, DynValue>)Speak;
+        lua.Globals["cs_nextMap"] = (Action)NextMap;
     }
 
     // === LUA CALLABLE ============================================================================
@@ -71,7 +72,30 @@ public class LuaCutsceneContext : LuaContext {
         RunRoutineFromLua(Global.Instance().Audio.FadeOutRoutine((float)seconds.Number));
     }
 
+    private void Walk(DynValue path) {
+        RunRoutineFromLua(WalkRoutine(path));
+    }
+
     private void Speak(DynValue speaker, DynValue text) {
         RunTextboxRoutineFromLua(MapOverlayUI.Instance().textbox.SpeakRoutine(speaker.String, text.String));
+    }
+
+    private void NextMap() {
+        RunRoutineFromLua(Global.Instance().Maps.NextMapRoutine());
+    }
+
+    // === OUR ROUTINES ============================================================================
+
+    private IEnumerator WalkRoutine(DynValue path) {
+        AvatarEvent avatar = Global.Instance().Maps.avatar;
+        foreach (DynValue dynDir in path.Tuple) {
+            EightDir dir;
+            if (dynDir.String.Equals("forward")) {
+                dir = avatar.GetComponent<CharaEvent>().facing;
+            } else {
+                dir = EightDirExtensions.Parse(dynDir.String);
+            }
+            yield return avatar.GetComponent<MapEvent>().StepRoutine(dir);
+        }
     }
 }

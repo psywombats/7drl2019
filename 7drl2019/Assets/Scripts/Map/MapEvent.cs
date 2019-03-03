@@ -128,13 +128,6 @@ public abstract class MapEvent : MonoBehaviour {
 
             positionPx = transform.localPosition;
 
-            GetComponent<Dispatch>().RegisterListener(EventCollide, (object payload) => {
-                OnCollide((AvatarEvent)payload);
-            });
-            GetComponent<Dispatch>().RegisterListener(EventInteract, (object payload) => {
-                OnInteract((AvatarEvent)payload);
-            });
-
             CheckEnabled();
         }
     }
@@ -232,17 +225,17 @@ public abstract class MapEvent : MonoBehaviour {
 
     // called when the avatar stumbles into us
     // before the step if impassable, after if passable
-    private void OnCollide(AvatarEvent avatar) {
-        luaObject.Run(PropertyCollide);
+    public IEnumerator CollideRoutine(AvatarEvent avatar) {
+        yield return luaObject.RunRoutine(PropertyCollide);
     }
 
     // called when the avatar stumbles into us
     // facing us if impassable, on top of us if passable
-    private void OnInteract(AvatarEvent avatar) {
+    public IEnumerator InteractRoutine(AvatarEvent avatar) {
         if (GetComponent<CharaEvent>() != null) {
             GetComponent<CharaEvent>().facing = DirectionTo(avatar.GetComponent<MapEvent>());
         }
-        luaObject.Run(PropertyInteract);
+        yield return luaObject.RunRoutine(PropertyInteract);
     }
 
     private LuaScript ParseScript(string lua) {

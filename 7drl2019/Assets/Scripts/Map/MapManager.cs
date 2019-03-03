@@ -23,8 +23,33 @@ public class MapManager : MonoBehaviour {
         avatar = activeMap.GetComponentInChildren<AvatarEvent>();
     }
 
-    public void SetUpInitialMap(string mapName) {
-        activeMap = InstantiateMap(mapName);
+    public IEnumerator NextMapRoutine() {
+        EightDir facing = avatar.GetComponent<CharaEvent>().facing;
+        yield return avatar.GetComponent<MapEvent>().StepMultiRoutine(facing, 3);
+
+        TransitionData data = Global.Instance().Database.Transitions.GetData(DefaultTransitionTag);
+        yield return camera.cam.GetComponent<FadeImageEffect>().TransitionRoutine(data, () => {
+            RawNextMap();
+        });
+        facing = avatar.GetComponent<CharaEvent>().facing;
+        yield return avatar.GetComponent<MapEvent>().StepMultiRoutine(facing, 3);
+    }
+
+    public void RawNextMap() {
+        avatar.GetComponent<MapEvent>().SetLocation(new Vector2Int(0, 0));
+        activeMap.GetComponent<BattleController>().Clear();
+
+        MapGenerator oldMap = activeMap.GetComponent<MapGenerator>();
+        MapGenerator newGen = activeMap.gameObject.AddComponent<MapGenerator>();
+        newGen.GenerateMesh(oldMap);
+        Destroy(oldMap);
+        activeMap.GetComponent<LineOfSightEffect>().Erase();
+
+        Vector2Int loc = activeMap.GetEventNamed("TeleStart").location;
+        EightDir dir = avatar.GetComponent<CharaEvent>().facing;
+        loc += dir.XY() * -2;
+        avatar.GetComponent<MapEvent>().SetLocation(loc);
+        
     }
 
     public IEnumerator TeleportRoutine(string mapName, Vector2Int location) {

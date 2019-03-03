@@ -18,7 +18,8 @@ public class BattleController : MonoBehaviour {
 
     // internal state
     private List<BattleUnit> units;
-    private Dictionary<BattleUnit, BattleEvent> dolls;
+    private Dictionary<BattleUnit, BattleEvent> battlers;
+    private bool cleared;
 
     // === INITIALIZATION ==========================================================================
 
@@ -26,8 +27,8 @@ public class BattleController : MonoBehaviour {
         hero = new BattleUnit(heroEvent.unitData, this);
         heroEvent.unit = hero;
         units = new List<BattleUnit>() { heroEvent.unit };
-        dolls = new Dictionary<BattleUnit, BattleEvent>();
-        dolls[heroEvent.unit] = heroEvent;
+        battlers = new Dictionary<BattleUnit, BattleEvent>();
+        battlers[heroEvent.unit] = heroEvent;
 
         cursor = Cursor.GetInstance();
         cursor.gameObject.transform.SetParent(GetComponent<Map>().objectLayer.transform);
@@ -44,10 +45,20 @@ public class BattleController : MonoBehaviour {
         }
     }
 
+    // we're about to teleport off of this map
+    public void Clear() {
+        units.Clear();
+        units.Add(hero);
+
+        battlers.Clear();
+        battlers[heroEvent.unit] = heroEvent;
+        cleared = true;
+    }
+
     // === GETTERS AND BOOKKEEPING =================================================================
 
     public BattleEvent GetEventForBattler(BattleUnit unit) {
-        return dolls[unit];
+        return battlers[unit];
     }
 
     public BattleUnit GetUnitAt(Vector2Int position) {
@@ -73,6 +84,9 @@ public class BattleController : MonoBehaviour {
         yield return ui.PlayNextCommand(executeResult);
         if (executeResult.value) {
             // TODO: 7drl: ai and turn processing
+        }
+        if (cleared) {
+            cleared = false;
         }
 
         //Result<Effector> effectResult = new Result<Effector>();

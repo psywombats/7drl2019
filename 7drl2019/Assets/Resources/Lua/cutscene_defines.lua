@@ -19,3 +19,8 @@ function speak(speaker, line)
     cs_speak(speaker, line)
     await()
 end
+
+function nextMap()
+    cs_nextMap()
+    await()
+end

@@ -136,12 +136,28 @@ public class Map : MonoBehaviour {
     public MapEvent GetEventNamed(string eventName) {
         foreach (ObjectLayer layer in GetComponentsInChildren<ObjectLayer>()) {
             foreach (MapEvent mapEvent in layer.GetComponentsInChildren<MapEvent>()) {
-                if (mapEvent.name == eventName) {
+                if (mapEvent.name.StartsWith(eventName)) {
                     return mapEvent;
                 }
             }
         }
         return null;
+    }
+
+    public void AddEvent(MapEvent toAdd) {
+        toAdd.transform.SetParent(objectLayer.transform);
+        toAdd.SetScreenPositionToMatchTilePosition();
+    }
+
+    public void RemoveEvent(MapEvent toRemove, bool allowEditDelete = false) {
+        // i dunno
+        if (!Application.isPlaying && allowEditDelete) {
+            DestroyImmediate(toRemove.gameObject);
+        } else {
+            Destroy(toRemove.gameObject);
+        }
+        toRemove.gameObject.SetActive(false);
+        toRemove.gameObject.name = "<deleted>";
     }
 
     public void OnTeleportTo() {
