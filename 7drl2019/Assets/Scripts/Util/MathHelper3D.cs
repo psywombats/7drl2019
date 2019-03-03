@@ -170,4 +170,66 @@ public class MathHelper3D {
         }
         return selectedQuads;
     }
+
+    public static bool InLos(TacticsTerrainMesh mesh, Vector2Int at, Vector2Int to, float range) {
+        if (at == to) {
+            return true;
+        }
+        Vector3 at3 = new Vector3(at.x + 0.5f, mesh.HeightAt(at.x, at.y) + 1.5f, at.y + 0.5f);
+        Vector3 to3 = new Vector3(to.x + 0.5f, mesh.HeightAt(to.x, to.y) + 1.5f, to.y + 0.5f);
+        Vector3 delta = (to3 - at3);
+        if (delta.sqrMagnitude > range * range) {
+            return false;
+        }
+        Vector3 planar = Vector3.Cross(delta, new Vector3(0, 1, 0)).normalized;
+        if (ClearRayExists(mesh, at3 + planar * 0.4f, to3 + planar * 0.4f)) {
+            return true;
+        } else if (ClearRayExists(mesh, at3 - planar * 0.5f, to3 - planar * 0.5f)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static bool ClearRayExists(TacticsTerrainMesh mesh, Vector3 start, Vector3 end) {
+        Vector3 slope = (end - start).normalized;
+        float atX = start.x;
+        float atY = start.y;
+        float atZ = start.z;
+        float totalM = 0.0f;
+        float targetM = (end - start).sqrMagnitude;
+
+        for (int tries = 0; tries < 10000; tries += 1) {
+            float toNextX = slope.x > 0 ? (1.0f - atX % 1) : (atX % 1);
+            float mToX = toNextX < float.Epsilon ? float.MaxValue : Mathf.Abs(toNextX / slope.x);
+            float toNextY = slope.y > 0 ? (1.0f - atY % 1) : (atY % 1);
+            float mToY = toNextY < float.Epsilon ? float.MaxValue : Mathf.Abs(toNextY / slope.y);
+            float toNextZ = slope.z > 0 ? (1.0f - atZ % 1) : (atZ % 1);
+            float mToZ = toNextZ < float.Epsilon ? float.MaxValue : Mathf.Abs(toNextZ / slope.z);
+            float nextM;
+            if (!float.IsInfinity(mToX) && mToX < mToY && mToX < mToZ) {
+                nextM = mToX;
+            } else if (!float.IsInfinity(mToY) && mToY < mToZ && mToY < mToZ) {
+                nextM = mToY;
+            } else {
+                nextM = mToZ;
+            }
+            atX += nextM * slope.x;
+            atY += nextM * slope.y;
+            atZ += nextM * slope.z;
+            totalM += nextM;
+
+            if (totalM * totalM > targetM) {
+                return true;
+            }
+            if (mesh.HeightAt(Mathf.FloorToInt(atX), Mathf.FloorToInt(atZ)) > atY) {
+                // translucency would go here but, no
+                if (Math.Abs(atX - start.x) > float.Epsilon || Math.Abs(atZ - start.z) > float.Epsilon) {
+                    return false;
+                }
+            }
+        }
+        Debug.LogError("major fuckup");
+        return true;
+    }
 }

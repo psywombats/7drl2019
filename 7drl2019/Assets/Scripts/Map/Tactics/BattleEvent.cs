@@ -52,10 +52,9 @@ public class BattleEvent : MonoBehaviour {
         }
     }
 
-    public bool CanSeeLocation(Vector2Int location) {
-        // TODO: 7drl
-        float range = unitData.stats.Get(StatTag.SIGHT) * unitData.stats.Get(StatTag.SIGHT);
-        return (this.location - location).sqrMagnitude < range;
+    public bool CanSeeLocation(TacticsTerrainMesh mesh, Vector2Int location) {
+        return MathHelper3D.InLos(mesh, this.location, location, unit.Get(StatTag.SIGHT));
+
     }
 
     public IEnumerator PostActionRoutine() {

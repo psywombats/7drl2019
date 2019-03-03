@@ -30,10 +30,11 @@ public class LineOfSightEffect : MonoBehaviour {
     }
 
     public void RecalculateVisibilityMap() {
-        AvatarEvent hero;
+        AvatarEvent hero = null;
         if (Application.isPlaying) {
             hero = Global.Instance().Maps.avatar;
-        } else {
+        }
+        if (hero == null) { 
             hero = FindObjectOfType<AvatarEvent>();
         }
         TacticsTerrainMesh mesh = GetComponent<TacticsTerrainMesh>();
@@ -49,7 +50,7 @@ public class LineOfSightEffect : MonoBehaviour {
         Color[] map = new Color[mesh.size.x * mesh.size.y];
         for (int y = 0; y < mesh.size.y; y += 1) {
             for (int x = 0; x < mesh.size.x; x += 1) {
-                bool visible = hero.GetComponent<BattleEvent>().CanSeeLocation(new Vector2Int(x, y));
+                bool visible = hero.GetComponent<BattleEvent>().CanSeeLocation(mesh, new Vector2Int(x, y));
                 map[y * mesh.size.x + x] = new Color(visible ? 1.0f : 0.0f, 1.0f, 1.0f);
             }
         }
