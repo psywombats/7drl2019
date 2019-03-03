@@ -21,7 +21,7 @@ public class BattleController : MonoBehaviour {
     // === INITIALIZATION ==========================================================================
 
     public void Start() {
-        hero = new BattleUnit(heroEvent.unitData, this, heroEvent.GetComponent<MapEvent>().location);
+        hero = new BattleUnit(heroEvent.unitData, this);
         heroEvent.unit = hero;
         units = new List<BattleUnit>() { heroEvent.unit };
         dolls = new Dictionary<BattleUnit, BattleEvent>();

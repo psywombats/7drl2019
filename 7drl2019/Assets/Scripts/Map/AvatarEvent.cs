@@ -28,7 +28,7 @@ public class AvatarEvent : MonoBehaviour {
     }
 
     private void Interact() {
-        Vector2Int target = GetComponent<MapEvent>().location + GetComponent<CharaEvent>().facing.XY2D();
+        Vector2Int target = GetComponent<MapEvent>().location + GetComponent<CharaEvent>().facing.XY();
         List<MapEvent> targetEvents = GetComponent<MapEvent>().parent.GetEventsAt(target);
         foreach (MapEvent tryTarget in targetEvents) {
             if (tryTarget.switchEnabled && !tryTarget.IsPassableBy(parent)) {
@@ -52,7 +52,7 @@ public class AvatarEvent : MonoBehaviour {
         Vector2Int vectors = GetComponent<MapEvent>().location;
         Vector2Int vsd = dir.XY();
         Vector2Int target = vectors + vsd;
-        GetComponent<CharaEvent>().facing = OrthoDirExtensions.FromEight(dir, GetComponent<CharaEvent>().facing);
+        GetComponent<CharaEvent>().facing = GetComponent<CharaEvent>().facing;
         List<MapEvent> targetEvents = GetComponent<MapEvent>().parent.GetEventsAt(target);
 
         if (!GetComponent<BattleEvent>().CanCrossTileGradient(parent.location, target)) {

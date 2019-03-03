@@ -22,8 +22,7 @@ public class MapGenerator : MonoBehaviour {
         int seed =  (int)DateTime.Now.Ticks;
         Random.InitState(seed);
         Debug.Log("using seed " + seed);
-
-        sizeInRooms = new Vector2Int(3, 3);
+        
         rooms = new RoomInfo[sizeInRooms.x, sizeInRooms.y];
 
         sizeInCells = sizeInRooms * 2 - new Vector2Int(1, 1);
@@ -82,7 +81,10 @@ public class MapGenerator : MonoBehaviour {
                     if (x == 0 && y == 0) {
                         z = 1;
                     } else {
-                        int oldZ = (x == 0 || (Flip() && y != 0)) ? rooms[x, y - 1].z : rooms[x - 1, y].z;
+                        int oldZ;
+                        if (y == 0) oldZ = rooms[x - 1, y].z;
+                        else if (x == 0) oldZ = rooms[x, y - 1].z;
+                        else oldZ = Math.Max(rooms[x, y - 1].z, rooms[x - 1, y].z);
                         z = RandomNewZ(oldZ);
                     }
                     rooms[x, y] = new RoomInfo(cells[x * 2, y * 2], z);
@@ -125,7 +127,7 @@ public class MapGenerator : MonoBehaviour {
             roomsToGo.RemoveAt(index);
             cells[(room.cell.x + adj.cell.x) / 2, (room.cell.y + adj.cell.y) / 2].connected = true;
             room.cell.connected = adj.cell.connected;
-            Debug.Log("connecting " + room + " to " + adj);
+
             if (adj.cell.connected) {
                 UpdatePassability();
             }
@@ -137,8 +139,13 @@ public class MapGenerator : MonoBehaviour {
                 CellInfo cell = cells[x, y];
                 if (cell.type == CellInfo.CellType.Hall && cell.connected) {
                     List<RoomInfo> rooms = cell.AdjacentRooms(this);
-                    if (Math.Abs(rooms[0].z - rooms[1].z) > 1) {
-                        cell.type = CellInfo.CellType.Stairway;
+                    float deltaZ = Math.Abs(rooms[0].z - rooms[1].z);
+                    if (deltaZ > 1) {
+                        if (deltaZ > cell.sizeX / 2 && deltaZ > cell.sizeY / 2) {
+                            cell.type = CellInfo.CellType.Switchback;
+                        } else {
+                            cell.type = CellInfo.CellType.Stairway;
+                        }
                     }
                 }
             }
@@ -157,6 +164,10 @@ public class MapGenerator : MonoBehaviour {
                         cell.pillarZ = rooms[(x + 1) / 2, (y + 1) / 2].z;
                         e.stairAnchoredHigh = true;
                         n.stairAnchoredHigh = true;
+                    } else if (s.type == CellInfo.CellType.Switchback && s.sizeX > 1) {
+                        cell.pillarZ = (s.AdjacentRooms(this)[0].z + s.AdjacentRooms(this)[1].z) / 2.0f;
+                    } else if (w.type == CellInfo.CellType.Switchback && s.sizeY > 1) {
+                        cell.pillarZ = (w.AdjacentRooms(this)[0].z + w.AdjacentRooms(this)[1].z) / 2.0f;
                     } else {
                         cell.pillarZ = rooms[(x - 1) / 2, (y - 1) / 2].z;
                     }
@@ -237,29 +248,26 @@ public class MapGenerator : MonoBehaviour {
     }
 
     private int RandomHallSize() {
-        //int h;
-        //float r = Random.Range(0.0f, 1.0f);
-        //if      (r < 0.5)   h = 2;
-        //else if (r < 0.75)  h = 3;
-        //else if (r < 0.95)  h = 1;
-        //else                h = 5;
-        //return h;
-        return 1;
+        int h;
+        float r = Random.Range(0.0f, 1.0f);
+        if (r < 0.4) h = 2;
+        else if (r < 0.70) h = 3;
+        else if (r < 0.90) h = 1;
+        else h = 5;
+        return h;
     }
 
     private int RandomRoomSize() {
         // we're standardizing rooms at 7*7 so as to be able to fill them with hand stuff
-        return 7;
+        return 5;
     }
 
     private int RandomNewZ(int oldZ) {
-        //int z;
-        //float r = Random.Range(0.0f, 1.0f);
-        //if      (r < 0.3)   z = oldZ;
-        //else if (r < 0.5)   z = oldZ + 2;
-        //else if (r < 0.95)  z = oldZ + 4;
-        //else                z = oldZ + 6;
-        //return z;
-        return oldZ + 3;
+        int z;
+        float r = Random.Range(0.0f, 1.0f);
+        if (r < 0.3)        z = oldZ;
+        else if (r < 0.5)   z = oldZ + 2;
+        else                z = oldZ + 4;
+        return z;
     }
 }

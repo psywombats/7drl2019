@@ -59,11 +59,11 @@ public class LuaMapEvent {
     // === CALLED BY LUA === 
 
     public void face(string directionName) {
-        mapEvent.GetComponent<CharaEvent>().facing = OrthoDirExtensions.Parse(directionName);
+        mapEvent.GetComponent<CharaEvent>().facing = EightDirExtensions.Parse(directionName);
     }
 
     public void faceToward(LuaMapEvent other) {
-        mapEvent.GetComponent<CharaEvent>().facing = mapEvent.OrthoDirTo(other.mapEvent);
+        mapEvent.GetComponent<CharaEvent>().facing = mapEvent.DirectionTo(other.mapEvent);
     }
 
     public int x() {

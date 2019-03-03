@@ -9,6 +9,7 @@ public class TacticsCameraEditor : Editor {
         MapCamera camera = (MapCamera)target;
         
         if (GUILayout.Button("Center")) {
+            camera.initialTarget.SetScreenPositionToMatchTilePosition();
             if (Application.isPlaying) {
                 camera.WarpToTarget();
             } else {

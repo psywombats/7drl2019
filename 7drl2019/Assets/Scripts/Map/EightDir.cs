@@ -2,14 +2,14 @@
 using UnityEngine;
 
 public enum EightDir {
-    [EightDir("North", 0, 0, 1, 0)] N,
-    [EightDir("Northeast", 1, 0, 1, 4)] NE,
-    [EightDir("East", 1, 0, 0, 1)] E,
-    [EightDir("Southeast", 1, 0, -1, 5)] SE,
-    [EightDir("South", 0, 0, -1, 2)] S,
-    [EightDir("Southwest", -1, 0, -1, 6)] SW,
-    [EightDir("West", -1, 0, 0, 3)] W,
-    [EightDir("Northwest", -1, 0, 1, 7)] NW,
+    [EightDir("North",      1,  0,  1,  0)] N,
+    [EightDir("Northeast",  1,  0,  0,  4)] NE,
+    [EightDir("East",       1,  0, -1,  1)] E,
+    [EightDir("Southeast",  0,  0, -1,  5)] SE,
+    [EightDir("South",     -1,  0, -1,  2)] S,
+    [EightDir("Southwest", -1,  0,  0,  6)] SW,
+    [EightDir("West",      -1,  0,  1,  3)] W,
+    [EightDir("Northwest",  0,  0,  1,  7)] NW,
 }
 
 public class EightDirAttribute : Attribute {

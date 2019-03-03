@@ -34,11 +34,13 @@ public class MapEventEditor : Editor {
         Vector2Int newPosition = EditorGUILayout.Vector2IntField("Tiles position", mapEvent.location);
         if (newPosition != mapEvent.location) {
             mapEvent.SetLocation(newPosition);
+            EditorUtility.SetDirty(mapEvent);
         }
 
         Vector2Int newSize = EditorGUILayout.Vector2IntField("Size", mapEvent.size);
         if (newSize != mapEvent.size) {
             mapEvent.SetSize(newSize);
+            EditorUtility.SetDirty(mapEvent);
         }
 
         base.OnInspectorGUI();

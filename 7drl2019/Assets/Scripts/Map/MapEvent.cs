@@ -24,8 +24,8 @@ public abstract class MapEvent : MonoBehaviour {
     public const string EventMove = "move";
 
     // Editor properties
-    [HideInInspector] public Vector2Int location = new Vector2Int(0, 0);
-    [HideInInspector] public Vector2Int size = new Vector2Int(1, 1);
+    [HideInInspector] public Vector2Int location;
+    [HideInInspector] public Vector2Int size;
     [Space]
     [Header("Movement")]
     public float tilesPerSecond = 2.0f;
@@ -108,6 +108,10 @@ public abstract class MapEvent : MonoBehaviour {
 
     public EightDir DirectionTo(Vector2Int location) {
         return EightDirExtensions.DirectionOf(this.location - location);
+    }
+
+    public EightDir DirectionTo(MapEvent other) {
+        return EightDirExtensions.DirectionOf(location - other.location);
     }
 
     public abstract float CalcTilesPerSecond();
@@ -236,7 +240,7 @@ public abstract class MapEvent : MonoBehaviour {
     // facing us if impassable, on top of us if passable
     private void OnInteract(AvatarEvent avatar) {
         if (GetComponent<CharaEvent>() != null) {
-            GetComponent<CharaEvent>().facing = OrthoDirTo(avatar.GetComponent<MapEvent>());
+            GetComponent<CharaEvent>().facing = DirectionTo(avatar.GetComponent<MapEvent>());
         }
         luaObject.Run(PropertyInteract);
     }

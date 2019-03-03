@@ -16,7 +16,7 @@ public class CharaEventEditor : Editor {
             EditorUtility.SetDirty(target);
         }
 
-        OrthoDir facing = (OrthoDir)EditorGUILayout.EnumPopup("Facing", chara.facing);
+        EightDir facing = (EightDir)EditorGUILayout.EnumPopup("Facing", chara.facing);
         if (facing != chara.facing) {
             chara.facing = facing;
             chara.UpdateAppearance();

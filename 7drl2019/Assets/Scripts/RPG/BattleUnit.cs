@@ -7,7 +7,7 @@ public class BattleUnit {
     public Unit unit { get; private set; }
     public BattleController battle { get; set; }
     public Alignment align { get { return unit.align; } }
-    public Vector2Int location { get; set; }
+    public Vector2Int location { get { return battler.location; } }
 
     public BattleEvent battler {
         get {
@@ -20,11 +20,9 @@ public class BattleUnit {
     // we create battle units from three sources
     //  - unit, this is a keyed by what comes in from tiled and used to look up hero/enemy in db
     //  - battle, the parent battle creating this unit for
-    //  - starting location, gleened from the tiled event usually
-    public BattleUnit(Unit unit, BattleController battle, Vector2Int location) {
+    public BattleUnit(Unit unit, BattleController battle) {
         this.unit = unit;
         this.battle = battle;
-        this.location = location;
     }
 
     // === RPG =====================================================================================

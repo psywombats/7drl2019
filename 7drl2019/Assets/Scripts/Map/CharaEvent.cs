@@ -12,7 +12,7 @@ using UnityEditor;
 public class CharaEvent : MonoBehaviour {
 
     private const float Gravity = -20.0f;
-    private const float JumpHeightUpMult = 1.2f;
+    private const float JumpHeightUpMult = 2.0f;
     private const float JumpHeightDownMult = 1.6f;
     private const string DefaultMaterial2DPath = "Materials/Sprite2D";
     private const string DefaultMaterial3DPath = "Materials/Sprite3D";
@@ -26,7 +26,6 @@ public class CharaEvent : MonoBehaviour {
     public SpriteRenderer itemLayer;
     public float desaturation = 0.0f;
     public bool alwaysAnimates = false;
-    public bool dynamicFacing = false;
 
     private Dictionary<string, Sprite> sprites;
     private Vector2 lastPosition;
@@ -58,12 +57,12 @@ public class CharaEvent : MonoBehaviour {
 
     [SerializeField]
     [HideInInspector]
-    private OrthoDir _facing = OrthoDir.South;
-    public OrthoDir facing {
+    private EightDir _facing = EightDir.S;
+    public EightDir facing {
         get { return _facing; }
         set {
             _facing = value;
-            if (facing == OrthoDir.North) {
+            if (facing == EightDir.N) {
                 armsLayer.sortingOrder = -1;
             } else {
                 armsLayer.sortingOrder = 1;
@@ -83,7 +82,7 @@ public class CharaEvent : MonoBehaviour {
     public void Start() {
         CopyShaderValues();
         GetComponent<Dispatch>().RegisterListener(MapEvent.EventMove, (object payload) => {
-            facing = (OrthoDir)payload;
+            facing = (EightDir)payload;
         });
         GetComponent<Dispatch>().RegisterListener(MapEvent.EventEnabled, (object payload) => {
             bool enabled = (bool)payload;
@@ -130,11 +129,11 @@ public class CharaEvent : MonoBehaviour {
     }
 
     public void FaceToward(MapEvent other) {
-        facing = parent.OrthoDirTo(other);
+        facing = parent.DirectionTo(other);
     }
 
     public Sprite FrameBySlot(int x) {
-        return sprites[NameForFrame(spritesheet.name, x, facing.Ordinal())];
+        return sprites[NameForFrame(spritesheet.name, x, DirectionRelativeToCamera().Ordinal())];
     }
     public Sprite FrameBySlot(int x, int y) {
         string name = NameForFrame(spritesheet.name, x, y);
@@ -154,7 +153,7 @@ public class CharaEvent : MonoBehaviour {
     }
 
     public IEnumerator StepRoutine(EightDir dir) {
-        facing = OrthoDirExtensions.FromEight(dir, facing);
+        facing = dir;
         Vector2Int offset = dir.XY();
         Vector3 startPx = parent.positionPx;
         targetPx = parent.TileToWorldCoords(parent.location);
@@ -162,9 +161,9 @@ public class CharaEvent : MonoBehaviour {
             yield return parent.LinearStepRoutine(dir);
         } else if (targetPx.y > startPx.y) {
             // jump up routine routine
-            float duration = (targetPx - startPx).magnitude / parent.CalcTilesPerSecond() / 2.0f * JumpHeightUpMult;
+            float duration = (targetPx - startPx).magnitude / parent.CalcTilesPerSecond() * JumpHeightUpMult;
             yield return JumpRoutine(startPx, targetPx, duration);
-            overrideBodySprite = FrameBySlot(0, facing.Ordinal()); // "prone" frame
+            overrideBodySprite = FrameBySlot(0, DirectionRelativeToCamera().Ordinal()); // "prone" frame
             yield return CoUtils.Wait(1.0f / parent.CalcTilesPerSecond() / 2.0f);
             overrideBodySprite = null;
         } else {
@@ -190,7 +189,7 @@ public class CharaEvent : MonoBehaviour {
             bool isBigDrop = dy <= -1.0f;
             yield return JumpRoutine(parent.transform.position, targetPx, jumpDuration, isBigDrop);
             if (isBigDrop) {
-                overrideBodySprite = FrameBySlot(2, facing.Ordinal()); // "prone" frame
+                overrideBodySprite = FrameBySlot(2, DirectionRelativeToCamera().Ordinal()); // "prone" frame
                 yield return CoUtils.Wait(JumpHeightDownMult / parent.CalcTilesPerSecond() / 2.0f);
                 overrideBodySprite = null;
             }
@@ -239,8 +238,14 @@ public class CharaEvent : MonoBehaviour {
     private void LoadSpritesheetData() {
         string path = GetComponent<MapEvent3D>() == null ? DefaultMaterial2DPath : DefaultMaterial3DPath;
         foreach (SpriteRenderer renderer in renderers) {
-            if (renderer.material == null) {
-                renderer.material = Resources.Load<Material>(path);
+            if (Application.isPlaying) {
+                if (renderer.material == null) {
+                    renderer.material = Resources.Load<Material>(path);
+                }
+            } else {
+                if (renderer.sharedMaterial == null) {
+                    renderer.sharedMaterial = Resources.Load<Material>(path);
+                }
             }
         }
 
@@ -259,12 +264,9 @@ public class CharaEvent : MonoBehaviour {
 
     private OrthoDir DirectionRelativeToCamera() {
         MapCamera cam = Application.isPlaying ? Global.Instance().Maps.camera : FindObjectOfType<MapCamera>();
-        if (!cam || !dynamicFacing) {
-            return facing;
-        }
 
         Vector3 ourScreen = cam.cam.WorldToScreenPoint(transform.position);
-        Vector3 targetWorld = ((MapEvent3D)parent).TileToWorldCoords(parent.location + facing.XY3D());
+        Vector3 targetWorld = ((MapEvent3D)parent).TileToWorldCoords(parent.location + facing.XY());
         targetWorld.y = parent.transform.position.y;
         Vector3 targetScreen = cam.cam.WorldToScreenPoint(targetWorld);
         Vector3 delta = targetScreen - ourScreen;
@@ -277,7 +279,7 @@ public class CharaEvent : MonoBehaviour {
         }
 
         int x;
-        int y = facing.Ordinal();
+        int y = DirectionRelativeToCamera().Ordinal();
         if (jumping) {
             x = Mathf.FloorToInt(moveTime * JumpStepsPerSecond) % 2 + 3;
         } else {
@@ -290,7 +292,7 @@ public class CharaEvent : MonoBehaviour {
 
     private Sprite SpriteForArms() {
         if (armMode == ArmMode.Disabled && jumping) {
-            return FrameBySlot(ArmMode.Raised.FrameIndex());
+            return FrameBySlot(ArmMode.Overhead.FrameIndex());
         }
         if (armMode.Show()) {
             return FrameBySlot(armMode.FrameIndex());

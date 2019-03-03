@@ -136,6 +136,7 @@
 
         Lighting Off
         Blend SrcAlpha OneMinusSrcAlpha
+        Offset 10, -1
 
         CGPROGRAM
         #pragma surface surf Lambert vertex:vert nofog nolightmap nodynlightmap keepalpha noinstancing
