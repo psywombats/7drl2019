@@ -22,7 +22,7 @@ public class BattleEvent : MonoBehaviour {
         }
     }
 
-    public Vector2Int location { get { return unit.location; } }
+    public Vector2Int location { get { return GetComponent<MapEvent3D>().location; } }
 
     public void Setup(BattleController controller, BattleUnit unit) {
         this.unit = unit;
@@ -42,14 +42,6 @@ public class BattleEvent : MonoBehaviour {
         GetComponent<MapEvent>().SetLocation(unit.location);
     }
 
-    public IEnumerator PostActionRoutine() {
-        yield return GetComponent<CharaEvent>().DesaturateRoutine(1.0f);
-    }
-
-    public IEnumerator PostTurnRoutine() {
-        yield return GetComponent<CharaEvent>().DesaturateRoutine(0.0f);
-    }
-
     public bool CanCrossTileGradient(Vector2Int from, Vector2Int to) {
         float fromHeight = terrain.HeightAt(from);
         float toHeight = GetComponent<MapEvent>().parent.terrain.HeightAt(to);
@@ -58,5 +50,19 @@ public class BattleEvent : MonoBehaviour {
         } else {
             return fromHeight - toHeight <= unit.GetMaxDescent();
         }
+    }
+
+    public bool CanSeeLocation(Vector2Int location) {
+        // TODO: 7drl
+        float range = unitData.stats.Get(StatTag.SIGHT) * unitData.stats.Get(StatTag.SIGHT);
+        return (this.location - location).sqrMagnitude < range;
+    }
+
+    public IEnumerator PostActionRoutine() {
+        yield return GetComponent<CharaEvent>().DesaturateRoutine(1.0f);
+    }
+
+    public IEnumerator PostTurnRoutine() {
+        yield return GetComponent<CharaEvent>().DesaturateRoutine(0.0f);
     }
 }

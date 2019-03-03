@@ -267,6 +267,10 @@ public abstract class MapEvent : MonoBehaviour {
         }
 
         location += dir.XY();
+        if (GetComponent<AvatarEvent>() != null) {
+            parent.GetComponent<LineOfSightEffect>().RecalculateVisibilityMap();
+            parent.GetComponent<LineOfSightEffect>().TransitionFromOldLos(1.0f / CalcTilesPerSecond());
+        }
 
         if (GetComponent<CharaEvent>() == null) {
             yield return LinearStepRoutine(dir);

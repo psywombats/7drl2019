@@ -43,6 +43,7 @@ public class Stat {
         AddStat(StatTag.HP,         CombinationAdditive.Instance(), "HP",       false);
         AddStat(StatTag.MOVE,       CombinationAdditive.Instance(), "MOVE",     false);
         AddStat(StatTag.JUMP,       CombinationAdditive.Instance(), "JUMP",     false);
+        AddStat(StatTag.SIGHT,      CombinationAdditive.Instance(), "SIGHT",    false);
     }
 
     private static void AddStat(StatTag tag, CombinationStrategy combinator, string nameShort, bool useBinaryEditor) {

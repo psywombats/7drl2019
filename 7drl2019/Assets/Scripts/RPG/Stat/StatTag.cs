@@ -10,4 +10,5 @@
 
     MOVE,
     JUMP,
+    SIGHT,
 }

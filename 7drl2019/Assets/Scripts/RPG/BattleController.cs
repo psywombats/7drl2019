@@ -36,6 +36,8 @@ public class BattleController : MonoBehaviour {
         dirCursor.gameObject.SetActive(false);
 
         ui = FindObjectOfType<RogueUI>();
+
+        StartCoroutine(BattleRoutine());
     }
 
     // === GETTERS AND BOOKKEEPING =================================================================
@@ -56,6 +58,7 @@ public class BattleController : MonoBehaviour {
     // === STATE MACHINE ===========================================================================
 
     public IEnumerator BattleRoutine() {
+        GetComponent<LineOfSightEffect>().RecalculateVisibilityMap();
         while (true) {
             yield return PlayNextHumanActionRoutine();
         }

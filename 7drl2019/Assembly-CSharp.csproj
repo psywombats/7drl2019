@@ -104,6 +104,7 @@
     <Compile Include="Assets\Scripts\ImageEffects\FadeoutBehavior.cs" />
     <Compile Include="Assets\Scripts\ImageEffects\GlitchBehavior.cs" />
     <Compile Include="Assets\Scripts\ImageEffects\GlitchImageEffect.cs" />
+    <Compile Include="Assets\Scripts\ImageEffects\LineOfSightEffect.cs" />
     <Compile Include="Assets\Scripts\ImageEffects\SmearBehavior.cs" />
     <Compile Include="Assets\Scripts\ImageEffects\TimeScaleSlider.cs" />
     <Compile Include="Assets\Scripts\IO\AnonymousListener.cs" />
@@ -121,7 +122,6 @@
     <Compile Include="Assets\Scripts\Map\EightDir.cs" />
     <Compile Include="Assets\Scripts\Map\EventAppearance.cs" />
     <Compile Include="Assets\Scripts\Map\Map.cs" />
-    <Compile Include="Assets\Scripts\Map\Map3D\AvatarEvent3D.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\BillboardingSpriteComponent.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\Cursor.cs" />
     <Compile Include="Assets\Scripts\Map\Map3D\DirectionCursor.cs" />
