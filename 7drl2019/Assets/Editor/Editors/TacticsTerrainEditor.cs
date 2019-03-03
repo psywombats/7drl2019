@@ -63,10 +63,6 @@ public class TacticsTerrainEditor : Editor {
         if (GUILayout.Button("Rebuild")) {
             Rebuild(true);
         }
-        if (GUILayout.Button("Procedurally generate")) {
-            terrain.Generate();
-            Rebuild(true);
-        }
         Vector2Int newSize = EditorGUILayout.Vector2IntField("Size", terrain.size);
         if (newSize != terrain.size) {
             terrain.Resize(newSize);

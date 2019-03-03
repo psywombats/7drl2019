@@ -36,11 +36,8 @@ public class TacticsTerrainMesh : MonoBehaviour, ISerializationCallbackReceiver 
 
     // === CONSTRUCTION  ===========================================================================
 
-    public void Generate() {
+    public void ClearFacingTiles() {
         facingTiles.Clear();
-
-        MapGenerator gen = new MapGenerator();
-        gen.GenerateMesh(this);
     }
 
     public void Resize(Vector2Int newSize) {

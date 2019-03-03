@@ -1,26 +1,29 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System;
 using Random = UnityEngine.Random;
 using System.Collections.Generic;
 
-public class MapGenerator {
+[RequireComponent(typeof(TacticsTerrainMesh))]
+public class MapGenerator : MonoBehaviour {
 
-    private int MaxHeightDelta = 3;
+    private int MaxHeightDelta = 2;
 
-    public Vector2Int sizeInRooms { get; private set; }
-    public Vector2Int sizeInCells { get; private set; }
-    public CellInfo[,] cells { get; private set; }
-    public RoomInfo[,] rooms { get; private set; }
-    public int[] widths { get; private set; }
-    public int[] heights { get; private set; }
+    public Vector2Int sizeInRooms;
+    [HideInInspector] public Vector2Int sizeInCells { get; private set; }
+    [HideInInspector] public CellInfo[,] cells { get; private set; }
+    [HideInInspector] public RoomInfo[,] rooms { get; private set; }
+    [HideInInspector] public int[] widths { get; private set; }
+    [HideInInspector] public int[] heights { get; private set; }
 
-    public void GenerateMesh(TacticsTerrainMesh mesh) {
-        int seed = (int)DateTime.Now.Ticks;
+    public void GenerateMesh() {
+        TacticsTerrainMesh mesh = GetComponent<TacticsTerrainMesh>();
+        mesh.ClearFacingTiles();
+
+        int seed =  (int)DateTime.Now.Ticks;
         Random.InitState(seed);
         Debug.Log("using seed " + seed);
 
-        sizeInRooms = new Vector2Int(2, 2);
+        sizeInRooms = new Vector2Int(3, 3);
         rooms = new RoomInfo[sizeInRooms.x, sizeInRooms.y];
 
         sizeInCells = sizeInRooms * 2 - new Vector2Int(1, 1);
@@ -90,25 +93,41 @@ public class MapGenerator {
         }
 
         // determine the initial passability map
-        bool dirty = true;
         cells[0, 0].connected = true;
-        while (dirty) {
-            dirty = false;
+        UpdatePassability();
+
+        // knock down walls until all rooms are accessible
+        List<RoomInfo> roomsToGo = new List<RoomInfo>();
+        for (int x = 0; x < sizeInRooms.x; x += 1) {
             for (int y = 0; y < sizeInRooms.y; y += 1) {
-                for (int x = 0; x < sizeInRooms.x; x += 1) {
-                    RoomInfo room = rooms[x, y];
-                    if (room.cell.connected) {
-                        continue;
-                    }
-                    foreach (RoomInfo other in room.cell.AdjacentRooms(this)) {
-                        if (other.cell.connected && Math.Abs(room.z - other.z) <= MaxHeightDelta) {
-                            room.cell.connected = true;
-                            room.cell.passableDirs[(int)room.cell.DirTo(other.cell)] = true;
-                            other.cell.passableDirs[(int)other.cell.DirTo(room.cell)] = true;
-                            dirty = true;
-                        }
-                    }
+                roomsToGo.Add(rooms[x, y]);
+            }
+        }
+        while (roomsToGo.Count > 0) {
+            int index = Random.Range(0, roomsToGo.Count);
+            RoomInfo room = roomsToGo[index];
+            if (room.cell.connected) {
+                roomsToGo.RemoveAt(index);
+                continue;
+            }
+            List<RoomInfo> adjacents = room.cell.AdjacentRooms(this);
+            Shuffle(adjacents);
+            RoomInfo adj = null;
+            foreach (RoomInfo adj2 in adjacents) {
+                if (adj2.cell.connected) {
+                    adj = adj2;
+                    break;
                 }
+            }
+            if (adj == null) {
+                continue;
+            }
+            roomsToGo.RemoveAt(index);
+            cells[(room.cell.x + adj.cell.x) / 2, (room.cell.y + adj.cell.y) / 2].connected = true;
+            room.cell.connected = adj.cell.connected;
+            Debug.Log("connecting " + room + " to " + adj);
+            if (adj.cell.connected) {
+                UpdatePassability();
             }
         }
 
@@ -116,7 +135,7 @@ public class MapGenerator {
         for (int y = 0; y < sizeInCells.y; y += 1) {
             for (int x = 0; x < sizeInCells.x; x += 1) {
                 CellInfo cell = cells[x, y];
-                if (cell.type == CellInfo.CellType.Hall) {
+                if (cell.type == CellInfo.CellType.Hall && cell.connected) {
                     List<RoomInfo> rooms = cell.AdjacentRooms(this);
                     if (Math.Abs(rooms[0].z - rooms[1].z) > 1) {
                         cell.type = CellInfo.CellType.Stairway;
@@ -137,39 +156,27 @@ public class MapGenerator {
                     if (n.type == CellInfo.CellType.Stairway && e.type == CellInfo.CellType.Stairway) {
                         cell.pillarZ = rooms[(x + 1) / 2, (y + 1) / 2].z;
                         e.stairAnchoredHigh = true;
-                        e.passableDirs[(int)OrthoDir.West] = true;
-                        cell.passableDirs[(int)OrthoDir.East] = true;
                         n.stairAnchoredHigh = true;
-                        n.passableDirs[(int)OrthoDir.South] = true;
-                        cell.passableDirs[(int)OrthoDir.North] = true;
-                    } else if (Math.Abs(rooms[(x + 1) / 2, (y - 1) / 2].z - rooms[(x + 1) / 2, (y - 1) / 2].z) <= 1.0) {
-                        cell.pillarZ = (rooms[(x + 1) / 2, (y - 1) / 2].z + rooms[(x - 1) / 2, (y + 1) / 2].z) / 2.0f;
-                        if (n.type == CellInfo.CellType.Stairway) {
-                            n.stairAnchoredLow = true;
-                            n.passableDirs[(int)OrthoDir.South] = true;
-                            cell.passableDirs[(int)OrthoDir.North] = true;
-                        }
-                        if (e.type == CellInfo.CellType.Stairway) {
-                            e.stairAnchoredLow = true;
-                            e.passableDirs[(int)OrthoDir.West] = true;
-                            cell.passableDirs[(int)OrthoDir.East] = true;
-                        }
-                        if (s.type == CellInfo.CellType.Stairway) {
-                            s.passableDirs[(int)OrthoDir.North] = true;
-                            cell.passableDirs[(int)OrthoDir.South] = true;
-                        }
-                        if (w.type == CellInfo.CellType.Stairway) {
-                            w.passableDirs[(int)OrthoDir.East] = true;
-                            cell.passableDirs[(int)OrthoDir.West] = true;
-                        }
+                    } else {
+                        cell.pillarZ = rooms[(x - 1) / 2, (y - 1) / 2].z;
                     }
                 }
             }
         }
 
+        // decorator fringe
+        RoomInfo cornerRoom = rooms[sizeInRooms.x - 1, sizeInRooms.y - 1];
+        mesh.Resize(new Vector2Int(
+            cornerRoom.cell.startX + cornerRoom.cell.sizeX + 1,
+            cornerRoom.cell.startY + cornerRoom.cell.sizeY + 1));
+        for (int x = 0; x < mesh.size.x; x += 1) {
+            mesh.SetHeight(x, mesh.size.y - 1, cornerRoom.z + MaxHeightDelta + 1);
+        }
+        for (int y = 0; y < mesh.size.y; y += 1) {
+            mesh.SetHeight(mesh.size.x - 1, y, cornerRoom.z + MaxHeightDelta + 1);
+        }
+
         // render terrain
-        CellInfo cornerCell = cells[sizeInCells.x - 1, sizeInCells.y - 1];
-        mesh.Resize(new Vector2Int(cornerCell.startX + cornerCell.sizeX, cornerCell.startY + cornerCell.sizeY));
         for (int y = 0; y < sizeInCells.y; y += 1) {
             for (int x = 0; x < sizeInCells.x; x += 1) {
                 CellInfo cell = cells[x, y];
@@ -186,10 +193,47 @@ public class MapGenerator {
                 }
             }
         }
+
+        mesh.Rebuild(true);
     }
 
     public bool Flip() {
         return Random.Range(0.0f, 1.0f) > 0.5f;
+    }
+
+    private void UpdatePassability() {
+        bool dirty = true;
+
+        while (dirty) {
+            dirty = false;
+            for (int y = 0; y < sizeInRooms.y; y += 1) {
+                for (int x = 0; x < sizeInRooms.x; x += 1) {
+                    RoomInfo room = rooms[x, y];
+                    if (room.cell.connected) {
+                        continue;
+                    }
+                    foreach (RoomInfo other in room.cell.AdjacentRooms(this)) {
+                        CellInfo connector = cells[(room.cell.x + other.cell.x) / 2, (room.cell.y + other.cell.y) / 2];
+                        if (other.cell.connected && (connector.connected || Math.Abs(room.z - other.z) <= MaxHeightDelta)) {
+                            room.cell.connected = true;
+                            connector.connected = true;
+                            dirty = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private static void Shuffle(List<RoomInfo> list) {
+        int n = list.Count;
+        while (n > 1) {
+            n--;
+            int k = Random.Range(0, n);
+            RoomInfo value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
     }
 
     private int RandomHallSize() {
@@ -216,6 +260,6 @@ public class MapGenerator {
         //else if (r < 0.95)  z = oldZ + 4;
         //else                z = oldZ + 6;
         //return z;
-        return oldZ + 2;
+        return oldZ + 3;
     }
 }

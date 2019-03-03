@@ -16,6 +16,8 @@ public class CellInfo {
     public int startX, startY;      // in tilespace
     public int sizeX, sizeY;        // in tilespace
 
+    public bool connected;
+
     public bool stairAnchoredLow, stairAnchoredLow2, stairAnchoredHigh;
     public float pillarZ;
 
@@ -134,10 +136,12 @@ public class CellInfo {
             }
         } else {
             // a normal side staircase
+            bool heightSwap = gen.Flip();
             for (int y = 0; y < sizeY; y += 1) {
                 for (int x = 0; x < sizeX; x += 1) {
                     if (stairAnchoredLow && stairAnchoredHigh) {
                         // stretch across the entire room
+                        heightSwap = false;
                         float t;
                         if (this.x % 2 == 1) {
                             t = (float)x / sizeX;
@@ -148,12 +152,14 @@ public class CellInfo {
                     } else {
                         float h;
                         if (stairAnchoredLow) {
+                            heightSwap = false;
                             if (this.x % 2 == 1) {
                                 h = Mathf.Min(highRoom.z, lowRoom.z + (y + 1) * 0.5f);
                             } else {
                                 h = Mathf.Min(highRoom.z, lowRoom.z + (x + 1) * 0.5f);
                             }
                         } else if (stairAnchoredHigh) {
+                            heightSwap = false;
                             if (this.x % 2 == 1) {
                                 h = Mathf.Max(lowRoom.z, highRoom.z - (y + 1) * 0.5f);
                             } else {
@@ -166,7 +172,7 @@ public class CellInfo {
                                 h = Mathf.Max(lowRoom.z, Mathf.Min(highRoom.z, lowRoom.z + (deltaZ * 0.5f) + (x - sizeX/2) * 0.5f));
                             }
                         }
-                        mesh.SetHeight(startX + x, startY + y, h);
+                        mesh.SetHeight(startX + x, startY + y, heightSwap ? lowRoom.z + (highRoom.z - h) : h);
                     }
                 }
             }
