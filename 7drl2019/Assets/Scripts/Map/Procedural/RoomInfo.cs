@@ -4,9 +4,9 @@ using System.Collections.Generic;
 public class RoomInfo {
 
     public CellInfo cell;
-    public int z;
+    public float z;
 
-    public RoomInfo(CellInfo cell, int z) {
+    public RoomInfo(CellInfo cell, float z) {
         this.cell = cell;
         this.z = z;
     }

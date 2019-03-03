@@ -77,6 +77,9 @@ public class MathHelper3D {
     }
 
     public static float RayDistanceForQuad(List<Vector3> vertices, List<int> tris, Ray ray, TerrainQuad quad) {
+        if (quad.invisible) {
+            return -1.0f;
+        }
         float t1 = IntersectTri(ray,
             vertices[tris[quad.trisIndex + 0]],
             vertices[tris[quad.trisIndex + 1]],

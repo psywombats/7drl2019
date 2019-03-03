@@ -45,6 +45,9 @@ public class BattleEvent : MonoBehaviour {
     public bool CanCrossTileGradient(Vector2Int from, Vector2Int to) {
         float fromHeight = terrain.HeightAt(from);
         float toHeight = GetComponent<MapEvent>().parent.terrain.HeightAt(to);
+        if (toHeight == 0.0f) {
+            return false;
+        }
         if (fromHeight < toHeight) {
             if (toHeight - fromHeight > unit.GetMaxAscent()) {
                 return false;

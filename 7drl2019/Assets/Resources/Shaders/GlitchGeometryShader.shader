@@ -16,7 +16,7 @@
         
         [PerRendererData]_HeroPos("Hero position", Vector) = (0, 0, 0, 0)
         [PerRendererData]_OldHeroPos("Old hero position", Vector) = (0, 0, 0, 0)
-        [PerRendererData]_SightRange("Sight range", Float) = 6.5
+        [PerRendererData]_SightRange("Sight range", Float) = 100.0
         [PerRendererData]_CellResolutionX("Cell count x", Float) = 32.0
         [PerRendererData]_CellResolutionY("Cell count y", Float) = 32.0
         [PerRendererData]_VisibilityTex("Visibility", 2D) = "white" {}

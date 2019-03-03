@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System;
 
@@ -91,7 +90,7 @@ public class CellInfo {
 
     private void RenderHall(MapGenerator gen, TacticsTerrainMesh mesh) {
         List<RoomInfo> rooms = AdjacentRooms(gen);
-        int z = rooms[0].z < rooms[1].z ? rooms[0].z : rooms[1].z;
+        float z = rooms[0].z < rooms[1].z ? rooms[0].z : rooms[1].z;
         RoomInfo room = gen.rooms[x / 2, y / 2];
         for (int y = startY; y < startY + sizeY; y += 1) {
             for (int x = startX; x < startX + sizeX; x += 1) {
@@ -114,7 +113,7 @@ public class CellInfo {
             lowRoom = highRoom;
             highRoom = temp;
         }
-        int deltaZ = highRoom.z - lowRoom.z;
+        float deltaZ = highRoom.z - lowRoom.z;
         
         float d = (float)deltaZ / (sizeX * sizeY);
         bool switched = false;
@@ -154,7 +153,7 @@ public class CellInfo {
             lowRoom = highRoom;
             highRoom = temp;
         }
-        int deltaZ = highRoom.z - lowRoom.z;
+        float deltaZ = highRoom.z - lowRoom.z;
 
         int w = 3;
         if (!stairAnchoredHigh && !stairAnchoredLow &&

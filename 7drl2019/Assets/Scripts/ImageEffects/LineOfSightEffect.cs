@@ -1,5 +1,6 @@
 ﻿using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 [RequireComponent(typeof(TacticsTerrainMesh))]
 public class LineOfSightEffect : MonoBehaviour {
@@ -34,6 +35,7 @@ public class LineOfSightEffect : MonoBehaviour {
     }
 
     public void RecalculateVisibilityMap() {
+        Profiler.BeginSample("los");
         TacticsTerrainMesh mesh = GetComponent<TacticsTerrainMesh>();
 
         if (hero == null) {
@@ -78,6 +80,7 @@ public class LineOfSightEffect : MonoBehaviour {
         }
         losTexture.SetPixels(0, 0, mesh.size.x, mesh.size.y, map);
         losTexture.Apply();
+        Profiler.EndSample();
     }
 
     private void AssignCommonShaderVariables() {

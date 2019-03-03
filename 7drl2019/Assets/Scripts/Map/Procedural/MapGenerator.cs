@@ -8,7 +8,11 @@ public class MapGenerator : MonoBehaviour {
 
     private int MaxHeightDelta = 2;
 
+    public Vector2Int entryRoomCoords = new Vector2Int(0, 0);
+    public Vector2Int exitRoomCoords = new Vector2Int(4, 4);
+
     public Vector2Int sizeInRooms;
+    public int stairLength = 3;
     [HideInInspector] public Vector2Int sizeInCells { get; private set; }
     [HideInInspector] public CellInfo[,] cells { get; private set; }
     [HideInInspector] public RoomInfo[,] rooms { get; private set; }
@@ -17,7 +21,7 @@ public class MapGenerator : MonoBehaviour {
 
     public void GenerateMesh() {
         TacticsTerrainMesh mesh = GetComponent<TacticsTerrainMesh>();
-        mesh.ClearFacingTiles();
+        mesh.ClearTiles();
 
         int seed =  (int)DateTime.Now.Ticks;
         Random.InitState(seed);
@@ -27,6 +31,15 @@ public class MapGenerator : MonoBehaviour {
 
         sizeInCells = sizeInRooms * 2 - new Vector2Int(1, 1);
         cells = new CellInfo[sizeInCells.x, sizeInCells.y];
+
+        // are we going to add the starting stairwell on the left or right?
+        bool startStairsSW, endStairsNW;
+        if (entryRoomCoords == Vector2Int.zero) startStairsSW = Flip();
+        else if (entryRoomCoords.y > 0) startStairsSW = true;
+        else startStairsSW = false;
+        if (exitRoomCoords == new Vector2Int(sizeInRooms.x - 1, sizeInRooms.y - 1)) endStairsNW = Flip();
+        else if (exitRoomCoords.y < sizeInRooms.y - 1) endStairsNW = true;
+        else endStairsNW = false;
 
         // set the size and start of each room and hallway
         cells = new CellInfo[sizeInCells.x, sizeInCells.y];
@@ -59,12 +72,12 @@ public class MapGenerator : MonoBehaviour {
                     cells[x, y].type = CellInfo.CellType.Room;
                 }
                 if (x == 0) {
-                    cells[x, y].startX = 0;
+                    cells[x, y].startX = startStairsSW ? stairLength : 0;
                 } else {
                     cells[x, y].startX = cells[x - 1, y].startX + widths[x - 1];
                 }
                 if (y == 0) {
-                    cells[x, y].startY = 0;
+                    cells[x, y].startY = startStairsSW ? 0 : stairLength;
                 } else {
                     cells[x, y].startY = cells[x, y - 1].startY + heights[y - 1];
                 }
@@ -77,11 +90,11 @@ public class MapGenerator : MonoBehaviour {
             int y = 0;
             while (x >= 0) {
                 if (x < sizeInRooms.x && y < sizeInRooms.y) {
-                    int z;
+                    float z;
                     if (x == 0 && y == 0) {
-                        z = 1;
+                        z = stairLength / 2.0f + 0.5f;
                     } else {
-                        int oldZ;
+                        float oldZ;
                         if (y == 0) oldZ = rooms[x - 1, y].z;
                         else if (x == 0) oldZ = rooms[x, y - 1].z;
                         else oldZ = Math.Max(rooms[x, y - 1].z, rooms[x - 1, y].z);
@@ -177,14 +190,16 @@ public class MapGenerator : MonoBehaviour {
 
         // decorator fringe
         RoomInfo cornerRoom = rooms[sizeInRooms.x - 1, sizeInRooms.y - 1];
+        int wallX = cornerRoom.cell.startX + cornerRoom.cell.sizeX + 1;
+        int wallY = cornerRoom.cell.startY + cornerRoom.cell.sizeY + 1;
         mesh.Resize(new Vector2Int(
-            cornerRoom.cell.startX + cornerRoom.cell.sizeX + 1,
-            cornerRoom.cell.startY + cornerRoom.cell.sizeY + 1));
-        for (int x = 0; x < mesh.size.x; x += 1) {
-            mesh.SetHeight(x, mesh.size.y - 1, cornerRoom.z + MaxHeightDelta + 1);
+            wallX + (endStairsNW ? 0 : stairLength),
+            wallY + (endStairsNW ? stairLength : 0)));
+        for (int x = startStairsSW ? stairLength : 0; x < wallX; x += 1) {
+            mesh.SetHeight(x, wallY - 1, cornerRoom.z + MaxHeightDelta + 1);
         }
-        for (int y = 0; y < mesh.size.y; y += 1) {
-            mesh.SetHeight(mesh.size.x - 1, y, cornerRoom.z + MaxHeightDelta + 1);
+        for (int y = startStairsSW ? 0 : stairLength; y < wallY; y += 1) {
+            mesh.SetHeight(wallX - 1, y, cornerRoom.z + MaxHeightDelta + 1);
         }
 
         // render terrain
@@ -203,6 +218,41 @@ public class MapGenerator : MonoBehaviour {
                     cell.RenderTerrain(this, mesh);
                 }
             }
+        }
+
+        // add the starter stairs
+        RoomInfo startRoom = rooms[entryRoomCoords.x, entryRoomCoords.y];
+        int stairX, stairZ;
+        if (startStairsSW) {
+            stairX = startRoom.cell.startX - 1;
+            stairZ = startRoom.cell.startY + (startRoom.cell.sizeY / 2);
+        } else {
+            stairX = startRoom.cell.startX + (startRoom.cell.sizeX / 2);
+            stairZ = startRoom.cell.startY - 1;
+        }
+        float stairY = startRoom.z - 0.5f;
+        for (int i = 0; i < stairLength; i += 1) {
+            mesh.SetHeight(stairX, stairZ, stairY);
+            stairY -= 0.5f;
+            stairX += startStairsSW ? -1 : 0;
+            stairZ += startStairsSW ? 0 : -1;
+        }
+
+        // add the end stairs
+        RoomInfo endRoom = rooms[exitRoomCoords.x, exitRoomCoords.y];
+        if (endStairsNW) {
+            stairX = endRoom.cell.startX + (endRoom.cell.sizeX / 2);
+            stairZ = endRoom.cell.startY + endRoom.cell.sizeY;
+        } else {
+            stairX = endRoom.cell.startX + endRoom.cell.sizeX;
+            stairZ = endRoom.cell.startY + (endRoom.cell.sizeY / 2);
+        }
+        stairY = endRoom.z + 0.5f;
+        for (int i = 0; i < stairLength; i += 1) {
+            mesh.SetHeight(stairX, stairZ, stairY);
+            stairY += 0.5f;
+            stairX += endStairsNW ? 0 : 1;
+            stairZ += endStairsNW ? 1 : 0;
         }
 
         mesh.Rebuild(true);
@@ -262,8 +312,8 @@ public class MapGenerator : MonoBehaviour {
         return 5;
     }
 
-    private int RandomNewZ(int oldZ) {
-        int z;
+    private float RandomNewZ(float oldZ) {
+        float z;
         float r = Random.Range(0.0f, 1.0f);
         if (r < 0.3)        z = oldZ;
         else if (r < 0.5)   z = oldZ + 2;

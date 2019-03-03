@@ -5,6 +5,8 @@ using System.Collections.Generic;
 [RequireComponent(typeof(Map))]
 public class BattleController : MonoBehaviour {
 
+    public bool immediateMode = true;
+
     // all of these behaviors read + managed internally
     public Map map { get { return GetComponent<Map>(); } }
     public Cursor cursor { get; private set; }
@@ -37,7 +39,9 @@ public class BattleController : MonoBehaviour {
 
         ui = FindObjectOfType<RogueUI>();
 
-        StartCoroutine(BattleRoutine());
+        if (immediateMode) {
+            StartCoroutine(BattleRoutine());
+        }
     }
 
     // === GETTERS AND BOOKKEEPING =================================================================

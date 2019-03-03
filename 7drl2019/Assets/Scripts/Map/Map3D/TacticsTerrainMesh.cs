@@ -36,8 +36,9 @@ public class TacticsTerrainMesh : MonoBehaviour, ISerializationCallbackReceiver 
 
     // === CONSTRUCTION  ===========================================================================
 
-    public void ClearFacingTiles() {
+    public void ClearTiles() {
         facingTiles.Clear();
+        heights = new float[size.x * size.y];
     }
 
     public void Resize(Vector2Int newSize) {

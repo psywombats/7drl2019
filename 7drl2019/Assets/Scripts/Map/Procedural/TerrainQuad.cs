@@ -15,6 +15,7 @@ public class TerrainQuad {
     public Vector3 normal;
 
     public Tile tile;
+    public bool invisible;
 
     private Vector2[] ourUVs;
 
@@ -27,6 +28,11 @@ public class TerrainQuad {
         this.pos = pos;
         this.normal = normal;
         this.tile = tile;
+
+        if (lowerLeft.y == 0.0f && upperRight.y == 0.0f) {
+            invisible = true;
+            return;
+        }
 
         int i = vertices.Count;
         vertices.Add(lowerLeft);
