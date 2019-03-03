@@ -6,6 +6,8 @@ using System.Collections.Generic;
 
 public class MapGenerator {
 
+    private int MaxHeightDelta = 3;
+
     public Vector2Int sizeInRooms { get; private set; }
     public Vector2Int sizeInCells { get; private set; }
     public CellInfo[,] cells { get; private set; }
@@ -24,7 +26,7 @@ public class MapGenerator {
         sizeInCells = sizeInRooms * 2 - new Vector2Int(1, 1);
         cells = new CellInfo[sizeInCells.x, sizeInCells.y];
 
-        // determine the size and start of each room and hallway
+        // set the size and start of each room and hallway
         cells = new CellInfo[sizeInCells.x, sizeInCells.y];
         widths = new int[sizeInCells.x];
         heights = new int[sizeInCells.y];
@@ -44,10 +46,7 @@ public class MapGenerator {
         }
         for (int y = 0; y < sizeInCells.y; y += 1) {
             for (int x = 0; x < sizeInCells.x; x += 1) {
-                cells[x, y].sizeX = widths[x];
-                cells[x, y].sizeY = heights[y];
-                cells[x, y].x = x;
-                cells[x, y].y = y;
+                cells[x, y] = new CellInfo(x, y, widths[x], heights[y]);
                 if (x % 2 == 1 || y % 2 == 1) {
                     if (x % 2 == 1 && y % 2 == 1) {
                         cells[x, y].type = CellInfo.CellType.Pillar;
@@ -70,7 +69,7 @@ public class MapGenerator {
             }
         }
 
-        // determine the elevation of each room
+        // set the elevation of each room
         for (int diag = 0; diag < sizeInRooms.x + sizeInRooms.y; diag += 1) {
             int x = diag;
             int y = 0;
@@ -83,10 +82,88 @@ public class MapGenerator {
                         int oldZ = (x == 0 || (Flip() && y != 0)) ? rooms[x, y - 1].z : rooms[x - 1, y].z;
                         z = RandomNewZ(oldZ);
                     }
-                    rooms[x, y].z = z;
+                    rooms[x, y] = new RoomInfo(cells[x * 2, y * 2], z);
                 }
                 x -= 1;
                 y += 1;
+            }
+        }
+
+        // determine the initial passability map
+        bool dirty = true;
+        cells[0, 0].connected = true;
+        while (dirty) {
+            dirty = false;
+            for (int y = 0; y < sizeInRooms.y; y += 1) {
+                for (int x = 0; x < sizeInRooms.x; x += 1) {
+                    RoomInfo room = rooms[x, y];
+                    if (room.cell.connected) {
+                        continue;
+                    }
+                    foreach (RoomInfo other in room.cell.AdjacentRooms(this)) {
+                        if (other.cell.connected && Math.Abs(room.z - other.z) <= MaxHeightDelta) {
+                            room.cell.connected = true;
+                            room.cell.passableDirs[(int)room.cell.DirTo(other.cell)] = true;
+                            other.cell.passableDirs[(int)other.cell.DirTo(room.cell)] = true;
+                            dirty = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        // convert halls into stairways as needed
+        for (int y = 0; y < sizeInCells.y; y += 1) {
+            for (int x = 0; x < sizeInCells.x; x += 1) {
+                CellInfo cell = cells[x, y];
+                if (cell.type == CellInfo.CellType.Hall) {
+                    List<RoomInfo> rooms = cell.AdjacentRooms(this);
+                    if (Math.Abs(rooms[0].z - rooms[1].z) > 1) {
+                        cell.type = CellInfo.CellType.Stairway;
+                    }
+                }
+            }
+        }
+
+        // set pillar heights to sane values
+        for (int y = 0; y < sizeInCells.y; y += 1) {
+            for (int x = 0; x < sizeInCells.x; x += 1) {
+                CellInfo cell = cells[x, y];
+                if (cell.type == CellInfo.CellType.Pillar) {
+                    CellInfo n = cells[x, y + 1];
+                    CellInfo e = cells[x + 1, y];
+                    CellInfo s = cells[x, y - 1];
+                    CellInfo w = cells[x - 1, y];
+                    if (n.type == CellInfo.CellType.Stairway && e.type == CellInfo.CellType.Stairway) {
+                        cell.pillarZ = rooms[(x + 1) / 2, (y + 1) / 2].z;
+                        e.stairAnchoredHigh = true;
+                        e.passableDirs[(int)OrthoDir.West] = true;
+                        cell.passableDirs[(int)OrthoDir.East] = true;
+                        n.stairAnchoredHigh = true;
+                        n.passableDirs[(int)OrthoDir.South] = true;
+                        cell.passableDirs[(int)OrthoDir.North] = true;
+                    } else if (Math.Abs(rooms[(x + 1) / 2, (y - 1) / 2].z - rooms[(x + 1) / 2, (y - 1) / 2].z) <= 1.0) {
+                        cell.pillarZ = (rooms[(x + 1) / 2, (y - 1) / 2].z + rooms[(x - 1) / 2, (y + 1) / 2].z) / 2.0f;
+                        if (n.type == CellInfo.CellType.Stairway) {
+                            n.stairAnchoredLow = true;
+                            n.passableDirs[(int)OrthoDir.South] = true;
+                            cell.passableDirs[(int)OrthoDir.North] = true;
+                        }
+                        if (e.type == CellInfo.CellType.Stairway) {
+                            e.stairAnchoredLow = true;
+                            e.passableDirs[(int)OrthoDir.West] = true;
+                            cell.passableDirs[(int)OrthoDir.East] = true;
+                        }
+                        if (s.type == CellInfo.CellType.Stairway) {
+                            s.passableDirs[(int)OrthoDir.North] = true;
+                            cell.passableDirs[(int)OrthoDir.South] = true;
+                        }
+                        if (w.type == CellInfo.CellType.Stairway) {
+                            w.passableDirs[(int)OrthoDir.East] = true;
+                            cell.passableDirs[(int)OrthoDir.West] = true;
+                        }
+                    }
+                }
             }
         }
 
@@ -111,18 +188,19 @@ public class MapGenerator {
         }
     }
 
-    private bool Flip() {
+    public bool Flip() {
         return Random.Range(0.0f, 1.0f) > 0.5f;
     }
 
     private int RandomHallSize() {
-        int h;
-        float r = Random.Range(0.0f, 1.0f);
-        if      (r < 0.5)   h = 2;
-        else if (r < 0.75)  h = 3;
-        else if (r < 0.95)  h = 1;
-        else                h = 5;
-        return h;
+        //int h;
+        //float r = Random.Range(0.0f, 1.0f);
+        //if      (r < 0.5)   h = 2;
+        //else if (r < 0.75)  h = 3;
+        //else if (r < 0.95)  h = 1;
+        //else                h = 5;
+        //return h;
+        return 1;
     }
 
     private int RandomRoomSize() {
@@ -131,13 +209,13 @@ public class MapGenerator {
     }
 
     private int RandomNewZ(int oldZ) {
-        int z;
-        float r = Random.Range(0.0f, 1.0f);
-        if      (r < 0.15)  z = oldZ - 1;
-        else if (r < 0.3)   z = oldZ;
-        else if (r < 0.6)   z = oldZ + 2;
-        else if (r < 0.9)   z = oldZ + 3;
-        else                z = oldZ + 4;
-        return Math.Max(z, 1);
+        //int z;
+        //float r = Random.Range(0.0f, 1.0f);
+        //if      (r < 0.3)   z = oldZ;
+        //else if (r < 0.5)   z = oldZ + 2;
+        //else if (r < 0.95)  z = oldZ + 4;
+        //else                z = oldZ + 6;
+        //return z;
+        return oldZ + 2;
     }
 }
