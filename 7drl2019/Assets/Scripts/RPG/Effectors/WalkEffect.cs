@@ -6,8 +6,8 @@ using UnityEngine;
  */
 public class WalkEffect : Effector {
 
-    public override IEnumerator ExecuteSingleCellRoutine(Result<bool> result, Vector2Int location) {
-        yield return actorEvent.PathToRoutine(location);
-        result.value = true;
+    public override IEnumerator ExecuteSingleCellRoutine(Result<IEnumerator> result, Vector2Int location) {
+        result.value = actorEvent.PathToRoutine(location);
+        yield return null;
     }
 }

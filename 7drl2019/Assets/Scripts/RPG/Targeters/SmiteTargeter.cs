@@ -1,20 +1,20 @@
-﻿using UnityEngine;
+﻿using System;
 using System.Collections;
-using System;
+using UnityEngine;
 
-public class WalkRouteTargeter : Targeter {
+public class SmiteTargeter : Targeter {
 
-    private Vector2Int targetLocation;
+    public int range;
 
     protected override IEnumerator InternalExecuteRoutine(Effector effect, Result<IEnumerator> result) {
         Cursor cursor = battle.SpawnCursor(actor.location);
         SelectionGrid grid = battle.SpawnSelectionGrid();
-        int range = (int)actor.Get(StatTag.MOVE);
         Func<Vector2Int, bool> rule = (Vector2Int loc) => {
-            if (loc == actor.location) {
-                return false;
-            }
-            return map.FindPath(actorEvent, loc, range + 1) != null;
+            BattleEvent targetBattler = map.GetEventAt<BattleEvent>(loc);
+            return targetBattler != null &&
+                Vector2Int.Distance(loc, actor.location) <= range &&
+                actor.align != targetBattler.unit.align;
+                    
         };
         Vector2Int origin = new Vector2Int(
             (int)actorEvent.positionPx.x - range,
@@ -26,7 +26,6 @@ public class WalkRouteTargeter : Targeter {
             yield return battle.cursor.AwaitSelectionRoutine(locResult);
             if (!locResult.canceled) {
                 if (!rule(locResult.value)) {
-                    Global.Instance().Audio.PlaySFX(SFX.error);
                     locResult.Reset();
                 }
             }

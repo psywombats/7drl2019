@@ -67,17 +67,17 @@ public class BattleUnit {
         battle.Log(this + " attacked " + other + " for " + dmg + " damage.");
 
         if (dmg > 0) {
-            toExecute.Add(other.TakeDamageAction(dmg));
+            toExecute.Add(other.TakeDamageAction(dmg, battler.damageAnimation));
         }
         return CoUtils.RunSequence(toExecute.ToArray());
     }
 
-    public IEnumerator TakeDamageAction(int damage) {
+    public IEnumerator TakeDamageAction(int damage, LuaAnimation damageAnimation) {
         List<IEnumerator> toExecute = new List<IEnumerator>();
         if (!IsDead()) {
             unit.stats.Sub(StatTag.HP, damage);
             if (!tookDamageThisTurn) {
-                toExecute.Add(battler.AnimateTakeDamageAction());
+                toExecute.Add(battler.PlayAnimationAction(damageAnimation));
             }
             tookDamageThisTurn = true;
             if (IsDead()) {
@@ -98,28 +98,6 @@ public class BattleUnit {
     public IEnumerator OnNewTurnAction() {
         tookDamageThisTurn = false;
         return null;
-    }
-
-    // actually do the menu
-    public IEnumerator SelectSkillRoutine(Result<Skill> result) {
-        // TODO: ui
-        result.value = unit.knownSkills[0];
-        yield return null;
-    }
-
-    // select + execute a skill
-    public IEnumerator PlayNextActionRoutine(Result<Effector> effectResult) {
-        Result<Skill> skillResult = new Result<Skill>();
-        yield return SelectSkillRoutine(skillResult);
-        if (skillResult.canceled) {
-            effectResult.Cancel();
-        } else {
-            yield return skillResult.value.PlaySkillRoutine(this, effectResult);
-            if (effectResult.canceled) {
-                effectResult.Reset();
-                yield return PlayNextActionRoutine(effectResult);
-            }
-        }
     }
 
     // === UTIL ====================================================================================

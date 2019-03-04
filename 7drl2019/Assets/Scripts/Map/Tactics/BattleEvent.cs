@@ -155,7 +155,7 @@ public class BattleEvent : MonoBehaviour {
         return PlayAnimationAction(attackAnimation);
     }
 
-    private IEnumerator PlayAnimationAction(LuaAnimation anim, LuaContext context = null) {
+    public IEnumerator PlayAnimationAction(LuaAnimation anim, LuaContext context = null) {
         GetComponent<CharaEvent>().doll.GetComponent<CharaAnimationTarget>().ConfigureToBattler(this);
         return GetComponent<CharaEvent>().doll.GetComponent<AnimationPlayer>().PlayAnimationRoutine(anim, context);
     }

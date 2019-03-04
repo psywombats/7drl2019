@@ -21,13 +21,13 @@ public abstract class Effector : ActorScriptableObject {
     // === TARGETER HOOKUPS ========================================================================
     // subclasses override as they support
 
-    public virtual IEnumerator ExecuteSingleCellRoutine(Result<bool> result, Vector2Int location) {
+    public virtual IEnumerator ExecuteSingleCellRoutine(Result<IEnumerator> result, Vector2Int location) {
         Debug.LogError(GetType() + " does not support single cell targeters");
         result.Cancel();
         yield return null;
     }
 
-    public virtual IEnumerator ExecuteDirectionRoutine(Result<bool> result, EightDir dir) {
+    public virtual IEnumerator ExecuteDirectionRoutine(Result<IEnumerator> result, EightDir dir) {
         Debug.LogError(GetType() + " does not support single dir targeters");
         result.Cancel();
         yield return null;
