@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
 /**
@@ -41,6 +40,8 @@ public class Stat {
         stats = new Dictionary<StatTag, Stat>();
         AddStat(StatTag.MHP,        CombinationAdditive.Instance(), "MHP",      false);
         AddStat(StatTag.HP,         CombinationAdditive.Instance(), "HP",       false);
+        AddStat(StatTag.MMP,        CombinationAdditive.Instance(), "MMP",      false);
+        AddStat(StatTag.MP,         CombinationAdditive.Instance(), "MP",       false);
         AddStat(StatTag.MOVE,       CombinationAdditive.Instance(), "MOVE",     false);
         AddStat(StatTag.JUMP,       CombinationAdditive.Instance(), "JUMP",     false);
         AddStat(StatTag.SIGHT,      CombinationAdditive.Instance(), "SIGHT",    false);

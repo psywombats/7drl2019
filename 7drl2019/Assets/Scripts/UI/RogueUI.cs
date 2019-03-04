@@ -1,16 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class RogueUI : MonoBehaviour, InputListener {
 
+    public NumericalBar hpBar;
+    public NumericalBar mpBar;
+    public Image face;
+    
     private Result<bool> executeResult;
 
-    public IEnumerator PlayNextCommand(Result<bool> executeResult) {
-        this.executeResult = executeResult;
-        Global.Instance().Input.PushListener(this);
-        while (!executeResult.finished) {
-            yield return null;
-        }
+    public void Start() {
+        Populate(Global.Instance().Maps.avatar.GetComponent<BattleEvent>().unitData);
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
@@ -36,5 +37,19 @@ public class RogueUI : MonoBehaviour, InputListener {
                 break;
         }
         return true;
+    }
+
+    public IEnumerator PlayNextCommand(Result<bool> executeResult) {
+        this.executeResult = executeResult;
+        Global.Instance().Input.PushListener(this);
+        while (!executeResult.finished) {
+            yield return null;
+        }
+    }
+
+    private void Populate(Unit unit) {
+        hpBar.Populate(unit.stats.Get(StatTag.MHP), unit.stats.Get(StatTag.HP));
+        mpBar.Populate(unit.stats.Get(StatTag.MP), unit.stats.Get(StatTag.MP));
+        face.sprite = unit.face;
     }
 }
