@@ -58,6 +58,8 @@ public class BattleUnit {
         battler.GetComponent<CharaEvent>().FaceToward(other.battler.GetComponent<MapEvent>());
         other.battler.GetComponent<CharaEvent>().FaceToward(battler.GetComponent<MapEvent>());
         int dmg = Mathf.RoundToInt(Random.Range(Get(StatTag.DMG_MIN), Get(StatTag.DMG_MAX)));
+        battle.Log(this + " attacked " + other + " for " + dmg + " damage.");
+
         if (dmg > 0) {
             toExecute.Add(other.TakeDamageAction(dmg));
         }
@@ -80,6 +82,7 @@ public class BattleUnit {
     }
 
     public IEnumerator DieAction() {
+        battle.Log(this + " is defeated.");
         battle.RemoveUnit(this);
         return battler.AnimateDieAction();
     }
@@ -110,6 +113,16 @@ public class BattleUnit {
                 effectResult.Reset();
                 yield return PlayNextActionRoutine(effectResult);
             }
+        }
+    }
+
+    // === UTIL ====================================================================================
+
+    public override string ToString() {
+        if (!unit.unique) {
+            return "the " + unit.unitName;
+        } else {
+            return unit.unitName;
         }
     }
 }

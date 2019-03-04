@@ -47,13 +47,16 @@ public class BattleEvent : MonoBehaviour {
         GetComponent<MapEvent>().SetLocation(unit.location);
     }
 
-    public bool CanCrossTileGradient(Vector2Int from, Vector2Int to) {
+    public bool CanCrossTileGradient(Vector2Int from, Vector2Int to, bool cornerMode = false) {
         float fromHeight = terrain.HeightAt(from);
         float toHeight = GetComponent<MapEvent>().map.terrain.HeightAt(to);
         if (toHeight == 0.0f) {
             return false;
         }
         if (fromHeight < toHeight) {
+            if (cornerMode) {
+                return toHeight - fromHeight < 2;
+            }
             if (toHeight - fromHeight > unit.GetMaxAscent()) {
                 return false;
             }

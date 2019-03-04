@@ -7,7 +7,9 @@ public class RogueUI : MonoBehaviour, InputListener {
     public NumericalBar hpBar;
     public NumericalBar mpBar;
     public Image face;
-    public BattleUnit unit;
+    public Narrator narrator;
+
+    public BattleUnit unit { get; private set; }
     
     private Result<IEnumerator> executeResult;
 
@@ -50,6 +52,7 @@ public class RogueUI : MonoBehaviour, InputListener {
         return CoUtils.RunParallel(new IEnumerator[] {
             hpBar.AnimateWithTimeRoutine(unit.Get(StatTag.MHP), unit.Get(StatTag.HP), 0.125f),
             mpBar.AnimateWithTimeRoutine(unit.Get(StatTag.MMP), unit.Get(StatTag.MP), 0.125f),
+            narrator.OnTurnAction(),
         }, this);
     }
 

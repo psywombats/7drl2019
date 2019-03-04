@@ -23,6 +23,8 @@ public class BattleController : MonoBehaviour {
     private Dictionary<BattleUnit, BattleEvent> battlers;
     private bool cleared;
 
+    public void Log(string message, bool outOfTurn = false) { ui.narrator.Log(message, outOfTurn); }
+
     // === INITIALIZATION ==========================================================================
 
     public void Start() {

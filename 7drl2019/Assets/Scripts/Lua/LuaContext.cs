@@ -101,6 +101,7 @@ public class LuaContext : MonoBehaviour {
         lua.Globals["getSwitch"] = (Func<DynValue, DynValue>)GetSwitch;
         lua.Globals["setSwitch"] = (Action<DynValue, DynValue>)SetSwitch;
         lua.Globals["eventNamed"] = (Func<DynValue, LuaMapEvent>)EventNamed;
+        lua.Globals["log"] = (Action<DynValue>)Log;
     }
 
     protected void LoadDefines(string path) {
@@ -139,5 +140,9 @@ public class LuaContext : MonoBehaviour {
 
     private void PlaySFX(DynValue sfxKey) {
         Global.Instance().Audio.PlaySFX(sfxKey.String);
+    }
+
+    private void Log(DynValue message) {
+        Global.Instance().Maps.activeMap.GetComponent<BattleController>().Log(message.String, true);
     }
 }
