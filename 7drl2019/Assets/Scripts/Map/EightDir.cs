@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum EightDir {
@@ -86,6 +87,21 @@ public static class EightDirExtensions {
             case InputManager.Command.UpLeft:       return EightDir.NW;
         }
         return 0;
+    }
+
+    public static List<EightDir> RandomOrder() {
+        List<EightDir> list = new List<EightDir>((EightDir[])Enum.GetValues(typeof(EightDir)));
+
+        int n = list.Count;
+        while (n > 1) {
+            n--;
+            int k = UnityEngine.Random.Range(0, n);
+            EightDir value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
+
+        return list;
     }
 
     public static Vector2Int XY(this EightDir dir) { return dir.GetAttribute<EightDirAttribute>().XY; }

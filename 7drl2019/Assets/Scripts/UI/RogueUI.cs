@@ -35,7 +35,7 @@ public class RogueUI : MonoBehaviour, InputListener {
             case InputManager.Command.UpRight:
                 Global.Instance().Input.RemoveListener(this);
                 EightDir dir = EightDirExtensions.FromCommand(command);
-                IEnumerator result = unit.battler.StepOrAttackAction(dir);
+                IEnumerator result = unit.battler.StepOrAttackAction(dir, true);
                 if (result != null) {
                     executeResult.value = result;
                 }

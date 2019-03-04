@@ -178,7 +178,6 @@ public abstract class MapEvent : MonoBehaviour {
                 return false;
             }
         }
-
         return true;
     }
 

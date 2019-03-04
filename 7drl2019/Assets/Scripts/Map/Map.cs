@@ -171,14 +171,14 @@ public class Map : MonoBehaviour {
     }
 
     // returns a list of coordinates to step to with the last one being the destination, or null
-    public List<Vector2Int> FindPath(MapEvent actor, Vector2Int to, bool useEight = true) {
+    public List<Vector2Int> FindPath(MapEvent actor, Vector2Int to) {
         return FindPath(actor, to, width > height ? width : height);
     }
-    public List<Vector2Int> FindPath(MapEvent actor, Vector2Int to, int maxPathLength, bool useEight = true) {
-        if (Vector2.Distance(actor.GetComponent<MapEvent>().location, to) > maxPathLength) {
+    public List<Vector2Int> FindPath(MapEvent actor, Vector2Int to, int maxPathLength) {
+        if (Vector2.Distance(actor.GetComponent<MapEvent>().location, to) * Mathf.Sqrt(2) > maxPathLength) {
             return null;
         }
-        if (!actor.CanPassAt(to)) {
+        if (!IsChipPassableAt(layers[0], to)) {
             return null;
         }
 
@@ -217,14 +217,20 @@ public class Map : MonoBehaviour {
                         case EightDir.SW:   next.y -= 1;    next.x -= 1;    break;
                         case EightDir.NW:   next.y += 1;    next.x -= 1;    break;
                     }
-                    if (!visited.Contains(next) && actor.CanPassAt(next) &&
+                    if (next == to || (!visited.Contains(next) && actor.CanPassAt(next) &&
                         (actor.GetComponent<CharaEvent>() == null ||
                              actor.CanPassAt(next)) &&
                         (actor.GetComponent<BattleEvent>() == null ||
-                             actor.GetComponent<BattleEvent>().CanCrossTileGradient(at, next))) {
+                             actor.GetComponent<BattleEvent>().CanCrossTileGradient(at, next)))) {
+
                         List<Vector2Int> newHead = new List<Vector2Int>(head) { next };
-                        heads.Add(newHead);
-                        visited.Add(next);
+
+                        if (next != to || GetEventAt<BattleEvent>(to) == null ||
+                            Mathf.Abs(terrain.HeightAt(next) - terrain.HeightAt(to)) <= BattleEvent.AttackHeightMax) { 
+
+                            heads.Add(newHead);
+                            visited.Add(next);
+                        }
                     }
                 }
             }

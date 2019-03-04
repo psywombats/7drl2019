@@ -10,6 +10,7 @@
     MOVE,
     JUMP,
     SIGHT,
+    INTELLIGENCE,
 
     DMG_MIN,
     DMG_MAX

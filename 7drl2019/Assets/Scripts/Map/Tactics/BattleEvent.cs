@@ -9,6 +9,8 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class BattleEvent : MonoBehaviour {
 
+    public const float AttackHeightMax = 1.0f;
+
     [HideInInspector]
     public Unit unitSerialized;
     public BattleUnit unit { get; set; }
@@ -66,8 +68,8 @@ public class BattleEvent : MonoBehaviour {
             }
         }
         if ((from - to).sqrMagnitude > 1.0f) {
-            return CanCrossTileGradient(from, new Vector2Int(from.x, to.y)) &&
-                CanCrossTileGradient(from, new Vector2Int(to.x, from.y));
+            return CanCrossTileGradient(from, new Vector2Int(from.x, to.y), true) &&
+                CanCrossTileGradient(from, new Vector2Int(to.x, from.y), true);
         } else {
             return true;
         }
@@ -77,7 +79,7 @@ public class BattleEvent : MonoBehaviour {
         return MathHelper3D.InLos(mesh, this.location, location, unit.Get(StatTag.SIGHT));
     }
 
-    public IEnumerator StepOrAttackAction(EightDir dir) {
+    public IEnumerator StepOrAttackAction(EightDir dir, bool pcMode = false) {
         MapEvent parent = GetComponent<MapEvent>();
         Vector2Int vectors = GetComponent<MapEvent>().location;
         Vector2Int target = vectors + dir.XY();
@@ -116,12 +118,25 @@ public class BattleEvent : MonoBehaviour {
                 if (targetEvent.GetComponent<BattleEvent>() != null) {
                     BattleEvent other = targetEvent.GetComponent<BattleEvent>();
                     if (unit.align != other.unit.align) {
-                        toExecute.Add(unit.MeleeAttackAction(other.unit));
+                        float h1 = unit.battle.map.terrain.HeightAt(location);
+                        float h2 = unit.battle.map.terrain.HeightAt(target);
+                        if (Mathf.Abs(h1 - h2) > AttackHeightMax) {
+                            if (GetComponent<PCEvent>() != null) {
+                                unit.battle.Log("Too high up to attack!");
+                            }
+                        } else {
+                            toExecute.Add(unit.MeleeAttackAction(other.unit));
+                        }
                     }
                 }
             }
         }
-        return CoUtils.RunSequence(toExecute.ToArray());
+
+        if (pcMode && toExecute.Count == 0) {
+            return null;
+        } else {
+            return CoUtils.RunSequence(toExecute.ToArray());
+        }
     }
 
     public IEnumerator AnimateTakeDamageAction() {
