@@ -7,7 +7,7 @@ public class MapManager : MonoBehaviour {
     private static readonly string DefaultTransitionTag = "default";
 
     public Map activeMap { get; set; }
-    public AvatarEvent avatar { get; set; }
+    public PCEvent pc { get; set; }
     public SceneBlendController blendController { get; set; }
 
     private MapCamera _camera;
@@ -20,23 +20,23 @@ public class MapManager : MonoBehaviour {
 
     public void Start() {
         activeMap = FindObjectOfType<Map>();
-        avatar = activeMap.GetComponentInChildren<AvatarEvent>();
+        pc = activeMap.GetComponentInChildren<PCEvent>();
     }
 
     public IEnumerator NextMapRoutine() {
-        EightDir facing = avatar.GetComponent<CharaEvent>().facing;
-        yield return avatar.GetComponent<MapEvent>().StepMultiRoutine(facing, 3);
+        EightDir facing = pc.GetComponent<CharaEvent>().facing;
+        yield return pc.GetComponent<MapEvent>().StepMultiRoutine(facing, 3);
 
         TransitionData data = Global.Instance().Database.Transitions.GetData(DefaultTransitionTag);
         yield return camera.cam.GetComponent<FadeImageEffect>().TransitionRoutine(data, () => {
             RawNextMap();
         });
-        facing = avatar.GetComponent<CharaEvent>().facing;
-        yield return avatar.GetComponent<MapEvent>().StepMultiRoutine(facing, 3);
+        facing = pc.GetComponent<CharaEvent>().facing;
+        yield return pc.GetComponent<MapEvent>().StepMultiRoutine(facing, 3);
     }
 
     public void RawNextMap() {
-        avatar.GetComponent<MapEvent>().SetLocation(new Vector2Int(0, 0));
+        pc.GetComponent<MapEvent>().SetLocation(new Vector2Int(0, 0));
         activeMap.GetComponent<BattleController>().Clear();
 
         MapGenerator oldMap = activeMap.GetComponent<MapGenerator>();
@@ -46,28 +46,28 @@ public class MapManager : MonoBehaviour {
         activeMap.GetComponent<LineOfSightEffect>().Erase();
 
         Vector2Int loc = activeMap.GetEventNamed("TeleStart").location;
-        EightDir dir = avatar.GetComponent<CharaEvent>().facing;
+        EightDir dir = pc.GetComponent<CharaEvent>().facing;
         loc += dir.XY() * -2;
-        avatar.GetComponent<MapEvent>().SetLocation(loc);
+        pc.GetComponent<MapEvent>().SetLocation(loc);
         
     }
 
     public IEnumerator TeleportRoutine(string mapName, Vector2Int location) {
-        avatar.PauseInput();
+        pc.PauseInput();
         TransitionData data = Global.Instance().Database.Transitions.GetData(DefaultTransitionTag);
         yield return camera.GetComponent<FadeImageEffect>().TransitionRoutine(data, () => {
             RawTeleport(mapName, location);
         });
-        avatar.UnpauseInput();
+        pc.UnpauseInput();
     }
 
     public IEnumerator TeleportRoutine(string mapName, string targetEventName) {
-        avatar.PauseInput();
+        pc.PauseInput();
         TransitionData data = Global.Instance().Database.Transitions.GetData(DefaultTransitionTag);
         yield return camera.GetComponent<FadeImageEffect>().TransitionRoutine(data, () => {
             RawTeleport(mapName, targetEventName);
         });
-        avatar.UnpauseInput();
+        pc.UnpauseInput();
     }
     
     private void RawTeleport(string mapName, Vector2Int location) {
@@ -85,15 +85,15 @@ public class MapManager : MonoBehaviour {
 
     private void RawTeleport(Map map, Vector2Int location) {
         Assert.IsNotNull(activeMap);
-        Assert.IsNotNull(avatar);
+        Assert.IsNotNull(pc);
 
-        avatar.transform.SetParent(map.objectLayer.transform, false);
+        pc.transform.SetParent(map.objectLayer.transform, false);
 
         activeMap.OnTeleportAway();
         Destroy(activeMap.gameObject);
         activeMap = map;
         activeMap.OnTeleportTo();
-        avatar.GetComponent<MapEvent>().SetLocation(location);
+        pc.GetComponent<MapEvent>().SetLocation(location);
     }
 
     private Map InstantiateMap(string mapName) {

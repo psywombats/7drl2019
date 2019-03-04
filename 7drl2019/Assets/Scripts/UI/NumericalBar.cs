@@ -23,7 +23,7 @@ public class NumericalBar : MonoBehaviour {
     public IEnumerator AnimateWithTimeRoutine(float max, float actual, float duration) {
         Tweener tween = DOTween.To(() => currentValue, (float x) => {
             currentValue = x;
-            this.actual.text = x.ToString();
+            this.actual.text = Mathf.RoundToInt(x).ToString();
         }, actual, duration);
         yield return CoUtils.RunParallel(new IEnumerator[] {
             CoUtils.RunTween(tween),

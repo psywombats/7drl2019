@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using DG.Tweening;
 
 /**
  * For our purposes, a CharaEvent is anything that's going to be moving around the map
@@ -20,6 +21,7 @@ public class CharaEvent : MonoBehaviour {
     private const float StepsPerSecond = 4.0f;
     private const float JumpStepsPerSecond = 8.0f;
 
+    [Space]
     public GameObject doll;
     public SpriteRenderer mainLayer;
     public SpriteRenderer armsLayer;
@@ -34,9 +36,10 @@ public class CharaEvent : MonoBehaviour {
     private Vector3 targetPx;
     private float moveTime;
     private bool stepping;
+    private bool visible = true;
 
     public MapEvent parent { get { return GetComponent<MapEvent>(); } }
-    public Map map { get { return parent.parent; } }
+    public Map map { get { return parent.map; } }
     public Sprite overrideBodySprite { get; set; }
     public Sprite itemSprite { get; set; }
     public ArmMode armMode { get; set; }
@@ -150,6 +153,22 @@ public class CharaEvent : MonoBehaviour {
                 material.SetFloat("_Desaturation", desaturation);
             } 
         }
+    }
+
+    public void SetVisibleByPC(bool visible) {
+        if (this.visible != visible) {
+            StartCoroutine(GetComponent<CharaEvent>().FadeRoutine(visible));
+            this.visible = visible;
+        }
+    }
+
+    public IEnumerator FadeRoutine(bool visible) {
+        Tweener tween = DOTween.To(() => mainLayer.color.a, x => {
+            foreach (SpriteRenderer renderer in renderers) {
+                renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, x);
+            }
+        }, visible ? 1.0f : 0.0f, 0.125f);
+        yield return CoUtils.RunTween(tween);
     }
 
     public IEnumerator StepRoutine(EightDir dir) {
@@ -280,7 +299,7 @@ public class CharaEvent : MonoBehaviour {
 
         int x;
         int y = DirectionRelativeToCamera().Ordinal();
-        if (jumping) {
+        if (jumping && HasJumpFrames()) {
             x = Mathf.FloorToInt(moveTime * JumpStepsPerSecond) % 2 + 3;
         } else {
             x = Mathf.FloorToInt(moveTime * StepsPerSecond) % 4;
@@ -291,6 +310,9 @@ public class CharaEvent : MonoBehaviour {
     }
 
     private Sprite SpriteForArms() {
+        if (!HasJumpFrames()) {
+            return null;
+        }
         if (armMode == ArmMode.Disabled && jumping) {
             return FrameBySlot(ArmMode.Overhead.FrameIndex());
         }
@@ -307,5 +329,9 @@ public class CharaEvent : MonoBehaviour {
         } else {
             return null;
         }
+    }
+
+    private bool HasJumpFrames() {
+        return sprites.ContainsKey(NameForFrame(spritesheet.name, 4, 0));
     }
 }

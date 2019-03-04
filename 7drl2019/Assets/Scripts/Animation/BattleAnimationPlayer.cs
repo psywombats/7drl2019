@@ -26,7 +26,7 @@ public class BattleAnimationPlayer : AnimationPlayer {
         yield return PlayAnimationRoutine(anim);
     }
 
-    public override IEnumerator PlayAnimationRoutine() {
+    public override IEnumerator PlayAnimationRoutine(LuaContext context = null) {
         if (attacker == null || defender == null) {
             foreach (CharaAnimationTarget doll in FindObjectsOfType<CharaAnimationTarget>()) {
                 if (doll.type == CharaAnimationTarget.Type.Attacker) {

@@ -38,13 +38,12 @@ public class Stat {
 
     private static void InitializeStats() {
         stats = new Dictionary<StatTag, Stat>();
-        AddStat(StatTag.MHP,        CombinationAdditive.Instance(), "MHP",      false);
-        AddStat(StatTag.HP,         CombinationAdditive.Instance(), "HP",       false);
-        AddStat(StatTag.MMP,        CombinationAdditive.Instance(), "MMP",      false);
-        AddStat(StatTag.MP,         CombinationAdditive.Instance(), "MP",       false);
-        AddStat(StatTag.MOVE,       CombinationAdditive.Instance(), "MOVE",     false);
-        AddStat(StatTag.JUMP,       CombinationAdditive.Instance(), "JUMP",     false);
-        AddStat(StatTag.SIGHT,      CombinationAdditive.Instance(), "SIGHT",    false);
+        foreach (StatTag tag in Enum.GetValues(typeof(StatTag))) {
+            if (tag == StatTag.None) {
+                continue;
+            }
+            AddStat(tag, CombinationAdditive.Instance(), tag.ToString(), false);
+        }
     }
 
     private static void AddStat(StatTag tag, CombinationStrategy combinator, string nameShort, bool useBinaryEditor) {

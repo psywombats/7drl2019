@@ -10,28 +10,33 @@ using UnityEngine;
 public class BattleEvent : MonoBehaviour {
 
     [HideInInspector]
-    public Unit unitData;
+    public Unit unitSerialized;
     public BattleUnit unit { get; set; }
     public BattleController controller { get; private set; }
+
+    public LuaAnimation damageAnimation;
+    public LuaAnimation deathAnimation;
+    public LuaAnimation attackAnimation;
+
+    private LuaContext involuntaryContext;
+
+    public Vector2Int location { get { return GetComponent<MapEvent3D>().location; } }
 
     private TacticsTerrainMesh _terrain;
     public TacticsTerrainMesh terrain {
         get {
-            if (_terrain == null) _terrain = GetComponent<MapEvent>().parent.terrain;
+            if (_terrain == null) _terrain = GetComponent<MapEvent>().map.terrain;
             return _terrain;
         }
     }
 
-    public Vector2Int location { get { return GetComponent<MapEvent3D>().location; } }
-
-    public void Setup(BattleController controller, BattleUnit unit) {
-        this.unit = unit;
-        this.controller = controller;
-        SetScreenPositionToMatchTilePosition();
+    public void Start() {
+        involuntaryContext = gameObject.AddComponent<LuaContext>();
     }
 
     public void PopulateWithUnitData(Unit unitData) {
-        this.unitData = unitData;
+        Debug.Assert(!Application.isPlaying);
+        unitSerialized = unitData;
         if (unitData != null) {
             GetComponent<CharaEvent>().spritesheet = unitData.appearance;
             gameObject.name = unitData.unitName;
@@ -44,7 +49,7 @@ public class BattleEvent : MonoBehaviour {
 
     public bool CanCrossTileGradient(Vector2Int from, Vector2Int to) {
         float fromHeight = terrain.HeightAt(from);
-        float toHeight = GetComponent<MapEvent>().parent.terrain.HeightAt(to);
+        float toHeight = GetComponent<MapEvent>().map.terrain.HeightAt(to);
         if (toHeight == 0.0f) {
             return false;
         }
@@ -67,14 +72,73 @@ public class BattleEvent : MonoBehaviour {
 
     public bool CanSeeLocation(TacticsTerrainMesh mesh, Vector2Int location) {
         return MathHelper3D.InLos(mesh, this.location, location, unit.Get(StatTag.SIGHT));
-
     }
 
-    public IEnumerator PostActionRoutine() {
-        yield return GetComponent<CharaEvent>().DesaturateRoutine(1.0f);
+    public IEnumerator StepOrAttackAction(EightDir dir) {
+        MapEvent parent = GetComponent<MapEvent>();
+        Vector2Int vectors = GetComponent<MapEvent>().location;
+        Vector2Int target = vectors + dir.XY();
+        GetComponent<CharaEvent>().facing = dir;
+        List<MapEvent> targetEvents = GetComponent<MapEvent>().map.GetEventsAt(target);
+
+        if (!GetComponent<BattleEvent>().CanCrossTileGradient(parent.location, target)) {
+            return null;
+        }
+
+        List<MapEvent> toCollide = new List<MapEvent>();
+        bool passable = parent.CanPassAt(target);
+        foreach (MapEvent targetEvent in targetEvents) {
+            toCollide.Add(targetEvent);
+            passable &= targetEvent.IsPassableBy(parent);
+        }
+        
+        List<IEnumerator> toExecute = new List<IEnumerator>();
+        if (passable) {
+            GetComponent<MapEvent>().location = target;
+            toExecute.Add(GetComponent<MapEvent>().StepRoutine(dir, false));
+            if (GetComponent<PCEvent>() != null) {
+                foreach (MapEvent targetEvent in toCollide) {
+                    if (targetEvent.switchEnabled) {
+                        toExecute.Add(targetEvent.CollideRoutine(GetComponent<PCEvent>()));
+                    }
+                }
+            }
+        } else {
+            foreach (MapEvent targetEvent in toCollide) {
+                if (GetComponent<PCEvent>() != null) {
+                    if (targetEvent.switchEnabled && !targetEvent.IsPassableBy(parent)) {
+                        toExecute.Add(targetEvent.CollideRoutine(GetComponent<PCEvent>()));
+                    }
+                }
+                if (targetEvent.GetComponent<BattleEvent>() != null) {
+                    BattleEvent other = targetEvent.GetComponent<BattleEvent>();
+                    if (unit.align != other.unit.align) {
+                        toExecute.Add(unit.MeleeAttackAction(other.unit));
+                    }
+                }
+            }
+        }
+        return CoUtils.RunSequence(toExecute.ToArray());
     }
 
-    public IEnumerator PostTurnRoutine() {
-        yield return GetComponent<CharaEvent>().DesaturateRoutine(0.0f);
+    public IEnumerator AnimateTakeDamageAction() {
+        return PlayAnimationAction(damageAnimation, involuntaryContext);
+    }
+
+    public IEnumerator AnimateDieAction() {
+
+        // we no longer consider ourselves to be a valid anything on the map
+        enabled = false;
+
+        return PlayAnimationAction(deathAnimation);
+    }
+
+    public IEnumerator AnimateAttackAction() {
+        return PlayAnimationAction(attackAnimation);
+    }
+
+    private IEnumerator PlayAnimationAction(LuaAnimation anim, LuaContext context = null) {
+        GetComponent<CharaEvent>().doll.GetComponent<CharaAnimationTarget>().ConfigureToBattler(this);
+        return GetComponent<CharaEvent>().doll.GetComponent<AnimationPlayer>().PlayAnimationRoutine(anim, context);
     }
 }

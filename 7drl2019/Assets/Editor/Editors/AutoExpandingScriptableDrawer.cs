@@ -79,7 +79,7 @@ public class AutoExpandingScriptableDrawer : PropertyDrawer {
             property.serializedObject.ApplyModifiedProperties();
             EditorGUI.EndProperty();
         } else {
-            base.OnGUI(position, property, label);
+            EditorGUI.ObjectField(new Rect(position.x, position.y, position.width - 60, EditorGUIUtility.singleLineHeight), property);
         }
     }
 }

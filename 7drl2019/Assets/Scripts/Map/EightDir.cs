@@ -47,15 +47,15 @@ public static class EightDirExtensions {
         float deltaN = Vector3.Distance(vector, Vector3.Project(vector, EightDir.N.Px()));
         float deltaNE = Vector3.Distance(vector, Vector3.Project(vector, EightDir.NE.Px()));
         float deltaE = Vector3.Distance(vector, Vector3.Project(vector, EightDir.E.Px()));
-        float deltaSE = Vector3.Distance(vector, Vector3.Project(vector, EightDir.E.Px()));
+        float deltaSE = Vector3.Distance(vector, Vector3.Project(vector, EightDir.SE.Px()));
         if (deltaN <= deltaNE && deltaN <= deltaE && deltaN <= deltaSE) {
             return Vector3.Dot(vector, EightDir.N.Px()) > 0.0f ? EightDir.N : EightDir.S;
         } else if (deltaNE <= deltaN && deltaNE <= deltaE && deltaNE <= deltaSE) {
-            return Vector3.Dot(vector, EightDir.NE.Px()) > 0.0f ? EightDir.NE : EightDir.SE;
+            return Vector3.Dot(vector, EightDir.NE.Px()) > 0.0f ? EightDir.NE : EightDir.SW;
         } else if (deltaE <= deltaNE && deltaE <= deltaNE && deltaE <= deltaSE) {
             return Vector3.Dot(vector, EightDir.E.Px()) > 0.0f ? EightDir.E : EightDir.W;
         } else if (deltaSE <= deltaNE && deltaSE <= deltaNE && deltaSE <= deltaE) {
-            return Vector3.Dot(vector, EightDir.SE.Px()) > 0.0f ? EightDir.SE : EightDir.SW;
+            return Vector3.Dot(vector, EightDir.SE.Px()) > 0.0f ? EightDir.SE : EightDir.NW;
         }
         return 0;
     }
@@ -68,6 +68,10 @@ public static class EightDirExtensions {
         }
         Debug.Assert(false, "Could not find eightdir matching " + directionName);
         return 0;
+    }
+
+    public static EightDir RandomDir() {
+        return (EightDir)UnityEngine.Random.Range(0, 8);
     }
 
     public static EightDir FromCommand(InputManager.Command command) {

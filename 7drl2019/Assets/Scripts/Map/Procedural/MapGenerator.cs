@@ -40,7 +40,7 @@ public class MapGenerator : MonoBehaviour {
         TacticsTerrainMesh mesh = GetComponent<TacticsTerrainMesh>();
         mesh.ClearTiles();
         foreach (MapEvent toRemove in GetComponent<Map>().GetEvents<MapEvent>()) {
-            if (toRemove.GetComponent<AvatarEvent>() == null) {
+            if (toRemove.GetComponent<PCEvent>() == null) {
                 GetComponent<Map>().RemoveEvent(toRemove, true);
             }
         }

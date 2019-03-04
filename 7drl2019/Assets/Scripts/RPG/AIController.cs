@@ -1,13 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class AIController : ScriptableObject {
-    
-    // called repeatedly by the battle while ai units still have moves left
-    public IEnumerator PlayNextAIActionRoutine(BattleUnit unit) {
-        unit.battle.TargetCameraToLocation(unit.location);
-        yield return new WaitForSeconds(0.8f);
+public class AIController {
 
-        // TODO: the ai
+    public BattleUnit unit { get; private set; }
+    public BattleEvent battler { get { return unit.battler; } }
+    public BattleUnit pc { get { return unit.battle.pc; } }
+
+    public AIController(BattleUnit unit) {
+        this.unit = unit;
+    }
+
+    public IEnumerator TakeTurnAction() {
+        return battler.StepOrAttackAction(battler.GetComponent<MapEvent>().DirectionTo(pc.location));
     }
 }

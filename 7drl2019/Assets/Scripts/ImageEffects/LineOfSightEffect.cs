@@ -11,7 +11,7 @@ public class LineOfSightEffect : MonoBehaviour {
     public Vector3 heroPos, oldHeroPos;
     private bool[,] seenMap;
 
-    private AvatarEvent hero;
+    private PCEvent pc;
 
     public void OnDestroy() {
         if (losTexture != null) {
@@ -56,10 +56,10 @@ public class LineOfSightEffect : MonoBehaviour {
                 }
             }
         if (Application.isPlaying) {
-                hero = Global.Instance().Maps.avatar;
+                pc = Global.Instance().Maps.pc;
             }
-            if (hero == null) {
-                hero = FindObjectOfType<AvatarEvent>();
+            if (pc == null) {
+                pc = FindObjectOfType<PCEvent>();
             }
         }
 
@@ -71,7 +71,7 @@ public class LineOfSightEffect : MonoBehaviour {
         losTexture = new Texture2D(mesh.size.x, mesh.size.y, TextureFormat.ARGB32, false);
         losTexture.filterMode = FilterMode.Point;
         losTexture.wrapMode = TextureWrapMode.Clamp;
-        heroPos = hero.GetComponent<MapEvent3D>().TileToWorldCoords(hero.GetComponent<MapEvent>().location);
+        heroPos = pc.GetComponent<MapEvent3D>().TileToWorldCoords(pc.GetComponent<MapEvent>().location);
         heroPos += new Vector3(0.5f, 1.5f, 0.5f);
 
         Color[] map = new Color[mesh.size.x * mesh.size.y];
@@ -79,7 +79,7 @@ public class LineOfSightEffect : MonoBehaviour {
             for (int x = 0; x < mesh.size.x; x += 1) {
                 float r = 1.0f;
                 float b = 1.0f;
-                if (hero.GetComponent<BattleEvent>().CanSeeLocation(mesh, new Vector2Int(x, y))) {
+                if (pc.GetComponent<BattleEvent>().CanSeeLocation(mesh, new Vector2Int(x, y))) {
                     seenMap[x, y] = true;
                 } else {
                     r = 0.0f;
@@ -90,11 +90,17 @@ public class LineOfSightEffect : MonoBehaviour {
         }
         losTexture.SetPixels(0, 0, mesh.size.x, mesh.size.y, map);
         losTexture.Apply();
+
+        foreach (CharaEvent chara in GetComponent<Map>().GetEvents<CharaEvent>()) {
+            Vector2Int location = chara.GetComponent<MapEvent>().location;
+            chara.SetVisibleByPC(map[location.y * mesh.size.x + location.x].r > 0.5f);
+        }
+
         Profiler.EndSample();
     }
 
     private void AssignCommonShaderVariables() {
-        if (hero == null) return;
+        if (pc == null || pc.GetComponent<BattleEvent>() == null) return;
         Material material = FindMaterial();
         TacticsTerrainMesh mesh = GetComponent<TacticsTerrainMesh>();
         material.SetFloat("_CellResolutionX", mesh.size.x);
@@ -102,7 +108,7 @@ public class LineOfSightEffect : MonoBehaviour {
         material.SetTexture("_VisibilityTex", losTexture);
         material.SetFloat("_VisibilityBlend", visBlend);
         material.SetVector("_HeroPos", heroPos);
-        material.SetFloat("_SightRange", hero.GetComponent<BattleEvent>().unit.Get(StatTag.SIGHT));
+        material.SetFloat("_SightRange", pc.GetComponent<BattleEvent>().unit.Get(StatTag.SIGHT));
         if (oldLosTexture != null) {
             material.SetTexture("_OldVisibilityTex", oldLosTexture);
         } else {

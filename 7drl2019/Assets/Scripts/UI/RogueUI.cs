@@ -7,11 +7,15 @@ public class RogueUI : MonoBehaviour, InputListener {
     public NumericalBar hpBar;
     public NumericalBar mpBar;
     public Image face;
+    public BattleUnit unit;
     
-    private Result<bool> executeResult;
+    private Result<IEnumerator> executeResult;
 
-    public void Start() {
-        Populate(Global.Instance().Maps.avatar.GetComponent<BattleEvent>().unitData);
+    public void Populate() {
+        if (unit == null) {
+            unit = Global.Instance().Maps.pc.GetComponent<BattleEvent>().unit;
+        }
+        Populate(unit);
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
@@ -29,17 +33,27 @@ public class RogueUI : MonoBehaviour, InputListener {
             case InputManager.Command.UpRight:
                 Global.Instance().Input.RemoveListener(this);
                 EightDir dir = EightDirExtensions.FromCommand(command);
-                StartCoroutine(Global.Instance().Maps.avatar.TryStepRoutine(dir, executeResult));
+                IEnumerator result = unit.battler.StepOrAttackAction(dir);
+                if (result != null) {
+                    executeResult.value = result;
+                }
                 break;
             case InputManager.Command.Wait:
                 Global.Instance().Input.RemoveListener(this);
-                executeResult.value = true;
+                executeResult.value = CoUtils.Wait(0.0f);
                 break;
         }
         return true;
     }
 
-    public IEnumerator PlayNextCommand(Result<bool> executeResult) {
+    public IEnumerator OnTurnAction() {
+        return CoUtils.RunParallel(new IEnumerator[] {
+            hpBar.AnimateWithTimeRoutine(unit.Get(StatTag.MHP), unit.Get(StatTag.HP), 0.125f),
+            mpBar.AnimateWithTimeRoutine(unit.Get(StatTag.MMP), unit.Get(StatTag.MP), 0.125f),
+        }, this);
+    }
+
+    public IEnumerator PlayNextCommand(Result<IEnumerator> executeResult) {
         this.executeResult = executeResult;
         Global.Instance().Input.PushListener(this);
         while (!executeResult.finished) {
@@ -47,9 +61,9 @@ public class RogueUI : MonoBehaviour, InputListener {
         }
     }
 
-    private void Populate(Unit unit) {
-        hpBar.Populate(unit.stats.Get(StatTag.MHP), unit.stats.Get(StatTag.HP));
-        mpBar.Populate(unit.stats.Get(StatTag.MP), unit.stats.Get(StatTag.MP));
-        face.sprite = unit.face;
+    private void Populate(BattleUnit unit) {
+        hpBar.Populate(unit.Get(StatTag.MHP), unit.Get(StatTag.HP));
+        mpBar.Populate(unit.Get(StatTag.MP), unit.Get(StatTag.MP));
+        face.sprite = unit.unit.face;
     }
 }

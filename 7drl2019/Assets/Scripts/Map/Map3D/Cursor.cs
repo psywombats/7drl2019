@@ -37,7 +37,7 @@ public class Cursor : MonoBehaviour, InputListener {
         Global.Instance().Input.RemoveListener(this);
         if (Global.Instance().Maps.camera.target == GetComponent<MapEvent3D>()) {
             // 7drl hack alert
-            Global.Instance().Maps.camera.target = FindObjectOfType<BattleController>().heroEvent.GetComponent<MapEvent3D>();
+            Global.Instance().Maps.camera.target = FindObjectOfType<BattleController>().pcEvent.GetComponent<MapEvent3D>();
         }
 
         gameObject.SetActive(false);

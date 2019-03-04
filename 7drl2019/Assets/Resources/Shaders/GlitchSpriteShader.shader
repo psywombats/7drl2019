@@ -173,8 +173,8 @@
 
         void surf(Input IN, inout SurfaceOutput o) {
             float2 xy = IN.uv_MainTex;
-            float4 pxXY = float4(xy[0] * (float)_ResolutionX, xy[1] * (float)_ResolutionY, 0.0, 0.0);
-            fixed4 c = glitchFragFromCoords(xy, pxXY) * IN.color;
+            //float4 pxXY = float4(xy[0] * (float)_ResolutionX, xy[1] * (float)_ResolutionY, 0.0, 0.0);
+            fixed4 c = SampleSpriteTexture(xy) * IN.color;
             float avg = (c[0] + c[1] + c[2]) / 3.0;
             float4 desat = float4(avg / 2.0, avg / 2.0, avg / 2.0, c.a);
             o.Albedo = c.rgb * (1.0 - _Desaturation) + desat.rgb * (_Desaturation);

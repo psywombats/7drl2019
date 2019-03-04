@@ -14,16 +14,19 @@ public class AnimationPlayer : MonoBehaviour {
         isPlayingAnimation = false;
     }
 
-    public virtual IEnumerator PlayAnimationRoutine() {
+    public virtual IEnumerator PlayAnimationRoutine(LuaContext context = null) {
+        if (context == null) {
+            context = GetComponent<LuaContext>();
+        }
         isPlayingAnimation = true;
-        LuaScript script = anim.ToScript(GetComponent<LuaContext>());
-        GetComponent<LuaContext>().SetGlobal("target", target);
+        LuaScript script = anim.ToScript(context);
+        context.SetGlobal("target", target);
         yield return script.RunRoutine();
         isPlayingAnimation = false;
     }
 
-    public IEnumerator PlayAnimationRoutine(LuaAnimation anim) {
+    public IEnumerator PlayAnimationRoutine(LuaAnimation anim, LuaContext context = null) {
         this.anim = anim;
-        yield return PlayAnimationRoutine();
+        yield return PlayAnimationRoutine(context);
     }
 }

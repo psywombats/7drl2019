@@ -8,7 +8,7 @@ public class BattleControllerEditor : Editor {
         DrawDefaultInspector();
 
         BattleController controller = (BattleController)target;
-        if (Application.isPlaying) {
+        if (Application.isPlaying && !controller.started) {
             if (GUILayout.Button("Start Battle")) {
                 controller.StartCoroutine(controller.BattleRoutine());
             }

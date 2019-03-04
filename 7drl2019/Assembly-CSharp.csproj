@@ -115,10 +115,8 @@
     <Compile Include="Assets\Scripts\Lua\LuaCutsceneContext.cs" />
     <Compile Include="Assets\Scripts\Lua\LuaMapEvent.cs" />
     <Compile Include="Assets\Scripts\Lua\LuaScript.cs" />
-    <Compile Include="Assets\Scripts\Map\AvatarEvent.cs" />
     <Compile Include="Assets\Scripts\Map\CharaEvent.cs" />
     <Compile Include="Assets\Scripts\Map\CornerDir.cs" />
-    <Compile Include="Assets\Scripts\Map\DebugMapMarker.cs" />
     <Compile Include="Assets\Scripts\Map\EightDir.cs" />
     <Compile Include="Assets\Scripts\Map\EventAppearance.cs" />
     <Compile Include="Assets\Scripts\Map\Map.cs" />
@@ -135,6 +133,7 @@
     <Compile Include="Assets\Scripts\Map\MapOverlayUI.cs" />
     <Compile Include="Assets\Scripts\Map\ObjectLayer.cs" />
     <Compile Include="Assets\Scripts\Map\OrthoDir.cs" />
+    <Compile Include="Assets\Scripts\Map\PCEvent.cs" />
     <Compile Include="Assets\Scripts\Map\Procedural\CellInfo.cs" />
     <Compile Include="Assets\Scripts\Map\Procedural\MapGenerator.cs" />
     <Compile Include="Assets\Scripts\Map\Procedural\MeshGenerationResult.cs" />

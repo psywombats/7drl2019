@@ -11,6 +11,10 @@ public class AnimationPlayerDrawer : Editor {
             if (Application.IsPlaying(player)) {
                 if (!player.isPlayingAnimation) {
                     if (GUILayout.Button("Play animation")) {
+                        if (player.GetComponent<BattleEvent>()) {
+                            player.GetComponent<CharaEvent>().doll.GetComponent<CharaAnimationTarget>()
+                                .ConfigureToBattler(player.GetComponent<BattleEvent>());
+                        }
                         player.StartCoroutine(CoUtils.RunWithCallback(player.PlayAnimationRoutine(), () => {
                             Repaint();
                         }));

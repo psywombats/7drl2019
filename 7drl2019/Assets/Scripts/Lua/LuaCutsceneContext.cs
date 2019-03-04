@@ -8,20 +8,20 @@ public class LuaCutsceneContext : LuaContext {
     private static readonly string DefinesPath = "Assets/Resources/Lua/cutscene_defines.lua";
 
     public override IEnumerator RunRoutine(LuaScript script) {
-        if (Global.Instance().Maps.avatar != null) {
-            Global.Instance().Maps.avatar.PauseInput();
+        if (Global.Instance().Maps.pc != null) {
+            Global.Instance().Maps.pc.PauseInput();
         }
         yield return base.RunRoutine(script);
         if (MapOverlayUI.Instance().textbox.isDisplaying) {
             yield return MapOverlayUI.Instance().textbox.DisableRoutine();
         }
-        if (Global.Instance().Maps.avatar != null) {
-            Global.Instance().Maps.avatar.UnpauseInput();
+        if (Global.Instance().Maps.pc != null) {
+            Global.Instance().Maps.pc.UnpauseInput();
         }
     }
 
     public void Start() {
-        //lua.Globals["avatar"] = Global.Instance().Maps.Avatar.GetComponent<MapEvent>().luaObject;
+        //lua.Globals["pc"] = Global.Instance().Maps.pc.GetComponent<MapEvent>().luaObject;
     }
 
     public override void Awake() {
@@ -87,15 +87,15 @@ public class LuaCutsceneContext : LuaContext {
     // === OUR ROUTINES ============================================================================
 
     private IEnumerator WalkRoutine(DynValue path) {
-        AvatarEvent avatar = Global.Instance().Maps.avatar;
+        PCEvent pc = Global.Instance().Maps.pc;
         foreach (DynValue dynDir in path.Tuple) {
             EightDir dir;
             if (dynDir.String.Equals("forward")) {
-                dir = avatar.GetComponent<CharaEvent>().facing;
+                dir = pc.GetComponent<CharaEvent>().facing;
             } else {
                 dir = EightDirExtensions.Parse(dynDir.String);
             }
-            yield return avatar.GetComponent<MapEvent>().StepRoutine(dir);
+            yield return pc.GetComponent<MapEvent>().StepRoutine(dir);
         }
     }
 }

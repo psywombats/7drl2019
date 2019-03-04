@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using MoonSharp.Interpreter;
+using DG.Tweening;
 
 [MoonSharpUserData]
 [DisallowMultipleComponent]
@@ -25,7 +26,6 @@ public class CharaAnimationTarget : AnimationTarget {
 
     [MoonSharpHidden]
     public void ConfigureToBattler(BattleEvent battler) {
-        chara.spritesheet = battler.GetComponent<CharaEvent>().spritesheet;
         chara.itemSprite = battler.unit.unit.equippedItem.sprite;
     }
 
@@ -126,17 +126,30 @@ public class CharaAnimationTarget : AnimationTarget {
     private IEnumerator cs_strike(DynValue args) {
         float elapsed = 0.0f;
         float duration = FloatArg(args, ArgDuration, 0.4f);
-        float power = FloatArg(args, ArgPower, 0.1f);
+        float power = FloatArg(args, ArgPower, 0.15f);
         Vector3 startPos = transform.localPosition;
         while (elapsed < duration) {
             elapsed += Time.deltaTime;
-            transform.localPosition = new Vector3(
-                    startPos.x + Random.Range(-power, power),
-                    startPos.y,
-                    startPos.z);
+            Vector3 offset = Vector3.Cross(chara.facing.Px(), new Vector3(0, 1, 0));
+            offset = offset.normalized * Random.Range(-power, power);
+            transform.localPosition = transform.localPosition + offset;
             yield return null;
         }
         transform.localPosition = startPos;
+    }
+
+    // bump({power? duration?})
+    public void bump(DynValue args) { CSRun(cs_bump(args), args); }
+    private IEnumerator cs_bump(DynValue args) {
+        float duration = FloatArg(args, ArgDuration, 0.125f);
+        float power = FloatArg(args, ArgPower, 0.3f);
+        Vector3 facer = new Vector3(chara.facing.PxX(), chara.facing.PxY(), chara.facing.PxZ());
+        Tweener t1 = transform.DOMove(transform.position + facer * power, duration / 2.0f);
+        t1.SetEase(Ease.InBack);
+        Tweener t2 = transform.DOMove(transform.position, duration / 2.0f);
+        t2.SetEase(Ease.OutQuad);
+        yield return CoUtils.RunSequence(new IEnumerator[] {
+            CoUtils.RunTween(t1), CoUtils.RunTween(t2) });
     }
 
     // setItem({mode})

@@ -30,6 +30,7 @@ public abstract class MapEvent : MonoBehaviour {
     [Header("Movement")]
     public float tilesPerSecond = 2.0f;
     public bool passable = true;
+    public bool eventPassable = true;
     [Space]
     [Header("Lua scripting")]
     public string luaCondition;
@@ -50,19 +51,19 @@ public abstract class MapEvent : MonoBehaviour {
         }
     }
 
-    private Map _parent;
-    public Map parent {
+    private Map _map;
+    public Map map {
         get {
             // this is wiped in update but we'll cache it across frames anyway
-            if (_parent != null) {
-                return _parent;
+            if (_map != null) {
+                return _map;
             }
             GameObject parentObject = gameObject;
             while (parentObject.transform.parent != null) {
                 parentObject = parentObject.transform.parent.gameObject;
                 Map map = parentObject.GetComponent<Map>();
                 if (map != null) {
-                    _parent = map;
+                    _map = map;
                     return map;
                 }
             }
@@ -107,11 +108,11 @@ public abstract class MapEvent : MonoBehaviour {
     public abstract Vector3 InternalPositionToDisplayPosition(Vector3 position);
 
     public EightDir DirectionTo(Vector2Int location) {
-        return EightDirExtensions.DirectionOf(this.location - location);
+        return EightDirExtensions.DirectionOf(location - this.location);
     }
 
     public EightDir DirectionTo(MapEvent other) {
-        return EightDirExtensions.DirectionOf(location - other.location);
+        return EightDirExtensions.DirectionOf(other.location - location);
     }
 
     public abstract float CalcTilesPerSecond();
@@ -152,7 +153,7 @@ public abstract class MapEvent : MonoBehaviour {
     }
 
     public bool IsPassableBy(MapEvent other) {
-        return passable || !switchEnabled;
+        return (passable && (eventPassable || GetComponent<PCEvent>() != null)) || !switchEnabled;
     }
 
     public OrthoDir OrthoDirTo(MapEvent other) {
@@ -163,16 +164,16 @@ public abstract class MapEvent : MonoBehaviour {
         if (!GetComponent<MapEvent>().switchEnabled) {
             return true;
         }
-        if (loc.x < 0 || loc.x >= parent.width || loc.y < 0 || loc.y >= parent.height) {
+        if (loc.x < 0 || loc.x >= map.width || loc.y < 0 || loc.y >= map.height) {
             return false;
         }
-        foreach (Tilemap layer in parent.layers) {
-            if (layer.transform.position.z >= parent.objectLayer.transform.position.z && 
-                    !parent.IsChipPassableAt(layer, loc)) {
+        foreach (Tilemap layer in map.layers) {
+            if (layer.transform.position.z >= map.objectLayer.transform.position.z && 
+                    !map.IsChipPassableAt(layer, loc)) {
                 return false;
             }
         }
-        foreach (MapEvent mapEvent in parent.GetEventsAt(loc)) {
+        foreach (MapEvent mapEvent in map.GetEventsAt(loc)) {
             if (!mapEvent.IsPassableBy(this)) {
                 return false;
             }
@@ -182,7 +183,7 @@ public abstract class MapEvent : MonoBehaviour {
     }
 
     public IEnumerator PathToRoutine(Vector2Int location) {
-        List<Vector2Int> path = parent.FindPath(this, location);
+        List<Vector2Int> path = map.FindPath(this, location);
         if (path == null) {
             yield break;
         }
@@ -223,17 +224,17 @@ public abstract class MapEvent : MonoBehaviour {
 
     protected abstract void DrawGizmoSelf();
 
-    // called when the avatar stumbles into us
+    // called when the pc stumbles into us
     // before the step if impassable, after if passable
-    public IEnumerator CollideRoutine(AvatarEvent avatar) {
+    public IEnumerator CollideRoutine(PCEvent pc) {
         yield return luaObject.RunRoutine(PropertyCollide);
     }
 
     // called when the avatar stumbles into us
     // facing us if impassable, on top of us if passable
-    public IEnumerator InteractRoutine(AvatarEvent avatar) {
+    public IEnumerator InteractRoutine(PCEvent pc) {
         if (GetComponent<CharaEvent>() != null) {
-            GetComponent<CharaEvent>().facing = DirectionTo(avatar.GetComponent<MapEvent>());
+            GetComponent<CharaEvent>().facing = DirectionTo(pc.GetComponent<MapEvent>());
         }
         yield return luaObject.RunRoutine(PropertyInteract);
     }
@@ -254,15 +255,13 @@ public abstract class MapEvent : MonoBehaviour {
         }
     }
 
-    public IEnumerator StepRoutine(EightDir dir) {
+    public IEnumerator StepRoutine(EightDir dir, bool updateLoc = true) {
         if (tracking) {
             yield break;
         }
 
-        location += dir.XY();
-        if (GetComponent<AvatarEvent>() != null) {
-            parent.GetComponent<LineOfSightEffect>().RecalculateVisibilityMap();
-            parent.GetComponent<LineOfSightEffect>().TransitionFromOldLos(1.0f / CalcTilesPerSecond());
+        if (updateLoc) {
+            location += dir.XY();
         }
 
         if (GetComponent<CharaEvent>() == null) {
@@ -273,6 +272,9 @@ public abstract class MapEvent : MonoBehaviour {
     }
 
     public IEnumerator StepMultiRoutine(EightDir dir, int count) {
+        if (GetComponent<PCEvent>() != null) {
+            map.GetComponent<LineOfSightEffect>().RecalculateVisibilityMap();
+        }
         for (int i = 0; i < count; i += 1) {
             yield return StartCoroutine(StepRoutine(dir));
         }

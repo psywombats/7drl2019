@@ -107,7 +107,7 @@ public class MemoryManager : MonoBehaviour, MemoryPopulater {
         SaveSystemMemory();
     }
 
-    // will instantly change globals and avatar to match the memory
+    // will instantly change globals and pc to match the memory
     // assumes the main scene is the current scene
     public void LoadMemory(Memory memory) {
         foreach (MemoryPopulater listener in listeners) {

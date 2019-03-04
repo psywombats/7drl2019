@@ -4,7 +4,7 @@
 public class MapEvent3D : MapEvent {
 
     public override Vector3 TileToWorldCoords(Vector2Int position) {
-        return new Vector3(position.x, parent.terrain.HeightAt(position), position.y);
+        return new Vector3(position.x, map.terrain.HeightAt(position), position.y);
     }
 
     public static Vector2Int WorldPositionTileCoords(Vector3 pos) {
@@ -14,7 +14,7 @@ public class MapEvent3D : MapEvent {
     }
 
     public override void SetScreenPositionToMatchTilePosition() {
-        transform.localPosition = new Vector3(location.x, parent.terrain.HeightAt(location), location.y);
+        transform.localPosition = new Vector3(location.x, map.terrain.HeightAt(location), location.y);
         positionPx = transform.localPosition;
     }
 
@@ -24,10 +24,10 @@ public class MapEvent3D : MapEvent {
 
     public override void SetDepth() {
         // our global height is identical to the height of the parent layer
-        if (parent != null) {
+        if (map != null) {
             transform.localPosition = new Vector3(
                 gameObject.transform.localPosition.x,
-                parent.terrain.HeightAt(location),
+                map.terrain.HeightAt(location),
                 gameObject.transform.localPosition.z);
         }
     }

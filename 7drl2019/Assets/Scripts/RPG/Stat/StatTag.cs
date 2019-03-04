@@ -7,10 +7,10 @@
     MMP,
     MP,
 
-    RES_FIRE,
-    WEAK_FIRE,
-
     MOVE,
     JUMP,
     SIGHT,
+
+    DMG_MIN,
+    DMG_MAX
 }
