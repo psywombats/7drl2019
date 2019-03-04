@@ -5,7 +5,8 @@ using System.Collections;
 public class Skill : ScriptableObject {
 
     public string skillName;
-    public int apCost;
+    public int mpCost;
+    public Sprite icon;
 
     public Targeter targeter;
     public Effector effect;

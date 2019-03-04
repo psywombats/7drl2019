@@ -51,6 +51,12 @@ public class BattleUnit {
         return (int)unit.stats.Get(StatTag.JUMP) + 1;
     }
 
+    public bool CanUse(Skill skill) {
+        return Get(StatTag.MP) >= skill.mpCost;
+    }
+
+    // === ACTIONS =================================================================================
+
     public IEnumerator MeleeAttackAction(BattleUnit other) {
         List<IEnumerator> toExecute = new List<IEnumerator>();
         toExecute.Add(battler.AnimateAttackAction());

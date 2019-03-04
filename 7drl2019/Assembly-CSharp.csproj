@@ -175,6 +175,8 @@
     <Compile Include="Assets\Scripts\UI\Narrator.cs" />
     <Compile Include="Assets\Scripts\UI\NumericalBar.cs" />
     <Compile Include="Assets\Scripts\UI\RogueUI.cs" />
+    <Compile Include="Assets\Scripts\UI\SkillContainer.cs" />
+    <Compile Include="Assets\Scripts\UI\SkillsetUI.cs" />
     <Compile Include="Assets\Scripts\UI\SliderBar.cs" />
     <Compile Include="Assets\Scripts\UI\Textbox.cs" />
     <Compile Include="Assets\Scripts\UI\UISprite.cs" />

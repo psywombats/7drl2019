@@ -8,6 +8,7 @@ public class RogueUI : MonoBehaviour, InputListener {
     public NumericalBar mpBar;
     public Image face;
     public Narrator narrator;
+    public SkillsetUI skills;
 
     public BattleUnit unit { get; private set; }
     
@@ -17,6 +18,7 @@ public class RogueUI : MonoBehaviour, InputListener {
         if (unit == null) {
             unit = Global.Instance().Maps.pc.GetComponent<BattleEvent>().unit;
         }
+        skills.Populate(unit);
         Populate(unit);
     }
 
@@ -53,6 +55,7 @@ public class RogueUI : MonoBehaviour, InputListener {
             hpBar.AnimateWithTimeRoutine(unit.Get(StatTag.MHP), unit.Get(StatTag.HP), 0.125f),
             mpBar.AnimateWithTimeRoutine(unit.Get(StatTag.MMP), unit.Get(StatTag.MP), 0.125f),
             narrator.OnTurnAction(),
+            skills.OnTurnAction(),
         }, this);
     }
 
