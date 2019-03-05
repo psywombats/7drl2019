@@ -87,7 +87,8 @@ public class BattleUnit {
     }
 
     public IEnumerator DieAction() {
-        battle.Log(this + " is defeated.");
+        string flight = unit.flightMessages[Random.Range(0, unit.flightMessages.Count)];
+        battle.Log(this + " " + flight);
         battle.RemoveUnit(this);
         return battler.AnimateDieAction();
     }

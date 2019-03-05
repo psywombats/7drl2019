@@ -12,6 +12,9 @@ public class Unit : ScriptableObject {
 
     public List<Skill> knownSkills;
 
+    [TextArea(3, 6)] public string luaOnExamine;
+    public List<string> flightMessages;
+
     // tempish
     public Item equippedItem;
 

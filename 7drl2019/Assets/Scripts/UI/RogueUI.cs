@@ -2,24 +2,38 @@
 using System.Collections;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(LuaCutsceneContext))]
 public class RogueUI : MonoBehaviour, InputListener {
 
-    public NumericalBar hpBar;
-    public NumericalBar mpBar;
-    public Image face;
+    public Facebox face1, face2;
     public Narrator narrator;
     public SkillsetUI skills;
+    public Textbox box;
+    public GameObject rightDisplay;
 
     public BattleUnit unit { get; private set; }
-    
+
+    private bool rightDisplayEnabled;
     private Result<IEnumerator> executeResult;
 
     public void Populate() {
         if (unit == null) {
             unit = Global.Instance().Maps.pc.GetComponent<BattleEvent>().unit;
         }
-        skills.Populate(unit);
         Populate(unit);
+    }
+
+    public void Update() {
+        float off = 178.0f;
+        float targetOffsetRight = rightDisplayEnabled ? 0.0f : off;
+        float at = rightDisplay.GetComponent<RectTransform>().anchoredPosition.x;
+        if (at != targetOffsetRight) {
+            float to = at + Mathf.Sign(targetOffsetRight - at) * Time.deltaTime * 3.0f * off;
+            to = Mathf.Clamp(to, 0.0f, off);
+            rightDisplay.GetComponent<RectTransform>().anchoredPosition = new Vector2(
+                to,
+                rightDisplay.GetComponent<RectTransform>().anchoredPosition.y);
+        }
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
@@ -60,14 +74,18 @@ public class RogueUI : MonoBehaviour, InputListener {
                     }
                 }
                 break;
+            case InputManager.Command.Examine:
+                StartCoroutine(ScanRoutine());
+                rightDisplayEnabled = false;
+                break;
         }
         return true;
     }
 
     public IEnumerator OnTurnAction() {
         return CoUtils.RunParallel(new IEnumerator[] {
-            hpBar.AnimateWithTimeRoutine(unit.Get(StatTag.MHP), unit.Get(StatTag.HP), 0.125f),
-            mpBar.AnimateWithTimeRoutine(unit.Get(StatTag.MMP), unit.Get(StatTag.MP), 0.125f),
+            face1.OnTurnAction(),
+            face2.OnTurnAction(),
             narrator.OnTurnAction(),
             skills.OnTurnAction(),
         }, this);
@@ -92,9 +110,42 @@ public class RogueUI : MonoBehaviour, InputListener {
         Global.Instance().Input.EnableListener(this);
     }
 
+    private IEnumerator ScanRoutine() {
+        Cursor cursor = unit.battle.SpawnCursor(unit.location, true);
+        Result<Vector2Int> result = new Result<Vector2Int>();
+        yield return cursor.AwaitSelectionRoutine(result, ScanAtRoutine);
+        if (!result.canceled) {
+            MapEvent ev = unit.battle.map.GetEventAt<MapEvent>(result.value);
+            if (ev.GetComponent<BattleEvent>()) {
+                BattleUnit unit = ev.GetComponent<BattleEvent>().unit;
+                yield return PrepareTalkRoutine(unit);
+                LuaScript script = new LuaScript(GetComponent<LuaContext>(), unit.unit.luaOnExamine);
+                GetComponent<LuaContext>().SetGlobal("name", unit.ToString());
+                yield return script.RunRoutine();
+            }
+        }
+        rightDisplayEnabled = false;
+        unit.battle.DespawnCursor();
+    }
+
+    private IEnumerator ScanAtRoutine(Vector2Int loc) {
+        MapEvent ev = unit.battle.map.GetEventAt<MapEvent>(loc);
+        if (ev.GetComponent<BattleEvent>() && !ev.GetComponent<PCEvent>()) {
+            rightDisplayEnabled = true;
+            face2.Populate(ev.GetComponent<BattleEvent>().unit);
+        } else {
+            rightDisplayEnabled = false;
+        }
+        yield return null;
+    }
+
+    private IEnumerator PrepareTalkRoutine(BattleUnit other) {
+        box.ConfigureSpeakers(unit, other);
+        yield return null;
+    }
+
     private void Populate(BattleUnit unit) {
-        hpBar.Populate(unit.Get(StatTag.MHP), unit.Get(StatTag.HP));
-        mpBar.Populate(unit.Get(StatTag.MP), unit.Get(StatTag.MP));
-        face.sprite = unit.unit.face;
+        skills.Populate(unit);
+        face1.Populate(unit);
     }
 }

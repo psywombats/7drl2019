@@ -116,15 +116,15 @@
             fixed4 c1 = SampleSpriteTexture(xy) * IN.color;
             fixed4 c2 = fixed4(c1[0], c1[1], c1[2], c1[3]);
             fixed4 data1 = tex2D(_VisibilityTex, IN.cellUV);
-            fixed4 unknown1 = fixed4(0.0, 0.0, (c1.r + c1.g + c1.b) / 3.0, 1.0);
-            if (data1.b < 1.0) { unknown1.b = 0.0; }
+            fixed4 unknown1 = fixed4((c1.r + c1.g + c1.b) * 0.09375, 0.0, (c1.r + c1.g + c1.b) *0.28, 1.0);
+            if (data1.b < 1.0) { unknown1.b = 0.0; unknown1.r = 0.0; }
             float fader1 = adjustAlpha(_HeroPos, IN.vertex, _SightRange);
             if (data1.r < 1.0) fader1 = 1.0;
             c1 = fader1 * unknown1 + (1.0 - fader1) * c1;
             
             fixed4 data2 = tex2D(_OldVisibilityTex, IN.cellUV);
-            fixed4 unknown2 = fixed4(0.0, 0.0, (c2.r + c2.g + c2.b) / 3.0, 1.0);
-            if (data2.b < 1.0) { unknown2.b = 0.0; }
+            fixed4 unknown2 = fixed4((c2.r + c2.g + c2.b) * 0.09375, 0.0, (c2.r + c2.g + c2.b) *0.28, 1.0);
+            if (data2.b < 1.0) { unknown2.b = 0.0; unknown2.r = 0.0; }
             float fader2 = adjustAlpha(_OldHeroPos, IN.vertex, _SightRange);
             if (data2.r < 1.0) fader2 = 1.0;
             c2 = fader2 * unknown2 + (1.0 - fader2) * c2;

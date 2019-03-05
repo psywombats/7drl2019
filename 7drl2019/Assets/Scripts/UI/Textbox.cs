@@ -16,7 +16,8 @@ public class Textbox : MonoBehaviour, InputListener {
 
     [Space]
     [Header("Hookups")]
-    public Text namebox;
+    public Text namebox1;
+    public Text namebox2;
     public Text textbox;
     public RectTransform backer;
     public RectTransform mainBox;
@@ -31,6 +32,7 @@ public class Textbox : MonoBehaviour, InputListener {
 
     private bool hurried;
     private bool confirmed;
+    private BattleUnit unit1, unit2;
 
     public void Start() {
         textbox.text = "";
@@ -42,6 +44,13 @@ public class Textbox : MonoBehaviour, InputListener {
     public void OnValidate() {
         backerAnchor = backer.anchorMax.y;
         textHeight = mainBox.sizeDelta.y;
+    }
+
+    public void ConfigureSpeakers(BattleUnit unit1, BattleUnit unit2) {
+        this.unit1 = unit1;
+        this.unit2 = unit2;
+        namebox1.text = unit1.ToString();
+        namebox2.text = unit2.ToString();
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
@@ -78,22 +87,33 @@ public class Textbox : MonoBehaviour, InputListener {
     }
 
     public IEnumerator SpeakRoutine(string speakerName, string text) {
+        namebox1.text = unit1.ToString();
+        namebox2.text = unit2.ToString();
         if (!isDisplaying) {
-            namebox.enabled = speakerName != SystemSpeaker;
-            namebox.text = speakerName;
-            yield return EnableRoutine();
+            yield return EnableRoutine(speakerName);
         } else {
             yield return EraseTextRoutine(textClearSeconds);
-            if (namebox.text != speakerName) {
+            if (namebox1.enabled && namebox1.text != speakerName) {
                 yield return CoUtils.RunParallel(new IEnumerator[] {
                     CloseBoxRoutine(boxAnimationSeconds),
-                    EraseNameRoutine(boxAnimationSeconds),
+                    EraseName1Routine(boxAnimationSeconds),
                 }, this);
-                namebox.enabled = speakerName != SystemSpeaker;
-                namebox.text = speakerName;
+                namebox1.enabled = false;
+                namebox2.enabled = true;
                 yield return CoUtils.RunParallel(new IEnumerator[] {
                     OpenBoxRoutine(boxAnimationSeconds),
-                    ShowNameRoutine(boxAnimationSeconds),
+                    ShowName2Routine(boxAnimationSeconds),
+                }, this);
+            } else if (namebox2.enabled && namebox2.text != speakerName) {
+                yield return CoUtils.RunParallel(new IEnumerator[] {
+                    CloseBoxRoutine(boxAnimationSeconds),
+                    EraseName2Routine(boxAnimationSeconds),
+                }, this);
+                namebox1.enabled = true;
+                namebox2.enabled = false;
+                yield return CoUtils.RunParallel(new IEnumerator[] {
+                    OpenBoxRoutine(boxAnimationSeconds),
+                    ShowName1Routine(boxAnimationSeconds),
                 }, this);
             }
         }
@@ -104,7 +124,8 @@ public class Textbox : MonoBehaviour, InputListener {
     public IEnumerator DisableRoutine() {
         isDisplaying = false;
         yield return CoUtils.RunParallel(new IEnumerator[] {
-            EraseNameRoutine(boxAnimationSeconds / 2.0f),
+            EraseName1Routine(boxAnimationSeconds / 2.0f),
+            EraseName2Routine(boxAnimationSeconds / 2.0f),
             EraseTextRoutine(boxAnimationSeconds / 2.0f),
             CloseBoxRoutine(boxAnimationSeconds),
             CoUtils.Delay(combinedAnimDelaySeconds,
@@ -113,26 +134,39 @@ public class Textbox : MonoBehaviour, InputListener {
         Global.Instance().Input.RemoveListener(this);
     }
 
-    private IEnumerator EnableRoutine() {
+    private IEnumerator EnableRoutine(string firstSpeaker) {
         isDisplaying = true;
         Global.Instance().Input.PushListener(this);
+
+        namebox1.transform.parent.GetComponent<CanvasGroup>().alpha = 0.0f;
+        namebox2.transform.parent.GetComponent<CanvasGroup>().alpha = 0.0f;
 
         yield return CoUtils.RunParallel(new IEnumerator[] {
             CoUtils.RunTween(backer.DOAnchorMax(new Vector2(0.5f, backerAnchor), backerAnimationSeconds)),
             CoUtils.Delay(combinedAnimDelaySeconds,
                 CoUtils.RunParallel(new IEnumerator[] {
-                    ShowNameRoutine(boxAnimationSeconds),
+                    firstSpeaker == unit1.ToString() 
+                        ? ShowName1Routine(boxAnimationSeconds)
+                        : ShowName2Routine(boxAnimationSeconds),
                     OpenBoxRoutine(boxAnimationSeconds),
                 }, this)),
         }, this);
     }
 
-    private IEnumerator ShowNameRoutine(float seconds) {
-        yield return CoUtils.RunTween(namebox.GetComponent<CanvasGroup>().DOFade(1.0f, seconds));
+    private IEnumerator ShowName1Routine(float seconds) {
+        yield return CoUtils.RunTween(namebox1.transform.parent.GetComponent<CanvasGroup>().DOFade(1.0f, seconds));
     }
 
-    private IEnumerator EraseNameRoutine(float seconds) {
-        yield return CoUtils.RunTween(namebox.GetComponent<CanvasGroup>().DOFade(0.0f, seconds));
+    private IEnumerator ShowName2Routine(float seconds) {
+        yield return CoUtils.RunTween(namebox2.transform.parent.GetComponent<CanvasGroup>().DOFade(1.0f, seconds));
+    }
+
+    private IEnumerator EraseName1Routine(float seconds) {
+        yield return CoUtils.RunTween(namebox1.transform.parent.GetComponent<CanvasGroup>().DOFade(0.0f, seconds));
+    }
+
+    private IEnumerator EraseName2Routine(float seconds) {
+        yield return CoUtils.RunTween(namebox2.transform.parent.GetComponent<CanvasGroup>().DOFade(0.0f, seconds));
     }
 
     private IEnumerator EraseTextRoutine(float seconds) {

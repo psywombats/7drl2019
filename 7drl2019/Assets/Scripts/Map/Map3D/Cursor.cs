@@ -6,14 +6,14 @@ public class Cursor : MonoBehaviour, InputListener {
 
     private const string InstancePath = "Prefabs/Tactics/Cursor";
     private const float ScrollSnapTime = 0.2f;
-
-    public float minTimeBetweenMoves = 0.1f;
+    
     public GameObject reticules;
 
     public bool cameraFollows { get; set; }
     
     private float lastStepTime;
     private Result<Vector2Int> awaitingSelect;
+    private Func<Vector2Int, IEnumerator> scanner;
 
     public static Cursor GetInstance() {
         GameObject prefab = Resources.Load<GameObject>(InstancePath);
@@ -41,14 +41,16 @@ public class Cursor : MonoBehaviour, InputListener {
         Global.Instance().Input.RemoveListener(this);
         if (Global.Instance().Maps.camera.target == GetComponent<MapEvent3D>()) {
             // 7drl hack alert
-            Global.Instance().Maps.camera.target = FindObjectOfType<BattleController>().pcEvent.GetComponent<MapEvent3D>();
+            Global.Instance().Maps.camera.target = 
+                FindObjectOfType<BattleController>().pcEvent.GetComponent<MapEvent3D>();
         }
 
         gameObject.SetActive(false);
     }
 
     // waits for the cursor to select
-    public IEnumerator AwaitSelectionRoutine(Result<Vector2Int> result) {
+    public IEnumerator AwaitSelectionRoutine(Result<Vector2Int> result, Func<Vector2Int, IEnumerator> scanner = null) {
+        this.scanner = scanner;
         awaitingSelect = result;
         while (!result.finished) {
             yield return null;
@@ -64,7 +66,7 @@ public class Cursor : MonoBehaviour, InputListener {
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
-        if (GetComponent<MapEvent>().tracking) {
+        if (GetComponent<MapEvent>().tracking || (awaitingSelect != null && awaitingSelect.finished)) {
             return true;
         }
         switch (eventType) {
@@ -97,13 +99,16 @@ public class Cursor : MonoBehaviour, InputListener {
     }
 
     private bool TryStep(EightDir dir) {
-        if (Time.fixedTime - lastStepTime < minTimeBetweenMoves) {
-            return true;
-        }
+        //if (Time.fixedTime - lastStepTime < minTimeBetweenMoves) {
+        //    return true;
+        //}
         Vector2Int target = GetComponent<MapEvent>().location + dir.XY();
         if (GetComponent<MapEvent>().CanPassAt(target)) {
             StartCoroutine(GetComponent<MapEvent>().StepRoutine(dir));
             lastStepTime = Time.fixedTime;
+        }
+        if (scanner != null) {
+            StartCoroutine(scanner(GetComponent<MapEvent>().location));
         }
 
         return true;

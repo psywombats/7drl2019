@@ -21,6 +21,7 @@ public class InputManager : MonoBehaviour {
         Click,
         Rightclick,
         Debug,
+        Examine,
         Skill1,
         Skill2,
         Skill3,
@@ -48,21 +49,22 @@ public class InputManager : MonoBehaviour {
 
     public void Awake() {
         keybinds = new Dictionary<Command, List<KeyCode>>();
-        keybinds[Command.Left] = new List<KeyCode>(new[] { KeyCode.LeftArrow, KeyCode.A, KeyCode.Keypad4, KeyCode.Alpha4 });
-        keybinds[Command.UpLeft] = new List<KeyCode>(new[] { KeyCode.Q, KeyCode.Keypad7, KeyCode.Alpha7 });
-        keybinds[Command.Up] = new List<KeyCode>(new[] { KeyCode.UpArrow, KeyCode.D, KeyCode.Keypad8, KeyCode.Alpha8 });
-        keybinds[Command.UpRight] = new List<KeyCode>(new[] { KeyCode.E, KeyCode.Keypad9, KeyCode.Alpha9 });
-        keybinds[Command.Right] = new List<KeyCode>(new[] { KeyCode.RightArrow, KeyCode.D, KeyCode.Keypad6, KeyCode.Alpha6 });
-        keybinds[Command.DownRight] = new List<KeyCode>(new[] { KeyCode.C, KeyCode.Keypad3, KeyCode.Alpha3 });
-        keybinds[Command.Down] = new List<KeyCode>(new[] { KeyCode.DownArrow, KeyCode.X, KeyCode.Keypad2, KeyCode.Alpha2 });
-        keybinds[Command.DownLeft] = new List<KeyCode>(new[] { KeyCode.Z, KeyCode.Keypad1, KeyCode.Alpha1 });
-        keybinds[Command.Wait] = new List<KeyCode>(new[] { KeyCode.S, KeyCode.Keypad5, KeyCode.Period, KeyCode.Alpha5 });
-        keybinds[Command.Confirm] = new List<KeyCode>(new[] { KeyCode.Space, KeyCode.Z, KeyCode.Return });
-        keybinds[Command.Cancel] = new List<KeyCode>(new[] { KeyCode.Escape, KeyCode.B, KeyCode.X });
+        keybinds[Command.Left] = new List<KeyCode>(new[] { KeyCode.LeftArrow, KeyCode.Keypad4, KeyCode.Alpha4 });
+        keybinds[Command.UpLeft] = new List<KeyCode>(new[] { KeyCode.Keypad7, KeyCode.Alpha7 });
+        keybinds[Command.Up] = new List<KeyCode>(new[] { KeyCode.UpArrow, KeyCode.Keypad8, KeyCode.Alpha8 });
+        keybinds[Command.UpRight] = new List<KeyCode>(new[] { KeyCode.Keypad9, KeyCode.Alpha9 });
+        keybinds[Command.Right] = new List<KeyCode>(new[] { KeyCode.RightArrow,KeyCode.Keypad6, KeyCode.Alpha6 });
+        keybinds[Command.DownRight] = new List<KeyCode>(new[] { KeyCode.Keypad3, KeyCode.Alpha3 });
+        keybinds[Command.Down] = new List<KeyCode>(new[] { KeyCode.DownArrow, KeyCode.Keypad2, KeyCode.Alpha2 });
+        keybinds[Command.DownLeft] = new List<KeyCode>(new[] { KeyCode.Keypad1, KeyCode.Alpha1 });
+        keybinds[Command.Wait] = new List<KeyCode>(new[] { KeyCode.Keypad5, KeyCode.Period, KeyCode.Alpha5 });
+        keybinds[Command.Confirm] = new List<KeyCode>(new[] { KeyCode.Space, KeyCode.Return, KeyCode.KeypadEnter });
+        keybinds[Command.Cancel] = new List<KeyCode>(new[] { KeyCode.Escape, KeyCode.Backspace });
         keybinds[Command.Debug] = new List<KeyCode>(new[] { KeyCode.Tilde });
         keybinds[Command.Menu] = new List<KeyCode>(new[] { KeyCode.Escape, KeyCode.C, KeyCode.Backspace });
         keybinds[Command.Click] = new List<KeyCode>();
         keybinds[Command.Rightclick] = new List<KeyCode>();
+        keybinds[Command.Examine] = new List<KeyCode>(new[] { KeyCode.E, KeyCode.V, KeyCode.X, KeyCode.Space });
         keybinds[Command.Skill1] = new List<KeyCode>(new[] { KeyCode.F1 });
         keybinds[Command.Skill2] = new List<KeyCode>(new[] { KeyCode.F2 });
         keybinds[Command.Skill3] = new List<KeyCode>(new[] { KeyCode.F3 });
