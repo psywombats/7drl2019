@@ -84,7 +84,7 @@
     <Compile Include="Assets\Editor\Editors\InstanceMultiControllerEditor.cs" />
     <Compile Include="Assets\Editor\Editors\MapEventEditor.cs" />
     <Compile Include="Assets\Editor\Editors\MapGeneratorEditor.cs" />
-    <Compile Include="Assets\Editor\Editors\SkillEditor.cs" />
+    <Compile Include="Assets\Editor\Editors\SkillDataEditor.cs" />
     <Compile Include="Assets\Editor\Editors\StatSetDrawer.cs" />
     <Compile Include="Assets\Editor\Editors\TacticsTerrainEditor.cs" />
     <Compile Include="Assets\Editor\Editors\TileEditor.cs" />

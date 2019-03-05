@@ -11,16 +11,22 @@ public class RogueUI : MonoBehaviour, InputListener {
     public Textbox box;
     public GameObject rightDisplay;
 
-    public BattleUnit unit { get; private set; }
+    public PCEvent pc { get; private set; }
+    public BattleUnit unit {
+        get {
+            return pc.GetComponent<BattleEvent>().unit;
+        }
+    }
 
     private bool rightDisplayEnabled;
     private Result<IEnumerator> executeResult;
 
     public void Populate() {
-        if (unit == null) {
-            unit = Global.Instance().Maps.pc.GetComponent<BattleEvent>().unit;
+        if (pc == null) {
+            pc = Global.Instance().Maps.pc;
         }
-        Populate(unit);
+        skills.Populate(pc);
+        face1.Populate(unit);
     }
 
     public void Update() {
@@ -67,8 +73,8 @@ public class RogueUI : MonoBehaviour, InputListener {
             case InputManager.Command.Skill5:
             case InputManager.Command.Skill6:
                 int skillNumber = Global.Instance().Input.CommandToNumber(command) - 1;
-                if (skillNumber < unit.unit.knownSkills.Count) {
-                    Skill skill = unit.unit.knownSkills[skillNumber];
+                if (skillNumber < pc.activeBook.spells.Count) {
+                    Skill skill = pc.activeBook.spells[skillNumber];
                     if (unit.CanUse(skill)) {
                         StartCoroutine(PlaySkillRoutine(skill));
                     } else {
@@ -81,6 +87,7 @@ public class RogueUI : MonoBehaviour, InputListener {
                 }
                 break;
             case InputManager.Command.Examine:
+            case InputManager.Command.Confirm:
                 StartCoroutine(ScanRoutine());
                 rightDisplayEnabled = false;
                 break;
@@ -148,10 +155,5 @@ public class RogueUI : MonoBehaviour, InputListener {
     private IEnumerator PrepareTalkRoutine(BattleUnit other) {
         box.ConfigureSpeakers(unit, other);
         yield return null;
-    }
-
-    private void Populate(BattleUnit unit) {
-        skills.Populate(unit);
-        face1.Populate(unit);
     }
 }

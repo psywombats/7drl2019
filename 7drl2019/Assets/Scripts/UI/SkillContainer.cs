@@ -14,12 +14,13 @@ public class SkillContainer : MonoBehaviour {
     public Text costLabel;
 
     private Skill skill;
-    private BattleUnit unit;
+    private PCEvent pc;
+    private BattleUnit unit { get { return pc.GetComponent<BattleEvent>().unit; } }
     private bool usable;
 
-    public void Populate(BattleUnit unit, int ordinal) {
-        this.unit = unit;
-        skill = unit.unit.knownSkills[ordinal];
+    public void Populate(PCEvent pc, int ordinal) {
+        this.pc = pc;
+        skill = pc.activeBook.spells[ordinal];
         icon.sprite = skill.icon;
         label.text = "F" + (ordinal + 1);
         if (skill.costMP > 0) {

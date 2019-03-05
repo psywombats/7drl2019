@@ -10,7 +10,8 @@ public class Unit : ScriptableObject {
     public bool unique = true;
     public Alignment align;
 
-    public List<Skill> knownSkills;
+    [Tooltip("Monsters will use this")]
+    public List<Skill> innateSkills;
 
     [TextArea(3, 6)] public string luaOnExamine;
     public List<string> flightMessages;

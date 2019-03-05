@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 
-[CustomEditor(typeof(Skill))]
+[CustomEditor(typeof(SkillData))]
 public class SkillEditor : Editor {
 
     private PolymorphicFieldUtility targeterUtil;
@@ -8,15 +8,15 @@ public class SkillEditor : Editor {
 
     public void OnEnable() {
         targeterUtil = new PolymorphicFieldUtility(typeof(Targeter),
-            "Assets/Resources/Database/Targeters/" + ((Skill)target).name + "_targeter.asset");
+            "Assets/Resources/Database/Targeters/" + ((SkillData)target).name + "_targeter.asset");
         effectorUtil = new PolymorphicFieldUtility(typeof(Effector),
-            "Assets/Resources/Database/Effectors/" + ((Skill)target).name + "_effector.asset");
+            "Assets/Resources/Database/Effectors/" + ((SkillData)target).name + "_effector.asset");
     }
 
     public override void OnInspectorGUI() {
         DrawDefaultInspector();
 
-        Skill skill = (Skill)target;
+        SkillData skill = (SkillData)target;
 
         if (!serializedObject.FindProperty("targeter").hasMultipleDifferentValues) {
             skill.targeter = targeterUtil.DrawSelector(skill.targeter);

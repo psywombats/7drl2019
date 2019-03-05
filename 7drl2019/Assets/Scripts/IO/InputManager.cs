@@ -64,7 +64,7 @@ public class InputManager : MonoBehaviour {
         keybinds[Command.Menu] = new List<KeyCode>(new[] { KeyCode.Escape, KeyCode.C, KeyCode.Backspace });
         keybinds[Command.Click] = new List<KeyCode>();
         keybinds[Command.Rightclick] = new List<KeyCode>();
-        keybinds[Command.Examine] = new List<KeyCode>(new[] { KeyCode.E, KeyCode.V, KeyCode.X, KeyCode.Space });
+        keybinds[Command.Examine] = new List<KeyCode>(new[] { KeyCode.E, KeyCode.V, KeyCode.X });
         keybinds[Command.Skill1] = new List<KeyCode>(new[] { KeyCode.F1 });
         keybinds[Command.Skill2] = new List<KeyCode>(new[] { KeyCode.F2 });
         keybinds[Command.Skill3] = new List<KeyCode>(new[] { KeyCode.F3 });

@@ -54,7 +54,7 @@ public class BattleUnit {
     }
 
     public bool CanUse(Skill skill) {
-        return Get(StatTag.MP) >= skill.costMP && (skill.costMP == 0 || Get(StatTag.CD) == 0);
+        return Get(StatTag.MP) >= skill.costMP && (skill.costCD == 0 || Get(StatTag.CD) == 0);
     }
 
     // === ACTIONS =================================================================================
@@ -90,7 +90,7 @@ public class BattleUnit {
 
     public IEnumerator DieAction() {
         string flight = unit.flightMessages[Random.Range(0, unit.flightMessages.Count)];
-        battle.Log(this + " " + flight);
+        battle.Log(this + flight);
         battle.RemoveUnit(this);
         return battler.AnimateDieAction();
     }

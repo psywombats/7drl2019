@@ -157,7 +157,13 @@
     <Compile Include="Assets\Scripts\RPG\Effectors\WalkEffect.cs" />
     <Compile Include="Assets\Scripts\RPG\Inventory.cs" />
     <Compile Include="Assets\Scripts\RPG\Item.cs" />
-    <Compile Include="Assets\Scripts\RPG\Skill.cs" />
+    <Compile Include="Assets\Scripts\RPG\Spellbook\BookNameGen.cs" />
+    <Compile Include="Assets\Scripts\RPG\Spellbook\Scroll.cs" />
+    <Compile Include="Assets\Scripts\RPG\Spellbook\Skill.cs" />
+    <Compile Include="Assets\Scripts\RPG\Spellbook\SkillData.cs" />
+    <Compile Include="Assets\Scripts\RPG\Spellbook\SkillModifier.cs" />
+    <Compile Include="Assets\Scripts\RPG\Spellbook\Spellbook.cs" />
+    <Compile Include="Assets\Scripts\RPG\Spellbook\SpellbookData.cs" />
     <Compile Include="Assets\Scripts\RPG\Stat\CombinationAdditive.cs" />
     <Compile Include="Assets\Scripts\RPG\Stat\CombinationStrategy.cs" />
     <Compile Include="Assets\Scripts\RPG\Stat\Stat.cs" />
@@ -190,6 +196,7 @@
     <Compile Include="Assets\Scripts\Util\InstanceMultiController.cs" />
     <Compile Include="Assets\Scripts\Util\MathHelper3D.cs" />
     <Compile Include="Assets\Scripts\Util\ObjectPool.cs" />
+    <Compile Include="Assets\Scripts\Util\RandUtils.cs" />
     <Compile Include="Assets\Scripts\Util\Result.cs" />
     <Compile Include="Assets\Scripts\Util\SerialDictionary.cs" />
     <Compile Include="Assets\Scripts\Util\UIUtils.cs" />

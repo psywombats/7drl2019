@@ -24,7 +24,7 @@ public class ChestEvent : MonoBehaviour {
             string qty1 = (quantity > 1) ? "" : "a ";
             string qty2 = (quantity > 1) ? (" x" + quantity) : "";
             pc.GetComponent<BattleEvent>().unit.battle.Log("It contained " + qty1 + contents.ItemName() + qty2 + "!", true);
-            pc.inventory.Add(contents, quantity);
+            pc.PickUpItem(contents, quantity);
         }
         opened = true;
         yield return null;

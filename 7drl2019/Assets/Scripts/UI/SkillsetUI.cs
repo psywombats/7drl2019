@@ -8,14 +8,15 @@ public class SkillsetUI : MonoBehaviour {
 
     public SkillContainer containerPrefab;
 
-    private BattleUnit unit;
+    private PCEvent pc;
 
-    public void Populate(BattleUnit unit) {
+    public void Populate(PCEvent pc) {
+        this.pc = pc;
         Clear();
-        for (int i = 0; i < unit.unit.knownSkills.Count; i += 1) {
+        for (int i = 0; i < pc.activeBook.spells.Count; i += 1) {
             SkillContainer container = Instantiate(containerPrefab);
             container.transform.SetParent(transform);
-            container.Populate(unit, i);
+            container.Populate(pc, i);
         }
     }
 
