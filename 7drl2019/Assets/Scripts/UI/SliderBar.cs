@@ -16,7 +16,7 @@ public class SliderBar : MonoBehaviour {
     }
 
     public void Populate(float max, float actual) {
-        ratio = actual / max;
+        ratio = max > 0 ? actual / max : 0;
         UpdateScale();
     }
 

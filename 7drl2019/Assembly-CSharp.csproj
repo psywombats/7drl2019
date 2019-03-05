@@ -140,7 +140,6 @@
     <Compile Include="Assets\Scripts\Map\Procedural\MeshGenerationResult.cs" />
     <Compile Include="Assets\Scripts\Map\Procedural\RoomInfo.cs" />
     <Compile Include="Assets\Scripts\Map\Procedural\TerrainQuad.cs" />
-    <Compile Include="Assets\Scripts\Map\Skill.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\BattleEvent.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\SelectionGrid.cs" />
     <Compile Include="Assets\Scripts\Map\Tiles\Map2DRuleTile.cs" />
@@ -158,6 +157,7 @@
     <Compile Include="Assets\Scripts\RPG\Effectors\WalkEffect.cs" />
     <Compile Include="Assets\Scripts\RPG\Inventory.cs" />
     <Compile Include="Assets\Scripts\RPG\Item.cs" />
+    <Compile Include="Assets\Scripts\RPG\Skill.cs" />
     <Compile Include="Assets\Scripts\RPG\Stat\CombinationAdditive.cs" />
     <Compile Include="Assets\Scripts\RPG\Stat\CombinationStrategy.cs" />
     <Compile Include="Assets\Scripts\RPG\Stat\Stat.cs" />

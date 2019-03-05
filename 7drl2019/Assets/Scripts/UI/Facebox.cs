@@ -7,7 +7,8 @@ public class Facebox : MonoBehaviour {
     public Image face;
     public NumericalBar hpBar;
     public NumericalBar mpBar;
-
+    public NumericalBar cdBar;
+    
     private BattleUnit unit;
 
     public void Populate(BattleUnit unit) {
@@ -15,6 +16,7 @@ public class Facebox : MonoBehaviour {
         face.sprite = unit.unit.face;
         hpBar.Populate(unit.Get(StatTag.MHP), unit.Get(StatTag.HP));
         mpBar.Populate(unit.Get(StatTag.MP), unit.Get(StatTag.MP));
+        cdBar.Populate(unit.Get(StatTag.CD), unit.Get(StatTag.CD));
     }
 
     public IEnumerator OnTurnAction() {
@@ -22,6 +24,7 @@ public class Facebox : MonoBehaviour {
             return CoUtils.RunParallel(new IEnumerator[] {
                 hpBar.AnimateWithTimeRoutine(unit.Get(StatTag.MHP), unit.Get(StatTag.HP), 0.125f),
                 mpBar.AnimateWithTimeRoutine(unit.Get(StatTag.MMP), unit.Get(StatTag.MP), 0.125f),
+                cdBar.AnimateWithTimeRoutine(unit.maxCD, unit.Get(StatTag.CD), 0.125f),
             }, this);
         } else {
             return CoUtils.Wait(0.0f);

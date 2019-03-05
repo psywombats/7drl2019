@@ -6,11 +6,13 @@ using Coroutine = MoonSharp.Interpreter.Coroutine;
 public class LuaScript {
     
     protected LuaContext context;
+    protected string text;
 
     public Coroutine scriptRoutine { get; private set;  }
     public bool done { get; private set; }
 
     public LuaScript(LuaContext context, string scriptString) {
+        text = scriptString;
         this.context = context;
 
         string fullScript = "return function()\n" + scriptString + "\nend";
@@ -26,5 +28,13 @@ public class LuaScript {
         done = false;
         yield return context.RunRoutine(this);
         done = true;
+    }
+
+    public override string ToString() {
+        if (text != null) {
+            return text;
+        } else {
+            return scriptRoutine.ToString();
+        }
     }
 }

@@ -6,6 +6,9 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CanvasGroup))]
 public class SkillContainer : MonoBehaviour {
 
+    private readonly Color MPColor = new Color(0x7d, 0x65, 0xdd);
+    private readonly Color CDColor = new Color(0x2B, 0x6D, 0x65);
+
     public Text label;
     public Image icon;
     public Text costLabel;
@@ -19,7 +22,14 @@ public class SkillContainer : MonoBehaviour {
         skill = unit.unit.knownSkills[ordinal];
         icon.sprite = skill.icon;
         label.text = "F" + (ordinal + 1);
-        costLabel.text = skill.mpCost + " MP";
+        if (skill.costMP > 0) {
+            costLabel.color = MPColor;
+            costLabel.text = skill.costMP + " MP";
+        } else {
+            costLabel.color = CDColor;
+            costLabel.text = skill.costCD + " CD";
+        }
+        
 
         usable = unit.CanUse(skill);
         GetComponent<CanvasGroup>().alpha = usable ? 1.0f : 0.5f;

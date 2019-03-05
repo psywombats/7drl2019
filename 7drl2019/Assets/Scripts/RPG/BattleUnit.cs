@@ -11,6 +11,8 @@ public class BattleUnit {
     public Alignment align { get { return unit.align; } }
     public Vector2Int location { get { return battler.location; } }
 
+    public float maxCD { get; set; }
+
     private bool tookDamageThisTurn;
 
     public BattleEvent battler {
@@ -52,7 +54,7 @@ public class BattleUnit {
     }
 
     public bool CanUse(Skill skill) {
-        return Get(StatTag.MP) >= skill.mpCost;
+        return Get(StatTag.MP) >= skill.costMP && (skill.costMP == 0 || Get(StatTag.CD) == 0);
     }
 
     // === ACTIONS =================================================================================
@@ -76,7 +78,7 @@ public class BattleUnit {
         if (!IsDead()) {
             unit.stats.Sub(StatTag.HP, damage);
             if (!tookDamageThisTurn) {
-                toExecute.Add(battler.PlayAnimationAction(damageAnimation));
+                toExecute.Add(battler.AnimateTakeDamageAction());
             }
             tookDamageThisTurn = true;
             if (IsDead()) {
@@ -97,6 +99,9 @@ public class BattleUnit {
 
     public IEnumerator OnNewTurnAction() {
         tookDamageThisTurn = false;
+        if (Get(StatTag.CD) > 0) {
+            unit.stats.Sub(StatTag.CD, 1);
+        }
         return null;
     }
 

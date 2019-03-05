@@ -14,7 +14,9 @@ public class NumericalBar : MonoBehaviour {
     private float currentValue;
 
     public void Populate(float max, float actual) {
-        this.max.text = ((int)max).ToString();
+        if (this.max != null) {
+            this.max.text = ((int)max).ToString();
+        }
         this.actual.text = ((int)actual).ToString();
         bar.Populate(max, actual);
         currentValue = actual;

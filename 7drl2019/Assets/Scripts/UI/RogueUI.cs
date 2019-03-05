@@ -49,10 +49,10 @@ public class RogueUI : MonoBehaviour, InputListener {
             case InputManager.Command.DownLeft:
             case InputManager.Command.DownRight:
             case InputManager.Command.UpRight:
-                Global.Instance().Input.RemoveListener(this);
                 EightDir dir = EightDirExtensions.FromCommand(command);
                 IEnumerator result = unit.battler.StepOrAttackAction(dir, true);
                 if (result != null) {
+                    Global.Instance().Input.RemoveListener(this);
                     executeResult.value = result;
                 }
                 break;
@@ -71,6 +71,12 @@ public class RogueUI : MonoBehaviour, InputListener {
                     Skill skill = unit.unit.knownSkills[skillNumber];
                     if (unit.CanUse(skill)) {
                         StartCoroutine(PlaySkillRoutine(skill));
+                    } else {
+                        if (skill.costMP > 0) {
+                            narrator.Log(skill + " costs too much MP to cast.", true);
+                        } else {
+                            narrator.Log(skill + " is on cooldown.", true);
+                        }
                     }
                 }
                 break;

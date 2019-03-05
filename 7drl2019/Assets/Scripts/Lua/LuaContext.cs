@@ -80,6 +80,9 @@ public class LuaContext : MonoBehaviour {
     }
 
     public virtual IEnumerator RunRoutine(LuaScript script) {
+        if (activeScript != null) {
+            Debug.Log("bad script: " + activeScript);
+        }
         Assert.IsNull(activeScript);
         activeScript = script;
         try {
