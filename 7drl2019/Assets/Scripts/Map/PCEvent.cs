@@ -2,52 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(CharaEvent))]
+[RequireComponent(typeof(BattleEvent))]
 public class PCEvent : MonoBehaviour {
 
-    private int pauseCount;
-    public bool InputPaused {
-        get {
-            return pauseCount > 0;
-        }
-    }
+    public MapEvent parent { get { return GetComponent<MapEvent>(); } }
+    public BattleController battle { get { return GetComponent<BattleEvent>().unit.battle; } }
+    public BattleUnit unit { get { return GetComponent<BattleEvent>().unit; } }
 
-    private MapEvent parent { get { return GetComponent<MapEvent>(); } }
+    public Inventory inventory { get; private set; }
 
     public void Start() {
         Global.Instance().Maps.pc = this;
-        pauseCount = 0;
-    }
-
-    public void PauseInput() {
-        pauseCount += 1;
-    }
-
-    public void UnpauseInput() {
-        pauseCount -= 1;
-    }
-
-    private void Interact() {
-        Vector2Int target = GetComponent<MapEvent>().location + GetComponent<CharaEvent>().facing.XY();
-        List<MapEvent> targetEvents = GetComponent<MapEvent>().map.GetEventsAt(target);
-        foreach (MapEvent tryTarget in targetEvents) {
-            if (tryTarget.switchEnabled && !tryTarget.IsPassableBy(parent)) {
-                tryTarget.GetComponent<Dispatch>().Signal(MapEvent.EventInteract, this);
-                return;
-            }
-        }
-
-        target = GetComponent<MapEvent>().location;
-        targetEvents = GetComponent<MapEvent>().map.GetEventsAt(target);
-        foreach (MapEvent tryTarget in targetEvents) {
-            if (tryTarget.switchEnabled && tryTarget.IsPassableBy(parent)) {
-                tryTarget.GetComponent<Dispatch>().Signal(MapEvent.EventInteract, this);
-                return;
-            }
-        }
-    }
-
-    private void ShowMenu() {
-        // oh shiii
+        inventory = new Inventory();
     }
 }

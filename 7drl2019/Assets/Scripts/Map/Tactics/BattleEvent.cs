@@ -19,6 +19,7 @@ public class BattleEvent : MonoBehaviour {
     public LuaAnimation damageAnimation;
     public LuaAnimation deathAnimation;
     public LuaAnimation attackAnimation;
+    public LuaAnimation bumpAnimation;
 
     private LuaContext involuntaryContext;
 
@@ -129,6 +130,13 @@ public class BattleEvent : MonoBehaviour {
                         }
                     }
                 }
+                // 7drl antipattern hack alert
+                if (GetComponent<PCEvent>() != null && targetEvent.GetComponent<ChestEvent>() != null) {
+                    ChestEvent chest = targetEvent.GetComponent<ChestEvent>();
+                    if (!chest.opened) {
+                        toExecute.Add(chest.OpenAction(GetComponent<PCEvent>()));
+                    }
+                }
             }
         }
 
@@ -153,6 +161,10 @@ public class BattleEvent : MonoBehaviour {
 
     public IEnumerator AnimateAttackAction() {
         return PlayAnimationAction(attackAnimation);
+    }
+
+    public IEnumerator AnimateBumpAction() {
+        return PlayAnimationAction(bumpAnimation);
     }
 
     public IEnumerator PlayAnimationAction(LuaAnimation anim, LuaContext context = null) {

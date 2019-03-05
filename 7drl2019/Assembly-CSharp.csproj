@@ -8,8 +8,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <ProjectGuid>{2E13374F-5C32-D89D-C109-A7E78A9D279F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -117,6 +116,7 @@
     <Compile Include="Assets\Scripts\Lua\LuaMapEvent.cs" />
     <Compile Include="Assets\Scripts\Lua\LuaScript.cs" />
     <Compile Include="Assets\Scripts\Map\CharaEvent.cs" />
+    <Compile Include="Assets\Scripts\Map\ChestEvent.cs" />
     <Compile Include="Assets\Scripts\Map\CornerDir.cs" />
     <Compile Include="Assets\Scripts\Map\EightDir.cs" />
     <Compile Include="Assets\Scripts\Map\EventAppearance.cs" />
@@ -156,6 +156,7 @@
     <Compile Include="Assets\Scripts\RPG\Effector.cs" />
     <Compile Include="Assets\Scripts\RPG\Effectors\BasicDamageEffect.cs" />
     <Compile Include="Assets\Scripts\RPG\Effectors\WalkEffect.cs" />
+    <Compile Include="Assets\Scripts\RPG\Inventory.cs" />
     <Compile Include="Assets\Scripts\RPG\Item.cs" />
     <Compile Include="Assets\Scripts\RPG\Stat\CombinationAdditive.cs" />
     <Compile Include="Assets\Scripts\RPG\Stat\CombinationStrategy.cs" />

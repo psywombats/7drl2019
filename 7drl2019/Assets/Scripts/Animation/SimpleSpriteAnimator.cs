@@ -7,6 +7,7 @@ public class SimpleSpriteAnimator : MonoBehaviour {
 
     public List<Sprite> frames;
     public float frameDuration = 0.5f;
+    public bool autoplays = true;
 
     private float elapsed;
 
@@ -30,8 +31,15 @@ public class SimpleSpriteAnimator : MonoBehaviour {
         }
     }
 
+    public IEnumerator PlayOnceRoutine() {
+        foreach (Sprite sprite in frames) {
+            GetComponent<SpriteRenderer>().sprite = sprite;
+            yield return CoUtils.Wait(frameDuration);
+        }
+    }
+
     private void UpdateSprite() {
-        if (frames != null) {
+        if (frames != null && autoplays) {
             float frameFloat = elapsed * frames.Count / frameDuration;
             int frame = ((int)Mathf.Floor(frameFloat)) % frames.Count;
             GetComponent<SpriteRenderer>().sprite = frames[frame];

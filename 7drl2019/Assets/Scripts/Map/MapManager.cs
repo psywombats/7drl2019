@@ -53,21 +53,17 @@ public class MapManager : MonoBehaviour {
     }
 
     public IEnumerator TeleportRoutine(string mapName, Vector2Int location) {
-        pc.PauseInput();
         TransitionData data = Global.Instance().Database.Transitions.GetData(DefaultTransitionTag);
         yield return camera.GetComponent<FadeImageEffect>().TransitionRoutine(data, () => {
             RawTeleport(mapName, location);
         });
-        pc.UnpauseInput();
     }
 
     public IEnumerator TeleportRoutine(string mapName, string targetEventName) {
-        pc.PauseInput();
         TransitionData data = Global.Instance().Database.Transitions.GetData(DefaultTransitionTag);
         yield return camera.GetComponent<FadeImageEffect>().TransitionRoutine(data, () => {
             RawTeleport(mapName, targetEventName);
         });
-        pc.UnpauseInput();
     }
     
     private void RawTeleport(string mapName, Vector2Int location) {
