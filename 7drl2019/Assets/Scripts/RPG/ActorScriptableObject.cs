@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 // common ancestor of effectors, targeters so that they share some easy actor accessors
-public abstract class ActorScriptableObject : ScriptableObject {
+public abstract class ActorScriptableObject : AutoExpandingScriptableObject {
 
     public BattleUnit actor { get; set; }
     protected BattleController battle { get { return actor.battle; } }

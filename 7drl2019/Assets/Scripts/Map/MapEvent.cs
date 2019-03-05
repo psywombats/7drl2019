@@ -161,11 +161,11 @@ public abstract class MapEvent : MonoBehaviour {
     }
 
     public bool CanPassAt(Vector2Int loc) {
-        if (!GetComponent<MapEvent>().switchEnabled) {
-            return true;
-        }
         if (loc.x < 0 || loc.x >= map.width || loc.y < 0 || loc.y >= map.height) {
             return false;
+        }
+        if (!GetComponent<MapEvent>().switchEnabled || passable) {
+            return true;
         }
         foreach (Tilemap layer in map.layers) {
             if (layer.transform.position.z >= map.objectLayer.transform.position.z && 

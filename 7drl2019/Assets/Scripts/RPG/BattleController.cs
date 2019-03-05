@@ -143,12 +143,6 @@ public class BattleController : MonoBehaviour {
             AddUnitsFromMap();
             cleared = false;
         }
-
-        //Result<Effector> effectResult = new Result<Effector>();
-        //yield return hero.PlayNextActionRoutine(effectResult);
-        //if (effectResult.canceled) {
-        //    yield return PlayNextHumanActionRoutine();
-        //}
     }
 
     private void AddUnitsFromMap() {
@@ -165,7 +159,8 @@ public class BattleController : MonoBehaviour {
 
     // === GAMEBOARD AND GRAPHICAL INTERACTION =====================================================
 
-    public Cursor SpawnCursor(Vector2Int location) {
+    public Cursor SpawnCursor(Vector2Int location, bool cameraFollows = false) {
+        cursor.cameraFollows = false;
         cursor.Enable();
         cursor.GetComponent<MapEvent>().SetLocation(location);
         return cursor;
@@ -179,8 +174,9 @@ public class BattleController : MonoBehaviour {
         Global.Instance().Maps.camera.SetTargetLocation(loc, map.terrain.HeightAt(loc));
     }
 
-    public SelectionGrid SpawnSelectionGrid() {
+    public SelectionGrid SpawnSelectionGrid(bool cameraFollows = false) {
         SelectionGrid grid = SelectionGrid.GetInstance();
+        grid.cameraFollows = cameraFollows;
         grid.gameObject.transform.SetParent(GetComponent<Map>().transform);
         return grid;
     }

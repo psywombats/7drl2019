@@ -9,6 +9,8 @@ public class Cursor : MonoBehaviour, InputListener {
 
     public float minTimeBetweenMoves = 0.1f;
     public GameObject reticules;
+
+    public bool cameraFollows { get; set; }
     
     private float lastStepTime;
     private Result<Vector2Int> awaitingSelect;
@@ -25,8 +27,10 @@ public class Cursor : MonoBehaviour, InputListener {
         gameObject.SetActive(true);
 
         Global.Instance().Input.PushListener(this);
-        Global.Instance().Maps.camera.target = GetComponent<MapEvent3D>();
-        Global.Instance().Maps.camera.snapTime = ScrollSnapTime;
+        if (cameraFollows) {
+            Global.Instance().Maps.camera.target = GetComponent<MapEvent3D>();
+            Global.Instance().Maps.camera.snapTime = ScrollSnapTime;
+        }
     }
 
     public void Disable() {

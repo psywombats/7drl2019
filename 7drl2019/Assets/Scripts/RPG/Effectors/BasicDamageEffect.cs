@@ -21,9 +21,8 @@ public class BasicDamageEffect : Effector {
         toExecute.Add(battler.PlayAnimationAction(castAnimation));
 
         battler.GetComponent<CharaEvent>().FaceToward(other.battler.GetComponent<MapEvent>());
-        other.battler.GetComponent<CharaEvent>().FaceToward(battler.GetComponent<MapEvent>());
         int dmg = Mathf.RoundToInt(Random.Range(damageLow, damageHigh));
-        battle.Log(this + " cast " + effectName + " on " + other + " for " + dmg + " damage.");
+        battle.Log(actor + " cast " + effectName + " on " + other + " for " + dmg + " damage.");
 
         toExecute.Add(other.TakeDamageAction(dmg, damageAnimation));
         result.value = CoUtils.RunSequence(toExecute.ToArray());

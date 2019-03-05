@@ -21,6 +21,12 @@ public class InputManager : MonoBehaviour {
         Click,
         Rightclick,
         Debug,
+        Skill1,
+        Skill2,
+        Skill3,
+        Skill4,
+        Skill5,
+        Skill6,
     };
 
     public enum Event {
@@ -57,6 +63,12 @@ public class InputManager : MonoBehaviour {
         keybinds[Command.Menu] = new List<KeyCode>(new[] { KeyCode.Escape, KeyCode.C, KeyCode.Backspace });
         keybinds[Command.Click] = new List<KeyCode>();
         keybinds[Command.Rightclick] = new List<KeyCode>();
+        keybinds[Command.Skill1] = new List<KeyCode>(new[] { KeyCode.F1 });
+        keybinds[Command.Skill2] = new List<KeyCode>(new[] { KeyCode.F2 });
+        keybinds[Command.Skill3] = new List<KeyCode>(new[] { KeyCode.F3 });
+        keybinds[Command.Skill4] = new List<KeyCode>(new[] { KeyCode.F4 });
+        keybinds[Command.Skill5] = new List<KeyCode>(new[] { KeyCode.F5 });
+        keybinds[Command.Skill6] = new List<KeyCode>(new[] { KeyCode.F6 });
         fastKeys = new List<KeyCode>(new[] { KeyCode.LeftControl, KeyCode.RightControl });
 
         listeners = new List<InputListener>();
@@ -137,6 +149,19 @@ public class InputManager : MonoBehaviour {
             }
         }
         return false;
+    }
+
+    public int CommandToNumber(Command cmd) {
+        switch (cmd) {
+            case Command.Skill1: return 1;
+            case Command.Skill2: return 2;
+            case Command.Skill3: return 3;
+            case Command.Skill4: return 4;
+            case Command.Skill5: return 5;
+            case Command.Skill6: return 6;
+        }
+        Debug.Assert(false);
+        return -1;
     }
 
     // simulates the user pushing a command

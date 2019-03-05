@@ -46,6 +46,20 @@ public class RogueUI : MonoBehaviour, InputListener {
                 Global.Instance().Input.RemoveListener(this);
                 executeResult.value = CoUtils.Wait(0.0f);
                 break;
+            case InputManager.Command.Skill1:
+            case InputManager.Command.Skill2:
+            case InputManager.Command.Skill3:
+            case InputManager.Command.Skill4:
+            case InputManager.Command.Skill5:
+            case InputManager.Command.Skill6:
+                int skillNumber = Global.Instance().Input.CommandToNumber(command) - 1;
+                if (skillNumber < unit.unit.knownSkills.Count) {
+                    Skill skill = unit.unit.knownSkills[skillNumber];
+                    if (unit.CanUse(skill)) {
+                        StartCoroutine(PlaySkillRoutine(skill));
+                    }
+                }
+                break;
         }
         return true;
     }
@@ -65,6 +79,17 @@ public class RogueUI : MonoBehaviour, InputListener {
         while (!executeResult.finished) {
             yield return null;
         }
+        Global.Instance().Input.RemoveListener(this);
+    }
+
+    private IEnumerator PlaySkillRoutine(Skill skill) {
+        Global.Instance().Input.DisableListener(this);
+        Result<IEnumerator> effectResult = new Result<IEnumerator>();
+        yield return skill.PlaySkillRoutine(unit, effectResult);
+        if (!effectResult.canceled) {
+            executeResult.value = effectResult.value;
+        }
+        Global.Instance().Input.EnableListener(this);
     }
 
     private void Populate(BattleUnit unit) {

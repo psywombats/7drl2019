@@ -17,5 +17,8 @@ public class Skill : ScriptableObject {
         effect.actor = actor;
         targeter.actor = actor;
         yield return targeter.ExecuteRoutine(effect, executeResult);
+        if (!executeResult.canceled) {
+            actor.unit.stats.Sub(StatTag.MP, mpCost);
+        }
     }
 }

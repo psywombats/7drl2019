@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System;
 
 [RequireComponent(typeof(MapEvent))]
 public class DirectionCursor : MonoBehaviour, InputListener {
 
     private const string InstancePath = "Prefabs/Tactics/DirectionCursor";
+
+    public bool cameraFollows { get; set; }
 
     public EightDir currentDir;
     private BattleEvent actor;
@@ -57,7 +58,7 @@ public class DirectionCursor : MonoBehaviour, InputListener {
         TacticsTerrainMesh terrain = actingUnit.battle.map.terrain;
         grid.ConfigureNewGrid(actingUnit.location, 1, terrain, (Vector2Int loc) => {
             return (loc.x + loc.y + actingUnit.location.x + actingUnit.location.y) % 2 == 1;
-        });
+        }, (Vector2Int _) => { return true; });
         AttemptSetDirection(allowedDirs[0]);
 
         while (!result.finished) {
@@ -85,7 +86,9 @@ public class DirectionCursor : MonoBehaviour, InputListener {
         gameObject.SetActive(true);
         currentDir = EightDir.N;
         Global.Instance().Input.PushListener(this);
-        Global.Instance().Maps.camera.target = GetComponent<MapEvent3D>();
+        if (cameraFollows) {
+            Global.Instance().Maps.camera.target = GetComponent<MapEvent3D>();
+        }
     }
 
     public void Disable() {

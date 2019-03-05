@@ -62,7 +62,6 @@ public class BattleUnit {
         toExecute.Add(battler.AnimateAttackAction());
 
         battler.GetComponent<CharaEvent>().FaceToward(other.battler.GetComponent<MapEvent>());
-        other.battler.GetComponent<CharaEvent>().FaceToward(battler.GetComponent<MapEvent>());
         int dmg = Mathf.RoundToInt(Random.Range(Get(StatTag.DMG_MIN), Get(StatTag.DMG_MAX)));
         battle.Log(this + " attacked " + other + " for " + dmg + " damage.");
 
