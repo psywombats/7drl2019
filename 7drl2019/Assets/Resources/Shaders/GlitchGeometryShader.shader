@@ -35,7 +35,7 @@
         }
 
         Lighting Off
-        Blend SrcAlpha OneMinusSrcAlpha
+        Blend SrcAlpha One
         Offset 10, -1
 
         CGPROGRAM

@@ -20,7 +20,7 @@ public abstract class Targeter : ActorScriptableObject {
     protected Func<Vector2Int, bool> DefaultSelectRule(Effector effect) {
         return (Vector2Int loc) => {
             BattleEvent targetBattler = map.GetEventAt<BattleEvent>(loc);
-            return DefaultUnitRule(effect)(targetBattler.unit);
+            return DefaultUnitRule(effect)(targetBattler != null ? targetBattler.unit : null);
         };
     }
 

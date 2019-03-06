@@ -226,7 +226,7 @@ public class Map : MonoBehaviour {
                         List<Vector2Int> newHead = new List<Vector2Int>(head) { next };
 
                         if (next != to || GetEventAt<BattleEvent>(to) == null ||
-                            Mathf.Abs(terrain.HeightAt(next) - terrain.HeightAt(to)) <= BattleEvent.AttackHeightMax) { 
+                            Mathf.Abs(terrain.HeightAt(at) - terrain.HeightAt(to)) <= BattleEvent.AttackHeightMax) { 
 
                             heads.Add(newHead);
                             visited.Add(next);

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 /**
@@ -24,15 +25,18 @@ public abstract class Effector : ActorScriptableObject {
     // === TARGETER HOOKUPS ========================================================================
     // subclasses override as they support
 
-    public virtual IEnumerator ExecuteSingleCellRoutine(Result<IEnumerator> result, Vector2Int location) {
+    public virtual IEnumerator ExecuteCellsRoutine(Result<IEnumerator> result, List<Vector2Int> locations) {
         Debug.LogError(GetType() + " does not support single cell targeters");
         result.Cancel();
         yield return null;
     }
 
+    public virtual IEnumerator ExecuteSingleCellRoutine(Result<IEnumerator> result, Vector2Int location) {
+        yield return ExecuteCellsRoutine(result, new List<Vector2Int>() { location });
+    }
+
     public virtual IEnumerator ExecuteDirectionRoutine(Result<IEnumerator> result, EightDir dir) {
         Vector2Int target = actor.location + dir.XY();
         yield return ExecuteSingleCellRoutine(result, target);
-        yield return null;
     }
 }

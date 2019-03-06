@@ -15,6 +15,7 @@ public class Cursor : MonoBehaviour, InputListener {
     private Result<Vector2Int> awaitingSelect;
     private Func<Vector2Int, IEnumerator> scanner;
     private Func<Vector2Int, bool> validator;
+    private Func<Vector2Int, bool> constrainer;
 
     public static Cursor GetInstance() {
         GameObject prefab = Resources.Load<GameObject>(InstancePath);
@@ -50,10 +51,17 @@ public class Cursor : MonoBehaviour, InputListener {
     }
 
     // waits for the cursor to select
-    public IEnumerator AwaitSelectionRoutine(Result<Vector2Int> result, 
-            Func<Vector2Int, bool> validator, Func<Vector2Int, IEnumerator> scanner = null) {
+    public IEnumerator AwaitSelectionRoutine(Result<Vector2Int> result,
+            Func<Vector2Int, bool> validator, 
+            Func<Vector2Int, IEnumerator> scanner = null,
+            Func<Vector2Int, bool> constrainer = null) {
+        this.constrainer = _ => true;
         this.scanner = scanner;
         this.validator = validator;
+        if (constrainer != null) {
+            this.constrainer = constrainer;
+        }
+
         awaitingSelect = result;
         while (!result.finished) {
             yield return null;
@@ -107,12 +115,15 @@ public class Cursor : MonoBehaviour, InputListener {
         //    return true;
         //}
         Vector2Int target = GetComponent<MapEvent>().location + dir.XY();
-        if (GetComponent<MapEvent>().CanPassAt(target)) {
+        if (GetComponent<MapEvent>().CanPassAt(target) && constrainer(target)) {
             StartCoroutine(GetComponent<MapEvent>().StepRoutine(dir));
             lastStepTime = Time.fixedTime;
         }
         if (scanner != null) {
-            StartCoroutine(scanner(GetComponent<MapEvent>().location));
+            IEnumerator result = scanner(GetComponent<MapEvent>().location);
+            if (result != null) {
+                StartCoroutine(result);
+            }
         }
 
         return true;

@@ -53,33 +53,36 @@ public class SelectionGrid : MonoBehaviour {
         List<int> tris = new List<int>();
         for (int y = at.y; y < at.y + size.y; y += 1) {
             for (int x = at.x; x < at.x + size.x; x += 1) {
-                if (!rangeRule(new Vector2Int(x, y)) || terrain.HeightAt(x, y) == 0.0f) {
+                if (terrain.HeightAt(x, y) == 0.0f) {
                     continue;
                 }
-                int vertIndex = vertices.Count;
-                float height = terrain.HeightAt(x, y);
-                for (int i = 0; i < 4; i += 1) {
-                    if (selectRule(new Vector2Int(x, y))) {
-                        uvs.Add(new Vector2(
-                            i % 2 == 0 ? .5f : 0,
-                            i < 2 ? 1 : 0));
-                    } else {
-                        uvs.Add(new Vector2(
-                            i % 2 == 0 ? 1 : .5f,
-                            i < 2 ? 1 : 0));
+                bool selectable = selectRule(new Vector2Int(x, y));
+                bool rangeable = rangeRule(new Vector2Int(x, y));
+                if (selectable || rangeable) {
+                    int vertIndex = vertices.Count;
+                    float height = terrain.HeightAt(x, y);
+                    for (int i = 0; i < 4; i += 1) {
+                        if (selectable) {
+                            uvs.Add(new Vector2(
+                                i % 2 == 0 ? .5f : 0,
+                                i < 2 ? .5f : 0));
+                        } else if (rangeable) {
+                            uvs.Add(new Vector2(
+                                i % 2 == 0 ? 1 : .5f,
+                                i < 2 ? .5f : 0));
+                        }
+                        vertices.Add(new Vector3(
+                            x + (i % 2 == 0 ? 1 : 0),
+                            height,
+                            y + (i < 2 ? 1 : 0)));
                     }
-                    vertices.Add(new Vector3(
-                        x + (i % 2 == 0 ? 1 : 0),
-                        height,
-                        y + (i < 2 ? 1 : 0)));
-
+                    tris.Add(vertIndex);
+                    tris.Add(vertIndex + 2);
+                    tris.Add(vertIndex + 1);
+                    tris.Add(vertIndex + 1);
+                    tris.Add(vertIndex + 2);
+                    tris.Add(vertIndex + 3);
                 }
-                tris.Add(vertIndex);
-                tris.Add(vertIndex + 2);
-                tris.Add(vertIndex + 1);
-                tris.Add(vertIndex + 1);
-                tris.Add(vertIndex + 2);
-                tris.Add(vertIndex + 3);
             }
         }
 
