@@ -21,11 +21,11 @@ public class Facebox : MonoBehaviour {
 
     public void OnTurn() {
         if (unit != null && !unit.IsDead()) {
-            CoUtils.RunParallel(new IEnumerator[] {
+            StartCoroutine(CoUtils.RunParallel(new IEnumerator[] {
                 hpBar.AnimateWithTimeRoutine(unit.Get(StatTag.MHP), unit.Get(StatTag.HP), 0.125f),
                 mpBar.AnimateWithTimeRoutine(unit.Get(StatTag.MMP), unit.Get(StatTag.MP), 0.125f),
                 cdBar.AnimateWithTimeRoutine(unit.maxCD, unit.Get(StatTag.CD), 0.125f),
-            }, this);
+            }, this));
         }
     }
 }

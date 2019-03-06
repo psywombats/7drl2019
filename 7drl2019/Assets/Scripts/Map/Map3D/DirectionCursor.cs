@@ -33,16 +33,28 @@ public class DirectionCursor : MonoBehaviour, InputListener {
                 dirs.Add(dir);
             }
         }
-        if (dirs.Count > 0) {
-            yield return SelectTargetDirRoutine(result, actingUnit, dirs, canCancel);
-        } else {
-            Debug.Assert(false, "No valid directions");
-            result.Cancel();
-        }
+
+        yield return SelectTargetDirRoutine(result, actingUnit, dirs, canCancel);
     }
 
-    // selects a square to be targeted by the acting unit, might be canceled
     public IEnumerator SelectTargetDirRoutine(Result<EightDir> result,
+            BattleUnit actingUnit,
+            Func<Vector2Int, bool> rule,
+            bool canCancel = true) {
+        List<EightDir> dirs = new List<EightDir>();
+        Map map = actingUnit.battle.map;
+        foreach (EightDir dir in Enum.GetValues(typeof(EightDir))) {
+            Vector2Int loc = actingUnit.location + dir.XY();
+            if (rule(loc)) {
+                dirs.Add(dir);
+            }
+        }
+
+        yield return SelectTargetDirRoutine(result, actingUnit, dirs, canCancel);
+    }
+
+        // selects a square to be targeted by the acting unit, might be canceled
+        public IEnumerator SelectTargetDirRoutine(Result<EightDir> result,
             BattleUnit actingUnit,
             List<EightDir> allowedDirs,
             bool canCancel = true) {
@@ -58,7 +70,11 @@ public class DirectionCursor : MonoBehaviour, InputListener {
         }, (Vector2Int loc) => {
             return allowedDirs.Contains(actingUnit.battler.GetComponent<MapEvent>().DirectionTo(loc));
         });
-        AttemptSetDirection(allowedDirs[0]);
+        if (allowedDirs.Count > 0) {
+            AttemptSetDirection(allowedDirs[0]);
+        } else {
+            GetComponent<MapEvent>().SetLocation(actor.location);
+        }
 
         while (!result.finished) {
             Result<EightDir> dirResult = new Result<EightDir>();

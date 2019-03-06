@@ -26,6 +26,7 @@ public class CharaEvent : MonoBehaviour {
     public SpriteRenderer mainLayer;
     public SpriteRenderer armsLayer;
     public SpriteRenderer itemLayer;
+    public SpriteRenderer animLayer;
     public float desaturation = 0.0f;
     public bool alwaysAnimates = false;
 
@@ -174,6 +175,9 @@ public class CharaEvent : MonoBehaviour {
     }
 
     public IEnumerator StepRoutine(EightDir dir, bool faceTo = true) {
+        while (parent.tracking) {
+            yield return null;
+        }
         if (faceTo) {
             facing = dir;
         }

@@ -6,12 +6,8 @@ public class MeleeTargeter : Targeter {
         DirectionCursor cursor = battle.SpawnDirectionCursor(actor.location);
 
         Result<EightDir> dirResult = new Result<EightDir>();
-        if (effect.TargetsHostiles()) {
-            yield return cursor.SelectAdjacentUnitRoutine(dirResult, actor, DefaultUnitRule(effect));
-        } else {
-            yield return cursor.AwaitSelectionRoutine(battler, dirResult);
-        }
-        
+        yield return cursor.SelectTargetDirRoutine(dirResult, actor, DefaultSelectRule(effect), true);
+
         battle.DespawnDirCursor();
 
         if (dirResult.canceled) {

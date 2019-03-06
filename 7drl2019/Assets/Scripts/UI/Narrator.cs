@@ -10,7 +10,7 @@ public class Narrator : MonoBehaviour {
 
     private const float OlderMessageAlpha = 0.5f;
 
-    private List<LogEntry> messages;
+    private List<LogEntry> messages = new List<LogEntry>();
     private float oldMessageAlpha = 0.5f;
 
     public void Start() {
@@ -23,7 +23,7 @@ public class Narrator : MonoBehaviour {
         }
         messages.Add(new LogEntry(text));
         if (outOfTurn) {
-            StartCoroutine(OnTurnAction());
+            OnTurn();
         }
     }
 

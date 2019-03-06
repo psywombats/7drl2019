@@ -170,6 +170,21 @@ public class Map : MonoBehaviour {
 
     }
 
+    public List<Vector2Int> PointsAlongPath(Vector2Int a, Vector2Int b) {
+        List<Vector2Int> results = new List<Vector2Int>();
+        Vector2Int at = a;
+        int i = 0;
+        do {
+            i += 1;
+            at += EightDirExtensions.DirectionOf(b - at).XY();
+            results.Add(at);
+        } while (at != b && i < 1000);
+        if (i > 1000) {
+            Debug.Assert(false, "major fuckup");
+        }
+        return results;
+    }
+
     // returns a list of coordinates to step to with the last one being the destination, or null
     public List<Vector2Int> FindPath(MapEvent actor, Vector2Int to) {
         return FindPath(actor, to, width > height ? width : height);

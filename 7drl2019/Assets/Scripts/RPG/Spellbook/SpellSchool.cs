@@ -3,9 +3,9 @@ using UnityEngine;
 
 public enum SpellSchool {
     [SpellSchool(1.00f, 0.22f, 0.22f,   "Fire")] Fire,
-    [SpellSchool(0.95f, 0.85f, 0.35f,   "Lightning")] Lightning,
+    [SpellSchool(0.95f, 0.85f, 0.35f,   "Thunder")] Lightning,
     [SpellSchool(0.70f, 0.95f, 0.95f,   "Air")] Air,
-    [SpellSchool(0.45f, 0.65f, 0.95f,   "Water")] Water,
+    [SpellSchool(0.25f, 0.45f, 0.95f,   "Water")] Water,
     [SpellSchool(0.85f, 0.35f, 1.00f,   "Dark")] Dark,
 }
 

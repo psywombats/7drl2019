@@ -8,8 +8,6 @@ public class PushEffect : Effector {
     public int knockbackMax;
 
     public override IEnumerator ExecuteCellsRoutine(List<Vector2Int> locations) {
-        List<IEnumerator> toExecute = new List<IEnumerator>();
-        battle.Log(actor + " cast " + skill.skillName + "!");
         yield return battler.PlayAnimationRoutine(skill.castAnim);
 
         foreach (Vector2Int location in locations) {

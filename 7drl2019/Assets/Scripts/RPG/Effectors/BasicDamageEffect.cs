@@ -9,7 +9,6 @@ public class BasicDamageEffect : Effector {
     public bool friendlyFire;
 
     public override IEnumerator ExecuteCellsRoutine(List<Vector2Int> locations) {
-        battle.Log(actor + " cast " + skill.skillName + "!");
         yield return battler.PlayAnimationRoutine(skill.castAnim);
 
         foreach (Vector2Int location in locations) {

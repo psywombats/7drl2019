@@ -3,12 +3,14 @@ using System.Collections;
 using MoonSharp.Interpreter;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 [MoonSharpUserData]
 public class AnimationTarget : MonoBehaviour {
 
     protected static readonly string AnimPath = "Sprites/Anim/";
     protected static readonly string ArgDuration = "duration";
+    protected static readonly string ArgName = "name";
     protected static readonly string ArgFrame = "frame";
     protected static readonly string ArgFrames = "frames";
     protected static readonly string ArgCount = "count";
@@ -37,11 +39,11 @@ public class AnimationTarget : MonoBehaviour {
     }
 
     // === COMMAND HELPERS =========================================================================
-    
+
     protected void CSRun(IEnumerator routine, DynValue args) {
         StartCoroutine(routine);
     }
-    
+
     protected float FloatArg(DynValue args, string argName, float defaultValue) {
         if (args == DynValue.Nil || args == null || args.Table == null) {
             return defaultValue;
@@ -66,6 +68,15 @@ public class AnimationTarget : MonoBehaviour {
         } else {
             DynValue value = args.Table.Get(argName);
             return (value == DynValue.Nil) ? defaultValue : value.Boolean;
+        }
+    }
+
+    protected string StringArg(DynValue args, string argName, string defaultValue) {
+        if (args == DynValue.Nil || args == null || args.Table == null) {
+            return defaultValue;
+        } else {
+            DynValue value = args.Table.Get(argName);
+            return (value == DynValue.Nil) ? defaultValue : value.String;
         }
     }
 

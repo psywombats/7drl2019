@@ -50,7 +50,9 @@ public class BattleController : MonoBehaviour {
         AddUnitsFromMap();
 
         if (immediateMode) {
-            StartCoroutine(BattleRoutine());
+            StartCoroutine(CoUtils.RunAfterDelay(0.1f, () => {
+                StartCoroutine(BattleRoutine());
+            }));
         }
     }
 
@@ -90,6 +92,7 @@ public class BattleController : MonoBehaviour {
         started = true;
         GetComponent<LineOfSightEffect>().RecalculateVisibilityMap();
         while (true) {
+            ui.OnTurn();
             yield return PlayNextHumanActionRoutine();
             map.GetComponent<LineOfSightEffect>().RecalculateVisibilityMap();
             map.GetComponent<LineOfSightEffect>().TransitionFromOldLos(

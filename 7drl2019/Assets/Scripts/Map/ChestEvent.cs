@@ -14,7 +14,7 @@ public class ChestEvent : MonoBehaviour {
         while (pc.GetComponent<MapEvent>().tracking) {
             yield return null;
         }
-        pc.GetComponent<BattleEvent>().unit.battle.Log(pc.unit + " found a chest...");
+        pc.GetComponent<BattleEvent>().unit.battle.Log(pc.unit + " found a chest...", true);
         yield return CoUtils.RunSequence(new IEnumerator[] {
             pc.GetComponent<BattleEvent>().AnimateBumpRoutine(),
             doll.PlayOnceRoutine(),
@@ -26,7 +26,7 @@ public class ChestEvent : MonoBehaviour {
         if (!pc.GetComponent<BattleEvent>().unit.IsDead()) {
             string qty1 = (quantity > 1) ? "" : "a ";
             string qty2 = (quantity > 1) ? (" x" + quantity) : "";
-            pc.GetComponent<BattleEvent>().unit.battle.Log("It contained " + qty1 + contents.ItemName() + qty2 + "!", true);
+            pc.GetComponent<BattleEvent>().unit.battle.Log("It contained " + qty1 + contents.ItemName() + qty2 + "!", false);
             pc.PickUpItem(contents, quantity);
         }
         opened = true;

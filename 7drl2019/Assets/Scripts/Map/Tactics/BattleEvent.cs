@@ -52,9 +52,14 @@ public class BattleEvent : MonoBehaviour {
     }
 
     public bool CanCrossTileGradient(Vector2Int from, Vector2Int to, bool cornerMode = false) {
+        float sqDist = (from - to).sqrMagnitude;
         float fromHeight = terrain.HeightAt(from);
         float toHeight = me.map.terrain.HeightAt(to);
         if (toHeight == 0.0f) {
+            return false;
+        }
+        if (sqDist > 2) {
+            Debug.Assert(false);
             return false;
         }
         if (fromHeight < toHeight) {
@@ -69,7 +74,7 @@ public class BattleEvent : MonoBehaviour {
                 return false;
             }
         }
-        if ((from - to).sqrMagnitude > 1.0f) {
+        if (sqDist > 1.0f) {
             return CanCrossTileGradient(from, new Vector2Int(from.x, to.y), true) &&
                 CanCrossTileGradient(from, new Vector2Int(to.x, from.y), true);
         } else {
@@ -82,6 +87,10 @@ public class BattleEvent : MonoBehaviour {
     }
 
     public IEnumerator StepOrAttackRoutine(EightDir dir, Result<bool> executeResult) {
+        while (me.tracking) {
+            yield return null;
+        }
+
         MapEvent parent = me;
         Vector2Int vectors = me.location;
         Vector2Int target = vectors + dir.XY();
@@ -151,23 +160,23 @@ public class BattleEvent : MonoBehaviour {
 
     public IEnumerator KnockbackRoutine(EightDir dir, int power) {
         List<IEnumerator> toExecute = new List<IEnumerator>();
-        Vector2Int at = location;
         float height = me.map.terrain.HeightAt(location);
         for (int i = 0; i < power; i += 1) {
-            at += dir.XY();
-            float atHeight = me.map.terrain.HeightAt(at);
-            if (!me.CanPassAt(at) || atHeight > height) {
+            Vector2Int to = me.location + dir.XY();
+            float toHeight = me.map.terrain.HeightAt(to);
+            if (!me.CanPassAt(to) || toHeight > height) {
                 break;
             }
+            me.location = to;
             toExecute.Add(GetComponent<CharaEvent>().StepRoutine(dir, false));
-            if (atHeight < height) {
-                float delta = height - atHeight;
+            if (toHeight < height) {
+                float delta = height - toHeight;
                 if (delta > unit.GetMaxDescent()) {
                     int dmg = unit.CalcDropDamage(delta);
                     toExecute.Add(TakeFallDamageRoutine(dmg));
+                    yield return StartCoroutine(CoUtils.RunSequence(toExecute.ToArray()));
+                    yield break;
                 }
-                yield return StartCoroutine(CoUtils.RunSequence(toExecute.ToArray()));
-                yield break;
             }
         }
         StartCoroutine(CoUtils.RunSequence(toExecute.ToArray()));
@@ -204,7 +213,7 @@ public class BattleEvent : MonoBehaviour {
 
     public IEnumerator PlayAnimationRoutine(LuaAnimation anim, LuaContext context = null) {
         if (anim == null) {
-            yield return null;
+            yield break;
         }
         GetComponent<CharaEvent>().doll.GetComponent<CharaAnimationTarget>().ConfigureToBattler(this);
         yield return GetComponent<CharaEvent>().doll.GetComponent<AnimationPlayer>().PlayAnimationRoutine(anim, context);

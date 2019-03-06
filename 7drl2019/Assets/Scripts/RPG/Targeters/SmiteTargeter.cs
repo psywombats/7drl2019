@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class SmiteTargeter : Targeter {
 
-    public int range = 0;
-    public float radius = 1.0f;
+    public int range = 3;
+    public float radius = 0;
 
     protected override IEnumerator InternalExecuteRoutine(Effector effect, Result<bool> result) {
         Cursor cursor = battle.SpawnCursor(actor.location);
@@ -17,19 +17,19 @@ public class SmiteTargeter : Targeter {
         Func<Vector2Int, bool> rangeRule = (Vector2Int loc) => {
             return Vector2Int.Distance(loc, actor.location) <= range;
         };
-        if (radius > 1) {
+        if (radius > 0) {
             selectRule = (Vector2Int loc) => {
                 return Vector2Int.Distance(cursor.GetComponent<MapEvent>().location, loc) <= radius;
-            };
-            scanner = (Vector2Int loc) => {
-                grid.ConfigureNewGrid(actor.location, range + Mathf.CeilToInt(radius), 
-                    map.terrain, rangeRule, selectRule);
-                return null;
             };
         } else {
             selectRule = DefaultSelectRule(effect);
         }
-        
+        scanner = (Vector2Int loc) => {
+            grid.ConfigureNewGrid(actor.location, range + Mathf.CeilToInt(radius),
+                map.terrain, rangeRule, selectRule);
+            return null;
+        };
+
         if (effect.TargetsHostiles()) {
             float minDist = float.MaxValue;
             BattleUnit bestUnit;
@@ -44,16 +44,16 @@ public class SmiteTargeter : Targeter {
                 }
             }
         }
-        
+
         Vector2Int origin = new Vector2Int(
             (int)actorEvent.positionPx.x - (range + Mathf.CeilToInt(radius) - 1),
             (int)actorEvent.positionPx.z - (range + Mathf.CeilToInt(radius) - 1));
-        
+
         Func<Vector2Int, bool> constrainer = loc => Vector2.Distance(loc, actor.location) <= range;
         grid.ConfigureNewGrid(actor.location, range, map.terrain, rangeRule, selectRule);
 
         Result<Vector2Int> locResult = new Result<Vector2Int>();
-        yield return battle.cursor.AwaitSelectionRoutine(locResult, DefaultSelectRule(effect), scanner, constrainer);
+        yield return battle.cursor.AwaitSelectionRoutine(locResult, _ => true, scanner, constrainer);
 
         battle.DespawnCursor();
         Destroy(grid.gameObject);

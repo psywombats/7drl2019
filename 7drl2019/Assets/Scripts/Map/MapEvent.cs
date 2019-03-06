@@ -136,6 +136,7 @@ public abstract class MapEvent : MonoBehaviour {
         if (Application.IsPlaying(this)) {
             CheckEnabled();
         }
+        _map = null;
     }
 
     public void OnDrawGizmos() {
@@ -260,10 +261,6 @@ public abstract class MapEvent : MonoBehaviour {
     }
 
     public IEnumerator StepRoutine(EightDir dir, bool updateLoc = true) {
-        if (tracking) {
-            yield break;
-        }
-
         if (updateLoc) {
             location += dir.XY();
         }

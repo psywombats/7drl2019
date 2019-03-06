@@ -45,6 +45,7 @@ public class Skill {
     }
 
     public IEnumerator PlaySkillRoutine(BattleUnit actor, Result<bool> executeResult) {
+        actor.battle.Log(actor + " casts " + skillName + "...", true);
         Targeter targeter = Object.Instantiate(data.targeter);
         Effector effect = Object.Instantiate(data.effect);
         effect.actor = actor;

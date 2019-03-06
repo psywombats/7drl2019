@@ -2,6 +2,7 @@
 using System.Collections;
 using MoonSharp.Interpreter;
 using DG.Tweening;
+using System.Collections.Generic;
 
 [MoonSharpUserData]
 [DisallowMultipleComponent]
@@ -49,8 +50,7 @@ public class CharaAnimationTarget : AnimationTarget {
     }
 
     // === COMMAND HELPERS =========================================================================
-
-
+    
     private Vector3 CalculateJumpOffset(Vector3 startPos, Vector3 endPos) {
         Vector3 dir = (endPos - startPos).normalized;
         return endPos - 1.15f * dir;
@@ -73,6 +73,17 @@ public class CharaAnimationTarget : AnimationTarget {
     }
 
     // === LUA FUNCTIONS ===========================================================================
+
+    // hop({power? duration?});
+    public void hop(DynValue args) { CSRun(cs_hop(args), args); }
+    private IEnumerator cs_hop(DynValue args) {
+        chara.jumping = true;
+        float duration = FloatArg(args, ArgDuration, 0.5f);
+        float power = FloatArg(args, ArgPower, 1.0f);
+        Tweener t1 = chara.transform.DOPunchPosition(new Vector3(0, power, 0), duration, 0, 1);
+        chara.jumping = false;
+        yield return CoUtils.RunTween(t1);
+    }
 
     // jumpToDefender({});
     public void jumpToDefender(DynValue args) { CSRun(cs_jumpToDefender(args), args); }
@@ -149,7 +160,8 @@ public class CharaAnimationTarget : AnimationTarget {
         Tweener t2 = transform.DOMove(transform.position, duration / 2.0f);
         t2.SetEase(Ease.OutQuad);
         yield return CoUtils.RunSequence(new IEnumerator[] {
-            CoUtils.RunTween(t1), CoUtils.RunTween(t2) });
+            CoUtils.RunTween(t1), CoUtils.RunTween(t2)
+        });
     }
 
     // setItem({mode})
@@ -167,5 +179,19 @@ public class CharaAnimationTarget : AnimationTarget {
     private IEnumerator cs_animateSwing(DynValue args) {
         float duration = FloatArg(args, ArgDuration, 0.2f);
         yield return chara.itemLayer.GetComponent<SmearBehavior>().AnimateSlash(duration);
+    }
+
+    // playAnim({name, duration})
+    public void playAnim(DynValue args) { CSRun(cs_playAnim(args), args); }
+    private IEnumerator cs_playAnim(DynValue args) {
+        string name = args.Table.Get(ArgName).String;
+        float duration = FloatArg(args, ArgDuration, 0.5f);
+        List<Sprite> sprites = new List<Sprite>(Resources.LoadAll<Sprite>(AnimPath + name));
+        SimpleSpriteAnimator animator = chara.animLayer.GetComponent<SimpleSpriteAnimator>();
+        animator.frames = sprites;
+        animator.frameDuration = duration;
+        yield return animator.PlayOnceRoutine();
+        animator.frames.Clear();
+        chara.animLayer.sprite = null;
     }
 }
