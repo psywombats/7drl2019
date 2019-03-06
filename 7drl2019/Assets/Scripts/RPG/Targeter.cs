@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 /**
@@ -15,4 +16,30 @@ public abstract class Targeter : ActorScriptableObject {
     }
 
     protected abstract IEnumerator InternalExecuteRoutine(Effector effect, Result<IEnumerator> result);
+
+    protected Func<Vector2Int, bool> DefaultSelectRule(Effector effect) {
+        return (Vector2Int loc) => {
+            BattleEvent targetBattler = map.GetEventAt<BattleEvent>(loc);
+            return DefaultUnitRule(effect)(targetBattler.unit);
+        };
+    }
+
+    protected Func<BattleUnit, bool> DefaultUnitRule(Effector effect) {
+        return (BattleUnit targetBattler) => {
+            if (!effect.AcceptsEmptyGrids()) {
+                if (targetBattler == null) {
+                    return false;
+                }
+                if (effect.TargetsHostiles()) {
+                    return actor.align != targetBattler.unit.align;
+                } else {
+                    return actor.align == targetBattler.unit.align;
+                }
+            } else if (!effect.AcceptsFullGrids()) {
+                return targetBattler == null;
+            } else {
+                return true;
+            }
+        };
+    }
 }

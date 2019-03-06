@@ -166,8 +166,19 @@ public class BattleController : MonoBehaviour {
         return cursor;
     }
 
+    public DirectionCursor SpawnDirectionCursor(Vector2Int location, bool cameraFollows = false) {
+        dirCursor.cameraFollows = false;
+        dirCursor.Enable();
+        dirCursor.GetComponent<MapEvent>().SetLocation(location);
+        return dirCursor;
+    }
+
     public void DespawnCursor() {
         cursor.Disable();
+    }
+
+    public void DespawnDirCursor() {
+        dirCursor.Disable();
     }
 
     public void TargetCameraToLocation(Vector2Int loc) {

@@ -6,8 +6,8 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CanvasGroup))]
 public class SkillContainer : MonoBehaviour {
 
-    private readonly Color MPColor = new Color(0x7d, 0x65, 0xdd);
-    private readonly Color CDColor = new Color(0x2B, 0x6D, 0x65);
+    private readonly Color MPColor = new Color(0x7d / 256.0f, 0x65 / 256.0f, 0xdd / 256.0f);
+    private readonly Color CDColor = new Color(0x2B / 256.0f, 0x6D / 256.0f, 0x65 / 256.0f);
 
     public Text label;
     public Image icon;

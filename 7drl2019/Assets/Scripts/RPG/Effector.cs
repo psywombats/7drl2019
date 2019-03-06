@@ -8,14 +8,17 @@ using UnityEngine;
  * Individual instaces of the effector are generated once per useage of the underlying skill.
  */
 public abstract class Effector : ActorScriptableObject {
+    
+    public virtual bool TargetsHostiles() {
+        return true;
+    }
 
-    /**
-     * Stuff like walking should be able to reverse and refund energy points. The result will be
-     * false if the action is actually not undoable, true if it succeeded.
-     */
-    public virtual IEnumerator Undo(Result<bool> undoableResult) {
-        undoableResult.value = false;
-        yield return null;
+    public virtual bool AcceptsEmptyGrids() {
+        return false;
+    }
+
+    public virtual bool AcceptsFullGrids() {
+        return true;
     }
 
     // === TARGETER HOOKUPS ========================================================================
@@ -28,8 +31,8 @@ public abstract class Effector : ActorScriptableObject {
     }
 
     public virtual IEnumerator ExecuteDirectionRoutine(Result<IEnumerator> result, EightDir dir) {
-        Debug.LogError(GetType() + " does not support single dir targeters");
-        result.Cancel();
+        Vector2Int target = actor.location + dir.XY();
+        yield return ExecuteSingleCellRoutine(result, target);
         yield return null;
     }
 }

@@ -93,24 +93,20 @@ public class Textbox : MonoBehaviour, InputListener {
             yield return EnableRoutine(speakerName);
         } else {
             yield return EraseTextRoutine(textClearSeconds);
-            if (namebox1.enabled && namebox1.text != speakerName) {
+            if (namebox1.text != speakerName) {
                 yield return CoUtils.RunParallel(new IEnumerator[] {
                     CloseBoxRoutine(boxAnimationSeconds),
                     EraseName1Routine(boxAnimationSeconds),
                 }, this);
-                namebox1.enabled = false;
-                namebox2.enabled = true;
                 yield return CoUtils.RunParallel(new IEnumerator[] {
                     OpenBoxRoutine(boxAnimationSeconds),
                     ShowName2Routine(boxAnimationSeconds),
                 }, this);
-            } else if (namebox2.enabled && namebox2.text != speakerName) {
+            } else if (namebox2.text != speakerName) {
                 yield return CoUtils.RunParallel(new IEnumerator[] {
                     CloseBoxRoutine(boxAnimationSeconds),
                     EraseName2Routine(boxAnimationSeconds),
                 }, this);
-                namebox1.enabled = true;
-                namebox2.enabled = false;
                 yield return CoUtils.RunParallel(new IEnumerator[] {
                     OpenBoxRoutine(boxAnimationSeconds),
                     ShowName1Routine(boxAnimationSeconds),

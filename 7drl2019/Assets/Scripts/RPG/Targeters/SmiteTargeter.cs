@@ -12,18 +12,13 @@ public class SmiteTargeter : Targeter {
         Func<Vector2Int, bool> rangeRule = (Vector2Int loc) => {
             return Vector2Int.Distance(loc, actor.location) <= range;
         };
-        Func<Vector2Int, bool> selectRule = (Vector2Int loc) => {
-            BattleEvent targetBattler = map.GetEventAt<BattleEvent>(loc);
-            return targetBattler != null && actor.align != targetBattler.unit.align;
-                    
-        };
         Vector2Int origin = new Vector2Int(
             (int)actorEvent.positionPx.x - range,
             (int)actorEvent.positionPx.z - range);
-        grid.ConfigureNewGrid(actor.location, range, map.terrain, rangeRule, selectRule);
+        grid.ConfigureNewGrid(actor.location, range, map.terrain, rangeRule, DefaultSelectRule(effect));
 
         Result<Vector2Int> locResult = new Result<Vector2Int>();
-        yield return battle.cursor.AwaitSelectionRoutine(locResult);
+        yield return battle.cursor.AwaitSelectionRoutine(locResult, DefaultSelectRule(effect));
 
         battle.DespawnCursor();
         Destroy(grid.gameObject);

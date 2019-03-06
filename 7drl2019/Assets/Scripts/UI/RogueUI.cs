@@ -126,7 +126,7 @@ public class RogueUI : MonoBehaviour, InputListener {
     private IEnumerator ScanRoutine() {
         Cursor cursor = unit.battle.SpawnCursor(unit.location, true);
         Result<Vector2Int> result = new Result<Vector2Int>();
-        yield return cursor.AwaitSelectionRoutine(result, ScanAtRoutine);
+        yield return cursor.AwaitSelectionRoutine(result, _ => true, ScanAtRoutine);
         if (!result.canceled) {
             MapEvent ev = unit.battle.map.GetEventAt<MapEvent>(result.value);
             if (ev.GetComponent<BattleEvent>()) {

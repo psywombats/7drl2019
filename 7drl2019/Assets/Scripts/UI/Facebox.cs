@@ -15,8 +15,8 @@ public class Facebox : MonoBehaviour {
         this.unit = unit;
         face.sprite = unit.unit.face;
         hpBar.Populate(unit.Get(StatTag.MHP), unit.Get(StatTag.HP));
-        mpBar.Populate(unit.Get(StatTag.MP), unit.Get(StatTag.MP));
-        cdBar.Populate(unit.Get(StatTag.CD), unit.Get(StatTag.CD));
+        mpBar.Populate(unit.Get(StatTag.MMP), unit.Get(StatTag.MP));
+        cdBar.Populate(unit.maxCD, unit.Get(StatTag.CD));
     }
 
     public IEnumerator OnTurnAction() {

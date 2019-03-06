@@ -1,23 +1,23 @@
 fileFormatVersion: 2
-guid: 852c68d106f105c4fb9352a86ec5d0d4
+guid: e56e428e64c19744fa5a6032fe952320
 TextureImporter:
   fileIDToRecycleName:
-    21300000: f_c_princess_0
-    21300002: f_c_princess_1
-    21300004: f_c_princess_2
-    21300006: f_c_princess_3
-    21300008: f_c_princess_4
-    21300010: f_c_princess_5
-    21300012: f_c_princess_6
-    21300014: f_c_princess_7
-    21300016: f_c_princess_8
-    21300018: f_c_princess_9
-    21300020: f_c_princess_10
-    21300022: f_c_princess_11
-    21300024: f_c_princess_12
-    21300026: f_c_princess_13
-    21300028: f_c_princess_14
-    21300030: f_c_princess_15
+    21300000: face_ghost01a_0
+    21300002: face_ghost01a_1
+    21300004: face_ghost01a_2
+    21300006: face_ghost01a_3
+    21300008: face_ghost01a_4
+    21300010: face_ghost01a_5
+    21300012: face_ghost01a_6
+    21300014: face_ghost01a_7
+    21300016: face_ghost01a_8
+    21300018: face_ghost01a_9
+    21300020: face_ghost01a_10
+    21300022: face_ghost01a_11
+    21300024: face_ghost01a_12
+    21300026: face_ghost01a_13
+    21300028: face_ghost01a_14
+    21300030: face_ghost01a_15
   externalObjects: {}
   serializedVersion: 7
   mipmaps:
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: f_c_princess_0
+      name: face_ghost01a_0
       rect:
         serializedVersion: 2
         x: 0
@@ -114,13 +114,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2da6ae787545ff542a5ea16dca45ed9e
+      spriteID: 8ccabb6e5ca36e640ba3de2479412b86
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: f_c_princess_1
+      name: face_ghost01a_1
       rect:
         serializedVersion: 2
         x: 48
@@ -134,13 +134,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c354e296fd349e541887120053d5e71e
+      spriteID: 15b3915b65998d940a9957ecb1b40d26
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: f_c_princess_2
+      name: face_ghost01a_2
       rect:
         serializedVersion: 2
         x: 96
@@ -154,13 +154,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b0d5f712c733c7848b2b8bd98468ccae
+      spriteID: c45e02c6c6a751144862f9a1ce621b31
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: f_c_princess_3
+      name: face_ghost01a_3
       rect:
         serializedVersion: 2
         x: 144
@@ -174,13 +174,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4329c8370f039d74da057f66db807639
+      spriteID: 0f1c3438087027a4da885275a5e0748b
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: f_c_princess_4
+      name: face_ghost01a_4
       rect:
         serializedVersion: 2
         x: 0
@@ -194,13 +194,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f015002642b157743a3d11f9f3a1e49f
+      spriteID: e4c3b875d1ced604e9f18a5342106675
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: f_c_princess_5
+      name: face_ghost01a_5
       rect:
         serializedVersion: 2
         x: 48
@@ -214,13 +214,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 58da969f508b43848831bf92db6704a0
+      spriteID: b6f6e5de8e08bcf438e42ef69c4e6a3f
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: f_c_princess_6
+      name: face_ghost01a_6
       rect:
         serializedVersion: 2
         x: 96
@@ -234,13 +234,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2ca548dcfcf29ae47b8c7342dcccfb34
+      spriteID: ee8c6296a56feaf4e91db1b7252509f9
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: f_c_princess_7
+      name: face_ghost01a_7
       rect:
         serializedVersion: 2
         x: 144
@@ -254,13 +254,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a9f07f88bd67f494ba9873483e71084f
+      spriteID: 072e6c6dd28678f4b8e89674aae718e7
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: f_c_princess_8
+      name: face_ghost01a_8
       rect:
         serializedVersion: 2
         x: 0
@@ -274,13 +274,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 18cbda589dc84ad4aab7b1d71839d814
+      spriteID: ca9299b631542a145bb48e6448931a99
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: f_c_princess_9
+      name: face_ghost01a_9
       rect:
         serializedVersion: 2
         x: 48
@@ -294,13 +294,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 743e0bdb9f7b7d94186164ec3ca422f5
+      spriteID: fe81ec13d4c4017428fbb6c048ce9f37
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: f_c_princess_10
+      name: face_ghost01a_10
       rect:
         serializedVersion: 2
         x: 96
@@ -314,13 +314,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e1675d7873450cb4b974183051b66342
+      spriteID: 51f4aa08c8760874f928d708929a3997
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: f_c_princess_11
+      name: face_ghost01a_11
       rect:
         serializedVersion: 2
         x: 144
@@ -334,13 +334,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: feb3cfff22a44304c8d6fca81c033b23
+      spriteID: 061473ece18e36a40ab9be899ebeda33
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: f_c_princess_12
+      name: face_ghost01a_12
       rect:
         serializedVersion: 2
         x: 0
@@ -354,13 +354,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1d3589169226598439b74836b14c380a
+      spriteID: 33a7b4aaaadf33246b8d8cc73cbc9e6d
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: f_c_princess_13
+      name: face_ghost01a_13
       rect:
         serializedVersion: 2
         x: 48
@@ -374,13 +374,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: aa1c0129377b7424c9671976067c1ebf
+      spriteID: 700c1bf0903317e4db611f7dcd405743
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: f_c_princess_14
+      name: face_ghost01a_14
       rect:
         serializedVersion: 2
         x: 96
@@ -394,13 +394,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 204b0b81bde40bb4e9fa2a8392a95ea9
+      spriteID: a8c58880aeeb5f245ab1e6962a80ad66
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: f_c_princess_15
+      name: face_ghost01a_15
       rect:
         serializedVersion: 2
         x: 144
@@ -414,7 +414,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4b90babad34eeab42bcec33caf52e0ea
+      spriteID: 5396838542545db4294e041ffe42a270
       vertices: []
       indices: 
       edges: []
@@ -422,7 +422,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 1f3e2d589afde5447a9a070385a6a8b3
+    spriteID: 5217e987ba5d4904aa3dda0423166eee
     vertices: []
     indices: 
     edges: []

@@ -14,6 +14,7 @@ public class Cursor : MonoBehaviour, InputListener {
     private float lastStepTime;
     private Result<Vector2Int> awaitingSelect;
     private Func<Vector2Int, IEnumerator> scanner;
+    private Func<Vector2Int, bool> validator;
 
     public static Cursor GetInstance() {
         GameObject prefab = Resources.Load<GameObject>(InstancePath);
@@ -49,8 +50,10 @@ public class Cursor : MonoBehaviour, InputListener {
     }
 
     // waits for the cursor to select
-    public IEnumerator AwaitSelectionRoutine(Result<Vector2Int> result, Func<Vector2Int, IEnumerator> scanner = null) {
+    public IEnumerator AwaitSelectionRoutine(Result<Vector2Int> result, 
+            Func<Vector2Int, bool> validator, Func<Vector2Int, IEnumerator> scanner = null) {
         this.scanner = scanner;
+        this.validator = validator;
         awaitingSelect = result;
         while (!result.finished) {
             yield return null;
@@ -83,8 +86,9 @@ public class Cursor : MonoBehaviour, InputListener {
                         TryStep(EightDirExtensions.FromCommand(command));
                         break;
                     case InputManager.Command.Confirm:
-                        if (awaitingSelect != null) {
-                            awaitingSelect.value = GetComponent<MapEvent>().location;
+                        Vector2Int loc = GetComponent<MapEvent>().location;
+                        if (awaitingSelect != null && validator(GetComponent<MapEvent>().location)) {
+                            awaitingSelect.value = loc;
                         }
                         break;
                     case InputManager.Command.Cancel:

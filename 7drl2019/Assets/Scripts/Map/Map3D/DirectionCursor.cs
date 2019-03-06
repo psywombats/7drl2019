@@ -20,7 +20,7 @@ public class DirectionCursor : MonoBehaviour, InputListener {
     }
 
     // selects an adjacent unit to the actor (provided they meet the rule), cancelable
-    public IEnumerator SelectAdjacentUnitRoutine(Result<BattleUnit> result,
+    public IEnumerator SelectAdjacentUnitRoutine(Result<EightDir> result,
                 BattleUnit actingUnit,
                 Func<BattleUnit, bool> rule,
                 bool canCancel = true) {
@@ -34,10 +34,7 @@ public class DirectionCursor : MonoBehaviour, InputListener {
             }
         }
         if (dirs.Count > 0) {
-            Result<EightDir> dirResult = new Result<EightDir>();
-            yield return SelectTargetDirRoutine(dirResult, actingUnit, dirs, canCancel);
-            Vector2Int loc = actingUnit.location + dirResult.value.XY();
-            result.value = map.GetEventAt<BattleEvent>(loc).unit;
+            yield return SelectTargetDirRoutine(result, actingUnit, dirs, canCancel);
         } else {
             Debug.Assert(false, "No valid directions");
             result.Cancel();
@@ -57,8 +54,10 @@ public class DirectionCursor : MonoBehaviour, InputListener {
         SelectionGrid grid = actingUnit.battle.SpawnSelectionGrid();
         TacticsTerrainMesh terrain = actingUnit.battle.map.terrain;
         grid.ConfigureNewGrid(actingUnit.location, 1, terrain, (Vector2Int loc) => {
-            return (loc.x + loc.y + actingUnit.location.x + actingUnit.location.y) % 2 == 1;
-        }, (Vector2Int _) => { return true; });
+            return (loc.x + loc.y + actingUnit.location.x + actingUnit.location.y) % 2 < 2;
+        }, (Vector2Int loc) => {
+            return allowedDirs.Contains(actingUnit.battler.GetComponent<MapEvent>().DirectionTo(loc));
+        });
         AttemptSetDirection(allowedDirs[0]);
 
         while (!result.finished) {
