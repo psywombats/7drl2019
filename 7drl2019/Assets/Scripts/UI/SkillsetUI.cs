@@ -20,12 +20,12 @@ public class SkillsetUI : MonoBehaviour {
         }
     }
 
-    public IEnumerator OnTurnAction() {
+    public void OnTurn() {
         List<IEnumerator> toRun = new List<IEnumerator>();
         foreach (Transform child in transform) {
             toRun.Add(child.GetComponent<SkillContainer>().UpdateAction());
         }
-        return CoUtils.RunParallel(toRun.ToArray(), this);
+        StartCoroutine(CoUtils.RunParallel(toRun.ToArray(), this));
     }
 
     private void Clear() {

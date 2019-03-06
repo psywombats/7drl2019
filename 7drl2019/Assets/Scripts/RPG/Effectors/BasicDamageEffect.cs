@@ -8,9 +8,9 @@ public class BasicDamageEffect : Effector {
     public int damageLow, damageHigh;
     public bool friendlyFire;
 
-    public override IEnumerator ExecuteCellsRoutine(Result<IEnumerator> result, List<Vector2Int> locations) {
-        List<IEnumerator> toExecute = new List<IEnumerator>();
+    public override IEnumerator ExecuteCellsRoutine(List<Vector2Int> locations) {
         battle.Log(actor + " cast " + skill.skillName + "!");
+        yield return battler.PlayAnimationRoutine(skill.castAnim);
 
         foreach (Vector2Int location in locations) {
             BattleEvent target = map.GetEventAt<BattleEvent>(location);
@@ -23,9 +23,7 @@ public class BasicDamageEffect : Effector {
             int dmg = Mathf.RoundToInt(Random.Range(damageLow, damageHigh));
             battle.Log(other + " took " + dmg + " damage.");
 
-            toExecute.Add(other.TakeDamageAction(dmg, damageAnimation));
+            yield return other.TakeDamageRoutine(dmg, damageAnimation);
         }
-        result.value = CoUtils.RunSequence(toExecute.ToArray());
-        yield return CoUtils.RunParallel(toExecute.ToArray(), battler);
     }
 }

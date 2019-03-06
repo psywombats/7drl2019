@@ -155,7 +155,6 @@
     <Compile Include="Assets\Scripts\RPG\Effector.cs" />
     <Compile Include="Assets\Scripts\RPG\Effectors\BasicDamageEffect.cs" />
     <Compile Include="Assets\Scripts\RPG\Effectors\PushEffect.cs" />
-    <Compile Include="Assets\Scripts\RPG\Effectors\WalkEffect.cs" />
     <Compile Include="Assets\Scripts\RPG\Inventory.cs" />
     <Compile Include="Assets\Scripts\RPG\Item.cs" />
     <Compile Include="Assets\Scripts\RPG\Spellbook\BookNameGen.cs" />

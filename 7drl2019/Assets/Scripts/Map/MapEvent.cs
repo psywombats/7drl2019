@@ -39,7 +39,7 @@ public abstract class MapEvent : MonoBehaviour {
     // Properties
     public LuaMapEvent luaObject { get; private set; }
     public Vector3 targetPositionPx { get; set; }
-    public bool tracking { get; private set; }
+    public bool tracking { get; set; }
 
     private Vector3 _internalPosition;
     public Vector3 positionPx {
@@ -166,6 +166,9 @@ public abstract class MapEvent : MonoBehaviour {
         if (!GetComponent<MapEvent>().switchEnabled || passable) {
             return true;
         }
+        if (map.terrain.HeightAt(loc) == 0) {
+            return false;
+        }
         foreach (Tilemap layer in map.layers) {
             if (layer.transform.position.z >= map.objectLayer.transform.position.z && 
                     !map.IsChipPassableAt(layer, loc)) {
@@ -225,6 +228,9 @@ public abstract class MapEvent : MonoBehaviour {
     // called when the pc stumbles into us
     // before the step if impassable, after if passable
     public IEnumerator CollideRoutine(PCEvent pc) {
+        while (pc.GetComponent<MapEvent>().tracking) {
+            yield return null;
+        }
         yield return luaObject.RunRoutine(PropertyCollide);
     }
 

@@ -2,7 +2,7 @@
 
 public class MeleeTargeter : Targeter {
 
-    protected override IEnumerator InternalExecuteRoutine(Effector effect, Result<IEnumerator> result) {
+    protected override IEnumerator InternalExecuteRoutine(Effector effect, Result<bool> result) {
         DirectionCursor cursor = battle.SpawnDirectionCursor(actor.location);
 
         Result<EightDir> dirResult = new Result<EightDir>();
@@ -17,7 +17,8 @@ public class MeleeTargeter : Targeter {
         if (dirResult.canceled) {
             result.Cancel();
         } else {
-            yield return effect.ExecuteDirectionRoutine(result, dirResult.value);
+            yield return effect.ExecuteDirectionRoutine(dirResult.value);
+            result.value = true;
         }
     }
 }

@@ -64,36 +64,37 @@ public class BattleUnit {
 
     // === ACTIONS =================================================================================
 
-    public IEnumerator MeleeAttackAction(BattleUnit other) {
-        List<IEnumerator> toExecute = new List<IEnumerator>();
-        toExecute.Add(battler.AnimateAttackAction());
+    public IEnumerator MeleeAttackRoutine(BattleUnit other) {
+        yield return battler.AnimateAttackRoutine();
 
         battler.GetComponent<CharaEvent>().FaceToward(other.battler.GetComponent<MapEvent>());
         int dmg = Mathf.RoundToInt(Random.Range(Get(StatTag.DMG_MIN), Get(StatTag.DMG_MAX)));
         battle.Log(this + " attacked " + other + " for " + dmg + " damage.");
 
         if (dmg > 0) {
-            toExecute.Add(other.TakeDamageAction(dmg, battler.damageAnimation));
+            yield return other.TakeDamageRoutine(dmg, battler.damageAnimation);
         }
-        return CoUtils.RunSequence(toExecute.ToArray());
     }
 
-    public IEnumerator TakeDamageAction(int damage, LuaAnimation damageAnimation) {
-        List<IEnumerator> toExecute = new List<IEnumerator>();
+    public IEnumerator TakeDamageRoutine(int damage, LuaAnimation damageAnimation) {
         if (!IsDead()) {
             unit.stats.Sub(StatTag.HP, damage);
             if (!tookDamageThisTurn) {
-                toExecute.Add(battler.AnimateTakeDamageAction());
+                yield return battler.AnimateTakeDamageRoutine();
             }
             tookDamageThisTurn = true;
             if (IsDead()) {
-                toExecute.Add(DieAction());
+                yield return DieRoutine();
             }
         }
-        return CoUtils.RunSequence(toExecute.ToArray());
     }
 
-    public IEnumerator DieAction() {
+    public IEnumerator DieRoutine() {
+        // 7drl hack
+        if (this != battle.pc && battle.pc.Get(StatTag.CD) > 0) {
+            battle.pc.unit.stats.Sub(StatTag.CD, 1);
+        }
+
         string flight = unit.flightMessages[Random.Range(0, unit.flightMessages.Count)];
         battle.Log(this + flight);
         battle.RemoveUnit(this);
@@ -102,12 +103,9 @@ public class BattleUnit {
 
     // === STATE MACHINE ===========================================================================
 
-    public IEnumerator OnNewTurnAction() {
+    public IEnumerator OnNewTurnRoutine() {
         tookDamageThisTurn = false;
-        if (Get(StatTag.CD) > 0) {
-            unit.stats.Sub(StatTag.CD, 1);
-        }
-        return null;
+        yield return null;
     }
 
     // === UTIL ====================================================================================

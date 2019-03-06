@@ -38,7 +38,7 @@ public class Narrator : MonoBehaviour {
         }
     }
 
-    public IEnumerator OnTurnAction() {
+    public void OnTurn() {
         oldMessageAlpha = 1.0f;
         IncrementTurn();
         Tweener tween = DOTween.To(() => { return oldMessageAlpha; }, (float x) => {
@@ -53,7 +53,7 @@ public class Narrator : MonoBehaviour {
             messages.RemoveAt(0);
         }
 
-        return CoUtils.RunTween(tween);
+        StartCoroutine(CoUtils.RunTween(tween));
     }
 
     private void UpdateText() {

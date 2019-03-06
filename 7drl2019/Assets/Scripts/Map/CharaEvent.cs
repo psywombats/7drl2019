@@ -37,6 +37,7 @@ public class CharaEvent : MonoBehaviour {
     private float moveTime;
     private bool stepping;
     private bool visible = true;
+    private bool footOffset;
 
     public MapEvent parent { get { return GetComponent<MapEvent>(); } }
     public Map map { get { return parent.map; } }
@@ -102,6 +103,7 @@ public class CharaEvent : MonoBehaviour {
         stepping = steppingThisFrame; // || wasSteppingLastFrame;
         if (steppingThisFrame != wasSteppingLastFrame) {
             moveTime = 0.0f;
+            footOffset = !footOffset;
         }
         if (stepping) {
             moveTime += Time.deltaTime;
@@ -175,6 +177,7 @@ public class CharaEvent : MonoBehaviour {
         if (faceTo) {
             facing = dir;
         }
+        parent.tracking = true;
         Vector2Int offset = dir.XY();
         Vector3 startPx = parent.positionPx;
         targetPx = parent.TileToWorldCoords(parent.location);
@@ -215,6 +218,7 @@ public class CharaEvent : MonoBehaviour {
                 overrideBodySprite = null;
             }
         }
+        parent.tracking = false;
     }
 
     public IEnumerator DesaturateRoutine(float targetDesat) {
@@ -302,9 +306,9 @@ public class CharaEvent : MonoBehaviour {
         int x;
         int y = DirectionRelativeToCamera().Ordinal();
         if (jumping && HasJumpFrames()) {
-            x = Mathf.FloorToInt(moveTime * JumpStepsPerSecond) % 2 + 3;
+            x = Mathf.FloorToInt(moveTime * JumpStepsPerSecond + (footOffset ? 1 : 0)) % 2 + 3;
         } else {
-            x = Mathf.FloorToInt(moveTime * StepsPerSecond) % 4;
+            x = Mathf.FloorToInt(moveTime * StepsPerSecond + (footOffset ? 2 : 0)) % 4;
             if (x == 3) x = 1;
             if (!stepping) x = 1;
         }

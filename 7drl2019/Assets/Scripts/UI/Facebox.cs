@@ -19,15 +19,13 @@ public class Facebox : MonoBehaviour {
         cdBar.Populate(unit.maxCD, unit.Get(StatTag.CD));
     }
 
-    public IEnumerator OnTurnAction() {
+    public void OnTurn() {
         if (unit != null && !unit.IsDead()) {
-            return CoUtils.RunParallel(new IEnumerator[] {
+            CoUtils.RunParallel(new IEnumerator[] {
                 hpBar.AnimateWithTimeRoutine(unit.Get(StatTag.MHP), unit.Get(StatTag.HP), 0.125f),
                 mpBar.AnimateWithTimeRoutine(unit.Get(StatTag.MMP), unit.Get(StatTag.MP), 0.125f),
                 cdBar.AnimateWithTimeRoutine(unit.maxCD, unit.Get(StatTag.CD), 0.125f),
             }, this);
-        } else {
-            return CoUtils.Wait(0.0f);
         }
     }
 }

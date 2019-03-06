@@ -7,10 +7,10 @@ public class PushEffect : Effector {
     public int knockbackMin;
     public int knockbackMax;
 
-    public override IEnumerator ExecuteCellsRoutine(Result<IEnumerator> result, List<Vector2Int> locations) {
+    public override IEnumerator ExecuteCellsRoutine(List<Vector2Int> locations) {
         List<IEnumerator> toExecute = new List<IEnumerator>();
         battle.Log(actor + " cast " + skill.skillName + "!");
-        toExecute.Add(battler.PlayAnimationAction(skill.castAnim));
+        yield return battler.PlayAnimationRoutine(skill.castAnim);
 
         foreach (Vector2Int location in locations) {
             BattleEvent target = map.GetEventAt<BattleEvent>(location);
@@ -23,9 +23,7 @@ public class PushEffect : Effector {
             EightDir dir = battler.GetComponent<MapEvent>().DirectionTo(other.battler.GetComponent<MapEvent>());
             int power = Mathf.RoundToInt(Random.Range(knockbackMin, knockbackMax));
 
-            toExecute.Add(other.battler.KnockbackAction(dir, power));
+            yield return other.battler.KnockbackRoutine(dir, power);
         }
-        result.value = CoUtils.RunSequence(toExecute.ToArray());
-        yield return CoUtils.RunParallel(toExecute.ToArray(), battler);
     }
 }

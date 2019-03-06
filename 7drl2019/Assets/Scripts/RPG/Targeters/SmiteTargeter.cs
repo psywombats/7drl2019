@@ -8,7 +8,7 @@ public class SmiteTargeter : Targeter {
     public int range = 0;
     public float radius = 1.0f;
 
-    protected override IEnumerator InternalExecuteRoutine(Effector effect, Result<IEnumerator> result) {
+    protected override IEnumerator InternalExecuteRoutine(Effector effect, Result<bool> result) {
         Cursor cursor = battle.SpawnCursor(actor.location);
         SelectionGrid grid = battle.SpawnSelectionGrid();
 
@@ -71,7 +71,8 @@ public class SmiteTargeter : Targeter {
                     }
                 }
             }
-            yield return effect.ExecuteCellsRoutine(result, cells);
+            yield return effect.ExecuteCellsRoutine(cells);
+            result.value = true;
         }
     }
 }

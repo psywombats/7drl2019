@@ -19,7 +19,7 @@ public class RogueUI : MonoBehaviour, InputListener {
     }
 
     private bool rightDisplayEnabled;
-    private Result<IEnumerator> executeResult;
+    private Result<bool> executeResult;
 
     public void Populate() {
         if (pc == null) {
@@ -56,15 +56,12 @@ public class RogueUI : MonoBehaviour, InputListener {
             case InputManager.Command.DownRight:
             case InputManager.Command.UpRight:
                 EightDir dir = EightDirExtensions.FromCommand(command);
-                IEnumerator result = unit.battler.StepOrAttackAction(dir, true);
-                if (result != null) {
-                    Global.Instance().Input.RemoveListener(this);
-                    executeResult.value = result;
-                }
+                Global.Instance().Input.RemoveListener(this);
+                StartCoroutine(unit.battler.StepOrAttackRoutine(dir, executeResult));
                 break;
             case InputManager.Command.Wait:
                 Global.Instance().Input.RemoveListener(this);
-                executeResult.value = CoUtils.Wait(0.0f);
+                executeResult.value = true;
                 break;
             case InputManager.Command.Skill1:
             case InputManager.Command.Skill2:
@@ -76,7 +73,8 @@ public class RogueUI : MonoBehaviour, InputListener {
                 if (skillNumber < pc.activeBook.spells.Count) {
                     Skill skill = pc.activeBook.spells[skillNumber];
                     if (unit.CanUse(skill)) {
-                        StartCoroutine(PlaySkillRoutine(skill));
+                        Global.Instance().Input.RemoveListener(this);
+                        StartCoroutine(skill.PlaySkillRoutine(unit, executeResult));
                     } else {
                         if (skill.costMP > 0) {
                             narrator.Log(skill + " costs too much MP to cast.", true);
@@ -88,6 +86,7 @@ public class RogueUI : MonoBehaviour, InputListener {
                 break;
             case InputManager.Command.Examine:
             case InputManager.Command.Confirm:
+                Global.Instance().Input.RemoveListener(this);
                 StartCoroutine(ScanRoutine());
                 rightDisplayEnabled = false;
                 break;
@@ -95,32 +94,20 @@ public class RogueUI : MonoBehaviour, InputListener {
         return true;
     }
 
-    public IEnumerator OnTurnAction() {
-        return CoUtils.RunParallel(new IEnumerator[] {
-            face1.OnTurnAction(),
-            face2.OnTurnAction(),
-            narrator.OnTurnAction(),
-            skills.OnTurnAction(),
-        }, this);
+    public void OnTurn() {
+        face1.OnTurn();
+        face2.OnTurn();
+        narrator.OnTurn();
+        skills.OnTurn();
     }
 
-    public IEnumerator PlayNextCommand(Result<IEnumerator> executeResult) {
+    public IEnumerator PlayNextCommandRoutine(Result<bool> executeResult) {
         this.executeResult = executeResult;
         Global.Instance().Input.PushListener(this);
         while (!executeResult.finished) {
             yield return null;
         }
         Global.Instance().Input.RemoveListener(this);
-    }
-
-    private IEnumerator PlaySkillRoutine(Skill skill) {
-        Global.Instance().Input.DisableListener(this);
-        Result<IEnumerator> effectResult = new Result<IEnumerator>();
-        yield return skill.PlaySkillRoutine(unit, effectResult);
-        if (!effectResult.canceled) {
-            executeResult.value = effectResult.value;
-        }
-        Global.Instance().Input.EnableListener(this);
     }
 
     private IEnumerator ScanRoutine() {
@@ -139,6 +126,7 @@ public class RogueUI : MonoBehaviour, InputListener {
         }
         rightDisplayEnabled = false;
         unit.battle.DespawnCursor();
+        executeResult.Cancel();
     }
 
     private IEnumerator ScanAtRoutine(Vector2Int loc) {

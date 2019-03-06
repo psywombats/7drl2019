@@ -44,7 +44,7 @@ public class Skill {
         }
     }
 
-    public IEnumerator PlaySkillRoutine(BattleUnit actor, Result<IEnumerator> executeResult) {
+    public IEnumerator PlaySkillRoutine(BattleUnit actor, Result<bool> executeResult) {
         Targeter targeter = Object.Instantiate(data.targeter);
         Effector effect = Object.Instantiate(data.effect);
         effect.actor = actor;

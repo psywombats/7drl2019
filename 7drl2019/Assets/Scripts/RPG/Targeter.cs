@@ -11,11 +11,11 @@ public abstract class Targeter : ActorScriptableObject {
     /**
      * Acquire the targets, pass them to the effector via the appropriate method.
      */
-    public IEnumerator ExecuteRoutine(Effector effect, Result<IEnumerator> executeResult) {
+    public IEnumerator ExecuteRoutine(Effector effect, Result<bool> executeResult) {
         yield return InternalExecuteRoutine(effect, executeResult);
     }
 
-    protected abstract IEnumerator InternalExecuteRoutine(Effector effect, Result<IEnumerator> result);
+    protected abstract IEnumerator InternalExecuteRoutine(Effector effect, Result<bool> result);
 
     protected Func<Vector2Int, bool> DefaultSelectRule(Effector effect) {
         return (Vector2Int loc) => {

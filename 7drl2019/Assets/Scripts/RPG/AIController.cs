@@ -21,8 +21,10 @@ public class AIController {
         seenMap = new short[battle.map.size.x, battle.map.size.y];
     }
 
-    public IEnumerator TakeTurnAction() {
+    public IEnumerator TakeTurnRoutine() {
         int intel = (int)unit.Get(StatTag.INTELLIGENCE);
+
+        Result<bool> result = new Result<bool>();
 
         seenMap[battler.location.x, battler.location.y] += 1;
         turnsHunting -= 1;
@@ -35,10 +37,10 @@ public class AIController {
             if (intel >= PathingCutoffInt) {
                 List<Vector2Int> path = battle.map.FindPath(battler.GetComponent<MapEvent>(), pc.location, intel);
                 if (path != null && path.Count > 0) {
-                    return battler.StepOrAttackAction(battler.GetComponent<MapEvent>().DirectionTo(path[0]));
+                    return battler.StepOrAttackRoutine(battler.GetComponent<MapEvent>().DirectionTo(path[0]), result);
                 }
             } else {
-                return battler.StepOrAttackAction(battler.GetComponent<MapEvent>().DirectionTo(pc.location));
+                return battler.StepOrAttackRoutine(battler.GetComponent<MapEvent>().DirectionTo(pc.location), result);
             }
         }
 
@@ -57,6 +59,6 @@ public class AIController {
                 }
             }
         }
-        return battler.StepOrAttackAction(bestDir);
+        return battler.StepOrAttackRoutine(bestDir, result);
     }
 }

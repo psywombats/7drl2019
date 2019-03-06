@@ -10,10 +10,13 @@ public class ChestEvent : MonoBehaviour {
 
     public bool opened { get; private set; }
 
-    public IEnumerator OpenAction(PCEvent pc) {
+    public IEnumerator OpenRoutine(PCEvent pc) {
+        while (pc.GetComponent<MapEvent>().tracking) {
+            yield return null;
+        }
         pc.GetComponent<BattleEvent>().unit.battle.Log(pc.unit + " found a chest...");
-        return CoUtils.RunSequence(new IEnumerator[] {
-            pc.GetComponent<BattleEvent>().AnimateBumpAction(),
+        yield return CoUtils.RunSequence(new IEnumerator[] {
+            pc.GetComponent<BattleEvent>().AnimateBumpRoutine(),
             doll.PlayOnceRoutine(),
             OnOpenRoutine(pc),
         });

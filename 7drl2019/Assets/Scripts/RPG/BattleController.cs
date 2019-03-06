@@ -94,8 +94,7 @@ public class BattleController : MonoBehaviour {
             map.GetComponent<LineOfSightEffect>().RecalculateVisibilityMap();
             map.GetComponent<LineOfSightEffect>().TransitionFromOldLos(
                 1.0f / pcEvent.GetComponent<MapEvent>().CalcTilesPerSecond());
-
-            List<IEnumerator> toExecute = new List<IEnumerator>();
+            
             foreach (BattleEvent battler in battlers.Values.ToArray()) {
                 if (battler.unit.IsDead()) {
                     if (units.Contains(battler.unit)) {
@@ -106,38 +105,24 @@ public class BattleController : MonoBehaviour {
                 }
             }
             foreach (BattleUnit unit in units) {
-                IEnumerator result = unit.OnNewTurnAction();
-                if (result != null) {
-                    toExecute.Add(result);
-                }
-            }
-            if (toExecute.Count > 0) {
-                yield return CoUtils.RunParallel(toExecute.ToArray(), this);
+                yield return unit.OnNewTurnRoutine();
             }
         }
     }
 
     private IEnumerator PlayNextHumanActionRoutine() {
-        Result<IEnumerator> executeResult = new Result<IEnumerator>();
-        yield return ui.PlayNextCommand(executeResult);
+        Result<bool> executeResult = new Result<bool>();
+        yield return ui.PlayNextCommandRoutine(executeResult);
         if (!executeResult.canceled) {
-            List<IEnumerator> animations = new List<IEnumerator>();
-            animations.Add(executeResult.value);
             if (!cleared) {
-                // grab everyone else's stuff
                 foreach (BattleUnit unit in new List<BattleUnit>(units)) {
                     if (unit == pc) {
                         continue;
                     } else {
-                        IEnumerator aiAction = unit.ai.TakeTurnAction();
-                        if (aiAction != null) {
-                            animations.Add(aiAction);
-                        }
+                        yield return unit.ai.TakeTurnRoutine();
                     }
                 }
-                animations.Add(ui.OnTurnAction());
             }
-            yield return CoUtils.RunParallel(animations.ToArray(), this);
         }
         if (cleared) {
             AddUnitsFromMap();

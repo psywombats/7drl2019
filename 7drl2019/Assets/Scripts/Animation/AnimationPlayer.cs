@@ -15,6 +15,9 @@ public class AnimationPlayer : MonoBehaviour {
     }
 
     public virtual IEnumerator PlayAnimationRoutine(LuaContext context = null) {
+        while (isPlayingAnimation) {
+            yield return null;
+        }
         if (context == null) {
             context = GetComponent<LuaContext>();
         }
