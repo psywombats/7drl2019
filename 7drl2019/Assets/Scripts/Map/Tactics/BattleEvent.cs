@@ -15,6 +15,7 @@ public class BattleEvent : MonoBehaviour {
     public Unit unitSerialized;
     public BattleUnit unit { get; set; }
     public BattleController controller { get; private set; }
+    public MapEvent me { get { return GetComponent<MapEvent>(); } }
 
     public LuaAnimation damageAnimation;
     public LuaAnimation deathAnimation;
@@ -28,7 +29,7 @@ public class BattleEvent : MonoBehaviour {
     private TacticsTerrainMesh _terrain;
     public TacticsTerrainMesh terrain {
         get {
-            if (_terrain == null) _terrain = GetComponent<MapEvent>().map.terrain;
+            if (_terrain == null) _terrain = me.map.terrain;
             return _terrain;
         }
     }
@@ -47,12 +48,12 @@ public class BattleEvent : MonoBehaviour {
     }
 
     public void SetScreenPositionToMatchTilePosition() {
-        GetComponent<MapEvent>().SetLocation(unit.location);
+        me.SetLocation(unit.location);
     }
 
     public bool CanCrossTileGradient(Vector2Int from, Vector2Int to, bool cornerMode = false) {
         float fromHeight = terrain.HeightAt(from);
-        float toHeight = GetComponent<MapEvent>().map.terrain.HeightAt(to);
+        float toHeight = me.map.terrain.HeightAt(to);
         if (toHeight == 0.0f) {
             return false;
         }
@@ -81,11 +82,11 @@ public class BattleEvent : MonoBehaviour {
     }
 
     public IEnumerator StepOrAttackAction(EightDir dir, bool pcMode = false) {
-        MapEvent parent = GetComponent<MapEvent>();
-        Vector2Int vectors = GetComponent<MapEvent>().location;
+        MapEvent parent = me;
+        Vector2Int vectors = me.location;
         Vector2Int target = vectors + dir.XY();
         GetComponent<CharaEvent>().facing = dir;
-        List<MapEvent> targetEvents = GetComponent<MapEvent>().map.GetEventsAt(target);
+        List<MapEvent> targetEvents = me.map.GetEventsAt(target);
 
         if (!GetComponent<BattleEvent>().CanCrossTileGradient(parent.location, target)) {
             return null;
@@ -100,8 +101,8 @@ public class BattleEvent : MonoBehaviour {
         
         List<IEnumerator> toExecute = new List<IEnumerator>();
         if (passable) {
-            GetComponent<MapEvent>().location = target;
-            toExecute.Add(GetComponent<MapEvent>().StepRoutine(dir, false));
+            me.location = target;
+            toExecute.Add(me.StepRoutine(dir, false));
             if (GetComponent<PCEvent>() != null) {
                 foreach (MapEvent targetEvent in toCollide) {
                     if (targetEvent.switchEnabled) {
@@ -145,6 +146,33 @@ public class BattleEvent : MonoBehaviour {
         } else {
             return CoUtils.RunSequence(toExecute.ToArray());
         }
+    }
+
+    public IEnumerator KnockbackAction(EightDir dir, int power) {
+        List<IEnumerator> toExecute = new List<IEnumerator>();
+
+        Vector2Int at = location;
+        float height = me.map.terrain.HeightAt(location);
+        for (int i = 0; i < power; i += 1) {
+            at += dir.XY();
+            float atHeight = me.map.terrain.HeightAt(at);
+            if (!me.CanPassAt(at) || atHeight > height) {
+                break;
+            }
+            if (atHeight < height) {
+                toExecute.Add(GetComponent<CharaEvent>().StepRoutine(dir, false));
+                float delta = height - atHeight;
+                int dmg = unit.CalcDropDamage(delta);
+                if (delta > unit.GetMaxDescent()) {
+                    toExecute.Add(unit.TakeDamageAction(dmg, damageAnimation));
+                    controller.Log(unit + " took " + dmg + " damage in the fall!");
+                }
+                break;
+            }
+            toExecute.Add(me.LinearStepRoutine(dir));
+        }
+
+        return CoUtils.RunSequence(toExecute.ToArray());
     }
 
     public IEnumerator AnimateTakeDamageAction() {

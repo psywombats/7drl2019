@@ -6,7 +6,7 @@ using System.Collections.Generic;
 [RequireComponent(typeof(TacticsTerrainMesh))]
 public class MapGenerator : MonoBehaviour {
 
-    private int MaxHeightDelta = 2;
+    private float MaxHeightDelta = 2;
 
     public Vector2Int sizeInRooms;
     public int stairLength = 3;

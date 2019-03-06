@@ -171,8 +171,10 @@ public class CharaEvent : MonoBehaviour {
         yield return CoUtils.RunTween(tween);
     }
 
-    public IEnumerator StepRoutine(EightDir dir) {
-        facing = dir;
+    public IEnumerator StepRoutine(EightDir dir, bool faceTo = true) {
+        if (faceTo) {
+            facing = dir;
+        }
         Vector2Int offset = dir.XY();
         Vector3 startPx = parent.positionPx;
         targetPx = parent.TileToWorldCoords(parent.location);

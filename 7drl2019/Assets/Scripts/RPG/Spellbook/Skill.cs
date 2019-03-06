@@ -13,7 +13,9 @@ public class Skill {
     public string longformName { get; private set; }
 
     public string skillName { get { return data.skillName; } }
-    public Sprite icon { get { return data.icon; } }
+    public Sprite icon { get { return data.skillIcon; } }
+    public SpellSchool school { get { return data.school; } }
+    public LuaAnimation castAnim { get { return data.castAnimation; } }
 
     public Skill(Scroll scroll) {
         data = scroll.data;
@@ -47,6 +49,8 @@ public class Skill {
         Effector effect = Object.Instantiate(data.effect);
         effect.actor = actor;
         targeter.actor = actor;
+        effect.skill = this;
+        targeter.skill = this;
         yield return targeter.ExecuteRoutine(effect, executeResult);
         if (!executeResult.canceled) {
             if (costMP > 0) {

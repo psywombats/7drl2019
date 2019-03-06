@@ -57,6 +57,11 @@ public class BattleUnit {
         return Get(StatTag.MP) >= skill.costMP && (skill.costCD == 0 || Get(StatTag.CD) == 0);
     }
 
+    public int CalcDropDamage(float height) {
+        float max = Mathf.Max(GetMaxDescent(), 3);
+        return Mathf.RoundToInt(10.0f + (height - max) * 15.0f);
+    }
+
     // === ACTIONS =================================================================================
 
     public IEnumerator MeleeAttackAction(BattleUnit other) {

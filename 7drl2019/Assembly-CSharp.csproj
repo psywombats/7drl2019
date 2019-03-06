@@ -154,6 +154,7 @@
     <Compile Include="Assets\Scripts\RPG\BattleUnit.cs" />
     <Compile Include="Assets\Scripts\RPG\Effector.cs" />
     <Compile Include="Assets\Scripts\RPG\Effectors\BasicDamageEffect.cs" />
+    <Compile Include="Assets\Scripts\RPG\Effectors\PushEffect.cs" />
     <Compile Include="Assets\Scripts\RPG\Effectors\WalkEffect.cs" />
     <Compile Include="Assets\Scripts\RPG\Inventory.cs" />
     <Compile Include="Assets\Scripts\RPG\Item.cs" />
@@ -164,6 +165,7 @@
     <Compile Include="Assets\Scripts\RPG\Spellbook\SkillModifier.cs" />
     <Compile Include="Assets\Scripts\RPG\Spellbook\Spellbook.cs" />
     <Compile Include="Assets\Scripts\RPG\Spellbook\SpellbookData.cs" />
+    <Compile Include="Assets\Scripts\RPG\Spellbook\SpellSchool.cs" />
     <Compile Include="Assets\Scripts\RPG\Stat\CombinationAdditive.cs" />
     <Compile Include="Assets\Scripts\RPG\Stat\CombinationStrategy.cs" />
     <Compile Include="Assets\Scripts\RPG\Stat\Stat.cs" />

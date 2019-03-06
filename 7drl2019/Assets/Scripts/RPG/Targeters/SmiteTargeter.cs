@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SmiteTargeter : Targeter {
@@ -21,7 +22,8 @@ public class SmiteTargeter : Targeter {
                 return Vector2Int.Distance(cursor.GetComponent<MapEvent>().location, loc) <= radius;
             };
             scanner = (Vector2Int loc) => {
-                grid.ConfigureNewGrid(actor.location, range + Mathf.CeilToInt(radius), map.terrain, rangeRule, selectRule);
+                grid.ConfigureNewGrid(actor.location, range + Mathf.CeilToInt(radius), 
+                    map.terrain, rangeRule, selectRule);
                 return null;
             };
         } else {
@@ -59,7 +61,17 @@ public class SmiteTargeter : Targeter {
         if (locResult.canceled) {
             result.Cancel();
         } else {
-            yield return effect.ExecuteSingleCellRoutine(result, locResult.value);
+            List<Vector2Int> cells = new List<Vector2Int>();
+            int r = Mathf.CeilToInt(radius);
+            for (int y = locResult.value.y - r; y <= locResult.value.y + r; y += 1) {
+                for (int x = locResult.value.x - r; x <= locResult.value.x + r; x += 1) {
+                    Vector2Int cell = new Vector2Int(x, y);
+                    if (Vector2Int.Distance(cell, locResult.value) <= radius) {
+                        cells.Add(cell);
+                    }
+                }
+            }
+            yield return effect.ExecuteCellsRoutine(result, cells);
         }
     }
 }

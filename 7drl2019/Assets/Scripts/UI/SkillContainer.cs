@@ -22,6 +22,7 @@ public class SkillContainer : MonoBehaviour {
         this.pc = pc;
         skill = pc.activeBook.spells[ordinal];
         icon.sprite = skill.icon;
+        icon.color = skill.school.Tint();
         label.text = "F" + (ordinal + 1);
         if (skill.costMP > 0) {
             costLabel.color = MPColor;
