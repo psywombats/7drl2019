@@ -7,6 +7,7 @@ public class Unit : ScriptableObject {
     public string unitName;
     public Texture2D appearance;
     public Sprite face;
+    public List<Sprite> altFaces;
     public bool unique = true;
     public Alignment align;
 

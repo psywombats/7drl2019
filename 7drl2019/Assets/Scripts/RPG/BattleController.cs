@@ -107,6 +107,7 @@ public class BattleController : MonoBehaviour {
                     map.RemoveEvent(battler.GetComponent<MapEvent>());
                 }
             }
+
             foreach (BattleUnit unit in units) {
                 yield return unit.OnNewTurnRoutine();
             }
@@ -122,6 +123,18 @@ public class BattleController : MonoBehaviour {
                     if (unit == pc) {
                         continue;
                     } else {
+                        if (unit.isRecovering) {
+                            unit.isRecovering = false;
+                        } else {
+                            yield return unit.ai.TakeTurnRoutine();
+                        }
+                    }
+                }
+
+                // 7drl hack
+                foreach (BattleUnit unit in new List<BattleUnit>(units)) {
+                    if (unit.canActAgain) {
+                        unit.canActAgain = false;
                         yield return unit.ai.TakeTurnRoutine();
                     }
                 }

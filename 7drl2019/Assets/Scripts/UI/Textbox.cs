@@ -19,6 +19,7 @@ public class Textbox : MonoBehaviour, InputListener {
     public Text namebox1;
     public Text namebox2;
     public Text textbox;
+    public Facebox facebox;
     public RectTransform backer;
     public RectTransform mainBox;
     public GameObject advanceArrow;
@@ -85,8 +86,10 @@ public class Textbox : MonoBehaviour, InputListener {
     public IEnumerator SpeakRoutine(string text) {
         yield return SpeakRoutine(SystemSpeaker, text);
     }
-
     public IEnumerator SpeakRoutine(string speakerName, string text) {
+        yield return SpeakRoutine(speakerName, text, 0);
+    }
+    public IEnumerator SpeakRoutine(string speakerName, string text, int faceNo) {
         namebox1.text = unit1.ToString();
         namebox2.text = unit2.ToString();
         if (!isDisplaying) {
@@ -114,10 +117,15 @@ public class Textbox : MonoBehaviour, InputListener {
             }
         }
 
+        if (facebox) {
+            facebox.SetFaceNumber(faceNo);
+        }
+
         yield return TypeRoutine(text);
     }
 
     public IEnumerator DisableRoutine() {
+        facebox.SetFaceNumber(0);
         isDisplaying = false;
         yield return CoUtils.RunParallel(new IEnumerator[] {
             EraseName1Routine(boxAnimationSeconds / 2.0f),

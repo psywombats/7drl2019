@@ -20,6 +20,11 @@ function speak(speaker, line)
     await()
 end
 
+function speak2(speaker, faceNo, line)
+    cs_speak2(speaker, faceNo, line)
+    await()
+end
+
 function nextMap()
     cs_nextMap()
     await()

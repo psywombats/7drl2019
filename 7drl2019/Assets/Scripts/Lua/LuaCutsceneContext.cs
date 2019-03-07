@@ -45,6 +45,7 @@ public class LuaCutsceneContext : LuaContext {
         lua.Globals["cs_teleport"] = (Action<DynValue, DynValue>)Teleport;
         lua.Globals["cs_fadeOutBGM"] = (Action<DynValue>)FadeOutBGM;
         lua.Globals["cs_speak"] = (Action<DynValue, DynValue>)Speak;
+        lua.Globals["cs_speak2"] = (Action<DynValue, DynValue, DynValue>)Speak2;
         lua.Globals["cs_nextMap"] = (Action)NextMap;
     }
 
@@ -72,6 +73,10 @@ public class LuaCutsceneContext : LuaContext {
 
     private void Speak(DynValue speaker, DynValue text) {
         RunTextboxRoutineFromLua(MapOverlayUI.Instance().textbox.SpeakRoutine(speaker.String, text.String));
+    }
+
+    private void Speak2(DynValue speaker, DynValue face, DynValue text) {
+        RunTextboxRoutineFromLua(MapOverlayUI.Instance().textbox.SpeakRoutine(speaker.String, text.String, (int)face.Number));
     }
 
     private void NextMap() {

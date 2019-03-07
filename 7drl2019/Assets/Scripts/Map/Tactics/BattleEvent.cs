@@ -111,6 +111,9 @@ public class BattleEvent : MonoBehaviour {
         
         if (passable) {
             me.location = target;
+            if (unit.Get(StatTag.MOVE) > 1) {
+                unit.canActAgain = !unit.canActAgain;
+            }
             StartCoroutine(me.StepRoutine(dir, false));
             if (GetComponent<PCEvent>() != null) {
                 foreach (MapEvent targetEvent in toCollide) {

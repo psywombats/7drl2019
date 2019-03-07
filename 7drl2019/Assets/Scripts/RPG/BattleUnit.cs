@@ -11,6 +11,8 @@ public class BattleUnit {
     public Alignment align { get { return unit.align; } }
     public Vector2Int location { get { return battler.location; } }
 
+    public bool canActAgain { get; set; }
+    public bool isRecovering { get; set; }
     public float maxCD { get; set; }
 
     private bool tookDamageThisTurn;
@@ -58,8 +60,12 @@ public class BattleUnit {
     }
 
     public int CalcDropDamage(float height) {
-        float max = Mathf.Max(GetMaxDescent(), 3);
-        return Mathf.RoundToInt(10.0f + (height - max) * 15.0f);
+        if (Is(StatTag.O_FALL)) {
+            return (int)(height * 2.0f);
+        } else {
+            float max = Mathf.Max(GetMaxDescent(), 3);
+            return Mathf.RoundToInt(10.0f + (height - max) * 15.0f);
+        }
     }
 
     // === ACTIONS =================================================================================
@@ -67,9 +73,17 @@ public class BattleUnit {
     public IEnumerator MeleeAttackRoutine(BattleUnit other) {
         yield return battler.AnimateAttackRoutine();
 
-        battler.GetComponent<CharaEvent>().FaceToward(other.battler.GetComponent<MapEvent>());
-        int dmg = Mathf.RoundToInt(Random.Range(Get(StatTag.DMG_MIN), Get(StatTag.DMG_MAX)));
-        battle.Log(this + " attacked " + other + " for " + dmg + " damage.");
+        int dmg = 0;
+        if (RandUtils.Chance(Get(StatTag.ACC))) {
+            battler.GetComponent<CharaEvent>().FaceToward(other.battler.GetComponent<MapEvent>());
+            dmg = (int)Get(StatTag.DMG);
+            battle.Log(this + " attacked " + other + " for " + dmg + " damage.");
+            if (Get(StatTag.ATTACKS) < 1) {
+                isRecovering = true;
+            }
+        } else {
+            battle.Log(this + " missed " + other + ".");
+        }
 
         if (dmg > 0) {
             yield return other.TakeDamageRoutine(dmg, battler.damageAnimation);

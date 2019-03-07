@@ -9,10 +9,16 @@
     CD = 11,
 
     MOVE = 5,
+    ATTACKS = 12,
     JUMP = 6,
     SIGHT = 7,
     INTELLIGENCE = 8,
 
-    DMG_MIN = 9,
-    DMG_MAX = 10,
+    ACC = 9,
+    DMG = 10,
+
+    O_FIRE = 13,
+    O_LITE = 14,
+    O_FALL = 15,
+    O_DARK = 16,
 }

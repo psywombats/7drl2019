@@ -28,4 +28,12 @@ public class Facebox : MonoBehaviour {
             }, this));
         }
     }
+
+    public void SetFaceNumber(int faceNo) {
+        if (faceNo == 0) {
+            face.sprite = unit.unit.face;
+        } else {
+            face.sprite = unit.unit.altFaces[faceNo];
+        }
+    }
 }
