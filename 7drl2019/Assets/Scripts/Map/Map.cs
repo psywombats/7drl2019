@@ -18,9 +18,6 @@ public class Map : MonoBehaviour {
     public ObjectLayer objectLayer;
 
     public string bgmKey { get; private set; }
-    
-    // true if the tile in question is passable at x,y
-    private Dictionary<Tilemap, bool[,]> passabilityMap;
 
     private Vector2Int _size;
     public Vector2Int size {
@@ -89,20 +86,8 @@ public class Map : MonoBehaviour {
     }
 
     public bool IsChipPassableAt(Tilemap layer, Vector2Int loc) {
-        if (passabilityMap == null) {
-            passabilityMap = new Dictionary<Tilemap, bool[,]>();
-        }
-        if (!passabilityMap.ContainsKey(layer)) {
-            passabilityMap[layer] = new bool[width, height];
-            for (int x = 0; x < width; x += 1) {
-                for (int y = 0; y < height; y += 1) {
-                    PropertiedTile tile = TileAt(layer, x, y);
-                    passabilityMap[layer][x, y] = tile == null || !tile.GetData().impassable;
-                }
-            }
-        }
-
-        return passabilityMap[layer][loc.x, loc.y];
+        PropertiedTile tile = TileAt(layer, loc.x, loc.y);
+        return tile == null || !tile.GetData().impassable;
     }
 
     // careful, this implementation is straight from MGNE, it's efficiency is questionable, to say the least

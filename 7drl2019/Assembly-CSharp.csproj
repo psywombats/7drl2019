@@ -160,6 +160,7 @@
     <Compile Include="Assets\Scripts\RPG\Effectors\StepEffect.cs" />
     <Compile Include="Assets\Scripts\RPG\Effectors\TeleportEffect.cs" />
     <Compile Include="Assets\Scripts\RPG\Encounter.cs" />
+    <Compile Include="Assets\Scripts\RPG\GenerationTable.cs" />
     <Compile Include="Assets\Scripts\RPG\Inventory.cs" />
     <Compile Include="Assets\Scripts\RPG\Item.cs" />
     <Compile Include="Assets\Scripts\RPG\Spellbook\BookNameGen.cs" />

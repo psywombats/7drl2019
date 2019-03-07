@@ -9,6 +9,15 @@ public class PCVisibility : MonoBehaviour {
 
     public bool visible { get; private set; }
 
+    public void Start() {
+        if (spriteRenderer != null) {
+            spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, visible ? 1.0f : 0.0f);
+        } else {
+           StartCoroutine(GetComponent<CharaEvent>().FadeRoutine(visible));
+        }
+        
+    }
+
     public void SetVisibleByPC(bool visible) {
         if (this.visible != visible) {
             StartCoroutine(FadeRoutine(visible));

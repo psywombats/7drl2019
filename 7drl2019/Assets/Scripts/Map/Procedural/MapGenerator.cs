@@ -27,6 +27,10 @@ public class MapGenerator : MonoBehaviour {
     public MapEvent3D endEventPrefab;
     public MapEvent3D impassEventPrefab;
 
+    [Space]
+    public GenerationTable table;
+    public int level = 1;
+
     public bool startStairsSW, endStairsNW;
 
     public void GenerateMesh(MapGenerator lastMap = null) {
@@ -39,6 +43,8 @@ public class MapGenerator : MonoBehaviour {
             endEventPrefab = lastMap.endEventPrefab;
             impassEventPrefab = lastMap.impassEventPrefab;
             defaultImpassTile = lastMap.defaultImpassTile;
+            table = lastMap.table;
+            level = lastMap.level + 1;
         }
         
         // wipe what's already there
@@ -46,6 +52,9 @@ public class MapGenerator : MonoBehaviour {
         mesh.ClearTiles();
         foreach (MapEvent toRemove in GetComponent<Map>().GetEvents<MapEvent>()) {
             if (toRemove.GetComponent<PCEvent>() == null) {
+                if (toRemove.GetComponent<BattleEvent>()) {
+                    GetComponent<BattleController>().RemoveUnit(toRemove.GetComponent<BattleEvent>().unit);
+                }
                 GetComponent<Map>().RemoveEvent(toRemove, true);
             }
         }
@@ -167,7 +176,7 @@ public class MapGenerator : MonoBehaviour {
                 continue;
             }
             List<RoomInfo> adjacents = room.cell.AdjacentRooms(this);
-            Shuffle(adjacents);
+            RandUtils.Shuffle(adjacents);
             RoomInfo adj = null;
             foreach (RoomInfo adj2 in adjacents) {
                 if (adj2.cell.connected) {
@@ -322,6 +331,24 @@ public class MapGenerator : MonoBehaviour {
             stairZ += endStairsNW ? 1 : 0;
         }
 
+        // generate the encounters
+        List<RoomInfo> validRooms = new List<RoomInfo>();
+        for (int x = 0; x < sizeInRooms.x; x += 1) {
+            for (int y = 0; y < sizeInRooms.y; y += 1) {
+                if (x != entryRoomCoords.x || y != entryRoomCoords.y) {
+                    validRooms.Add(rooms[x, y]);
+                }
+            }
+        }
+        List<Encounter> encounters = table.GenerateEncounters(level);
+        foreach (Encounter encounter in encounters) {
+            RoomInfo room = validRooms[Random.Range(0, validRooms.Count)];
+            Vector2Int loc = new Vector2Int(
+                Random.Range(room.cell.startX, room.cell.startX + room.cell.sizeX),
+                Random.Range(room.cell.startY, room.cell.startY + room.cell.sizeY));
+            encounter.PlaceAt(GetComponent<Map>(), loc);
+        }
+
         mesh.Rebuild(true);
     }
 
@@ -350,17 +377,6 @@ public class MapGenerator : MonoBehaviour {
                     }
                 }
             }
-        }
-    }
-
-    private static void Shuffle(List<RoomInfo> list) {
-        int n = list.Count;
-        while (n > 1) {
-            n--;
-            int k = Random.Range(0, n);
-            RoomInfo value = list[k];
-            list[k] = list[n];
-            list[n] = value;
         }
     }
 

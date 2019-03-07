@@ -27,7 +27,7 @@ public class CharaAnimationTarget : AnimationTarget {
 
     [MoonSharpHidden]
     public void ConfigureToBattler(BattleEvent battler) {
-        chara.itemSprite = battler.unit.unit.equippedItem.sprite;
+        //chara.itemSprite = battler.unit.unit.equippedItem.sprite;
     }
 
     [MoonSharpHidden]

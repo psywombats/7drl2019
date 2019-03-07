@@ -141,19 +141,22 @@ public class BattleController : MonoBehaviour {
             }
         }
         if (cleared) {
-            AddUnitsFromMap();
             cleared = false;
         }
+    }
+
+    public BattleUnit AddUnitFromMap(BattleEvent battler) {
+        BattleUnit unit = new BattleUnit(Instantiate(battler.unitSerialized), this);
+        battler.unit = unit;
+        units.Add(unit);
+        battlers[battler.unit] = battler;
+        return unit;
     }
 
     private void AddUnitsFromMap() {
         foreach (BattleEvent battler in map.GetEvents<BattleEvent>()) {
             if (battler.GetComponent<PCEvent>() == null) {
-                BattleUnit unit = new BattleUnit(Instantiate(battler.unitSerialized), this);
-                unit.ai = new AIController(unit);
-                battler.unit = unit;
-                units.Add(unit);
-                battlers[battler.unit] = battler;
+                AddUnitFromMap(battler);
             }
         }
     }

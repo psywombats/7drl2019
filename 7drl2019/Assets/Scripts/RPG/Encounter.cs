@@ -5,9 +5,36 @@ using System.Collections.Generic;
 [CreateAssetMenu(fileName = "Unit", menuName = "Data/RPG/Encounter")]
 public class Encounter : AutoExpandingScriptableObject {
 
+    private const string PrefabPath = "Prefabs/Enemy";
+
     public int danger = 375;
     [Range(0, 100)]
     public float rarity = 50;
     public List<Unit> units;
     
+    public void PlaceAt(Map map, Vector2Int loc) {
+        
+        Vector2Int toLoc = loc;
+        BattleEvent leader = null;
+        foreach (Unit unit in units) {
+            GameObject enemyObject = Instantiate(Resources.Load<GameObject>(PrefabPath));
+            map.AddEvent(enemyObject.GetComponent<MapEvent>());
+            enemyObject.GetComponent<BattleEvent>().PopulateWithUnitData(unit);
+            map.GetComponent<BattleController>().AddUnitFromMap(enemyObject.GetComponent<BattleEvent>());
+            if (leader == null) {
+                leader = enemyObject.GetComponent<BattleEvent>();
+            }
+            foreach (EightDir dir in EightDirExtensions.RandomOrder()) {
+                toLoc = loc + dir.XY();
+                if (enemyObject.GetComponent<MapEvent>().CanPassAt(toLoc)) {
+                    break;
+                }
+            }
+            enemyObject.GetComponent<MapEvent>().SetLocation(toLoc);
+            if (leader != null) {
+                enemyObject.GetComponent<BattleEvent>().unit.ai.leader = leader;
+                enemyObject.GetComponent<BattleEvent>().unit.ai.leader = leader;
+            }
+        }
+    }
 }

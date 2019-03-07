@@ -39,7 +39,6 @@ public class BattleEvent : MonoBehaviour {
     }
 
     public void PopulateWithUnitData(Unit unitData) {
-        Debug.Assert(!Application.isPlaying);
         unitSerialized = unitData;
         if (unitData != null) {
             GetComponent<CharaEvent>().spritesheet = unitData.appearance;
@@ -125,16 +124,17 @@ public class BattleEvent : MonoBehaviour {
             executeResult.value = true;
         } else {
             foreach (MapEvent targetEvent in toCollide) {
+                float h1 = unit.battle.map.terrain.HeightAt(location);
+                float h2 = unit.battle.map.terrain.HeightAt(target);
                 if (GetComponent<PCEvent>() != null) {
-                    if (targetEvent.switchEnabled && !targetEvent.IsPassableBy(parent)) {
+                    if (targetEvent.switchEnabled && !targetEvent.IsPassableBy(parent) 
+                            && Mathf.Abs(h1 - h2) <= AttackHeightMax) {
                         yield return targetEvent.CollideRoutine(GetComponent<PCEvent>());
                     }
                 }
                 if (targetEvent.GetComponent<BattleEvent>() != null) {
                     BattleEvent other = targetEvent.GetComponent<BattleEvent>();
                     if (unit.align != other.unit.align) {
-                        float h1 = unit.battle.map.terrain.HeightAt(location);
-                        float h2 = unit.battle.map.terrain.HeightAt(target);
                         if (Mathf.Abs(h1 - h2) > AttackHeightMax) {
                             if (GetComponent<PCEvent>() != null) {
                                 unit.battle.Log("Too high up to attack!");

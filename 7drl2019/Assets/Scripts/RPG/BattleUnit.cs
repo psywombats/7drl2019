@@ -7,7 +7,6 @@ public class BattleUnit {
 
     public Unit unit { get; private set; }
     public BattleController battle { get; set; }
-    public AIController ai { get; set; }
     public Alignment align { get { return unit.align; } }
     public Vector2Int location { get { return battler.location; } }
 
@@ -20,6 +19,14 @@ public class BattleUnit {
     public BattleEvent battler {
         get {
             return battle.GetEventForBattler(this);
+        }
+    }
+
+    private AIController _ai;
+    public AIController ai {
+        get {
+            if (_ai == null) _ai = new AIController(this);
+            return _ai;
         }
     }
 
@@ -52,7 +59,12 @@ public class BattleUnit {
     }
 
     public float GetMaxDescent() {
-        return unit.stats.Get(StatTag.JUMP) + 0.5f;
+        float baseJump = unit.stats.Get(StatTag.JUMP);
+        if (baseJump > 0) {
+            return baseJump + 0.5f;
+        } else {
+            return 0;
+        }
     }
 
     public bool CanUse(Skill skill) {

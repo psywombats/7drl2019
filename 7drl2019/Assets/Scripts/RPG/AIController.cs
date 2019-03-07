@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System;
 
 public class AIController {
 
@@ -12,6 +11,10 @@ public class AIController {
     public BattleEvent battler { get { return unit.battler; } }
     public BattleUnit pc { get { return unit.battle.pc; } }
     public BattleController battle { get { return unit.battle; } }
+    public BattleUnit leaderUnit { get { return leader.unit; } }
+    public AIController leaderAI { get { return leaderUnit.ai; } }
+
+    public BattleEvent leader { get; set; }
 
     private short[,] seenMap;
     private int turnsHunting;
@@ -26,14 +29,19 @@ public class AIController {
 
         Result<bool> result = new Result<bool>();
 
-        seenMap[battler.location.x, battler.location.y] += 1;
+        if (HasLeader()) {
+            leaderAI.seenMap[battler.location.x, battler.location.y] += 1;
+        } else {
+            seenMap[battler.location.x, battler.location.y] += 1;
+        }
+        
         turnsHunting -= 1;
 
         // hunt down the hero if we've recently seen them
         if (battler.CanSeeLocation(battle.map.terrain, pc.location)) {
             turnsHunting = intel;
         }
-        if (turnsHunting > 0) {
+        if (turnsHunting > 0 || (HasLeader() && leaderAI.turnsHunting > 0)) {
             if (intel >= PathingCutoffInt) {
                 List<Vector2Int> path = battle.map.FindPath(battler.GetComponent<MapEvent>(), pc.location, intel);
                 if (path != null && path.Count > 0) {
@@ -53,12 +61,22 @@ public class AIController {
                 if (target.x < 0 || target.x >= battle.map.size.x || target.y < 0 || target.y >= battle.map.size.y) {
                     continue;
                 }
-                if (seenMap[target.x, target.y] < lowestSeen && battler.GetComponent<MapEvent>().CanPassAt(target)) {
+                int val;
+                if (HasLeader()) {
+                    val = leaderAI.seenMap[target.x, target.y];
+                } else {
+                    val = seenMap[target.x, target.y];
+                }
+                if (val < lowestSeen && battler.GetComponent<MapEvent>().CanPassAt(target)) {
                     lowestSeen = seenMap[target.x, target.y];
                     bestDir = dir;
                 }
             }
         }
         return battler.StepOrAttackRoutine(bestDir, result);
+    }
+
+    private bool HasLeader() {
+        return leader != null && !leaderUnit.IsDead();
     }
 }

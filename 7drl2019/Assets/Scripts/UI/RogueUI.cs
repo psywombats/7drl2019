@@ -89,7 +89,6 @@ public class RogueUI : MonoBehaviour, InputListener {
                 Global.Instance().Input.RemoveListener(this);
                 StartCoroutine(ScanRoutine());
                 rightDisplayEnabled = false;
-                executeResult.Cancel();
                 break;
         }
         return true;
@@ -112,13 +111,14 @@ public class RogueUI : MonoBehaviour, InputListener {
     }
 
     private IEnumerator ScanRoutine() {
+        narrator.Clear();
         Cursor cursor = unit.battle.SpawnCursor(unit.location, true);
         Result<Vector2Int> result = new Result<Vector2Int>();
         yield return cursor.AwaitSelectionRoutine(result, _ => true, ScanAtRoutine);
         if (!result.canceled) {
-            MapEvent ev = unit.battle.map.GetEventAt<MapEvent>(result.value);
-            if (ev.GetComponent<BattleEvent>()) {
-                BattleUnit unit = ev.GetComponent<BattleEvent>().unit;
+            BattleEvent ev = unit.battle.map.GetEventAt<BattleEvent>(result.value);
+            if (ev != null) {
+                BattleUnit unit = ev.unit;
                 yield return PrepareTalkRoutine(unit);
                 LuaScript script = new LuaScript(GetComponent<LuaContext>(), unit.unit.luaOnExamine);
                 GetComponent<LuaContext>().SetGlobal("name", unit.ToString());
@@ -131,10 +131,10 @@ public class RogueUI : MonoBehaviour, InputListener {
     }
 
     private IEnumerator ScanAtRoutine(Vector2Int loc) {
-        MapEvent ev = unit.battle.map.GetEventAt<MapEvent>(loc);
-        if (ev.GetComponent<BattleEvent>() && !ev.GetComponent<PCEvent>()) {
+        BattleEvent ev = unit.battle.map.GetEventAt<BattleEvent>(loc);
+        if (ev != null && !ev.GetComponent<PCEvent>()) {
             rightDisplayEnabled = true;
-            face2.Populate(ev.GetComponent<BattleEvent>().unit);
+            face2.Populate(ev.unit);
         } else {
             rightDisplayEnabled = false;
         }
