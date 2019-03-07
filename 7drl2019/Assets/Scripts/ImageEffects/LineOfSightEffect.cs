@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Profiling;
 
 [RequireComponent(typeof(TacticsTerrainMesh))]
+[ExecuteInEditMode]
 public class LineOfSightEffect : MonoBehaviour {
 
     public Texture2D oldLosTexture;
@@ -106,24 +107,29 @@ public class LineOfSightEffect : MonoBehaviour {
     }
 
     private void AssignCommonShaderVariables() {
-        if (pc == null || pc.GetComponent<BattleEvent>() == null) return;
         Material material = FindMaterial();
-        TacticsTerrainMesh mesh = GetComponent<TacticsTerrainMesh>();
-        material.SetFloat("_CellResolutionX", mesh.size.x);
-        material.SetFloat("_CellResolutionY", mesh.size.y);
-        material.SetTexture("_VisibilityTex", losTexture);
-        material.SetFloat("_VisibilityBlend", visBlend);
-        material.SetVector("_HeroPos", heroPos);
-        material.SetFloat("_SightRange", pc.GetComponent<BattleEvent>().unit.Get(StatTag.SIGHT));
-        if (oldLosTexture != null) {
-            material.SetTexture("_OldVisibilityTex", oldLosTexture);
+        if (Application.isPlaying) {
+            if (pc == null || pc.GetComponent<BattleEvent>() == null) return;
+            TacticsTerrainMesh mesh = GetComponent<TacticsTerrainMesh>();
+
+            material.SetFloat("_CellResolutionX", mesh.size.x);
+            material.SetFloat("_CellResolutionY", mesh.size.y);
+            material.SetTexture("_VisibilityTex", losTexture);
+            material.SetFloat("_VisibilityBlend", visBlend);
+            material.SetVector("_HeroPos", heroPos);
+            material.SetFloat("_SightRange", pc.GetComponent<BattleEvent>().unit.Get(StatTag.SIGHT));
+            if (oldLosTexture != null) {
+                material.SetTexture("_OldVisibilityTex", oldLosTexture);
+            } else {
+                material.SetTexture("_OldVisibilityTex", losTexture);
+            }
+            if (oldHeroPos == Vector3.zero) {
+                material.SetVector("_OldHeroPos", heroPos);
+            } else {
+                material.SetVector("_OldHeroPos", oldHeroPos);
+            }
         } else {
-            material.SetTexture("_OldVisibilityTex", losTexture);
-        }
-        if (oldHeroPos == Vector3.zero) {
-            material.SetVector("_OldHeroPos", heroPos);
-        } else {
-            material.SetVector("_OldHeroPos", oldHeroPos);
+            material.SetFloat("_SightRange", 1000.0f);
         }
     }
 

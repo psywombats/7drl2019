@@ -490,6 +490,11 @@ public class TacticsTerrainEditor : Editor {
         RepaintMesh();
         primarySelection = GetSelectedQuad();
         CaptureSelection(primarySelection);
+
+        PrefabStage prefabStage = PrefabStageUtility.GetPrefabStage(terrain.gameObject);
+        if (prefabStage != null) {
+            EditorSceneManager.MarkSceneDirty(prefabStage.scene);
+        }
     }
 
     private void CaptureSelection(TerrainQuad quad) {

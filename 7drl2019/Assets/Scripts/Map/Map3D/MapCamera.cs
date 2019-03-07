@@ -39,6 +39,9 @@ public class MapCamera : MonoBehaviour {
     
     public void Start() {
         target = initialTarget;
+        if (initialTarget == null) {
+            target = FindObjectOfType<PCEvent>().GetComponent<MapEvent3D>();
+        }
         targetDollyPosition = transform.localPosition;
         CopyTargetPosition();
         WarpToTarget();

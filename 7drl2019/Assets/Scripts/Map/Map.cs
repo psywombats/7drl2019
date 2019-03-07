@@ -72,6 +72,10 @@ public class Map : MonoBehaviour {
         Global.Instance().Maps.activeMap = this;
     }
 
+    public void Update() {
+        _size = Vector2Int.zero;
+    }
+
     public Vector3Int TileToTilemapCoords(Vector2Int loc) {
         return TileToTilemapCoords(loc.x, loc.y);
     }
