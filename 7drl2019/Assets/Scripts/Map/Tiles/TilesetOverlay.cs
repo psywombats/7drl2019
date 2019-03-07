@@ -52,7 +52,7 @@ public class TilesetOverlay : MonoBehaviour {
                 TileBase overlayTile = null;
                 switch (mode) {
                     case PaintMode.Passability:
-                        overlayTile = tile.GetData().passable ? tileO : tileX;
+                        overlayTile = tile.GetData().impassable ? tileO : tileX;
                         break;
                 }
                 overlay.SetTile(loc, overlayTile);
@@ -69,10 +69,10 @@ public class TilesetOverlay : MonoBehaviour {
                 TileBase overlayTile = overlay.GetTile(loc);
                 switch (mode) {
                     case PaintMode.Passability:
-                        if (overlayTile == tileO && !tile.GetData().passable) {
-                            tile.GetData().passable = true;
-                        } else if (overlayTile == tileX && tile.GetData().passable) {
-                            tile.GetData().passable = false;
+                        if (overlayTile == tileO && !tile.GetData().impassable) {
+                            tile.GetData().impassable = true;
+                        } else if (overlayTile == tileX && tile.GetData().impassable) {
+                            tile.GetData().impassable = false;
                         }
                         break;
                 }

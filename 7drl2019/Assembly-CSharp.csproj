@@ -135,11 +135,13 @@
     <Compile Include="Assets\Scripts\Map\ObjectLayer.cs" />
     <Compile Include="Assets\Scripts\Map\OrthoDir.cs" />
     <Compile Include="Assets\Scripts\Map\PCEvent.cs" />
+    <Compile Include="Assets\Scripts\Map\PCVisibility.cs" />
     <Compile Include="Assets\Scripts\Map\Procedural\CellInfo.cs" />
     <Compile Include="Assets\Scripts\Map\Procedural\MapGenerator.cs" />
     <Compile Include="Assets\Scripts\Map\Procedural\MeshGenerationResult.cs" />
     <Compile Include="Assets\Scripts\Map\Procedural\RoomInfo.cs" />
     <Compile Include="Assets\Scripts\Map\Procedural\TerrainQuad.cs" />
+    <Compile Include="Assets\Scripts\Map\Procedural\VaultList.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\BattleEvent.cs" />
     <Compile Include="Assets\Scripts\Map\Tactics\SelectionGrid.cs" />
     <Compile Include="Assets\Scripts\Map\Tiles\Map2DRuleTile.cs" />

@@ -1,9 +1,9 @@
 ﻿[System.Serializable]
 public class TilePropertyData {
 
-    public bool passable = true;
+    public bool impassable = true;
 
     public TilePropertyData(bool passable) {
-        this.passable = passable;
+        this.impassable = passable;
     }
 }

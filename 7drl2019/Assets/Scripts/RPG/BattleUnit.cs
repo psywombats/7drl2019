@@ -45,12 +45,12 @@ public class BattleUnit {
         return unit.stats.Get(StatTag.HP) <= 0;
     }
 
-    public int GetMaxAscent() {
-        return (int)unit.stats.Get(StatTag.JUMP);
+    public float GetMaxAscent() {
+        return unit.stats.Get(StatTag.JUMP);
     }
 
-    public int GetMaxDescent() {
-        return (int)unit.stats.Get(StatTag.JUMP) + 1;
+    public float GetMaxDescent() {
+        return unit.stats.Get(StatTag.JUMP) + 0.5f;
     }
 
     public bool CanUse(Skill skill) {

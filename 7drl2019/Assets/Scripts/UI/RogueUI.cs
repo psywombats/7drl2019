@@ -89,6 +89,7 @@ public class RogueUI : MonoBehaviour, InputListener {
                 Global.Instance().Input.RemoveListener(this);
                 StartCoroutine(ScanRoutine());
                 rightDisplayEnabled = false;
+                executeResult.Cancel();
                 break;
         }
         return true;

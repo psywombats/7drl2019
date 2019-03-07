@@ -2,11 +2,12 @@
 using System;
 using Random = UnityEngine.Random;
 using System.Collections.Generic;
+using UnityEngine.Tilemaps;
 
 [RequireComponent(typeof(TacticsTerrainMesh))]
 public class MapGenerator : MonoBehaviour {
 
-    private float MaxHeightDelta = 2;
+    private float MaxHeightDelta = 1.5f;
 
     public Vector2Int sizeInRooms;
     public int stairLength = 3;
@@ -21,8 +22,10 @@ public class MapGenerator : MonoBehaviour {
     [HideInInspector] public int[] heights { get; private set; }
 
     [Space]
+    public Tile defaultImpassTile;
     public MapEvent3D startEventPrefab;
     public MapEvent3D endEventPrefab;
+    public MapEvent3D impassEventPrefab;
 
     public bool startStairsSW, endStairsNW;
 
@@ -34,6 +37,8 @@ public class MapGenerator : MonoBehaviour {
             stairLength = lastMap.stairLength;
             startEventPrefab = lastMap.startEventPrefab;
             endEventPrefab = lastMap.endEventPrefab;
+            impassEventPrefab = lastMap.impassEventPrefab;
+            defaultImpassTile = lastMap.defaultImpassTile;
         }
         
         // wipe what's already there
@@ -230,12 +235,15 @@ public class MapGenerator : MonoBehaviour {
         int wallY = cornerRoom.cell.startY + cornerRoom.cell.sizeY + 1;
         mesh.Resize(new Vector2Int(
             wallX + (endStairsNW ? 0 : stairLength),
-            wallY + (endStairsNW ? stairLength : 0)));
+            wallY + (endStairsNW ? stairLength : 0)),
+            0.0f);
         for (int x = startStairsSW ? stairLength : 0; x < wallX; x += 1) {
             mesh.SetHeight(x, wallY - 1, cornerRoom.z + MaxHeightDelta + 1);
+            mesh.SetTile(x, wallY - 1, defaultImpassTile);
         }
         for (int y = startStairsSW ? 0 : stairLength; y < wallY; y += 1) {
             mesh.SetHeight(wallX - 1, y, cornerRoom.z + MaxHeightDelta + 1);
+            mesh.SetTile(wallX - 1, y, defaultImpassTile);
         }
 
         // render terrain
@@ -256,6 +264,13 @@ public class MapGenerator : MonoBehaviour {
             }
         }
 
+        // render rooms
+        for (int x = 0; x < sizeInRooms.x; x += 1) {
+            for (int y = 0; y < sizeInRooms.y; y += 1) {
+                rooms[x, y].FillWithVault(mesh);
+            }
+        }
+
         // add the starter stairs
         RoomInfo startRoom = rooms[entryRoomCoords.x, entryRoomCoords.y];
         int stairX, stairZ;
@@ -267,11 +282,16 @@ public class MapGenerator : MonoBehaviour {
             stairZ = startRoom.cell.startY - 1;
         }
         float stairY = startRoom.z - 0.5f;
-        MapEvent3D startEvent = Instantiate(startEventPrefab);
-        GetComponent<Map>().AddEvent(startEvent);
-        startEvent.SetLocation(new Vector2Int(stairX, stairZ));
         for (int i = 0; i < stairLength; i += 1) {
             mesh.SetHeight(stairX, stairZ, stairY);
+            MapEvent3D ev;
+            if (i == 0) {
+                ev = Instantiate(startEventPrefab);
+            } else {
+                ev = Instantiate(impassEventPrefab);
+            }
+            GetComponent<Map>().AddEvent(ev);
+            ev.SetLocation(new Vector2Int(stairX, stairZ));
             stairY -= 0.5f;
             stairX += startStairsSW ? -1 : 0;
             stairZ += startStairsSW ? 0 : -1;
@@ -287,10 +307,15 @@ public class MapGenerator : MonoBehaviour {
             stairZ = endRoom.cell.startY + (endRoom.cell.sizeY / 2);
         }
         stairY = endRoom.z + 0.5f;
-        MapEvent3D endEvent = Instantiate(endEventPrefab);
-        GetComponent<Map>().AddEvent(endEvent);
-        endEvent.SetLocation(new Vector2Int(stairX, stairZ));
         for (int i = 0; i < stairLength; i += 1) {
+            MapEvent3D ev;
+            if (i == 0) {
+                ev = Instantiate(endEventPrefab);
+            } else {
+                ev = Instantiate(impassEventPrefab);
+            }
+            GetComponent<Map>().AddEvent(ev);
+            ev.SetLocation(new Vector2Int(stairX, stairZ));
             mesh.SetHeight(stairX, stairZ, stairY);
             stairY += 0.5f;
             stairX += endStairsNW ? 0 : 1;
@@ -357,8 +382,9 @@ public class MapGenerator : MonoBehaviour {
     private float RandomNewZ(float oldZ) {
         float z;
         float r = Random.Range(0.0f, 1.0f);
-        if (r < 0.3)        z = oldZ;
-        else if (r < 0.5)   z = oldZ + 2;
+        if (r < 0.2)        z = oldZ;
+        else if (r < 0.4)   z = oldZ + 2;
+        else if (r < 0.75)  z = oldZ + 3;
         else                z = oldZ + 4;
         return z;
     }

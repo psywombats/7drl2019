@@ -9,9 +9,11 @@ public class LineOfSightEffect : MonoBehaviour {
     public Texture2D losTexture;
     public float visBlend = 1.0f;
     public Vector3 heroPos, oldHeroPos;
-    private bool[,] seenMap;
 
+    private Color[] map;
+    private bool[,] seenMap;
     private PCEvent pc;
+    private TacticsTerrainMesh mesh;
 
     public void OnDestroy() {
         if (losTexture != null) {
@@ -44,9 +46,13 @@ public class LineOfSightEffect : MonoBehaviour {
         StartCoroutine(CoUtils.RunTween(tween));
     }
 
+    public bool CachedIsVisible(Vector2Int loc) {
+        return map[loc.y * mesh.size.x + loc.x].r > 0.5f;
+    }
+
     public void RecalculateVisibilityMap() {
         Profiler.BeginSample("los");
-        TacticsTerrainMesh mesh = GetComponent<TacticsTerrainMesh>();
+        mesh = GetComponent<TacticsTerrainMesh>();
 
         if (seenMap == null) {
             seenMap = new bool[mesh.size.x, mesh.size.y];
@@ -74,7 +80,7 @@ public class LineOfSightEffect : MonoBehaviour {
         heroPos = pc.GetComponent<MapEvent3D>().TileToWorldCoords(pc.GetComponent<MapEvent>().location);
         heroPos += new Vector3(0.5f, 1.5f, 0.5f);
 
-        Color[] map = new Color[mesh.size.x * mesh.size.y];
+        map = new Color[mesh.size.x * mesh.size.y];
         for (int y = 0; y < mesh.size.y; y += 1) {
             for (int x = 0; x < mesh.size.x; x += 1) {
                 float r = 1.0f;
@@ -91,9 +97,9 @@ public class LineOfSightEffect : MonoBehaviour {
         losTexture.SetPixels(0, 0, mesh.size.x, mesh.size.y, map);
         losTexture.Apply();
 
-        foreach (CharaEvent chara in GetComponent<Map>().GetEvents<CharaEvent>()) {
-            Vector2Int location = chara.GetComponent<MapEvent>().location;
-            chara.SetVisibleByPC(map[location.y * mesh.size.x + location.x].r > 0.5f);
+        foreach (PCVisibility vis in GetComponent<Map>().GetEvents<PCVisibility>()) {
+            Vector2Int location = vis.GetComponent<MapEvent>().location;
+            vis.SetVisibleByPC(CachedIsVisible(location));
         }
 
         Profiler.EndSample();

@@ -80,7 +80,7 @@ public class CharaAnimationTarget : AnimationTarget {
         chara.jumping = true;
         float duration = FloatArg(args, ArgDuration, 0.5f);
         float power = FloatArg(args, ArgPower, 1.0f);
-        Tweener t1 = chara.transform.DOPunchPosition(new Vector3(0, power, 0), duration, 0, 1);
+        Tweener t1 = chara.doll.transform.DOPunchPosition(new Vector3(0, power, 0), duration, 0, 1);
         chara.jumping = false;
         yield return CoUtils.RunTween(t1);
     }

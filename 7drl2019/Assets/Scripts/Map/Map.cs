@@ -93,7 +93,7 @@ public class Map : MonoBehaviour {
             for (int x = 0; x < width; x += 1) {
                 for (int y = 0; y < height; y += 1) {
                     PropertiedTile tile = TileAt(layer, x, y);
-                    passabilityMap[layer][x, y] = tile == null || tile.GetData().passable;
+                    passabilityMap[layer][x, y] = tile == null || !tile.GetData().impassable;
                 }
             }
         }
@@ -151,13 +151,13 @@ public class Map : MonoBehaviour {
 
     public void RemoveEvent(MapEvent toRemove, bool allowEditDelete = false) {
         // i dunno
+        toRemove.gameObject.SetActive(false);
+        toRemove.gameObject.name = "<deleted>";
         if (!Application.isPlaying && allowEditDelete) {
             DestroyImmediate(toRemove.gameObject);
         } else {
             Destroy(toRemove.gameObject);
         }
-        toRemove.gameObject.SetActive(false);
-        toRemove.gameObject.name = "<deleted>";
     }
 
     public void OnTeleportTo() {

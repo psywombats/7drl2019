@@ -37,8 +37,8 @@ public class CharaEvent : MonoBehaviour {
     private Vector3 targetPx;
     private float moveTime;
     private bool stepping;
-    private bool visible = true;
     private bool footOffset;
+    private bool locked;
 
     public MapEvent parent { get { return GetComponent<MapEvent>(); } }
     public Map map { get { return parent.map; } }
@@ -158,13 +158,6 @@ public class CharaEvent : MonoBehaviour {
         }
     }
 
-    public void SetVisibleByPC(bool visible) {
-        if (this.visible != visible) {
-            StartCoroutine(GetComponent<CharaEvent>().FadeRoutine(visible));
-            this.visible = visible;
-        }
-    }
-
     public IEnumerator FadeRoutine(bool visible) {
         Tweener tween = DOTween.To(() => mainLayer.color.a, x => {
             foreach (SpriteRenderer renderer in renderers) {
@@ -180,6 +173,8 @@ public class CharaEvent : MonoBehaviour {
         }
         if (faceTo) {
             facing = dir;
+        } else {
+            locked = true;
         }
         parent.tracking = true;
         Vector2Int offset = dir.XY();
@@ -223,6 +218,7 @@ public class CharaEvent : MonoBehaviour {
             }
         }
         parent.tracking = false;
+        locked = false;
     }
 
     public IEnumerator DesaturateRoutine(float targetDesat) {
@@ -312,6 +308,7 @@ public class CharaEvent : MonoBehaviour {
         if (jumping && HasJumpFrames()) {
             x = Mathf.FloorToInt(moveTime * JumpStepsPerSecond + (footOffset ? 1 : 0)) % 2 + 3;
         } else {
+            if (locked) moveTime = 0.0f;
             x = Mathf.FloorToInt(moveTime * StepsPerSecond + (footOffset ? 2 : 0)) % 4;
             if (x == 3) x = 1;
             if (!stepping) x = 1;

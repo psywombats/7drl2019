@@ -7,7 +7,6 @@ using UnityEngine.Tilemaps;
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(Tilemap))]
-[RequireComponent(typeof(Map))]
 public class TacticsTerrainMesh : MonoBehaviour, ISerializationCallbackReceiver {
     
     [HideInInspector]
@@ -39,9 +38,10 @@ public class TacticsTerrainMesh : MonoBehaviour, ISerializationCallbackReceiver 
     public void ClearTiles() {
         facingTiles.Clear();
         heights = new float[size.x * size.y];
+        tilemap.ClearAllTiles();
     }
 
-    public void Resize(Vector2Int newSize) {
+    public void Resize(Vector2Int newSize, float baseHeight = 1.0f) {
         List<FacingTileKey> toRemove = new List<FacingTileKey>();
         foreach (FacingTileKey key in facingTiles.Keys) {
             if (key.pos.x >= newSize.x || key.pos.z >= newSize.y) {
@@ -60,9 +60,11 @@ public class TacticsTerrainMesh : MonoBehaviour, ISerializationCallbackReceiver 
                 newTiles[y * newSize.x + x] = tilemap.GetTile<Tile>(new Vector3Int(x, y, 0));
             }
         }
-        for (int y = size.y; y < newSize.y; y += 1) {
-            for (int x = size.x; x < newSize.x; x += 1) {
-                newHeights[y * size.x + x] = 0.5f;
+        for (int y = 0; y < newSize.y; y += 1) {
+            for (int x = 0; x < newSize.x; x += 1) {
+                if (newHeights[y * newSize.x + x] == 0.0f) {
+                    newHeights[y * newSize.x + x] = baseHeight;
+                }
             }
         }
 

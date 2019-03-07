@@ -64,7 +64,7 @@ public class BattleEvent : MonoBehaviour {
         }
         if (fromHeight < toHeight) {
             if (cornerMode) {
-                return toHeight - fromHeight < 2;
+                return toHeight - fromHeight <= 0.5f;
             }
             if (toHeight - fromHeight > unit.GetMaxAscent()) {
                 return false;

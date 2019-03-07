@@ -40,6 +40,7 @@ public class SelectionGrid : MonoBehaviour {
     public void ConfigureNewGrid(Vector2Int at, Vector2Int size, TacticsTerrainMesh terrain, 
             Func<Vector2Int, bool> rangeRule, Func<Vector2Int, bool> selectRule) {
         transform.position = new Vector3(0.0f, 0.0f, 0.0f);
+        LineOfSightEffect los = terrain.GetComponent<LineOfSightEffect>();
 
         MeshFilter filter = this.mesh;
         if (filter.mesh != null) {
@@ -53,7 +54,7 @@ public class SelectionGrid : MonoBehaviour {
         List<int> tris = new List<int>();
         for (int y = at.y; y < at.y + size.y; y += 1) {
             for (int x = at.x; x < at.x + size.x; x += 1) {
-                if (terrain.HeightAt(x, y) == 0.0f) {
+                if (terrain.HeightAt(x, y) == 0.0f || !los.CachedIsVisible(new Vector2Int(x, y))) {
                     continue;
                 }
                 bool selectable = selectRule(new Vector2Int(x, y));

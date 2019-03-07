@@ -17,7 +17,7 @@ public class RadialTargeter : Targeter {
             (int)actorEvent.positionPx.z - Mathf.CeilToInt(radius));
 
         SelectionGrid grid = battle.SpawnSelectionGrid();
-        grid.ConfigureNewGrid(actor.location, Mathf.CeilToInt(radius), map.terrain, rangeRule, DefaultSelectRule(effect));
+        grid.ConfigureNewGrid(actor.location, Mathf.CeilToInt(radius), map.terrain, rangeRule, rangeRule);
 
         Result<Vector2Int> locResult = new Result<Vector2Int>();
         battle.SpawnCursor(actor.location);
@@ -35,7 +35,7 @@ public class RadialTargeter : Targeter {
             for (int y = locResult.value.y - r; y <= locResult.value.y + r; y += 1) {
                 for (int x = locResult.value.x - r; x <= locResult.value.x + r; x += 1) {
                     Vector2Int cell = new Vector2Int(x, y);
-                    if (Vector2Int.Distance(cell, locResult.value) <= radius) {
+                    if (DefaultSelectRule(effect)(cell)) {
                         cells.Add(cell);
                     }
                 }
