@@ -24,6 +24,8 @@ public class Narrator : MonoBehaviour {
         messages.Add(new LogEntry(text));
         if (outOfTurn) {
             OnTurn();
+        } else {
+            UpdateText();
         }
     }
 

@@ -23,6 +23,7 @@ public class MapGenerator : MonoBehaviour {
 
     [Space]
     public Tile defaultImpassTile;
+    public ChestEvent chestEventPrefab;
     public MapEvent3D startEventPrefab;
     public MapEvent3D endEventPrefab;
     public MapEvent3D impassEventPrefab;
@@ -43,6 +44,7 @@ public class MapGenerator : MonoBehaviour {
             endEventPrefab = lastMap.endEventPrefab;
             impassEventPrefab = lastMap.impassEventPrefab;
             defaultImpassTile = lastMap.defaultImpassTile;
+            chestEventPrefab = lastMap.chestEventPrefab;
             table = lastMap.table;
             level = lastMap.level + 1;
         }
@@ -347,6 +349,21 @@ public class MapGenerator : MonoBehaviour {
                 Random.Range(room.cell.startX, room.cell.startX + room.cell.sizeX),
                 Random.Range(room.cell.startY, room.cell.startY + room.cell.sizeY));
             encounter.PlaceAt(GetComponent<Map>(), loc);
+        }
+
+        // generate the chests
+        List<Item> items = table.GenerateItems(level);
+        foreach (Item item in items) {
+            ChestEvent chest = Instantiate(chestEventPrefab);
+            GetComponent<Map>().AddEvent(chest.GetComponent<MapEvent>());
+            Vector2Int loc;
+            do {
+                RoomInfo room = validRooms[Random.Range(0, validRooms.Count)];
+                loc = new Vector2Int(
+                    Random.Range(room.cell.startX + 1, room.cell.startX + room.cell.sizeX - 1),
+                    Random.Range(room.cell.startY + 1, room.cell.startY + room.cell.sizeY - 1));
+            } while (!chest.GetComponent<MapEvent>().CanPassAt(loc));
+            chest.PopulateAndPlace(item, loc);
         }
 
         mesh.Rebuild(true);

@@ -10,6 +10,15 @@ public class ChestEvent : MonoBehaviour {
 
     public bool opened { get; private set; }
 
+    public void PopulateAndPlace(Item item, Vector2Int loc) {
+        contents = item;
+        quantity = 1;
+        if (item.isGold) {
+            quantity = 10 + Random.Range(0, 2 * GetComponent<MapEvent>().map.GetComponent<MapGenerator>().level);
+        }
+        GetComponent<MapEvent>().SetLocation(loc);
+    }
+
     public IEnumerator OpenRoutine(PCEvent pc) {
         while (pc.GetComponent<MapEvent>().tracking) {
             yield return null;
@@ -29,6 +38,14 @@ public class ChestEvent : MonoBehaviour {
             pc.GetComponent<BattleEvent>().unit.battle.Log("It contained " + qty1 + contents.ItemName() + qty2 + "!", false);
             pc.PickUpItem(contents, quantity);
         }
+        pc.GetComponent<CharaEvent>().facing = EightDir.S;
+        pc.GetComponent<CharaEvent>().armMode = ArmMode.Overhead;
+        SpriteRenderer sprite = pc.pickup;
+        sprite.sprite = contents.sprite;
+        yield return CoUtils.Wait(0.8f);
+        sprite.sprite = null;
+        pc.GetComponent<CharaEvent>().armMode = ArmMode.Disabled;
+
         opened = true;
         yield return null;
     }

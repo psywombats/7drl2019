@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SkillModifier : MonoBehaviour {
+public class SkillModifier {
 
     public enum Type {
         CostUp,
@@ -36,8 +36,8 @@ public class SkillModifier : MonoBehaviour {
 
     public int MutatePages(int pages) {
         switch (type) {
-            case Type.PagesDown:    return pages / 2;
-            case Type.PagesUp:      return pages * 2;
+            case Type.PagesDown:    return Mathf.CeilToInt(pages * 0.5f);
+            case Type.PagesUp:      return Mathf.CeilToInt(pages * 1.5f);
             default:                return pages;
         }
     }

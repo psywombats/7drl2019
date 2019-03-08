@@ -168,15 +168,11 @@ public class CharaEvent : MonoBehaviour {
     }
 
     public IEnumerator StepRoutine(EightDir dir, bool faceTo = true) {
-        while (parent.tracking) {
-            yield return null;
-        }
         if (faceTo) {
             facing = dir;
         } else {
             locked = true;
         }
-        parent.tracking = true;
         Vector2Int offset = dir.XY();
         Vector3 startPx = parent.positionPx;
         targetPx = parent.TileToWorldCoords(parent.location);
@@ -184,6 +180,10 @@ public class CharaEvent : MonoBehaviour {
             yield return parent.LinearStepRoutine(dir);
         } else if (targetPx.y > startPx.y) {
             // jump up routine routine
+            while (parent.tracking) {
+                yield return null;
+            }
+            parent.tracking = true;
             float duration = (targetPx - startPx).magnitude / parent.CalcTilesPerSecond() * JumpHeightUpMult;
             yield return JumpRoutine(startPx, targetPx, duration);
             overrideBodySprite = FrameBySlot(0, DirectionRelativeToCamera().Ordinal()); // "prone" frame
@@ -191,6 +191,10 @@ public class CharaEvent : MonoBehaviour {
             overrideBodySprite = null;
         } else {
             // jump down routine
+            while (parent.tracking) {
+                yield return null;
+            }
+            parent.tracking = true;
             float elapsed = 0.0f;
             float walkRatio = 0.65f;
             float walkDuration = walkRatio / parent.CalcTilesPerSecond();
@@ -232,9 +236,11 @@ public class CharaEvent : MonoBehaviour {
     }
 
     private IEnumerator JumpRoutine(Vector3 startPx, Vector3 targetPx, float duration, bool useJumpFrames = true) {
+
         jumping = useJumpFrames;
         float elapsed = 0.0f;
-        
+
+        if (duration == 0.0f) duration = 0.01f;
         float dy = (targetPx.y - startPx.y);
         float b = (dy - Gravity * (duration * duration)) / duration;
         while (true) {

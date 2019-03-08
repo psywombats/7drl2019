@@ -54,22 +54,26 @@ public class AIController {
 
         // wander randomly
         EightDir bestDir = EightDirExtensions.RandomDir();
-        if (intel > WanderCutoffInt) {
-            short lowestSeen = short.MaxValue;
-            foreach (EightDir dir in EightDirExtensions.RandomOrder()) {
-                Vector2Int target = battler.location + dir.XY();
-                if (target.x < 0 || target.x >= battle.map.size.x || target.y < 0 || target.y >= battle.map.size.y) {
-                    continue;
-                }
-                int val;
-                if (HasLeader()) {
-                    val = leaderAI.seenMap[target.x, target.y];
-                } else {
-                    val = seenMap[target.x, target.y];
-                }
-                if (val < lowestSeen && battler.GetComponent<MapEvent>().CanPassAt(target)) {
-                    lowestSeen = seenMap[target.x, target.y];
-                    bestDir = dir;
+        if (HasLeader() && Vector2Int.Distance(unit.location, leader.location) > 2) {
+            bestDir = unit.battler.GetComponent<MapEvent>().DirectionTo(leader.GetComponent<MapEvent>());
+        } else {
+            if (intel > WanderCutoffInt) {
+                short lowestSeen = short.MaxValue;
+                foreach (EightDir dir in EightDirExtensions.RandomOrder()) {
+                    Vector2Int target = battler.location + dir.XY();
+                    if (target.x < 0 || target.x >= battle.map.size.x || target.y < 0 || target.y >= battle.map.size.y) {
+                        continue;
+                    }
+                    int val;
+                    if (HasLeader()) {
+                        val = leaderAI.seenMap[target.x, target.y];
+                    } else {
+                        val = seenMap[target.x, target.y];
+                    }
+                    if (val < lowestSeen && battler.GetComponent<MapEvent>().CanPassAt(target)) {
+                        lowestSeen = seenMap[target.x, target.y];
+                        bestDir = dir;
+                    }
                 }
             }
         }

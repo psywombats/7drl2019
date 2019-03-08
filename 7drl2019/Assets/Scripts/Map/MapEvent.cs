@@ -282,8 +282,11 @@ public abstract class MapEvent : MonoBehaviour {
     }
 
     public IEnumerator LinearStepRoutine(EightDir dir) {
-        tracking = true;
         targetPositionPx = TileToWorldCoords(location);
+        while (tracking) {
+            yield return null;
+        }
+        tracking = true;
         while (true) {
             if (CalcTilesPerSecond() > 0) {
                 positionPx = Vector3.MoveTowards(positionPx,

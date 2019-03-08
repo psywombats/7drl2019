@@ -86,10 +86,6 @@ public class BattleEvent : MonoBehaviour {
     }
 
     public IEnumerator StepOrAttackRoutine(EightDir dir, Result<bool> executeResult) {
-        while (me.tracking) {
-            yield return null;
-        }
-
         MapEvent parent = me;
         Vector2Int vectors = me.location;
         Vector2Int target = vectors + dir.XY();
@@ -140,6 +136,9 @@ public class BattleEvent : MonoBehaviour {
                                 unit.battle.Log("Too high up to attack!");
                             }
                         } else {
+                            while (me.tracking) {
+                                yield return null;
+                            }
                             yield return unit.MeleeAttackRoutine(other.unit);
                             executeResult.value = true;
                         }

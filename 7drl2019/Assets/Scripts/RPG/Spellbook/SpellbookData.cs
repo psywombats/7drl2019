@@ -15,6 +15,16 @@ public class SpellbookData : Item {
             BookNameGen gen = Resources.Load<BookNameGen>("Database/SpellbookNames");
             bookName = gen.Generate();
         }
-        return bookName;
+
+        int usedPages = 0;
+        foreach (Scroll scroll in spells) {
+            int basePg = scroll.data.basePages;
+            foreach (SkillModifier.Type type in scroll.mods) {
+                SkillModifier mod = new SkillModifier(type);
+                basePg = mod.MutatePages(basePg);
+            }
+            usedPages += basePg;
+        }
+        return "\"" + bookName + "\" [ " + usedPages + "/" + pageCount + "pg ]";
     }
 }

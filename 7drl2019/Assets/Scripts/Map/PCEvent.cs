@@ -7,6 +7,8 @@ public class PCEvent : MonoBehaviour {
 
     public SpellbookData starterBookData;
 
+    public SpriteRenderer pickup;
+
     public MapEvent parent { get { return GetComponent<MapEvent>(); } }
     public BattleController battle { get { return GetComponent<BattleEvent>().unit.battle; } }
     public BattleUnit unit { get { return GetComponent<BattleEvent>().unit; } }
