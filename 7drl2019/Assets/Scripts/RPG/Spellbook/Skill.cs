@@ -30,7 +30,9 @@ public class Skill {
         } else {
             costCD = Mathf.CeilToInt(data.baseCost / 8.0f);
         }
+
         pageCost = data.basePages;
+        longformName = "";
         foreach (SkillModifier mod in mods) {
             longformName = mod.MutateName(longformName);
             pageCost = mod.MutateCost(pageCost);
@@ -40,8 +42,7 @@ public class Skill {
                 costCD = mod.MutateCost(costCD);
             }
         }
-
-        longformName = skillName + " [ " + pageCost + "pg " + (costMP > 0 ? costMP + "mp" : costCD + "cd") + " ]";
+        longformName = skillName + " [ " + pageCost + "pg " + (costMP > 0 ? costMP + "mp" : costCD + "cd") + " ] " + longformName;
     }
 
     public IEnumerator PlaySkillRoutine(BattleUnit actor, Result<bool> executeResult) {

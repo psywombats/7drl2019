@@ -16,11 +16,11 @@ public class PCEvent : MonoBehaviour {
     public List<Spellbook> books { get; private set; }
     public List<Scroll> scrolls { get; private set; }
     public Spellbook activeBook { get; private set; }
-
-    private Inventory inventory;
+    public int gold { get; private set; }
+    public int erasers { get; private set; }
+    public int scissors { get; private set; }
 
     public void Awake() {
-        inventory = new Inventory();
         books = new List<Spellbook>();
         scrolls = new List<Scroll>();
 
@@ -39,8 +39,12 @@ public class PCEvent : MonoBehaviour {
             scrolls.Add((Scroll)item);
         } else if (item is SpellbookData) {
             books.Add(new Spellbook((SpellbookData)item));
-        } else {
-            inventory.Add(item, quantity);
+        } else if (item.isEraser) {
+            erasers += quantity;
+        } else if (item.isScissors) {
+            scissors += quantity;
+        } else if (item.isGold) {
+            gold += quantity;
         }
     }
 }

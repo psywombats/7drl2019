@@ -138,23 +138,30 @@ public class Textbox : MonoBehaviour, InputListener {
         Global.Instance().Input.RemoveListener(this);
     }
 
-    private IEnumerator EnableRoutine(string firstSpeaker) {
+    public IEnumerator EnableRoutine(string firstSpeaker, bool useNameboxes = true) {
         isDisplaying = true;
         Global.Instance().Input.PushListener(this);
 
         namebox1.transform.parent.GetComponent<CanvasGroup>().alpha = 0.0f;
         namebox2.transform.parent.GetComponent<CanvasGroup>().alpha = 0.0f;
 
-        yield return CoUtils.RunParallel(new IEnumerator[] {
+        if (useNameboxes) {
+            yield return CoUtils.RunParallel(new IEnumerator[] {
             CoUtils.RunTween(backer.DOAnchorMax(new Vector2(0.5f, backerAnchor), backerAnimationSeconds)),
             CoUtils.Delay(combinedAnimDelaySeconds,
                 CoUtils.RunParallel(new IEnumerator[] {
-                    firstSpeaker == unit1.ToString() 
+                    firstSpeaker == unit1.ToString()
                         ? ShowName1Routine(boxAnimationSeconds)
                         : ShowName2Routine(boxAnimationSeconds),
                     OpenBoxRoutine(boxAnimationSeconds),
                 }, this)),
-        }, this);
+            }, this);
+        } else {
+            yield return CoUtils.RunParallel(new IEnumerator[] {
+                CoUtils.RunTween(backer.DOAnchorMax(new Vector2(0.5f, backerAnchor), backerAnimationSeconds)),
+                CoUtils.Delay(combinedAnimDelaySeconds, OpenBoxRoutine(boxAnimationSeconds)),
+            }, this);
+        }
     }
 
     private IEnumerator ShowName1Routine(float seconds) {

@@ -5,6 +5,7 @@ using System;
 public class FadeImageEffect : MonoBehaviour {
 
     public Shader shader;
+    public FadeData startFade;
 
     private FadeData currentFade;
     private Material material;
@@ -15,6 +16,12 @@ public class FadeImageEffect : MonoBehaviour {
 
     public void Awake() {
         material = new Material(shader);
+    }
+
+    public void Start() {
+        if (startFade != null) {
+            StartCoroutine(FadeRoutine(startFade, true));
+        }
     }
 
     public void OnDestroy() {
@@ -54,7 +61,8 @@ public class FadeImageEffect : MonoBehaviour {
         elapsedSeconds = 0.0f;
         transitionDuration = fade.delay * timeMult;
         active = true;
-        
+        AssignCommonShaderVariables();
+
         while (elapsedSeconds < transitionDuration) {
             yield return null;
         }

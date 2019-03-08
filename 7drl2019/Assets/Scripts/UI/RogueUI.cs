@@ -10,6 +10,7 @@ public class RogueUI : MonoBehaviour, InputListener {
     public SkillsetUI skills;
     public Textbox box;
     public GameObject rightDisplay;
+    public SpellEditorUI spellEditor;
 
     public PCEvent pc { get; private set; }
     public BattleUnit unit {
@@ -18,7 +19,7 @@ public class RogueUI : MonoBehaviour, InputListener {
         }
     }
 
-    private bool rightDisplayEnabled;
+    public bool rightDisplayEnabled { get; set; }
     private Result<bool> executeResult;
 
     public void Populate() {
@@ -89,6 +90,10 @@ public class RogueUI : MonoBehaviour, InputListener {
                 Global.Instance().Input.RemoveListener(this);
                 StartCoroutine(ScanRoutine());
                 rightDisplayEnabled = false;
+                break;
+            case InputManager.Command.Debug:
+                StartCoroutine(spellEditor.ActivateRoutine(this, pc,
+                    pc.GetComponent<MapEvent>().map.GetComponent<MapGenerator>().level));
                 break;
         }
         return true;
