@@ -28,4 +28,12 @@ public class Spellbook {
             spells.Add(scroll.skill);
         }
     }
+
+    public void AddScroll(Scroll scroll) {
+        spells.Add(scroll.skill);
+    }
+
+    public void RemoveIndex(int i) {
+        spells.RemoveAt(i);
+    }
 }

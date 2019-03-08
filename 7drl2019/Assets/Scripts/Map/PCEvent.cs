@@ -15,10 +15,10 @@ public class PCEvent : MonoBehaviour {
     
     public List<Spellbook> books { get; private set; }
     public List<Scroll> scrolls { get; private set; }
-    public Spellbook activeBook { get; private set; }
+    public Spellbook activeBook { get; set; }
     public int gold { get; private set; }
-    public int erasers { get; private set; }
-    public int scissors { get; private set; }
+    public int erasers { get;  set; }
+    public int scissors { get;  set; }
 
     public void Awake() {
         books = new List<Spellbook>();

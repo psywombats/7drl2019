@@ -4,8 +4,9 @@ using System.Collections.Generic;
 
 public class Skill {
 
-    private SkillData data;
-    private List<SkillModifier> mods;
+    public SkillData data { get; private set; }
+    public Scroll scroll { get; private set; }
+    public List<SkillModifier> mods { get; private set; }
 
     public int costMP { get; private set; }
     public int costCD { get; private set; }
@@ -18,6 +19,7 @@ public class Skill {
     public LuaAnimation castAnim { get { return data.castAnimation; } }
 
     public Skill(Scroll scroll) {
+        this.scroll = scroll;
         data = scroll.data;
         mods = new List<SkillModifier>();
         foreach (SkillModifier.Type type in scroll.mods) {

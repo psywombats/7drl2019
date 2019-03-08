@@ -41,4 +41,14 @@ public class SkillModifier {
             default:                return pages;
         }
     }
+
+    public string DescriptiveString() {
+        switch (type) {
+            case Type.CostDown:     return "It costs less resources to cast than average.";
+            case Type.CostUp:       return "It costs mores resources to cast than average.";
+            case Type.PagesDown:    return "It is written in obnoxious, tiny font on a relatively few number of pages.";
+            case Type.PagesUp:    return "It is written in obnoxious, flowery font on more pages than usual.";
+        }
+        return "?>";
+    }
 }

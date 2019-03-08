@@ -28,6 +28,10 @@ public class InputManager : MonoBehaviour {
         Skill4,
         Skill5,
         Skill6,
+        AddPage,
+        ErasePage,
+        CutPage,
+        Equip,
     };
 
     public enum Event {
@@ -64,13 +68,17 @@ public class InputManager : MonoBehaviour {
         keybinds[Command.Menu] = new List<KeyCode>(new[] { KeyCode.Escape, KeyCode.C, KeyCode.Backspace });
         keybinds[Command.Click] = new List<KeyCode>();
         keybinds[Command.Rightclick] = new List<KeyCode>();
-        keybinds[Command.Examine] = new List<KeyCode>(new[] { KeyCode.E, KeyCode.V, KeyCode.X });
+        keybinds[Command.Examine] = new List<KeyCode>(new[] { KeyCode.V, KeyCode.L });
         keybinds[Command.Skill1] = new List<KeyCode>(new[] { KeyCode.F1 });
         keybinds[Command.Skill2] = new List<KeyCode>(new[] { KeyCode.F2 });
         keybinds[Command.Skill3] = new List<KeyCode>(new[] { KeyCode.F3 });
         keybinds[Command.Skill4] = new List<KeyCode>(new[] { KeyCode.F4 });
         keybinds[Command.Skill5] = new List<KeyCode>(new[] { KeyCode.F5 });
         keybinds[Command.Skill6] = new List<KeyCode>(new[] { KeyCode.F6 });
+        keybinds[Command.AddPage] = new List<KeyCode>(new[] { KeyCode.A });
+        keybinds[Command.ErasePage] = new List<KeyCode>(new[] { KeyCode.R });
+        keybinds[Command.Equip] = new List<KeyCode>(new[] { KeyCode.E });
+        keybinds[Command.CutPage] = new List<KeyCode>(new[] { KeyCode.X });
         fastKeys = new List<KeyCode>(new[] { KeyCode.LeftControl, KeyCode.RightControl });
 
         listeners = new List<InputListener>();

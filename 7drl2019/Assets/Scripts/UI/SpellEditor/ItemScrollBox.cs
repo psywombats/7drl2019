@@ -21,7 +21,7 @@ public class ItemScrollBox : MonoBehaviour, InputListener {
     public int selection { get; private set; }
 
     private int offset;
-    private Result<int> awaitingResult;
+    private Result<InputManager.Command> awaitingResult;
     private Action<int> scanner;
 
     public void Populate(List<Data> items) {
@@ -56,18 +56,21 @@ public class ItemScrollBox : MonoBehaviour, InputListener {
                 EndAwait();
                 break;
             case InputManager.Command.Confirm:
-                awaitingResult.value = selection;
+            case InputManager.Command.Equip:
+            case InputManager.Command.CutPage:
+            case InputManager.Command.ErasePage:
+            case InputManager.Command.AddPage:
+                awaitingResult.value = command;
                 EndAwait();
                 break;
         }
         return true;
     }
 
-    public IEnumerator SelectRoutine(Result<int> result, Action<int> scanner) {
+    public IEnumerator SelectRoutine(Result<InputManager.Command> result, Action<int> scanner) {
         this.scanner = scanner;
         awaitingResult = result;
         selection = 0;
-        scanner(selection);
         UpdateHighlight();
         Global.Instance().Input.PushListener(this);
         while (!awaitingResult.finished) {
@@ -88,7 +91,6 @@ public class ItemScrollBox : MonoBehaviour, InputListener {
     }
 
     private void EndAwait() {
-        awaitingResult = null;
         scanner = null;
         Global.Instance().Input.RemoveListener(this);
         selection = -1;
