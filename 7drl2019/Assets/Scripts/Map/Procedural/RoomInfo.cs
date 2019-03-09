@@ -17,7 +17,7 @@ public class RoomInfo {
     }
 
     public void FillWithVault(TacticsTerrainMesh mesh) {
-        if (RandUtils.Chance(0.5f)) {
+        if (RandUtils.Chance(0.2f)) {
             return;
         }
         if (vaults == null) {

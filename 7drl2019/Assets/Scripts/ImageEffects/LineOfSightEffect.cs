@@ -26,10 +26,6 @@ public class LineOfSightEffect : MonoBehaviour {
         AssignCommonShaderVariables();
     }
 
-    public void OnValidate() {
-        AssignCommonShaderVariables();
-    }
-
     public void Erase() {
         Destroy(losTexture);
         if (oldLosTexture != null) {

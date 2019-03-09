@@ -86,6 +86,7 @@
     <Compile Include="Assets\Scripts\Animation\CharaAnimationTarget.cs" />
     <Compile Include="Assets\Scripts\Animation\ItemMode.cs" />
     <Compile Include="Assets\Scripts\Animation\LuaAnimation.cs" />
+    <Compile Include="Assets\Scripts\Animation\SimpleRotator.cs" />
     <Compile Include="Assets\Scripts\Animation\SimpleSpriteAnimator.cs" />
     <Compile Include="Assets\Scripts\Audio\AudioManager.cs" />
     <Compile Include="Assets\Scripts\Audio\SFX.cs" />
@@ -204,6 +205,8 @@
     <Compile Include="Assets\Scripts\UI\SpellEditor\ItemScrollBox.cs" />
     <Compile Include="Assets\Scripts\UI\SpellEditor\SpellEditorUI.cs" />
     <Compile Include="Assets\Scripts\UI\Textbox.cs" />
+    <Compile Include="Assets\Scripts\UI\TitleMenuUI.cs" />
+    <Compile Include="Assets\Scripts\UI\TitleOptionBox.cs" />
     <Compile Include="Assets\Scripts\UI\UISprite.cs" />
     <Compile Include="Assets\Scripts\Util\CoUtils.cs" />
     <Compile Include="Assets\Scripts\Util\Dispatch.cs" />

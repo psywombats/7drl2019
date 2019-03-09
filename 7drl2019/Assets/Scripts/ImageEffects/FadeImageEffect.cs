@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using UnityEngine.UI;
 
 public class FadeImageEffect : MonoBehaviour {
 
@@ -15,7 +16,11 @@ public class FadeImageEffect : MonoBehaviour {
     private bool active;
 
     public void Awake() {
-        material = new Material(shader);
+        if (GetComponent<Camera>() == null) {
+            material = GetComponent<Image>().material;
+        } else {
+            material = new Material(shader);
+        }
     }
 
     public void Start() {

@@ -143,16 +143,24 @@ public class MapGenerator : MonoBehaviour {
             while (x >= 0) {
                 if (x < sizeInRooms.x && y < sizeInRooms.y) {
                     float z;
-                    if (x == 0 && y == 0) {
-                        z = stairLength / 2.0f + 0.5f;
-                    } else {
-                        float oldZ;
-                        if (y == 0) oldZ = rooms[x - 1, y].z;
-                        else if (x == 0) oldZ = rooms[x, y - 1].z;
-                        else oldZ = Math.Max(rooms[x, y - 1].z, rooms[x - 1, y].z);
-                        z = RandomNewZ(oldZ);
-                    }
-                    rooms[x, y] = new RoomInfo(cells[x * 2, y * 2], z);
+                    //if (x == 0 && y == 0) {
+                    //    z = stairLength / 2.0f + 0.5f;
+                    //} else {
+                    //    float oldZ;
+                    //    if (y == 0) oldZ = rooms[x - 1, y].z;
+                    //    else if (x == 0) oldZ = rooms[x, y - 1].z;
+                    //    else oldZ = Math.Max(rooms[x, y - 1].z, rooms[x - 1, y].z);
+                    //    z = RandomNewZ(oldZ);
+                    //}
+                    float[] map = new float[25]{
+                        6, 4, 5, 4, 6,
+                        5, 2, 3, 2, 5,
+                        7, 3, 1, 3, 7,
+                        5, 2, 3, 2, 5,
+                        6, 4, 5, 4, 6,
+                    };
+                    z = map[y * sizeInRooms.x + x];
+                    rooms[x, y] = new RoomInfo(cells[x * 2, y * 2], z * 2);
                 }
                 x -= 1;
                 y += 1;
@@ -241,21 +249,21 @@ public class MapGenerator : MonoBehaviour {
         }
 
         // decorator fringe
-        RoomInfo cornerRoom = rooms[sizeInRooms.x - 1, sizeInRooms.y - 1];
-        int wallX = cornerRoom.cell.startX + cornerRoom.cell.sizeX + 1;
-        int wallY = cornerRoom.cell.startY + cornerRoom.cell.sizeY + 1;
-        mesh.Resize(new Vector2Int(
-            wallX + (endStairsNW ? 0 : stairLength),
-            wallY + (endStairsNW ? stairLength : 0)),
-            0.0f);
-        for (int x = startStairsSW ? stairLength : 0; x < wallX; x += 1) {
-            mesh.SetHeight(x, wallY - 1, cornerRoom.z + MaxHeightDelta + 1);
-            mesh.SetTile(x, wallY - 1, defaultImpassTile);
-        }
-        for (int y = startStairsSW ? 0 : stairLength; y < wallY; y += 1) {
-            mesh.SetHeight(wallX - 1, y, cornerRoom.z + MaxHeightDelta + 1);
-            mesh.SetTile(wallX - 1, y, defaultImpassTile);
-        }
+        //RoomInfo cornerRoom = rooms[sizeInRooms.x - 1, sizeInRooms.y - 1];
+        //int wallX = cornerRoom.cell.startX + cornerRoom.cell.sizeX + 1;
+        //int wallY = cornerRoom.cell.startY + cornerRoom.cell.sizeY + 1;
+        //mesh.Resize(new Vector2Int(
+        //    wallX + (endStairsNW ? 0 : stairLength),
+        //    wallY + (endStairsNW ? stairLength : 0)),
+        //    0.0f);
+        //for (int x = startStairsSW ? stairLength : 0; x < wallX; x += 1) {
+        //    mesh.SetHeight(x, wallY - 1, cornerRoom.z + MaxHeightDelta + 1);
+        //    mesh.SetTile(x, wallY - 1, defaultImpassTile);
+        //}
+        //for (int y = startStairsSW ? 0 : stairLength; y < wallY; y += 1) {
+        //    mesh.SetHeight(wallX - 1, y, cornerRoom.z + MaxHeightDelta + 1);
+        //    mesh.SetTile(wallX - 1, y, defaultImpassTile);
+        //}
 
         // render terrain
         for (int y = 0; y < sizeInCells.y; y += 1) {

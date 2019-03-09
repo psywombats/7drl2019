@@ -174,7 +174,7 @@ public class CharaEvent : MonoBehaviour {
             locked = true;
         }
         Vector2Int offset = dir.XY();
-        Vector3 startPx = parent.positionPx;
+        Vector3 startPx = parent.transform.position;
         targetPx = parent.TileToWorldCoords(parent.location);
         if (targetPx.y == startPx.y || GetComponent<MapEvent3D>() == null) {
             yield return parent.LinearStepRoutine(dir);
