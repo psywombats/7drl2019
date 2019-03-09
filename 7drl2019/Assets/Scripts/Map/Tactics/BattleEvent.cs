@@ -45,7 +45,6 @@ public class BattleEvent : MonoBehaviour {
             GetComponent<CharaEvent>().spritesheet = unitData.appearance;
             gameObject.name = unitData.unitName;
         }
-        sight = unit.Get(StatTag.SIGHT);
     }
 
     public void SetScreenPositionToMatchTilePosition() {
@@ -83,11 +82,27 @@ public class BattleEvent : MonoBehaviour {
         }
     }
 
-    public bool CanSeeLocation(TacticsTerrainMesh mesh, Vector2Int location) {
+    public bool CanSeeLocation(TacticsTerrainMesh mesh, Vector2Int to) {
+        if (LineOfSightEffect.sitemap == null) {
+            LineOfSightEffect.RegenSitemap(mesh);
+        }
         if (sight == 0) {
             sight = unit.Get(StatTag.SIGHT);
         }
-        return MathHelper3D.InLos(mesh, this.location, location, sight);
+        //return MathHelper3D.InLos(mesh, this.location, location, sight);
+        Vector2Int at = location;
+        Vector3 at3 = new Vector3(at.x + 0.5f, mesh.HeightAt(at.x, at.y) + 1.5f, at.y + 0.5f);
+        Vector3 to3 = new Vector3(to.x + 0.5f, mesh.HeightAt(to.x, to.y) + 1.5f, to.y + 0.5f);
+        Vector3 delta = (to3 - at3);
+        if (delta.sqrMagnitude > sight * sight) {
+            return false;
+        } else {
+            return LineOfSightEffect.sitemap[
+                            to.y * (mesh.size.x * mesh.size.y * mesh.size.x) +
+                            to.x * (mesh.size.x * mesh.size.y) +
+                            at.y * (mesh.size.y) +
+                            at.x];
+        }
     }
 
     public IEnumerator StepOrAttackRoutine(EightDir dir, Result<bool> executeResult) {

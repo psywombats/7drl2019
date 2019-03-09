@@ -1,10 +1,14 @@
 ﻿using DG.Tweening;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Profiling;
 
 [RequireComponent(typeof(TacticsTerrainMesh))]
 [ExecuteInEditMode]
 public class LineOfSightEffect : MonoBehaviour {
+
+    // 7drl mega perf hack
+    public static BitArray sitemap;
 
     public Texture2D oldLosTexture;
     public Texture2D losTexture;
@@ -138,6 +142,39 @@ public class LineOfSightEffect : MonoBehaviour {
             return GetComponent<MeshRenderer>().material;
         } else {
             return GetComponent<MeshRenderer>().sharedMaterial;
+        }
+    }
+
+    // SITEMAP GARBAGE ==============
+
+    public static void RegenSitemap(TacticsTerrainMesh mesh) {
+        Vector3 v1 = new Vector3();
+        Vector3 v2 = new Vector3();
+        sitemap = new BitArray(mesh.size.x * mesh.size.y * mesh.size.x * mesh.size.y);
+        for (int y1 = 0; y1 < mesh.size.y; y1 += 1) {
+            for (int x1 = 0; x1 < mesh.size.x; x1 += 1) {
+                for (int y2 = 0; y2 < mesh.size.y; y2 += 1) {
+                    for (int x2 = 0; x2 < mesh.size.x; x2 += 1) {
+                        bool res = false;
+                        int dx = x1 - x2;
+                        int dy = y1 - y2;
+                        if (dx * dx + dy * dy < 10 * 10) {
+                            v1.x = x1;
+                            v1.y = mesh.heights[y1 * mesh.size.x + x1];
+                            v1.z = y1;
+                            v2.x = x2;
+                            v2.y = mesh.heights[y2 * mesh.size.x + x2];
+                            v2.z = y2;
+                            res = MathHelper3D.ClearRayExists(mesh, v1, v2);
+                        }
+                        sitemap[
+                            y2 * (mesh.size.x * mesh.size.y * mesh.size.x) +
+                            x2 * (mesh.size.x * mesh.size.y) +
+                            y1 * (mesh.size.y) +
+                            x1] = res;
+                    }
+                }
+            }
         }
     }
 }

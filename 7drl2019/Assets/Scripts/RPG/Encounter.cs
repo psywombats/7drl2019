@@ -30,6 +30,12 @@ public class Encounter : AutoExpandingScriptableObject {
                     break;
                 }
             }
+            if (toLoc.x == map.size.x - 1) {
+                toLoc.x -= 1;
+            }
+            if (toLoc.y == map.size.y - 1) {
+                toLoc.y -= 1;
+            }
             enemyObject.GetComponent<MapEvent>().SetLocation(toLoc);
             if (leader != null) {
                 enemyObject.GetComponent<BattleEvent>().unit.ai.leader = leader;

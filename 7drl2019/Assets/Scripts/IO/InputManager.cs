@@ -32,6 +32,8 @@ public class InputManager : MonoBehaviour {
         ErasePage,
         CutPage,
         Equip,
+        View,
+        Zoom,
     };
 
     public enum Event {
@@ -68,7 +70,7 @@ public class InputManager : MonoBehaviour {
         keybinds[Command.Menu] = new List<KeyCode>(new[] { KeyCode.Escape, KeyCode.C, KeyCode.Backspace });
         keybinds[Command.Click] = new List<KeyCode>();
         keybinds[Command.Rightclick] = new List<KeyCode>();
-        keybinds[Command.Examine] = new List<KeyCode>(new[] { KeyCode.V, KeyCode.L });
+        keybinds[Command.Examine] = new List<KeyCode>(new[] { KeyCode.L });
         keybinds[Command.Skill1] = new List<KeyCode>(new[] { KeyCode.F1 });
         keybinds[Command.Skill2] = new List<KeyCode>(new[] { KeyCode.F2 });
         keybinds[Command.Skill3] = new List<KeyCode>(new[] { KeyCode.F3 });
@@ -79,6 +81,8 @@ public class InputManager : MonoBehaviour {
         keybinds[Command.ErasePage] = new List<KeyCode>(new[] { KeyCode.R });
         keybinds[Command.Equip] = new List<KeyCode>(new[] { KeyCode.E });
         keybinds[Command.CutPage] = new List<KeyCode>(new[] { KeyCode.X });
+        keybinds[Command.View] = new List<KeyCode>(new[] { KeyCode.V });
+        keybinds[Command.Zoom] = new List<KeyCode>(new[] { KeyCode.Z });
         fastKeys = new List<KeyCode>(new[] { KeyCode.LeftControl, KeyCode.RightControl });
 
         listeners = new List<InputListener>();

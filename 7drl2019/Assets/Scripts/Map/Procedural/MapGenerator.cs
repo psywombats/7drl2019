@@ -27,6 +27,7 @@ public class MapGenerator : MonoBehaviour {
     public MapEvent3D startEventPrefab;
     public MapEvent3D endEventPrefab;
     public MapEvent3D impassEventPrefab;
+    public MapEvent3D targetPrefab;
 
     [Space]
     public GenerationTable table;
@@ -45,6 +46,7 @@ public class MapGenerator : MonoBehaviour {
             impassEventPrefab = lastMap.impassEventPrefab;
             defaultImpassTile = lastMap.defaultImpassTile;
             chestEventPrefab = lastMap.chestEventPrefab;
+            targetPrefab = lastMap.targetPrefab;
             table = lastMap.table;
             level = lastMap.level + 1;
         }
@@ -332,6 +334,11 @@ public class MapGenerator : MonoBehaviour {
             stairX += endStairsNW ? 0 : 1;
             stairZ += endStairsNW ? 1 : 0;
         }
+
+        // add the zoom target
+        MapEvent3D zoom = Instantiate(targetPrefab);
+        GetComponent<Map>().AddEvent(zoom);
+        zoom.SetLocation(new Vector2Int(mesh.size.x / 2, mesh.size.y / 2));
 
         // generate the encounters
         List<RoomInfo> validRooms = new List<RoomInfo>();

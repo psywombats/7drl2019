@@ -96,6 +96,16 @@ public class RogueUI : MonoBehaviour, InputListener {
                 StartCoroutine(spellEditor.ActivateRoutine(this, pc,
                     pc.GetComponent<MapEvent>().map.GetComponent<MapGenerator>().level));
                 break;
+            case InputManager.Command.Zoom:
+                MapCamera cam = FindObjectOfType<MapCamera>();
+                if (cam.target == pc.GetComponent<MapEvent3D>()) {
+                    cam.target = pc.battle.map.GetEventNamed("ZoomTarget").GetComponent<MapEvent3D>();
+                    cam.targetDistance = 100.0f;
+                } else {
+                    cam.targetDistance = 25.0f;
+                    cam.target = pc.GetComponent<MapEvent3D>();
+                }
+                break;
         }
         return true;
     }

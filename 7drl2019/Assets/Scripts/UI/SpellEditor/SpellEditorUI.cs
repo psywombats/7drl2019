@@ -112,13 +112,14 @@ public class SpellEditorUI : MonoBehaviour, InputListener {
                 }
             } else {
                 switch (selectResult.value) {
-                    case InputManager.Command.Confirm:
+                    case InputManager.Command.View:
                         if (scrollBox.items.Count == 0) {
-                            textbox.textbox.text = "No scrolls there.";
+                            textbox.textbox.text = "No scrolls there to view.";
                         } else {
                             yield return BrowseRoutine();
                         }
                         break;
+                    case InputManager.Command.Confirm:
                     case InputManager.Command.AddPage:
                         if (pc.scrolls.Count == 0) {
                             textbox.textbox.text = "Pri doesn't own any scrolls. Go find some!";
@@ -359,8 +360,9 @@ public class SpellEditorUI : MonoBehaviour, InputListener {
             } else {
                 textbox.textbox.text += " Pri must equip this book as the loadout for its spells to be used.";
             }
-            textbox.textbox.text += "\n\nPress [SPACE] to browse the book. Other actions: [E]quip the book, " +
-                "[A]dd a scroll, e[X]tract a scroll (destroying the book), [R]emove a scroll (destroying the scroll).";
+            textbox.textbox.text += "\n\nPress [SPACE] to add a page the book. Other actions: [V]iew the book's " +
+                "spells, [E]quip this as the current loadout, e[X]tract a scroll (destroying the book), [R]emove a " +
+                "scroll (destroying the scroll).";
 
             rightFace.face.sprite = bookFace;
         }

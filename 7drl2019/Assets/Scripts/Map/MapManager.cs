@@ -44,6 +44,13 @@ public class MapManager : MonoBehaviour {
         Destroy(oldMap);
         activeMap.GetComponent<LineOfSightEffect>().Erase();
 
+        MapCamera cam = FindObjectOfType<MapCamera>();
+        if (cam.target != pc.GetComponent<MapEvent3D>()) {
+            cam.target = activeMap.GetEventNamed("ZoomTarget").GetComponent<MapEvent3D>();
+        }
+
+        LineOfSightEffect.RegenSitemap(activeMap.GetComponent<TacticsTerrainMesh>());
+
         RogueUI ui = FindObjectOfType<RogueUI>();
         ui.narrator.Clear();
         if (level == 0) {
@@ -55,7 +62,7 @@ public class MapManager : MonoBehaviour {
         EightDir dir = pc.GetComponent<CharaEvent>().facing;
         loc += dir.XY() * -2;
         pc.GetComponent<MapEvent>().SetLocation(loc);
-        
+        activeMap.GetComponent<LineOfSightEffect>().RecalculateVisibilityMap();
     }
     
     private void RawTeleport(string mapName, Vector2Int location) {
