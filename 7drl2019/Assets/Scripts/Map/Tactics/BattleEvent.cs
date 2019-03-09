@@ -126,11 +126,11 @@ public class BattleEvent : MonoBehaviour {
         }
         
         if (passable) {
+            chara.PerformWhenDoneAnimating(me.StepRoutine(location, location + dir.XY(), false));
             me.location = target;
             if (unit.Get(StatTag.MOVE) > 1) {
                 unit.canActAgain = !unit.canActAgain;
             }
-            chara.PerformWhenDoneAnimating(me.StepRoutine(dir, false));
             if (GetComponent<PCEvent>() != null) {
                 foreach (MapEvent targetEvent in toCollide) {
                     if (targetEvent.switchEnabled) {
@@ -157,9 +157,6 @@ public class BattleEvent : MonoBehaviour {
                                 unit.battle.Log("Too high up to attack!");
                             }
                         } else {
-                            while (me.tracking) {
-                                yield return null;
-                            }
                             yield return unit.MeleeAttackRoutine(other.unit);
                             executeResult.value = true;
                         }
@@ -190,7 +187,7 @@ public class BattleEvent : MonoBehaviour {
                 break;
             }
             me.location = to;
-            chara.PerformWhenDoneAnimating(GetComponent<CharaEvent>().StepRoutine(dir, false));
+            chara.PerformWhenDoneAnimating(GetComponent<CharaEvent>().StepRoutine(location, to, false));
             if (toHeight < height) {
                 float delta = height - toHeight;
                 if (delta > unit.GetMaxDescent()) {

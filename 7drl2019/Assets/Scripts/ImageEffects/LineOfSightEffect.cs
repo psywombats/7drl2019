@@ -160,10 +160,10 @@ public class LineOfSightEffect : MonoBehaviour {
                         int dy = y1 - y2;
                         if (dx * dx + dy * dy < 10 * 10) {
                             v1.x = x1;
-                            v1.y = mesh.heights[y1 * mesh.size.x + x1];
+                            v1.y = mesh.heights[y1 * mesh.size.x + x1] + 1.0f;
                             v1.z = y1;
                             v2.x = x2;
-                            v2.y = mesh.heights[y2 * mesh.size.x + x2];
+                            v2.y = mesh.heights[y2 * mesh.size.x + x2] + 1.0f;
                             v2.z = y2;
                             res = MathHelper3D.ClearRayExists(mesh, v1, v2);
                         }

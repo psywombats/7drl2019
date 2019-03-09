@@ -152,7 +152,7 @@ public class RogueUI : MonoBehaviour, InputListener {
 
     public IEnumerator PlayNextCommandRoutine(Result<bool> executeResult) {
         this.executeResult = executeResult;
-        while (pc.GetComponent<MapEvent>().tracking) {
+        while (pc.GetComponent<MapEvent>().IsAnimating()) {
             yield return null;
         }
         Global.Instance().Input.PushListener(this);
@@ -184,6 +184,7 @@ public class RogueUI : MonoBehaviour, InputListener {
         rightDisplayEnabled = false;
         unit.battle.DespawnCursor();
         executeResult.Cancel();
+        narrator.Log(unit.StatusString(), true);
     }
 
     private IEnumerator ScanAtRoutine(Vector2Int loc) {

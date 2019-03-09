@@ -32,9 +32,9 @@ public class RayTargeter : Targeter {
                     bestUnit = unit;
                     minDist = dist;
                 }
-                if (bestUnit != null) {
-                    cursor.GetComponent<MapEvent>().SetLocation(unit.location);
-                }
+            }
+            if (bestUnit != null) {
+                cursor.GetComponent<MapEvent>().SetLocation(bestUnit.location);
             }
         }
 

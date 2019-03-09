@@ -34,7 +34,7 @@ public class CharaEvent : MonoBehaviour {
     private Vector2 lastPosition;
     private bool wasSteppingLastFrame;
     private List<KeyValuePair<float, Vector3>> afterimageHistory;
-    private List<IEnumerator> animationQueue;
+    public List<IEnumerator> animationQueue { get; set; }
     private Vector3 targetPx;
     private float moveTime;
     private bool stepping;
@@ -101,18 +101,11 @@ public class CharaEvent : MonoBehaviour {
 
     public void Update() {
         CopyShaderValues();
-
-        if (!parent.tracking && animationQueue.Count > 0) {
-            IEnumerator next = animationQueue[0];
-            animationQueue.RemoveAt(0);
-            StartCoroutine(next);
-        }
         
         bool steppingThisFrame = IsSteppingThisFrame();
         stepping = steppingThisFrame; // || wasSteppingLastFrame;
         if (steppingThisFrame != wasSteppingLastFrame) {
             moveTime = 0.0f;
-            footOffset = !footOffset;
         }
         if (stepping) {
             moveTime += Time.deltaTime;
@@ -123,8 +116,11 @@ public class CharaEvent : MonoBehaviour {
         UpdateAppearance();
     }
 
-    public void PerformWhenDoneAnimating(IEnumerator animationRoutine) {
-        animationQueue.Add(animationRoutine);
+    public void PerformWhenDoneAnimating(IEnumerator r) {
+        animationQueue.Add(r);
+        if (animationQueue.Count == 1) {
+            StartCoroutine(AnimationRoutine());
+        }
     }
 
     public void UpdateAppearance() {
@@ -179,17 +175,17 @@ public class CharaEvent : MonoBehaviour {
         yield return CoUtils.RunTween(tween);
     }
 
-    public IEnumerator StepRoutine(EightDir dir, bool faceTo = true) {
+    public IEnumerator StepRoutine(Vector2Int at, Vector2Int to, bool faceTo = true) {
+        footOffset = !footOffset;
         if (faceTo) {
-            facing = dir;
+            facing = EightDirExtensions.DirectionOf(to - at);
         } else {
             locked = true;
         }
-        Vector2Int offset = dir.XY();
-        Vector3 startPx = parent.transform.position;
-        targetPx = parent.TileToWorldCoords(parent.location);
+        Vector3 startPx = parent.TileToWorldCoords(at);
+        targetPx = parent.TileToWorldCoords(to);
         if (targetPx.y == startPx.y || GetComponent<MapEvent3D>() == null) {
-            yield return parent.LinearStepRoutine(dir);
+            yield return parent.LinearStepRoutine(at, to);
         } else if (targetPx.y > startPx.y) {
             // jump up routine routine
             startPx = parent.transform.position;
@@ -352,5 +348,16 @@ public class CharaEvent : MonoBehaviour {
 
     private bool HasJumpFrames() {
         return sprites.ContainsKey(NameForFrame(spritesheet.name, 4, 0));
+    }
+
+    private IEnumerator AnimationRoutine() {
+        while (animationQueue.Count > 0) {
+            while (parent.tracking) {
+                yield return null;
+            }
+            IEnumerator next = animationQueue[0];
+            yield return next;
+            animationQueue.Remove(next);
+        }
     }
 }

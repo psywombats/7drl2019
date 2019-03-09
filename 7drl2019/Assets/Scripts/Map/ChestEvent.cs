@@ -20,7 +20,7 @@ public class ChestEvent : MonoBehaviour {
     }
 
     public IEnumerator OpenRoutine(PCEvent pc) {
-        while (pc.GetComponent<MapEvent>().tracking) {
+        while (pc.GetComponent<MapEvent>().IsAnimating()) {
             yield return null;
         }
         pc.GetComponent<BattleEvent>().unit.battle.Log(pc.unit + " found a chest...", true);

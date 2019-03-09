@@ -148,4 +148,32 @@ public class BattleUnit {
             return unit.unitName;
         }
     }
+
+    public string StatusString() {
+        string result = this + "." +
+            " Hits for " + Get(StatTag.DMG) + " at " + Get(StatTag.ACC) + " accuracy";
+        if (Get(StatTag.SIGHT) < 8) {
+            result += ", is shortsighted";
+        }
+        if (Get(StatTag.MOVE) > 1) {
+            result += ", covers ground quickly";
+        }
+        if (Get(StatTag.MOVE) < 1) {
+            result += ", covers ground slowly";
+        }
+        if (Get(StatTag.JUMP) > 1.5) {
+            result += ", can jump very high";
+        }
+        if (Get(StatTag.JUMP) < 0.5) {
+            result += ", can't jump";
+        }
+        if (Get(StatTag.ATTACKS) > 1) {
+            result += ", attacks quickly";
+        }
+        if (Get(StatTag.ATTACKS) < 1) {
+            result += ", attacks slowly";
+        }
+        result += ".";
+        return result;
+    }
 }

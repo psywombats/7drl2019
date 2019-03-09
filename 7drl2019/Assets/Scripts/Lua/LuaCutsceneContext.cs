@@ -84,7 +84,9 @@ public class LuaCutsceneContext : LuaContext {
             } else {
                 dir = EightDirExtensions.Parse(dynDir.String);
             }
-            yield return pc.GetComponent<MapEvent>().StepRoutine(dir);
+            yield return pc.GetComponent<MapEvent>().StepRoutine(
+                pc.GetComponent<MapEvent>().location, 
+                pc.GetComponent<MapEvent>().location + dir.XY());
         }
     }
 }

@@ -196,8 +196,7 @@ public abstract class MapEvent : MonoBehaviour {
         }
         MapEvent mapEvent = GetComponent<MapEvent>();
         foreach (Vector2Int target in path) {
-            EightDir dir = mapEvent.DirectionTo(target);
-            yield return StartCoroutine(GetComponent<MapEvent>().StepRoutine(dir));
+            yield return StartCoroutine(GetComponent<MapEvent>().StepRoutine(location, target));
         }
     }
 
@@ -243,10 +242,17 @@ public abstract class MapEvent : MonoBehaviour {
 
     protected abstract void DrawGizmoSelf();
 
+    public bool IsAnimating() {
+        if (GetComponent<CharaEvent>() == null) {
+            return tracking;
+        }
+        return tracking || GetComponent<CharaEvent>().animationQueue.Count > 0;
+    }
+
     // called when the pc stumbles into us
     // before the step if impassable, after if passable
     public IEnumerator CollideRoutine(PCEvent pc) {
-        while (pc.GetComponent<MapEvent>().tracking) {
+        while (pc.GetComponent<MapEvent>().IsAnimating()) {
             yield return null;
         }
         yield return luaObject.RunRoutine(PropertyCollide);
@@ -262,7 +268,7 @@ public abstract class MapEvent : MonoBehaviour {
     }
 
     public IEnumerator OnVisibleRoutine(PCEvent pc) {
-        while (pc.GetComponent<MapEvent>().tracking) {
+        while (IsAnimating()) {
             yield return null;
         }
         BattleEvent ev = GetComponent<BattleEvent>();
@@ -300,16 +306,18 @@ public abstract class MapEvent : MonoBehaviour {
            return GetComponent<LuaContext>().CreateCondition(lua);
         }
     }
-
     public IEnumerator StepRoutine(EightDir dir, bool updateLoc = true) {
+        return StepRoutine(location, location + dir.XY(), updateLoc);
+    }
+    public IEnumerator StepRoutine(Vector2Int at, Vector2Int to, bool updateLoc = true) {
         if (updateLoc) {
-            location += dir.XY();
+            location = to;
         }
 
         if (GetComponent<CharaEvent>() == null) {
-            yield return LinearStepRoutine(dir);
+            yield return LinearStepRoutine(at, to);
         } else {
-            yield return GetComponent<CharaEvent>().StepRoutine(dir);
+            yield return GetComponent<CharaEvent>().StepRoutine(at, to);
         }
     }
 
@@ -318,29 +326,31 @@ public abstract class MapEvent : MonoBehaviour {
             map.GetComponent<LineOfSightEffect>().RecalculateVisibilityMap();
         }
         for (int i = 0; i < count; i += 1) {
-            yield return StartCoroutine(StepRoutine(dir));
+            Vector2Int at = location;
+            yield return StartCoroutine(StepRoutine(at, at + dir.XY()));
+            at += dir.XY();
         }
     }
 
-    public IEnumerator LinearStepRoutine(EightDir dir) {
-        targetPositionPx = TileToWorldCoords(location);
+    public IEnumerator LinearStepRoutine(Vector2Int at, Vector2Int to) {
+        Vector3 toPos = TileToWorldCoords(to);
+        Vector3 fromPos = TileToWorldCoords(at);
         tracking = true;
-        while (true) {
-            if (CalcTilesPerSecond() > 0) {
-                positionPx = Vector3.MoveTowards(positionPx,
-                    targetPositionPx,
-                    CalcTilesPerSecond() * Time.deltaTime);
-            } else {
-                // indicates warp speed, cap'n
-                positionPx = targetPositionPx;
-            }
-
-            if (positionPx == targetPositionPx) {
-                tracking = false;
-                break;
-            } else {
+        float elapsed = 0.0f;
+        
+        if (CalcTilesPerSecond() > 0) {
+            float duration = 1.0f / CalcTilesPerSecond();
+            while (true) {
+                elapsed += Time.deltaTime;
+                float t = elapsed / duration;
+                positionPx = toPos * t + (1.0f - t) * fromPos;
+                if (t > 1) {
+                    break;
+                }
                 yield return null;
             }
         }
+        positionPx = toPos;
+        tracking = false;
     }
 }
