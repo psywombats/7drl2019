@@ -9,13 +9,15 @@ public class MapGenerator : MonoBehaviour {
 
     private float MaxHeightDelta = 1.5f;
 
-    public Vector2Int sizeInRooms;
+    public Vector2Int sizeInRoomsMin;
+    public Vector2Int sizeInRoomsMax;
     public int stairLength = 3;
 
     public Vector2Int entryRoomCoords = new Vector2Int(0, 0);
     public Vector2Int exitRoomCoords = new Vector2Int(4, 4);
 
     [HideInInspector] public Vector2Int sizeInCells { get; private set; }
+    [HideInInspector] public Vector2Int sizeInRooms { get; private set; }
     [HideInInspector] public CellInfo[,] cells { get; private set; }
     [HideInInspector] public RoomInfo[,] rooms { get; private set; }
     [HideInInspector] public int[] widths { get; private set; }
@@ -39,7 +41,8 @@ public class MapGenerator : MonoBehaviour {
 
         // copy oldbie values if needed
         if (lastMap != null) {
-            sizeInRooms = lastMap.sizeInRooms;
+            sizeInRoomsMin = lastMap.sizeInRoomsMin;
+            sizeInRoomsMax = lastMap.sizeInRoomsMax;
             stairLength = lastMap.stairLength;
             startEventPrefab = lastMap.startEventPrefab;
             endEventPrefab = lastMap.endEventPrefab;
@@ -64,6 +67,11 @@ public class MapGenerator : MonoBehaviour {
         }
 
         // work out some constants
+        if (Flip()) {
+            sizeInRooms = new Vector2Int(sizeInRoomsMin.x, sizeInRoomsMax.y);
+        } else {
+            sizeInRooms = new Vector2Int(sizeInRoomsMax.x, sizeInRoomsMin.y);
+        }
         int seed =  (int)DateTime.Now.Ticks;
         Random.InitState(seed);
         Debug.Log("using seed " + seed);

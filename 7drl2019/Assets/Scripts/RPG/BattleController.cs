@@ -94,6 +94,9 @@ public class BattleController : MonoBehaviour {
         while (true) {
             ui.OnTurn();
             yield return PlayNextHumanActionRoutine();
+            if (pc.IsDead()) {
+                break;
+            }
             map.GetComponent<LineOfSightEffect>().RecalculateVisibilityMap();
             map.GetComponent<LineOfSightEffect>().TransitionFromOldLos(
                 1.0f / pcEvent.GetComponent<MapEvent>().CalcTilesPerSecond());
@@ -137,6 +140,7 @@ public class BattleController : MonoBehaviour {
                             unit.isRecovering = false;
                         } else {
                             yield return unit.ai.TakeTurnRoutine();
+                            yield return unit.ai.CheckIfKilledPC();
                         }
                     }
                 }
@@ -146,6 +150,7 @@ public class BattleController : MonoBehaviour {
                     if (unit.canActAgain) {
                         unit.canActAgain = false;
                         yield return unit.ai.TakeTurnRoutine();
+                        yield return unit.ai.CheckIfKilledPC();
                     }
                 }
             }

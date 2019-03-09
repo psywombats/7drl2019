@@ -138,7 +138,12 @@ public class BattleUnit {
 
     public override string ToString() {
         if (!unit.unique) {
-            return "the " + unit.unitName;
+            if (unit.unitName.StartsWith("a") || unit.unitName.StartsWith("e") || unit.unitName.StartsWith("i") 
+                || unit.unitName.StartsWith("o") || unit.unitName.StartsWith("u")) {
+                return "an " + unit.unitName;
+            } else {
+                return "a " + unit.unitName;
+            }
         } else {
             return unit.unitName;
         }

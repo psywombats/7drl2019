@@ -20,31 +20,29 @@ public class GenerationTable : ScriptableObject {
     public List<SkillData> skills;
 
     public List<Encounter> GenerateEncounters(int level) {
-        int targetDanger;
-        if (level < firstLevelDangerOverrides.Count) {
-            targetDanger = firstLevelDangerOverrides[level];
-        } else {
-            targetDanger = baseDanger + level * dangerPerLevel;
-        }
+        //int targetDanger;
+        //if (level < firstLevelDangerOverrides.Count) {
+        //    targetDanger = firstLevelDangerOverrides[level];
+        //} else {
+        //    targetDanger = baseDanger + level * dangerPerLevel;
+        //}
 
         List<Encounter> results = new List<Encounter>();
-        int currentDanger = 0;
-        while (currentDanger < targetDanger) {
+        int added = 0;
+        int target = Random.Range(9, 11);
+        while (added < target) {
             RandUtils.Shuffle(encounters);
             Encounter toAdd = null;
             foreach (Encounter encounter in encounters) {
-                if (encounter.danger < targetDanger / 3.5f 
-                        && encounter.danger > targetDanger / 20.0f
-                        && encounter.danger + currentDanger <= targetDanger * 1.1f
-                        && RandUtils.Chance(encounter.rarity / 100.0f)) {
+                if (encounter.levelMin >= level &&
+                    encounter.levelMax <= level &&
+                    RandUtils.Chance(encounter.rarity / 100.0f)) {
                     toAdd = encounter;
-                    currentDanger += encounter.danger;
+                    added += 1;
                     break;
                 }
             }
-            if (toAdd == null) {
-                currentDanger += 50;
-            } else {
+            if (toAdd != null) {
                 results.Add(toAdd);
             }
         }

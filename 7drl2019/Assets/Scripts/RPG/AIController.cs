@@ -25,6 +25,10 @@ public class AIController {
     }
 
     public IEnumerator TakeTurnRoutine() {
+        if (pc.IsDead()) {
+            return null;
+        }
+
         int intel = (int)unit.Get(StatTag.INTELLIGENCE);
 
         Result<bool> result = new Result<bool>();
@@ -78,6 +82,15 @@ public class AIController {
             }
         }
         return battler.StepOrAttackRoutine(bestDir, result);
+    }
+
+    public IEnumerator CheckIfKilledPC() {
+        if (pc.IsDead()) {
+            var ui = Object.FindObjectOfType<RogueUI>();
+            return ui.PostMortemRoutine(unit);
+        } else {
+            return null;
+        }
     }
 
     private bool HasLeader() {

@@ -15,6 +15,7 @@ public class Unit : ScriptableObject {
     public List<Skill> innateSkills;
 
     [TextArea(3, 6)] public string luaOnExamine;
+    [TextArea(3, 6)] public string luaOnDefeat;
     public List<string> flightMessages;
 
     // tempish

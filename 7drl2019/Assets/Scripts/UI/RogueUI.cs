@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(LuaCutsceneContext))]
 public class RogueUI : MonoBehaviour, InputListener {
@@ -11,6 +13,8 @@ public class RogueUI : MonoBehaviour, InputListener {
     public Textbox box;
     public GameObject rightDisplay;
     public SpellEditorUI spellEditor;
+    public FadeImageEffect fader;
+    public Text postMortem;
     [TextArea(3, 6)] public string luaTutorial;
 
     public PCEvent pc { get; private set; }
@@ -115,6 +119,28 @@ public class RogueUI : MonoBehaviour, InputListener {
         face2.OnTurn();
         narrator.OnTurn();
         skills.OnTurn();
+    }
+
+    public IEnumerator PostMortemRoutine(BattleUnit killer) {
+        yield return PrepareTalkRoutine(unit);
+        face2.Populate(killer);
+
+        rightDisplayEnabled = true;
+        yield return fader.FadeRoutine(fader.startFade, false);
+
+        LuaScript script = new LuaScript(GetComponent<LuaContext>(), killer.unit.luaOnDefeat);
+        GetComponent<LuaContext>().SetGlobal("name", unit.ToString());
+        yield return script.RunRoutine();
+        rightDisplayEnabled = false;
+        postMortem.text = "Made it to floor " + pc.battle.map.GetComponent<MapGenerator>().level + 
+            " before a disastrous encounter with " + killer.unit.unitName;
+        postMortem.text += "\n\nGot " + pc.gold + " gold out of it though!";
+        postMortem.text = postMortem.text.Replace("\\n", "\n");
+        yield return CoUtils.RunTween(GetComponent<CanvasGroup>().DOFade(0.0f, 3.0f));
+        yield return CoUtils.RunTween(postMortem.GetComponent<CanvasGroup>().DOFade(1.0f, 1.0f));
+        yield return CoUtils.Wait(3.0f);
+        yield return CoUtils.RunTween(postMortem.GetComponent<CanvasGroup>().DOFade(0.0f, 3.0f));
+        SceneManager.LoadScene("Title", LoadSceneMode.Single);
     }
 
     public IEnumerator EditSpellsRoutine() {

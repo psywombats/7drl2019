@@ -7,7 +7,8 @@ public class Encounter : AutoExpandingScriptableObject {
 
     private const string PrefabPath = "Prefabs/Enemy";
 
-    public int danger = 375;
+    public int levelMin;
+    public int levelMax;
     [Range(0, 100)]
     public float rarity = 50;
     public List<Unit> units;
