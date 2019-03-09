@@ -59,7 +59,7 @@ public class MapGenerator : MonoBehaviour {
         mesh.ClearTiles();
         foreach (MapEvent toRemove in GetComponent<Map>().GetEvents<MapEvent>()) {
             if (toRemove.GetComponent<PCEvent>() == null) {
-                if (toRemove.GetComponent<BattleEvent>()) {
+                if (toRemove.GetComponent<BattleEvent>() && Application.isPlaying) {
                     GetComponent<BattleController>().RemoveUnit(toRemove.GetComponent<BattleEvent>().unit);
                 }
                 GetComponent<Map>().RemoveEvent(toRemove, true);

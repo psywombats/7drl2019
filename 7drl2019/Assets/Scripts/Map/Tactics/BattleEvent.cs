@@ -14,8 +14,9 @@ public class BattleEvent : MonoBehaviour {
     [HideInInspector]
     public Unit unitSerialized;
     public BattleUnit unit { get; set; }
-    public BattleController controller { get; private set; }
+    public BattleController battle { get { return unit.battle; } }
     public MapEvent me { get { return GetComponent<MapEvent>(); } }
+    public CharaEvent chara { get { return GetComponent<CharaEvent>(); } }
 
     public LuaAnimation damageAnimation;
     public LuaAnimation deathAnimation;
@@ -100,7 +101,7 @@ public class BattleEvent : MonoBehaviour {
             return LineOfSightEffect.sitemap[
                             to.y * (mesh.size.x * mesh.size.y * mesh.size.x) +
                             to.x * (mesh.size.x * mesh.size.y) +
-                            at.y * (mesh.size.y) +
+                            at.y * (mesh.size.x) +
                             at.x];
         }
     }
@@ -129,7 +130,7 @@ public class BattleEvent : MonoBehaviour {
             if (unit.Get(StatTag.MOVE) > 1) {
                 unit.canActAgain = !unit.canActAgain;
             }
-            StartCoroutine(me.StepRoutine(dir, false));
+            chara.PerformWhenDoneAnimating(me.StepRoutine(dir, false));
             if (GetComponent<PCEvent>() != null) {
                 foreach (MapEvent targetEvent in toCollide) {
                     if (targetEvent.switchEnabled) {
@@ -181,7 +182,6 @@ public class BattleEvent : MonoBehaviour {
     }
 
     public IEnumerator KnockbackRoutine(EightDir dir, int power) {
-        List<IEnumerator> toExecute = new List<IEnumerator>();
         float height = me.map.terrain.HeightAt(location);
         for (int i = 0; i < power; i += 1) {
             Vector2Int to = me.location + dir.XY();
@@ -190,29 +190,21 @@ public class BattleEvent : MonoBehaviour {
                 break;
             }
             me.location = to;
-            toExecute.Add(GetComponent<CharaEvent>().StepRoutine(dir, false));
+            chara.PerformWhenDoneAnimating(GetComponent<CharaEvent>().StepRoutine(dir, false));
             if (toHeight < height) {
                 float delta = height - toHeight;
                 if (delta > unit.GetMaxDescent()) {
                     int dmg = unit.CalcDropDamage(delta);
-                    toExecute.Add(TakeFallDamageRoutine(dmg));
-                    yield return StartCoroutine(CoUtils.RunSequence(toExecute.ToArray()));
+                    battle.Log(unit + " took " + dmg + " damage in the fall!");
+                    yield return unit.TakeDamageRoutine(dmg, damageAnimation);
                     yield break;
                 }
             }
         }
-        StartCoroutine(CoUtils.RunSequence(toExecute.ToArray()));
-        yield return null;
-    }
-
-    public IEnumerator TakeFallDamageRoutine(int dmg) {
-        yield return unit.TakeDamageRoutine(dmg, damageAnimation);
-        controller.Log(unit + " took " + dmg + " damage in the fall!");
-        yield return null;
     }
 
     public IEnumerator AnimateTakeDamageRoutine() {
-        StartCoroutine(PlayAnimationRoutine(damageAnimation, involuntaryContext));
+        chara.PerformWhenDoneAnimating(PlayAnimationRoutine(damageAnimation, involuntaryContext));
         yield return null;
     }
 
@@ -225,8 +217,7 @@ public class BattleEvent : MonoBehaviour {
     }
 
     public IEnumerator AnimateAttackRoutine() {
-        StartCoroutine(PlayAnimationRoutine(attackAnimation));
-        yield return null;
+        yield return PlayAnimationRoutine(attackAnimation);
     }
 
     public IEnumerator AnimateBumpRoutine() {
@@ -237,7 +228,7 @@ public class BattleEvent : MonoBehaviour {
         if (anim == null) {
             yield break;
         }
-        GetComponent<CharaEvent>().doll.GetComponent<CharaAnimationTarget>().ConfigureToBattler(this);
-        yield return GetComponent<CharaEvent>().doll.GetComponent<AnimationPlayer>().PlayAnimationRoutine(anim, context);
+        chara.doll.GetComponent<CharaAnimationTarget>().ConfigureToBattler(this);
+        chara.PerformWhenDoneAnimating(chara.doll.GetComponent<AnimationPlayer>().PlayAnimationRoutine(anim, context));
     }
 }

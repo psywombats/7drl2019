@@ -34,6 +34,7 @@ public class CharaEvent : MonoBehaviour {
     private Vector2 lastPosition;
     private bool wasSteppingLastFrame;
     private List<KeyValuePair<float, Vector3>> afterimageHistory;
+    private List<IEnumerator> animationQueue;
     private Vector3 targetPx;
     private float moveTime;
     private bool stepping;
@@ -85,6 +86,7 @@ public class CharaEvent : MonoBehaviour {
     }
 
     public void Start() {
+        animationQueue = new List<IEnumerator>();
         CopyShaderValues();
         GetComponent<Dispatch>().RegisterListener(MapEvent.EventMove, (object payload) => {
             facing = (EightDir)payload;
@@ -99,6 +101,12 @@ public class CharaEvent : MonoBehaviour {
 
     public void Update() {
         CopyShaderValues();
+
+        if (!parent.tracking && animationQueue.Count > 0) {
+            IEnumerator next = animationQueue[0];
+            animationQueue.RemoveAt(0);
+            StartCoroutine(next);
+        }
         
         bool steppingThisFrame = IsSteppingThisFrame();
         stepping = steppingThisFrame; // || wasSteppingLastFrame;
@@ -113,6 +121,10 @@ public class CharaEvent : MonoBehaviour {
         lastPosition = transform.position;
 
         UpdateAppearance();
+    }
+
+    public void PerformWhenDoneAnimating(IEnumerator animationRoutine) {
+        animationQueue.Add(animationRoutine);
     }
 
     public void UpdateAppearance() {
@@ -180,9 +192,7 @@ public class CharaEvent : MonoBehaviour {
             yield return parent.LinearStepRoutine(dir);
         } else if (targetPx.y > startPx.y) {
             // jump up routine routine
-            while (parent.tracking) {
-                yield return null;
-            }
+            startPx = parent.transform.position;
             parent.tracking = true;
             float duration = (targetPx - startPx).magnitude / parent.CalcTilesPerSecond() * JumpHeightUpMult;
             yield return JumpRoutine(startPx, targetPx, duration);
@@ -191,9 +201,6 @@ public class CharaEvent : MonoBehaviour {
             overrideBodySprite = null;
         } else {
             // jump down routine
-            while (parent.tracking) {
-                yield return null;
-            }
             parent.tracking = true;
             float elapsed = 0.0f;
             float walkRatio = 0.65f;
@@ -236,7 +243,6 @@ public class CharaEvent : MonoBehaviour {
     }
 
     private IEnumerator JumpRoutine(Vector3 startPx, Vector3 targetPx, float duration, bool useJumpFrames = true) {
-
         jumping = useJumpFrames;
         float elapsed = 0.0f;
 

@@ -126,14 +126,15 @@ public class RogueUI : MonoBehaviour, InputListener {
         face2.Populate(killer);
 
         rightDisplayEnabled = true;
+        narrator.Clear();
         yield return fader.FadeRoutine(fader.startFade, false);
 
         LuaScript script = new LuaScript(GetComponent<LuaContext>(), killer.unit.luaOnDefeat);
         GetComponent<LuaContext>().SetGlobal("name", unit.ToString());
         yield return script.RunRoutine();
         rightDisplayEnabled = false;
-        postMortem.text = "Made it to floor " + pc.battle.map.GetComponent<MapGenerator>().level + 
-            " before a disastrous encounter with " + killer.unit.unitName;
+        postMortem.text = "Made it to floor " + pc.battle.map.GetComponent<MapGenerator>().level +
+            " before a disastrous encounter with " + killer;
         postMortem.text += "\n\nGot " + pc.gold + " gold out of it though!";
         postMortem.text = postMortem.text.Replace("\\n", "\n");
         yield return CoUtils.RunTween(GetComponent<CanvasGroup>().DOFade(0.0f, 3.0f));
@@ -151,6 +152,9 @@ public class RogueUI : MonoBehaviour, InputListener {
 
     public IEnumerator PlayNextCommandRoutine(Result<bool> executeResult) {
         this.executeResult = executeResult;
+        while (pc.GetComponent<MapEvent>().tracking) {
+            yield return null;
+        }
         Global.Instance().Input.PushListener(this);
         while (!executeResult.finished) {
             yield return null;

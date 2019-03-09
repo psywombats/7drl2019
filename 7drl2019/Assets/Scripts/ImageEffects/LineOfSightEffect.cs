@@ -170,7 +170,7 @@ public class LineOfSightEffect : MonoBehaviour {
                         sitemap[
                             y2 * (mesh.size.x * mesh.size.y * mesh.size.x) +
                             x2 * (mesh.size.x * mesh.size.y) +
-                            y1 * (mesh.size.y) +
+                            y1 * (mesh.size.x) +
                             x1] = res;
                     }
                 }

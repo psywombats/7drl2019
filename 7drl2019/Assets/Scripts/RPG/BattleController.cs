@@ -125,9 +125,6 @@ public class BattleController : MonoBehaviour {
     }
 
     private IEnumerator PlayNextHumanActionRoutine() {
-        while (pcEvent.GetComponent<MapEvent>().tracking) {
-            yield return null;
-        }
         Result<bool> executeResult = new Result<bool>();
         yield return ui.PlayNextCommandRoutine(executeResult);
         if (!executeResult.canceled) {

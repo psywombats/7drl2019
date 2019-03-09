@@ -30,13 +30,13 @@ public class GenerationTable : ScriptableObject {
         List<Encounter> results = new List<Encounter>();
         int added = 0;
         int target = Random.Range(9, 11);
-        while (added < target) {
+        while (results.Count < target) {
             RandUtils.Shuffle(encounters);
             Encounter toAdd = null;
             foreach (Encounter encounter in encounters) {
-                if (encounter.levelMin >= level &&
-                    encounter.levelMax <= level &&
-                    RandUtils.Chance(encounter.rarity / 100.0f)) {
+                if (level >= encounter.levelMin &&
+                        level <= encounter.levelMax &&
+                        RandUtils.Chance(encounter.rarity / 100.0f)) {
                     toAdd = encounter;
                     added += 1;
                     break;
