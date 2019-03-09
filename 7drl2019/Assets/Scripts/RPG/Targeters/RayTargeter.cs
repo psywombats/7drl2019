@@ -25,14 +25,14 @@ public class RayTargeter : Targeter {
 
         if (effect.TargetsHostiles()) {
             float minDist = float.MaxValue;
-            BattleUnit bestUnit;
+            BattleUnit bestUnit = null;
             foreach (BattleUnit unit in battle.units) {
                 float dist = Vector2Int.Distance(unit.location, actor.location);
                 if (unit.align != actor.align && dist < minDist && selectRule(unit.location)) {
                     bestUnit = unit;
                     minDist = dist;
                 }
-                if (unit != null) {
+                if (bestUnit != null) {
                     cursor.GetComponent<MapEvent>().SetLocation(unit.location);
                 }
             }

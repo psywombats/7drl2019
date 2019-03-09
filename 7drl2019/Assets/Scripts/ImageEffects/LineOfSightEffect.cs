@@ -78,11 +78,15 @@ public class LineOfSightEffect : MonoBehaviour {
         heroPos += new Vector3(0.5f, 1.5f, 0.5f);
 
         map = new Color[mesh.size.x * mesh.size.y];
+        BattleEvent battler = pc.GetComponent<BattleEvent>();
+        Vector2Int v = new Vector2Int();
         for (int y = 0; y < mesh.size.y; y += 1) {
             for (int x = 0; x < mesh.size.x; x += 1) {
                 float r = 1.0f;
                 float b = 1.0f;
-                if (pc.GetComponent<BattleEvent>().CanSeeLocation(mesh, new Vector2Int(x, y))) {
+                v.x = x;
+                v.y = y;
+                if (battler.CanSeeLocation(mesh, v)) {
                     seenMap[x, y] = true;
                 } else {
                     r = 0.0f;

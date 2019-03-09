@@ -108,6 +108,13 @@ public class BattleController : MonoBehaviour {
                 }
             }
 
+            foreach (MapEvent ev in map.GetEvents<MapEvent>()) {
+                IEnumerator res = ev.GetComponent<MapEvent>().CheckIfVisibilityTriggeredRoutine();
+                if (res != null) {
+                    yield return res;
+                }
+            }
+
             foreach (BattleUnit unit in units) {
                 yield return unit.OnNewTurnRoutine();
             }
@@ -144,6 +151,9 @@ public class BattleController : MonoBehaviour {
             }
         }
         if (cleared) {
+            pc.unit.stats.Set(StatTag.HP, pc.Get(StatTag.MHP));
+            pc.unit.stats.Set(StatTag.MP, pc.Get(StatTag.MMP));
+            pc.unit.stats.Set(StatTag.CD, 0);
             cleared = false;
         }
     }

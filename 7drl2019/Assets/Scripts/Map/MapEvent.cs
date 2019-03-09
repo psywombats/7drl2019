@@ -16,6 +16,7 @@ public abstract class MapEvent : MonoBehaviour {
     private const string PropertyCondition = "show";
     private const string PropertyInteract = "onInteract";
     private const string PropertyCollide = "onCollide";
+    private const string PropertyVisible = "onVisible";
 
     public const string EventEnabled = "enabled";
     public const string EventCollide = "collide";
@@ -35,11 +36,14 @@ public abstract class MapEvent : MonoBehaviour {
     public string luaCondition;
     [TextArea(3, 6)] public string luaOnInteract;
     [TextArea(3, 6)] public string luaOnCollide;
+    [TextArea(3, 6)] public string luaVisible;
 
     // Properties
     public LuaMapEvent luaObject { get; private set; }
     public Vector3 targetPositionPx { get; set; }
     public bool tracking { get; set; }
+
+    private bool visTriggered;
 
     private Vector3 _internalPosition;
     public Vector3 positionPx {
@@ -125,6 +129,7 @@ public abstract class MapEvent : MonoBehaviour {
             luaObject.Set(PropertyCollide, luaOnCollide);
             luaObject.Set(PropertyInteract, luaOnInteract);
             luaObject.Set(PropertyCondition, luaCondition);
+            luaObject.Set(PropertyVisible, luaVisible);
 
             positionPx = transform.localPosition;
 
@@ -218,6 +223,18 @@ public abstract class MapEvent : MonoBehaviour {
         SetDepth();
     }
 
+    public IEnumerator CheckIfVisibilityTriggeredRoutine() {
+        if (!visTriggered && luaVisible.Length > 0) {
+            if (Global.Instance().Maps.pc.GetComponent<BattleEvent>().CanSeeLocation(
+                Global.Instance().Maps.pc.GetComponent<BattleEvent>().unit.battle.map.terrain,
+                location)) {
+                visTriggered = true;
+                return OnVisibleRoutine(Global.Instance().Maps.pc);
+            }
+        }
+        return null;
+    }
+
     // we have a solid TileX/TileY, please move the doll to the correct screen space
     public abstract void SetScreenPositionToMatchTilePosition();
 
@@ -242,6 +259,30 @@ public abstract class MapEvent : MonoBehaviour {
             GetComponent<CharaEvent>().facing = DirectionTo(pc.GetComponent<MapEvent>());
         }
         yield return luaObject.RunRoutine(PropertyInteract);
+    }
+
+    public IEnumerator OnVisibleRoutine(PCEvent pc) {
+        while (pc.GetComponent<MapEvent>().tracking) {
+            yield return null;
+        }
+        BattleEvent ev = GetComponent<BattleEvent>();
+        if (ev != null) {
+            BattleUnit unit = ev.unit;
+            var ui = FindObjectOfType<RogueUI>();
+            yield return ui.PrepareTalkRoutine(unit);
+            ui.face2.Populate(unit);
+
+            pc.GetComponent<CharaEvent>().FaceToward(unit.battler.GetComponent<MapEvent>());
+            unit.battler.GetComponent<CharaEvent>().FaceToward(pc.GetComponent<MapEvent>());
+
+            LuaScript script = new LuaScript(ui.GetComponent<LuaContext>(), luaVisible);
+            ui.GetComponent<LuaContext>().SetGlobal("name", unit.ToString());
+            ui.rightDisplayEnabled = true;
+            yield return script.RunRoutine();
+            ui.rightDisplayEnabled = false;
+        } else {
+            yield return luaObject.RunRoutine(PropertyVisible);
+        }
     }
 
     private LuaScript ParseScript(string lua) {

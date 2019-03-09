@@ -8,6 +8,8 @@ public class FadeImageEffect : MonoBehaviour {
     public Shader shader;
     public FadeData startFade;
 
+    public bool forceOff;
+
     private FadeData currentFade;
     private Material material;
     private float elapsedSeconds;
@@ -54,9 +56,11 @@ public class FadeImageEffect : MonoBehaviour {
         }
     }
 
-    public IEnumerator TransitionRoutine(TransitionData transition, Action intermediate = null) {
+    public IEnumerator TransitionRoutine(TransitionData transition, IEnumerator intermediate = null) {
         yield return StartCoroutine(FadeRoutine(transition.GetFadeOut()));
-        intermediate?.Invoke();
+        if (intermediate != null) {
+            yield return intermediate;
+        }
         yield return StartCoroutine(FadeRoutine(transition.GetFadeIn(), true));
     }
 
@@ -78,7 +82,11 @@ public class FadeImageEffect : MonoBehaviour {
         if (currentFade != null) {
             float elapsed = elapsedSeconds / transitionDuration;
             material.SetTexture("_MaskTexture", currentFade.transitionMask);
-            material.SetFloat("_Elapsed", reverse ? (1.0f - elapsed) : elapsed);
+            if (forceOff) {
+                material.SetFloat("_Elapsed", 0.0f);
+            } else {
+                material.SetFloat("_Elapsed", reverse ? (1.0f - elapsed) : elapsed);
+            }
             material.SetFloat("_SoftFudge", currentFade.softEdgePercent);
             material.SetInt("_Invert", currentFade.invert ? 1 : 0);
             material.SetInt("_FlipX", currentFade.flipHorizontal ? 1 : 0);

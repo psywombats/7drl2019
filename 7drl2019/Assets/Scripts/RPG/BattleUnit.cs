@@ -86,7 +86,7 @@ public class BattleUnit {
         yield return battler.AnimateAttackRoutine();
 
         int dmg = 0;
-        if (RandUtils.Chance(Get(StatTag.ACC))) {
+        if (RandUtils.Chance(Get(StatTag.ACC) / 100.0f)) {
             battler.GetComponent<CharaEvent>().FaceToward(other.battler.GetComponent<MapEvent>());
             dmg = (int)Get(StatTag.DMG);
             battle.Log(this + " attacked " + other + " for " + dmg + " damage.");

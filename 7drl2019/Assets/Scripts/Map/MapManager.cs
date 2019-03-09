@@ -28,42 +28,34 @@ public class MapManager : MonoBehaviour {
         yield return pc.GetComponent<MapEvent>().StepMultiRoutine(facing, 3);
 
         TransitionData data = Global.Instance().Database.Transitions.GetData(DefaultTransitionTag);
-        yield return camera.cam.GetComponent<FadeImageEffect>().TransitionRoutine(data, () => {
-            RawNextMap();
-        });
+        yield return camera.cam.GetComponent<FadeImageEffect>().TransitionRoutine(data, RawNextMapRoutine());
         facing = pc.GetComponent<CharaEvent>().facing;
         yield return pc.GetComponent<MapEvent>().StepMultiRoutine(facing, 3);
     }
 
-    public void RawNextMap() {
+    public IEnumerator RawNextMapRoutine() {
         pc.GetComponent<MapEvent>().SetLocation(new Vector2Int(0, 0));
         activeMap.GetComponent<BattleController>().Clear();
 
         MapGenerator oldMap = activeMap.GetComponent<MapGenerator>();
+        int level = oldMap.level;
         MapGenerator newGen = activeMap.gameObject.AddComponent<MapGenerator>();
         newGen.GenerateMesh(oldMap);
         Destroy(oldMap);
         activeMap.GetComponent<LineOfSightEffect>().Erase();
+
+        RogueUI ui = FindObjectOfType<RogueUI>();
+        ui.narrator.Clear();
+        if (level == 0) {
+            yield return ui.TutorialRoutine();
+        }
+        yield return ui.EditSpellsRoutine();
 
         Vector2Int loc = activeMap.GetEventNamed("TeleStart").location;
         EightDir dir = pc.GetComponent<CharaEvent>().facing;
         loc += dir.XY() * -2;
         pc.GetComponent<MapEvent>().SetLocation(loc);
         
-    }
-
-    public IEnumerator TeleportRoutine(string mapName, Vector2Int location) {
-        TransitionData data = Global.Instance().Database.Transitions.GetData(DefaultTransitionTag);
-        yield return camera.GetComponent<FadeImageEffect>().TransitionRoutine(data, () => {
-            RawTeleport(mapName, location);
-        });
-    }
-
-    public IEnumerator TeleportRoutine(string mapName, string targetEventName) {
-        TransitionData data = Global.Instance().Database.Transitions.GetData(DefaultTransitionTag);
-        yield return camera.GetComponent<FadeImageEffect>().TransitionRoutine(data, () => {
-            RawTeleport(mapName, targetEventName);
-        });
     }
     
     private void RawTeleport(string mapName, Vector2Int location) {

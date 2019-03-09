@@ -230,6 +230,7 @@
     <None Include="Assets\Resources\Shaders\GlitchSpriteShader.shader" />
     <None Include="Assets\Resources\Shaders\TransitionSpriteShader.shader" />
     <None Include="Assets\Resources\Shaders\GlitchEffectShader.shader" />
+    <None Include="Assets\Resources\Shaders\GeometryShader.shader" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>C:/Users/aking_2/7drl2019/7drl2019/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>

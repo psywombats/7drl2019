@@ -11,6 +11,7 @@ public class RogueUI : MonoBehaviour, InputListener {
     public Textbox box;
     public GameObject rightDisplay;
     public SpellEditorUI spellEditor;
+    [TextArea(3, 6)] public string luaTutorial;
 
     public PCEvent pc { get; private set; }
     public BattleUnit unit {
@@ -106,6 +107,12 @@ public class RogueUI : MonoBehaviour, InputListener {
         skills.OnTurn();
     }
 
+    public IEnumerator EditSpellsRoutine() {
+        yield return spellEditor.ActivateRoutine(this, pc, 
+            pc.GetComponent<MapEvent>().map.GetComponent<MapGenerator>().level);
+        Populate();
+    }
+
     public IEnumerator PlayNextCommandRoutine(Result<bool> executeResult) {
         this.executeResult = executeResult;
         Global.Instance().Input.PushListener(this);
@@ -125,6 +132,10 @@ public class RogueUI : MonoBehaviour, InputListener {
             if (ev != null) {
                 BattleUnit unit = ev.unit;
                 yield return PrepareTalkRoutine(unit);
+
+                pc.GetComponent<CharaEvent>().FaceToward(unit.battler.GetComponent<MapEvent>());
+                unit.battler.GetComponent<CharaEvent>().FaceToward(pc.GetComponent<MapEvent>());
+
                 LuaScript script = new LuaScript(GetComponent<LuaContext>(), unit.unit.luaOnExamine);
                 GetComponent<LuaContext>().SetGlobal("name", unit.ToString());
                 yield return script.RunRoutine();
@@ -146,8 +157,13 @@ public class RogueUI : MonoBehaviour, InputListener {
         yield return null;
     }
 
-    private IEnumerator PrepareTalkRoutine(BattleUnit other) {
+    public IEnumerator PrepareTalkRoutine(BattleUnit other) {
         box.ConfigureSpeakers(unit, other);
         yield return null;
+    }
+
+    public IEnumerator TutorialRoutine() {
+        LuaScript script = new LuaScript(GetComponent<LuaContext>(), luaTutorial);
+        yield return script.RunRoutine();
     }
 }

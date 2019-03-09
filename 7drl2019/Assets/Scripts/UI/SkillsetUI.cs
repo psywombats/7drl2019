@@ -15,7 +15,7 @@ public class SkillsetUI : MonoBehaviour {
         Clear();
         for (int i = 0; i < pc.activeBook.spells.Count; i += 1) {
             SkillContainer container = Instantiate(containerPrefab);
-            container.transform.SetParent(transform);
+            container.transform.SetParent(transform, false);
             container.Populate(pc, i);
         }
     }

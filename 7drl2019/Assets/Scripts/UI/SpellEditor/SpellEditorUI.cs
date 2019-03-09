@@ -84,6 +84,7 @@ public class SpellEditorUI : MonoBehaviour, InputListener {
         PopulateBookData();
         bookBox.Populate(bookData);
         PopulateScrollBoxForSelectedBook();
+        descriptionNameBox.transform.parent.GetComponent<CanvasGroup>().alpha = 0.0f;
 
         ui.rightDisplayEnabled = false;
         yield return textbox.DisableRoutine();
@@ -101,7 +102,7 @@ public class SpellEditorUI : MonoBehaviour, InputListener {
 
             if (selectResult.canceled) {
                 descriptionNameBox.text = "Ready?";
-                textbox.textbox.text = "Pri is currently equipped with \"" + pc.activeBook.bookName +
+                textbox.textbox.text = "Pri is equipped with \"" + pc.activeBook.bookName +
                     "\" as the current loadout. Ready to go?";
                 Result<bool> confirmResult = new Result<bool>();
                 yield return ConfirmRoutine(confirmResult);
@@ -354,12 +355,12 @@ public class SpellEditorUI : MonoBehaviour, InputListener {
                 (book.totalPages - book.pagesFilled) + " pages of scrolls can be added, for a total capacity of " +
                 book.totalPages + " pages.";
             if (pc.activeBook == book) {
-                textbox.textbox.text += " Pri currently has this spellbook equipped as the current loadout.";
+                textbox.textbox.text += " Pri has this spellbook equipped as the current loadout.";
             } else {
                 textbox.textbox.text += " Pri must equip this book as the loadout for its spells to be used.";
             }
-            textbox.textbox.text += "\n\nPress [SPACE] to browse the book, or press: [E]quip the book, [A]dd a scroll, " +
-                "e[X]tract a scroll (destroying the book), [R]emove a scroll (destroying the scroll).";
+            textbox.textbox.text += "\n\nPress [SPACE] to browse the book. Other actions: [E]quip the book, " +
+                "[A]dd a scroll, e[X]tract a scroll (destroying the book), [R]emove a scroll (destroying the scroll).";
 
             rightFace.face.sprite = bookFace;
         }

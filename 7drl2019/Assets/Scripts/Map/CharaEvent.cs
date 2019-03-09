@@ -150,12 +150,12 @@ public class CharaEvent : MonoBehaviour {
     }
 
     private void CopyShaderValues() {
-        foreach (SpriteRenderer renderer in renderers) {
-            Material material = Application.isPlaying ? renderer.material : renderer.sharedMaterial;
-            if (material != null) {
-                material.SetFloat("_Desaturation", desaturation);
-            } 
-        }
+        //foreach (SpriteRenderer renderer in renderers) {
+        //    Material material = Application.isPlaying ? renderer.material : renderer.sharedMaterial;
+        //    if (material != null) {
+        //        material.SetFloat("_Desaturation", desaturation);
+        //    } 
+        //}
     }
 
     public IEnumerator FadeRoutine(bool visible) {

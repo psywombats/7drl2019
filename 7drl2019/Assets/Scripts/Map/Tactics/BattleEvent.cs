@@ -23,6 +23,7 @@ public class BattleEvent : MonoBehaviour {
     public LuaAnimation bumpAnimation;
 
     private LuaContext involuntaryContext;
+    private float sight;
 
     public Vector2Int location { get { return GetComponent<MapEvent3D>().location; } }
 
@@ -44,6 +45,7 @@ public class BattleEvent : MonoBehaviour {
             GetComponent<CharaEvent>().spritesheet = unitData.appearance;
             gameObject.name = unitData.unitName;
         }
+        sight = unit.Get(StatTag.SIGHT);
     }
 
     public void SetScreenPositionToMatchTilePosition() {
@@ -82,7 +84,10 @@ public class BattleEvent : MonoBehaviour {
     }
 
     public bool CanSeeLocation(TacticsTerrainMesh mesh, Vector2Int location) {
-        return MathHelper3D.InLos(mesh, this.location, location, unit.Get(StatTag.SIGHT));
+        if (sight == 0) {
+            sight = unit.Get(StatTag.SIGHT);
+        }
+        return MathHelper3D.InLos(mesh, this.location, location, sight);
     }
 
     public IEnumerator StepOrAttackRoutine(EightDir dir, Result<bool> executeResult) {

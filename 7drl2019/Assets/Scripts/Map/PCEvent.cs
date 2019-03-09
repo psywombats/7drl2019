@@ -21,8 +21,8 @@ public class PCEvent : MonoBehaviour {
     public int scissors { get;  set; }
 
     public void Awake() {
-        scissors = 2;
-        erasers = 2;
+        scissors = 0;
+        erasers = 0;
         books = new List<Spellbook>();
         scrolls = new List<Scroll>();
 
@@ -41,6 +41,9 @@ public class PCEvent : MonoBehaviour {
             scrolls.Add((Scroll)item);
         } else if (item is SpellbookData) {
             books.Add(new Spellbook((SpellbookData)item));
+            if (activeBook == null) {
+                activeBook = books[0];
+            }
         } else if (item.isEraser) {
             erasers += quantity;
         } else if (item.isScissors) {
