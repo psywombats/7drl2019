@@ -18,7 +18,7 @@ public class ItemScrollBox : MonoBehaviour, InputListener {
     public Image downArrow;
 
     public List<Data> items { get; private set; }
-    public int selection { get; private set; }
+    public int selection { get; set; }
 
     private int offset;
     private Result<InputManager.Command> awaitingResult;
@@ -27,6 +27,7 @@ public class ItemScrollBox : MonoBehaviour, InputListener {
     public void Populate(List<Data> items) {
         this.items = items;
 
+        selection = -1;
         offset = 0;
         for (int i = 0; i < cells.Count; i += 1) {
             int at = offset + i;
@@ -38,6 +39,12 @@ public class ItemScrollBox : MonoBehaviour, InputListener {
             
         }
         UpdateSelectionArrows();
+    }
+
+    public void ClearSelection() {
+        selection = -1;
+        UpdateSelectionArrows();
+        UpdateHighlight();
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
@@ -70,7 +77,9 @@ public class ItemScrollBox : MonoBehaviour, InputListener {
     public IEnumerator SelectRoutine(Result<InputManager.Command> result, Action<int> scanner) {
         this.scanner = scanner;
         awaitingResult = result;
-        selection = 0;
+        if (selection == -1) {
+            selection = 0;
+        }
         UpdateHighlight();
         Global.Instance().Input.PushListener(this);
         while (!awaitingResult.finished) {
@@ -79,8 +88,13 @@ public class ItemScrollBox : MonoBehaviour, InputListener {
     }
 
     private void UpdateSelectionArrows() {
-        upArrow.enabled = offset > 0;
-        downArrow.enabled = (offset + items.Count) > cells.Count;
+        if (items != null && items.Count > 0) {
+            upArrow.enabled = offset > 0;
+            downArrow.enabled = (offset + items.Count) > cells.Count;
+        } else {
+            upArrow.enabled = false;
+            downArrow.enabled = false;
+        }
     }
 
     private void UpdateHighlight() {
@@ -93,7 +107,6 @@ public class ItemScrollBox : MonoBehaviour, InputListener {
     private void EndAwait() {
         scanner = null;
         Global.Instance().Input.RemoveListener(this);
-        selection = -1;
         offset = 0;
         UpdateHighlight();
         UpdateSelectionArrows();

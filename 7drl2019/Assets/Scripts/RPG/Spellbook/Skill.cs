@@ -37,7 +37,7 @@ public class Skill {
         longformName = "";
         foreach (SkillModifier mod in mods) {
             longformName = mod.MutateName(longformName);
-            pageCost = mod.MutateCost(pageCost);
+            pageCost = mod.MutatePages(pageCost);
             if (costMP > 0) {
                 costMP = mod.MutateCost(costMP);
             } else {

@@ -21,6 +21,8 @@ public class PCEvent : MonoBehaviour {
     public int scissors { get;  set; }
 
     public void Awake() {
+        scissors = 2;
+        erasers = 2;
         books = new List<Spellbook>();
         scrolls = new List<Scroll>();
 

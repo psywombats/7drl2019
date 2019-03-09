@@ -11,6 +11,9 @@ public class ItemCell : MonoBehaviour {
     public void Populate(ItemScrollBox.Data item, bool selected = false) {
         icon.enabled = true;
         icon.sprite = item.sprite;
+        if (icon.sprite == null) {
+            icon.enabled = false;
+        }
         icon.color = item.tint;
         label.text = item.text;
         SetSeleceted(selected);

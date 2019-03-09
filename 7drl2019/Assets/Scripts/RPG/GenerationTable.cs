@@ -63,10 +63,13 @@ public class GenerationTable : ScriptableObject {
         while (items.Count < count) {
             Item toAdd = null;
             float r = Random.Range(0.0f, 1.0f);
+            if (level < 4) {
+                r += .15f;
+            }
             if (r < 0.5)        toAdd = gold;
             else if (r < 0.8)   toAdd = GenerateScroll(level);
-            else if (r < 0.95)  toAdd = GenerateBook(level);
-            else                toAdd = GeneratePickup(level);
+            else if (r < 0.85)  toAdd = GeneratePickup(level);
+            else                toAdd = GenerateBook(level);
             if (toAdd != null) {
                 items.Add(toAdd);
             }
@@ -77,11 +80,12 @@ public class GenerationTable : ScriptableObject {
 
     private Scroll GenerateScroll(int level) {
         int modCount = 0;
-        if (RandUtils.Chance(0.6f)) {
-            modCount += 1;
-        }
-        if (level >= 5 && RandUtils.Chance(0.4f)) {
-            modCount += 1;
+        if (level >= 8) {
+            modCount = RandUtils.Chance(0.6f) ? 1 : 0;
+        } else if (level >= 4) {
+            modCount = RandUtils.Chance(0.35f) ? 1 : 0;
+        } else {
+            modCount = RandUtils.Chance(0.1f) ? 1 : 0;
         }
 
         List<SkillModifier.Type> toApply = new List<SkillModifier.Type>();
