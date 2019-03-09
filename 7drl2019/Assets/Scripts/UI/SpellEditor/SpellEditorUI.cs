@@ -77,10 +77,6 @@ public class SpellEditorUI : MonoBehaviour, InputListener {
     }
 
     public IEnumerator DeactivateRoutine() {
-        rightFace.hpBar.gameObject.SetActive(true);
-        rightFace.mpBar.gameObject.SetActive(true);
-        rightFace.cdBar.gameObject.SetActive(true);
-
         PopulateBookData();
         bookBox.Populate(bookData);
         PopulateScrollBoxForSelectedBook();
@@ -89,6 +85,10 @@ public class SpellEditorUI : MonoBehaviour, InputListener {
         ui.rightDisplayEnabled = false;
         yield return textbox.DisableRoutine();
         yield return CoUtils.RunTween(GetComponent<CanvasGroup>().DOFade(0.0f, 1.0f));
+
+        rightFace.hpBar.gameObject.SetActive(true);
+        rightFace.mpBar.gameObject.SetActive(true);
+        rightFace.cdBar.gameObject.SetActive(true);
     }
 
     public IEnumerator SelectBookRoutine() {

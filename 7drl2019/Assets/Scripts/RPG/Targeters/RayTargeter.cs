@@ -28,6 +28,7 @@ public class RayTargeter : Targeter {
             BattleUnit bestUnit = null;
             foreach (BattleUnit unit in battle.units) {
                 float dist = Vector2Int.Distance(unit.location, actor.location);
+                cursor.GetComponent<MapEvent>().SetLocation(unit.location);
                 if (unit.align != actor.align && dist < minDist && selectRule(unit.location)) {
                     bestUnit = unit;
                     minDist = dist;
@@ -72,7 +73,7 @@ public class RayTargeter : Targeter {
             return false;
         }
         if (map.terrain.HeightAt(toCheck) != map.terrain.HeightAt(actor.location)) {
-            return false;
+            //return false;
         }
         if (!DefaultSelectRule(effect)(toCheck)) {
             return false;

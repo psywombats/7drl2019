@@ -122,6 +122,8 @@ public class RogueUI : MonoBehaviour, InputListener {
     }
 
     public IEnumerator PostMortemRoutine(BattleUnit killer) {
+        pc.unit.unit.stats.Set(StatTag.HP, 0);
+        Populate();
         yield return PrepareTalkRoutine(unit);
         face2.Populate(killer);
 
@@ -141,6 +143,7 @@ public class RogueUI : MonoBehaviour, InputListener {
         yield return CoUtils.RunTween(postMortem.GetComponent<CanvasGroup>().DOFade(1.0f, 1.0f));
         yield return CoUtils.Wait(3.0f);
         yield return CoUtils.RunTween(postMortem.GetComponent<CanvasGroup>().DOFade(0.0f, 3.0f));
+        LineOfSightEffect.sitemap = null;
         SceneManager.LoadScene("Title", LoadSceneMode.Single);
     }
 
@@ -179,12 +182,12 @@ public class RogueUI : MonoBehaviour, InputListener {
                 LuaScript script = new LuaScript(GetComponent<LuaContext>(), unit.unit.luaOnExamine);
                 GetComponent<LuaContext>().SetGlobal("name", unit.ToString());
                 yield return script.RunRoutine();
+                narrator.Log(unit.StatusString(), true);
             }
         }
         rightDisplayEnabled = false;
         unit.battle.DespawnCursor();
         executeResult.Cancel();
-        narrator.Log(unit.StatusString(), true);
     }
 
     private IEnumerator ScanAtRoutine(Vector2Int loc) {

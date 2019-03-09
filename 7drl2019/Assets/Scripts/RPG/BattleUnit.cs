@@ -106,7 +106,7 @@ public class BattleUnit {
         if (!IsDead()) {
             unit.stats.Sub(StatTag.HP, damage);
             if (!tookDamageThisTurn) {
-                yield return battler.AnimateTakeDamageRoutine();
+                yield return battler.PlayAnimationRoutine(damageAnimation);
             }
             tookDamageThisTurn = true;
             if (IsDead()) {

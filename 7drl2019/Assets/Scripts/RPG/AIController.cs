@@ -25,7 +25,7 @@ public class AIController {
     }
 
     public IEnumerator TakeTurnRoutine() {
-        if (pc.IsDead()) {
+        if (pc.IsDead() || unit.IsDead()) {
             return null;
         }
 
