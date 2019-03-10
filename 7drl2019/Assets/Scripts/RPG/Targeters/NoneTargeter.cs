@@ -7,4 +7,8 @@ public class NoneTargeter : Targeter {
         result.value = true;
         yield return null;
     }
+
+    public override IEnumerator TryAIUse(AIController ai, Effector effect) {
+        return null;
+    }
 }

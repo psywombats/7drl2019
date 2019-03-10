@@ -210,14 +210,15 @@ public class BattleEvent : MonoBehaviour {
     }
 
     public void AnimateTakeDamage() {
-        PlayAnimation(damageAnimation, involuntaryContext);
+        PlayAnimation(damageAnimation, null, involuntaryContext);
     }
 
     public void AnimateDie() {
-
-        // we no longer consider ourselves to be a valid anything on the map
-        enabled = false;
-        PlayAnimation(deathAnimation);
+        if (!GetComponent<PCEvent>()) {
+            // we no longer consider ourselves to be a valid anything on the map
+            enabled = false;
+            PlayAnimation(deathAnimation, GetComponent<MapEvent>());
+        }
     }
 
     public void AnimateAttack() {
@@ -228,16 +229,21 @@ public class BattleEvent : MonoBehaviour {
         PlayAnimation(bumpAnimation);
     }
 
-    public void PlayAnimation(LuaAnimation anim, LuaContext context = null) {
+    public void PlayAnimation(LuaAnimation anim, MapEvent kill = null, LuaContext context = null) {
         if (anim == null) {
             return;
         }
         chara.doll.GetComponent<CharaAnimationTarget>().ConfigureToBattler(this);
-        chara.PerformWhenDoneAnimating(chara.doll.GetComponent<AnimationPlayer>().PlayAnimationRoutine(anim, context));
+        chara.PerformWhenDoneAnimating(
+            CoUtils.RunWithCallback(chara.doll.GetComponent<AnimationPlayer>().PlayAnimationRoutine(anim, context), () => {
+                if (kill != null) {
+                    battle.map.RemoveEvent(kill);
+                }
+            }));
     }
 
     public IEnumerator SyncPlayAnim(LuaAnimation anim, LuaContext context = null) {
-        PlayAnimation(anim, context);
+        PlayAnimation(anim, null, context);
         yield return FinishAnims();
     }
 

@@ -356,10 +356,6 @@ public class CharaEvent : MonoBehaviour {
             }
             IEnumerator next = animationQueue[0];
             yield return next;
-            BattleEvent ev = GetComponent<BattleEvent>();
-            if (ev != null && ev.unit.IsDead()) {
-                yield break;
-            }
             animationQueue.Remove(next);
         }
     }

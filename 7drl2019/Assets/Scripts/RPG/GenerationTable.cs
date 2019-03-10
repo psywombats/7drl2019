@@ -65,9 +65,9 @@ public class GenerationTable : ScriptableObject {
             if (level < 4) {
                 r += .15f;
             }
-            if (r < 0.5)        toAdd = gold;
+            if (r < 0.475)        toAdd = gold;
             else if (r < 0.8)   toAdd = GenerateScroll(level);
-            else if (r < 0.85)  toAdd = GeneratePickup(level);
+            else if (r < 0.875)  toAdd = GeneratePickup(level);
             else                toAdd = GenerateBook(level);
             if (toAdd != null) {
                 items.Add(toAdd);

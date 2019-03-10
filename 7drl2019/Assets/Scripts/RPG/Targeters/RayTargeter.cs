@@ -67,6 +67,20 @@ public class RayTargeter : Targeter {
         }
     }
 
+    public override IEnumerator TryAIUse(AIController ai, Effector effect) {
+        if (Vector2Int.Distance(actor.location, ai.pc.location) < range) {
+            foreach (Vector2Int v2 in map.PointsAlongPath(actor.location, ai.pc.location)) {
+                BattleEvent ev2 = map.GetEventAt<BattleEvent>(v2);
+                if (ev2 != actor.battler && ev2 != null && ev2 != ai.pc.battler) {
+                    return null;
+                }
+            }
+            return effect.ExecuteCellsRoutine(new List<Vector2Int>() { ai.pc.location });
+        } else {
+            return null;
+        }
+    }
+
     private bool IsSelected(Effector effect, Vector2Int toCheck) {
         Vector2Int otherLoc = battle.cursor.GetComponent<MapEvent>().location;
         if (toCheck != otherLoc) {

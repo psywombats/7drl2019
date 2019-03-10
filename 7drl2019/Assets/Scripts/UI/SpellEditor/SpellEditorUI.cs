@@ -203,6 +203,7 @@ public class SpellEditorUI : MonoBehaviour, InputListener {
                     pc.scrolls.Remove(scroll);
                     book.AddScroll(scroll);
                     UpdateDescriptionForSelectedBook();
+                    PopulateBookData();
                 } else {
                     UpdateDescriptionForSelectedBook();
                 }
@@ -345,7 +346,7 @@ public class SpellEditorUI : MonoBehaviour, InputListener {
             descriptionNameBox.text = "Looseleaf scrolls";
             textbox.textbox.text = "Miscellaneous scrolls owned by Pri. They must be added to a spellbook before they" +
                 " can be cast.";
-            textbox.textbox.text += "\n\nPress [SPACE] to browse the scrolls.";
+            textbox.textbox.text += "\n\nPress [V] to view the scrolls.";
 
             rightFace.face.sprite = chestFace;
         } else {

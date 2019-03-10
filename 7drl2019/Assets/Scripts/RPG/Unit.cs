@@ -12,7 +12,7 @@ public class Unit : ScriptableObject {
     public Alignment align;
 
     [Tooltip("Monsters will use this")]
-    public List<Skill> innateSkills;
+    public List<SkillData> innateSkills;
 
     [TextArea(3, 6)] public string luaOnExamine;
     [TextArea(3, 6)] public string luaOnDefeat;

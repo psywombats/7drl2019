@@ -127,7 +127,7 @@ public class DirectionCursor : MonoBehaviour, InputListener {
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
-        if (eventType == InputManager.Event.Down) {
+        if (eventType == InputManager.Event.Up) {
             switch (command) {
                 case InputManager.Command.Down:
                 case InputManager.Command.Left:
@@ -141,9 +141,11 @@ public class DirectionCursor : MonoBehaviour, InputListener {
                     break;
                 case InputManager.Command.Confirm:
                     awaitingSelect.value = currentDir;
+                    Global.Instance().Input.RemoveListener(this);
                     break;
                 case InputManager.Command.Cancel:
                     awaitingSelect.Cancel();
+                    Global.Instance().Input.RemoveListener(this);
                     break;
             }
         }

@@ -94,8 +94,8 @@ public class Map : MonoBehaviour {
     // it does support bigger than 1*1 events though
     public List<MapEvent> GetEventsAt(Vector2Int loc) {
         List<MapEvent> events = new List<MapEvent>();
-        foreach (MapEvent mapEvent in objectLayer.GetComponentsInChildren<MapEvent>()) {
-            if (mapEvent.ContainsPosition(loc)) {
+        foreach (MapEvent mapEvent in objectLayer.GetComponentsInChildren<MapEvent>(false)) {
+            if (mapEvent.ContainsPosition(loc) && mapEvent.enabled) {
                 events.Add(mapEvent);
             }
         }
@@ -106,6 +106,9 @@ public class Map : MonoBehaviour {
     public T GetEventAt<T>(Vector2Int loc) {
         List<MapEvent> events = GetEventsAt(loc);
         foreach (MapEvent mapEvent in events) {
+            if (!mapEvent.enabled) {
+                continue;
+            }
             if (mapEvent.GetComponent<T>() != null) {
                 return mapEvent.GetComponent<T>();
             }

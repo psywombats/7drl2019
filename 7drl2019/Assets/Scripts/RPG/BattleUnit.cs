@@ -76,7 +76,7 @@ public class BattleUnit {
             return (int)(height * 2.0f);
         } else {
             float max = Mathf.Max(GetMaxDescent(), 3);
-            return Mathf.RoundToInt(10.0f + (height - max) * 15.0f);
+            return Mathf.RoundToInt(10.0f + (height - max) * 25.0f);
         }
     }
 
@@ -127,6 +127,8 @@ public class BattleUnit {
         battle.Log(this + flight);
         battle.RemoveUnit(this);
         battler.AnimateDie();
+        battler.GetComponent<MapEvent>().enabled = false;
+        battler.enabled = false;
     }
 
     public void OnNewTurn() {

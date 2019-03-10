@@ -39,7 +39,7 @@ public class CharaAnimationTarget : AnimationTarget {
 
     [MoonSharpHidden]
     public override void ResetAfterAnimation() {
-        transform.position = originalDollPos;
+        //transform.position = originalDollPos;
         foreach (SpriteRenderer renderer in renderers) {
             renderer.GetComponent<AfterimageComponent>().enabled = false;
         }

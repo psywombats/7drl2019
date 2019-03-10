@@ -191,10 +191,15 @@ public class MapGenerator : MonoBehaviour {
             RandUtils.Shuffle(adjacents);
             RoomInfo adj = null;
             foreach (RoomInfo adj2 in adjacents) {
-                if (adj2.cell.connected) {
-                    adj = adj2;
-                    break;
+                if (!adj2.cell.connected) {
+                    continue;
                 }
+                CellInfo connector = cells[(room.cell.x + adj2.cell.x) / 2, (room.cell.y + adj2.cell.y) / 2];
+                if (Mathf.Abs(adj2.z - room.z) / (widths[connector.x] * heights[connector.y]) > 2) {
+                    continue;
+                }
+                adj = adj2;
+                break;
             }
             if (adj == null) {
                 continue;

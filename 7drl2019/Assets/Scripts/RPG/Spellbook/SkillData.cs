@@ -9,7 +9,7 @@ public class SkillData : ScriptableObject {
     public SpellSchool school;
     public int baseCost;
     public int basePages;
-    public bool prohibitedToBeCD;
+    public bool prohibitedToBeCD, prohibitedToBeMP;
     [Tooltip("0-100, the higher the more common")]
     [Range(0, 100)]
     public float rarity;

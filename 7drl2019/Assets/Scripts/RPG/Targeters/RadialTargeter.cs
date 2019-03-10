@@ -44,4 +44,9 @@ public class RadialTargeter : Targeter {
             result.value = true;
         }
     }
+
+    public override IEnumerator TryAIUse(AIController ai, Effector effect) {
+        // 7drl hack
+        return null;
+    }
 }

@@ -18,6 +18,12 @@ public class Skill {
     public SpellSchool school { get { return data.school; } }
     public LuaAnimation castAnim { get { return data.castAnimation; } }
 
+    public Skill(SkillData data) {
+        this.data = data;
+        costMP = data.baseCost;
+        // 7drl hack
+    }
+
     public Skill(Scroll scroll) {
         this.scroll = scroll;
         data = scroll.data;
@@ -27,7 +33,11 @@ public class Skill {
         }
 
         // generation
-        if (RandUtils.Chance(0.7f) || data.prohibitedToBeCD) {
+        if (data.prohibitedToBeCD) {
+            costMP = data.baseCost;
+        } else if (data.prohibitedToBeMP) {
+            costCD = data.baseCost;
+        } else if (RandUtils.Chance(0.7f)) {
             costMP = data.baseCost;
         } else {
             costCD = Mathf.CeilToInt(data.baseCost / 8.0f);
@@ -65,5 +75,15 @@ public class Skill {
                 actor.maxCD = costCD;
             }
         }
+    }
+
+    public IEnumerator TryAIUse(AIController ai) {
+        Targeter targeter = Object.Instantiate(data.targeter);
+        Effector effect = Object.Instantiate(data.effect);
+        effect.actor = ai.unit;
+        targeter.actor = ai.unit;
+        effect.skill = this;
+        targeter.skill = this;
+        return targeter.TryAIUse(ai, effect);
     }
 }

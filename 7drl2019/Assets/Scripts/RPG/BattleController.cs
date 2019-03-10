@@ -107,7 +107,6 @@ public class BattleController : MonoBehaviour {
                         units.Remove(battler.unit);
                     }
                     battlers.Remove(battler.unit);
-                    map.RemoveEvent(battler.GetComponent<MapEvent>());
                 }
             }
 
@@ -136,7 +135,10 @@ public class BattleController : MonoBehaviour {
                         if (unit.isRecovering) {
                             unit.isRecovering = false;
                         } else {
-                            unit.ai.TakeTurn();
+                            IEnumerator aiTry = unit.ai.TakeTurnAction();
+                            if (aiTry != null) {
+                                yield return aiTry;
+                            }
                             if (pc.IsDead()) {
                                 StartCoroutine(ui.PostMortemRoutine(unit));
                                 break;
@@ -149,7 +151,10 @@ public class BattleController : MonoBehaviour {
                 foreach (BattleUnit unit in new List<BattleUnit>(units)) {
                     if (unit.canActAgain) {
                         unit.canActAgain = false;
-                        unit.ai.TakeTurn();
+                        IEnumerator aiTry = unit.ai.TakeTurnAction();
+                        if (aiTry != null) {
+                            yield return aiTry;
+                        }
                         if (pc.IsDead()) {
                             StartCoroutine(ui.PostMortemRoutine(unit));
                             break;

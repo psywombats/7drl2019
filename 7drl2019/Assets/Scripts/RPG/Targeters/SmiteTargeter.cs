@@ -32,16 +32,16 @@ public class SmiteTargeter : Targeter {
 
         if (effect.TargetsHostiles()) {
             float minDist = float.MaxValue;
-            BattleUnit bestUnit;
+            BattleUnit bestUnit = null;
             foreach (BattleUnit unit in battle.units) {
                 float dist = Vector2Int.Distance(unit.location, actor.location);
                 if (unit.align != actor.align && dist < minDist && selectRule(unit.location)) {
                     bestUnit = unit;
                     minDist = dist;
                 }
-                if (unit != null) {
-                    cursor.GetComponent<MapEvent>().SetLocation(unit.location);
-                }
+            }
+            if (bestUnit != null) {
+                cursor.GetComponent<MapEvent>().SetLocation(bestUnit.location);
             }
         }
 
@@ -73,6 +73,17 @@ public class SmiteTargeter : Targeter {
             }
             yield return effect.ExecuteCellsRoutine(cells);
             result.value = true;
+        }
+    }
+
+    public override IEnumerator TryAIUse(AIController ai, Effector effect) {
+        // 7drl hack
+        if (Vector2Int.Distance(actor.location, ai.pc.location) < range &&
+                battler.CanSeeLocation(map.terrain, ai.pc.location)) {
+            battle.Log(actor + " cast " + skill.skillName + "!");
+            return effect.ExecuteCellsRoutine(new List<Vector2Int>() { ai.pc.location });
+        } else {
+            return null;
         }
     }
 }

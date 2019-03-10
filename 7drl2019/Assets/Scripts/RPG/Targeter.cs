@@ -15,10 +15,13 @@ public abstract class Targeter : ActorScriptableObject {
         yield return InternalExecuteRoutine(effect, executeResult);
     }
 
+    public abstract IEnumerator TryAIUse(AIController ai, Effector effect);
+
     protected abstract IEnumerator InternalExecuteRoutine(Effector effect, Result<bool> result);
 
     protected Func<Vector2Int, bool> DefaultSelectRule(Effector effect) {
         return (Vector2Int loc) => {
+            if (loc.x == map.size.x - 1 || loc.y == map.size.y - 1) return false;
             BattleEvent targetBattler = map.GetEventAt<BattleEvent>(loc);
             if (!actorEvent.CanPassAt(loc) && map.GetEventAt<BattleEvent>(loc) == null) {
                 return false;

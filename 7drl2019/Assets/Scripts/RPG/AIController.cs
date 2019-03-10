@@ -23,9 +23,9 @@ public class AIController {
         seenMap = new short[battle.map.size.x, battle.map.size.y];
     }
 
-    public void TakeTurn() {
+    public IEnumerator TakeTurnAction() {
         if (pc.IsDead() || unit.IsDead()) {
-            return ;
+            return null;
         }
 
         int intel = (int)unit.Get(StatTag.INTELLIGENCE);
@@ -43,15 +43,22 @@ public class AIController {
         // hunt down the hero if we've recently seen them
         if (battler.CanSeeLocation(battle.map.terrain, pc.location)) {
             turnsHunting = intel;
+            foreach (SkillData data in unit.unit.innateSkills) {
+                Skill skill = new Skill(data);
+                IEnumerator aiTry = skill.TryAIUse(this);
+                if (aiTry != null) {
+                    return aiTry;
+                }
+            }
         }
         if (turnsHunting > 0 || (HasLeader() && leaderAI.turnsHunting > 0)) {
             List<Vector2Int> path = battle.map.FindPath(battler.GetComponent<MapEvent>(), pc.location, intel);
             if (path != null && path.Count > 0) {
                 battler.StepOrAttack(battler.GetComponent<MapEvent>().DirectionTo(path[0]), result);
-                return;
+                return null;
             } else {
                 battler.StepOrAttack(battler.GetComponent<MapEvent>().DirectionTo(pc.location), result);
-                return;
+                return null;
             }
         }
 
@@ -81,7 +88,7 @@ public class AIController {
             }
         }
         battler.StepOrAttack(bestDir, result);
-        return;
+        return null;
     }
 
     private bool HasLeader() {
