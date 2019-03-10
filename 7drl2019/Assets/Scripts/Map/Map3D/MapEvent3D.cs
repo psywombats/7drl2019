@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[ExecuteInEditMode]
+//[ExecuteInEditMode]
 public class MapEvent3D : MapEvent {
 
     public override Vector3 TileToWorldCoords(Vector2Int position) {

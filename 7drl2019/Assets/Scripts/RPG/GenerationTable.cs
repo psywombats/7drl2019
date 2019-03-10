@@ -112,7 +112,7 @@ public class GenerationTable : ScriptableObject {
     private SpellbookData GenerateBook(int level) {
         SpellbookData book = Instantiate(this.book);
         book.spells = new List<Scroll>();
-        book.pageCount = 8 + Random.Range(0, Mathf.CeilToInt(level / 3.0f));
+        book.pageCount = 8 + Random.Range(0, Mathf.CeilToInt(level / 2f));
 
         int preSpells;
         float r = Random.Range(0.0f, 1.0f);

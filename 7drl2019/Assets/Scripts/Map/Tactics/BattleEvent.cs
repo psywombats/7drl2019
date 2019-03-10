@@ -82,10 +82,11 @@ public class BattleEvent : MonoBehaviour {
             return true;
         }
     }
-
+    
     public bool CanSeeLocation(TacticsTerrainMesh mesh, Vector2Int to) {
-        if (LineOfSightEffect.sitemap == null) {
-            LineOfSightEffect.RegenSitemap(mesh);
+        LineOfSightEffect los = battle.GetComponent<LineOfSightEffect>();
+        if (los.sitemap == null) {
+            los.RegenSitemap(mesh);
         }
         if (sight == 0) {
             sight = unit.Get(StatTag.SIGHT);
@@ -98,7 +99,7 @@ public class BattleEvent : MonoBehaviour {
         if (delta.sqrMagnitude > sight * sight) {
             return false;
         } else {
-            return LineOfSightEffect.sitemap[
+            return los.sitemap[
                             to.y * (mesh.size.x * mesh.size.y * mesh.size.x) +
                             to.x * (mesh.size.x * mesh.size.y) +
                             at.y * (mesh.size.x) +

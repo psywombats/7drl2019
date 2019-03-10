@@ -20,6 +20,7 @@ public class Textbox : MonoBehaviour, InputListener {
     public Text namebox2;
     public Text textbox;
     public Facebox facebox;
+    public Facebox facebox2;
     public RectTransform backer;
     public RectTransform mainBox;
     public GameObject advanceArrow;
@@ -118,7 +119,11 @@ public class Textbox : MonoBehaviour, InputListener {
         }
 
         if (facebox) {
-            facebox.SetFaceNumber(faceNo);
+            if (speakerName == "Pri") {
+                facebox.SetFaceNumber(faceNo);
+            } else {
+                facebox2.SetFaceNumber(faceNo);
+            }
         }
 
         yield return TypeRoutine(text);

@@ -8,7 +8,7 @@ using UnityEngine.Profiling;
 public class LineOfSightEffect : MonoBehaviour {
 
     // 7drl mega perf hack
-    public static BitArray sitemap;
+    public BitArray sitemap;
 
     public Texture2D oldLosTexture;
     public Texture2D losTexture;
@@ -147,7 +147,7 @@ public class LineOfSightEffect : MonoBehaviour {
 
     // SITEMAP GARBAGE ==============
 
-    public static void RegenSitemap(TacticsTerrainMesh mesh) {
+    public void RegenSitemap(TacticsTerrainMesh mesh) {
         Vector3 v1 = new Vector3();
         Vector3 v2 = new Vector3();
         sitemap = new BitArray(mesh.size.x * mesh.size.y * mesh.size.x * mesh.size.y);

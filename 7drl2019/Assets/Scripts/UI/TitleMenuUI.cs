@@ -60,9 +60,9 @@ public class TitleMenuUI : MonoBehaviour, InputListener {
     private void MoveSelection(int delta) {
         options[selection].selectionBacker.enabled = false;
         selection += delta;
-        if (selection == 0) {
+        if (selection < 0) {
             selection = 0;
-        } else if (selection == options.Count) {
+        } else if (selection >= options.Count) {
             selection = options.Count - 1;
         }
         options[selection].selectionBacker.enabled = true;

@@ -28,7 +28,11 @@ public class BattleController : MonoBehaviour {
     // === INITIALIZATION ==========================================================================
 
     public void Start() {
-        Global.Instance().Maps.pc = pcEvent.GetComponent<PCEvent>();
+        if (pcEvent != null) {
+            Global.Instance().Maps.pc = pcEvent.GetComponent<PCEvent>();
+        } else {
+            pcEvent = Global.Instance().Maps.pc.GetComponent<BattleEvent>();
+        }
 
         pc = new BattleUnit(Instantiate(pcEvent.unitSerialized), this);
         pcEvent.unit = pc;
@@ -94,7 +98,7 @@ public class BattleController : MonoBehaviour {
         while (true) {
             ui.OnTurn();
             yield return PlayNextHumanActionRoutine();
-            if (pc.IsDead()) {
+            if (pc.IsDead() || Global.Instance().Maps.activeMap != GetComponent<Map>()) {
                 break;
             }
             map.GetComponent<LineOfSightEffect>().RecalculateVisibilityMap();

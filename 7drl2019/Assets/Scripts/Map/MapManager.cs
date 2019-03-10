@@ -36,6 +36,7 @@ public class MapManager : MonoBehaviour {
     }
 
     public IEnumerator RawNextMapRoutine() {
+        bool swapped = false;
         pc.GetComponent<MapEvent>().SetLocation(new Vector2Int(0, 0));
         activeMap.GetComponent<BattleController>().Clear();
 
@@ -46,12 +47,19 @@ public class MapManager : MonoBehaviour {
         Destroy(oldMap);
         activeMap.GetComponent<LineOfSightEffect>().Erase();
 
+        if (activeMap != oldMap) {
+            swapped = true;
+            pc.GetComponent<CharaEvent>().facing = EightDir.N;
+            Destroy(oldMap.gameObject);
+            activeMap.AddEvent(pc.GetComponent<MapEvent>());
+        }
+
         MapCamera cam = FindObjectOfType<MapCamera>();
         if (cam.target != pc.GetComponent<MapEvent3D>()) {
             cam.target = activeMap.GetEventNamed("ZoomTarget").GetComponent<MapEvent3D>();
         }
 
-        LineOfSightEffect.RegenSitemap(activeMap.GetComponent<TacticsTerrainMesh>());
+        activeMap.GetComponent<LineOfSightEffect>().RegenSitemap(activeMap.GetComponent<TacticsTerrainMesh>());
 
         RogueUI ui = FindObjectOfType<RogueUI>();
         ui.narrator.Clear();
@@ -66,6 +74,10 @@ public class MapManager : MonoBehaviour {
         loc += dir.XY() * -2;
         pc.GetComponent<MapEvent>().SetLocation(loc);
         activeMap.GetComponent<LineOfSightEffect>().RecalculateVisibilityMap();
+
+        if (swapped) {
+            StartCoroutine(activeMap.GetComponent<BattleController>().BattleRoutine());
+        }
     }
     
     private void RawTeleport(string mapName, Vector2Int location) {

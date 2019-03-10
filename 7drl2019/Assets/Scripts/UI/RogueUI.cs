@@ -123,6 +123,22 @@ public class RogueUI : MonoBehaviour, InputListener {
         skills.OnTurn();
     }
 
+    public IEnumerator WinRoutine() {
+        halting = true;
+        rightDisplayEnabled = false;
+        narrator.Clear();
+        yield return fader.FadeRoutine(fader.startFade, false);
+
+        postMortem.text = "Journeyed all the way to the final floor and left with a kidnapped prince.";
+        postMortem.text += "\n\nPlus looted " + pc.gold + " gold!";
+        postMortem.text = postMortem.text.Replace("\\n", "\n");
+        yield return CoUtils.RunTween(GetComponent<CanvasGroup>().DOFade(0.0f, 3.0f));
+        yield return CoUtils.RunTween(postMortem.GetComponent<CanvasGroup>().DOFade(1.0f, 1.0f));
+        yield return CoUtils.Wait(3.0f);
+        yield return CoUtils.RunTween(postMortem.GetComponent<CanvasGroup>().DOFade(0.0f, 3.0f));
+        SceneManager.LoadScene("Title", LoadSceneMode.Single);
+    }
+
     public IEnumerator PostMortemRoutine(BattleUnit killer) {
         halting = true;
         pc.unit.unit.stats.Set(StatTag.HP, 0);
@@ -146,7 +162,7 @@ public class RogueUI : MonoBehaviour, InputListener {
         yield return CoUtils.RunTween(postMortem.GetComponent<CanvasGroup>().DOFade(1.0f, 1.0f));
         yield return CoUtils.Wait(3.0f);
         yield return CoUtils.RunTween(postMortem.GetComponent<CanvasGroup>().DOFade(0.0f, 3.0f));
-        LineOfSightEffect.sitemap = null;
+        killer.battle.GetComponent<LineOfSightEffect>().sitemap = null;
         SceneManager.LoadScene("Title", LoadSceneMode.Single);
     }
 

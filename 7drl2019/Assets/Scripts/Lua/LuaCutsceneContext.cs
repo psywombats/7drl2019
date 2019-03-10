@@ -45,6 +45,8 @@ public class LuaCutsceneContext : LuaContext {
         lua.Globals["cs_speak"] = (Action<DynValue, DynValue>)Speak;
         lua.Globals["cs_speak2"] = (Action<DynValue, DynValue, DynValue>)Speak2;
         lua.Globals["cs_nextMap"] = (Action)NextMap;
+        lua.Globals["winGame"] = (Action)WinGame;
+        lua.Globals["reallyWinGame"] = (Action)ReallyWinGame;
     }
 
     // === LUA CALLABLE ============================================================================
@@ -73,6 +75,14 @@ public class LuaCutsceneContext : LuaContext {
         RunRoutineFromLua(Global.Instance().Maps.NextMapRoutine());
     }
 
+    private void WinGame() {
+        RunRoutineFromLua(WinGameRoutine());
+    }
+
+    private void ReallyWinGame() {
+        RunRoutineFromLua(ReallyWinGameRoutine());
+    }
+
     // === OUR ROUTINES ============================================================================
 
     private IEnumerator WalkRoutine(DynValue path) {
@@ -88,5 +98,24 @@ public class LuaCutsceneContext : LuaContext {
                 pc.GetComponent<MapEvent>().location, 
                 pc.GetComponent<MapEvent>().location + dir.XY());
         }
+    }
+
+    private IEnumerator WinGameRoutine() {
+        // oh god
+        Unit unitx = Resources.Load<Unit>("Database/Units/Pascir");
+        BattleUnit unit = new BattleUnit(unitx, null);
+        var ui = FindObjectOfType<RogueUI>();
+        yield return ui.PrepareTalkRoutine(unit);
+        ui.face2.Populate(unit);
+
+        Global.Instance().Maps.pc.GetComponent<CharaEvent>().FaceToward(GetComponent<MapEvent>());
+        
+        ui.GetComponent<LuaContext>().SetGlobal("name", unitx.unitName);
+        ui.rightDisplayEnabled = true;
+    }
+
+    private IEnumerator ReallyWinGameRoutine() {
+        var ui = FindObjectOfType<RogueUI>();
+        yield return ui.WinRoutine();
     }
 }

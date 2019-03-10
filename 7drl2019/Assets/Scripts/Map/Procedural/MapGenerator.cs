@@ -34,10 +34,13 @@ public class MapGenerator : MonoBehaviour {
     [Space]
     public GenerationTable table;
     public int level = 1;
+    public int finalLevel = 10;
+    public Map finalLevelPrefab;
 
     public bool startStairsSW, endStairsNW;
 
     public void GenerateMesh(MapGenerator lastMap = null) {
+        TacticsTerrainMesh mesh = GetComponent<TacticsTerrainMesh>();
 
         // copy oldbie values if needed
         if (lastMap != null) {
@@ -50,12 +53,20 @@ public class MapGenerator : MonoBehaviour {
             defaultImpassTile = lastMap.defaultImpassTile;
             chestEventPrefab = lastMap.chestEventPrefab;
             targetPrefab = lastMap.targetPrefab;
+            finalLevel = lastMap.finalLevel;
+            finalLevelPrefab = lastMap.finalLevelPrefab;
             table = lastMap.table;
             level = lastMap.level + 1;
         }
+
+        if (level == finalLevel) {
+            Map other = Instantiate(finalLevelPrefab);
+            Global.Instance().Maps.activeMap = other;
+            return;
+        }
         
         // wipe what's already there
-        TacticsTerrainMesh mesh = GetComponent<TacticsTerrainMesh>();
+        
         mesh.ClearTiles();
         foreach (MapEvent toRemove in GetComponent<Map>().GetEvents<MapEvent>()) {
             if (toRemove.GetComponent<PCEvent>() == null) {
