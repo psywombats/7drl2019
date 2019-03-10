@@ -106,7 +106,7 @@ public class BattleEvent : MonoBehaviour {
         }
     }
 
-    public IEnumerator StepOrAttackRoutine(EightDir dir, Result<bool> executeResult) {
+    public void StepOrAttack(EightDir dir, Result<bool> executeResult) {
         MapEvent parent = me;
         Vector2Int vectors = me.location;
         Vector2Int target = vectors + dir.XY();
@@ -114,8 +114,8 @@ public class BattleEvent : MonoBehaviour {
         List<MapEvent> targetEvents = me.map.GetEventsAt(target);
 
         if (!GetComponent<BattleEvent>().CanCrossTileGradient(parent.location, target)) {
-            executeResult.Cancel();
-            yield break;
+            executeResult.value = false;
+            return;
         }
 
         List<MapEvent> toCollide = new List<MapEvent>();
@@ -130,25 +130,32 @@ public class BattleEvent : MonoBehaviour {
             me.location = target;
             if (unit.Get(StatTag.MOVE) > 1) {
                 unit.canActAgain = !unit.canActAgain;
+            } else if (unit.Get(StatTag.MOVE) < 1) {
+                unit.isRecovering = true;
             }
             if (GetComponent<PCEvent>() != null) {
                 foreach (MapEvent targetEvent in toCollide) {
                     if (targetEvent.switchEnabled) {
-                        yield return targetEvent.CollideRoutine(GetComponent<PCEvent>());
+                        StartCoroutine(CoUtils.RunWithCallback(targetEvent.CollideRoutine(GetComponent<PCEvent>()),
+                            () => {
+                                executeResult.value = true;
+                            }));
+                        return;
                     }
                 }
             }
             executeResult.value = true;
+            return;
         } else {
             foreach (MapEvent targetEvent in toCollide) {
                 float h1 = unit.battle.map.terrain.HeightAt(location);
                 float h2 = unit.battle.map.terrain.HeightAt(target);
-                if (GetComponent<PCEvent>() != null) {
-                    if (targetEvent.switchEnabled && !targetEvent.IsPassableBy(parent) 
-                            && Mathf.Abs(h1 - h2) <= AttackHeightMax) {
-                        yield return targetEvent.CollideRoutine(GetComponent<PCEvent>());
-                    }
-                }
+                //if (GetComponent<PCEvent>() != null) {
+                //    if (targetEvent.switchEnabled && !targetEvent.IsPassableBy(parent) 
+                //            && Mathf.Abs(h1 - h2) <= AttackHeightMax) {
+                //        StartCoroutine(CollideRoutine(GetComponent<PCEvent>());
+                //    }
+                //}
                 if (targetEvent.GetComponent<BattleEvent>() != null) {
                     BattleEvent other = targetEvent.GetComponent<BattleEvent>();
                     if (unit.align != other.unit.align) {
@@ -156,9 +163,12 @@ public class BattleEvent : MonoBehaviour {
                             if (GetComponent<PCEvent>() != null) {
                                 unit.battle.Log("Too high up to attack!");
                             }
+                            executeResult.value = false;
+                            return;
                         } else {
-                            yield return unit.MeleeAttackRoutine(other.unit);
+                            unit.MeleeAttack(other.unit);
                             executeResult.value = true;
+                            return;
                         }
                     }
                 }
@@ -166,19 +176,18 @@ public class BattleEvent : MonoBehaviour {
                 if (GetComponent<PCEvent>() != null && targetEvent.GetComponent<ChestEvent>() != null) {
                     ChestEvent chest = targetEvent.GetComponent<ChestEvent>();
                     if (!chest.opened) {
-                        yield return chest.OpenRoutine(GetComponent<PCEvent>());
+                        StartCoroutine(CoUtils.RunWithCallback(chest.OpenRoutine(GetComponent<PCEvent>()), () => {
+                            executeResult.value = true;
+                        }));
+                        return;
                     }
-                    executeResult.value = true;
                 }
             }
         }
-
-        if (!executeResult.finished) {
-            executeResult.Cancel();
-        }
+        executeResult.value = false;
     }
 
-    public IEnumerator KnockbackRoutine(EightDir dir, int power) {
+    public void Knockback(EightDir dir, int power) {
         float height = me.map.terrain.HeightAt(location);
         for (int i = 0; i < power; i += 1) {
             Vector2Int to = me.location + dir.XY();
@@ -193,39 +202,48 @@ public class BattleEvent : MonoBehaviour {
                 if (delta > unit.GetMaxDescent()) {
                     int dmg = unit.CalcDropDamage(delta);
                     battle.Log(unit + " took " + dmg + " damage in the fall!");
-                    yield return unit.TakeDamageRoutine(dmg, damageAnimation);
-                    yield break;
+                    unit.TakeDamage(dmg, damageAnimation);
+                    break;
                 }
             }
         }
     }
 
-    public IEnumerator AnimateTakeDamageRoutine() {
-        chara.PerformWhenDoneAnimating(PlayAnimationRoutine(damageAnimation, involuntaryContext));
-        yield return null;
+    public void AnimateTakeDamage() {
+        PlayAnimation(damageAnimation, involuntaryContext);
     }
 
-    public IEnumerator AnimateDieAction() {
+    public void AnimateDie() {
 
         // we no longer consider ourselves to be a valid anything on the map
         enabled = false;
-
-        yield return PlayAnimationRoutine(deathAnimation);
+        PlayAnimation(deathAnimation);
     }
 
-    public IEnumerator AnimateAttackRoutine() {
-        yield return PlayAnimationRoutine(attackAnimation);
+    public void AnimateAttack() {
+        PlayAnimation(attackAnimation);
     }
 
-    public IEnumerator AnimateBumpRoutine() {
-        yield return PlayAnimationRoutine(bumpAnimation);
+    public void AnimateBump() {
+        PlayAnimation(bumpAnimation);
     }
 
-    public IEnumerator PlayAnimationRoutine(LuaAnimation anim, LuaContext context = null) {
+    public void PlayAnimation(LuaAnimation anim, LuaContext context = null) {
         if (anim == null) {
-            yield break;
+            return;
         }
         chara.doll.GetComponent<CharaAnimationTarget>().ConfigureToBattler(this);
         chara.PerformWhenDoneAnimating(chara.doll.GetComponent<AnimationPlayer>().PlayAnimationRoutine(anim, context));
+    }
+
+    public IEnumerator SyncPlayAnim(LuaAnimation anim, LuaContext context = null) {
+        PlayAnimation(anim, context);
+        yield return FinishAnims();
+    }
+
+    public IEnumerator FinishAnims() {
+        while (GetComponent<MapEvent>().IsAnimating()) {
+            yield return null;
+        }
     }
 }

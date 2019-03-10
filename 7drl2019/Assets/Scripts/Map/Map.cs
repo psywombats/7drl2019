@@ -221,21 +221,24 @@ public class Map : MonoBehaviour {
                         case EightDir.SW:   next.y -= 1;    next.x -= 1;    break;
                         case EightDir.NW:   next.y += 1;    next.x -= 1;    break;
                     }
-                    if (next == to || (!visited.Contains(next) && actor.CanPassAt(next) &&
-                        (actor.GetComponent<CharaEvent>() == null ||
-                             actor.CanPassAt(next)) &&
-                        (actor.GetComponent<BattleEvent>() == null ||
-                             actor.GetComponent<BattleEvent>().CanCrossTileGradient(at, next)))) {
-
-                        List<Vector2Int> newHead = new List<Vector2Int>(head) { next };
-
-                        if (next != to || GetEventAt<BattleEvent>(to) == null ||
-                            Mathf.Abs(terrain.HeightAt(at) - terrain.HeightAt(to)) <= BattleEvent.AttackHeightMax) { 
-
-                            heads.Add(newHead);
-                            visited.Add(next);
-                        }
+                    if (visited.Contains(next)) {
+                        continue;
                     }
+                    if (next != to && !actor.CanPassAt(next)) {
+                        continue;
+                    }
+                    if (actor.GetComponent<BattleEvent>() != null && !actor.GetComponent<BattleEvent>().CanCrossTileGradient(at, next)) {
+                        continue;
+                    }
+                    if (next == to && Mathf.Abs(terrain.HeightAt(at) - terrain.HeightAt(to)) > BattleEvent.AttackHeightMax) {
+                        continue;
+                    }
+                    if (next != to && (GetEventAt<BattleEvent>(next) != null && GetEventAt<BattleEvent>(next).unit.IsDead())) {
+                        continue;
+                    }
+                    List<Vector2Int> newHead = new List<Vector2Int>(head) { next };
+                    heads.Add(newHead);
+                    visited.Add(next);
                 }
             }
         }

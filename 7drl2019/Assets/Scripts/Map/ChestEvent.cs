@@ -24,8 +24,9 @@ public class ChestEvent : MonoBehaviour {
             yield return null;
         }
         pc.GetComponent<BattleEvent>().unit.battle.Log(pc.unit + " found a chest...", true);
+        pc.GetComponent<BattleEvent>().AnimateBump();
         yield return CoUtils.RunSequence(new IEnumerator[] {
-            pc.GetComponent<BattleEvent>().AnimateBumpRoutine(),
+            pc.GetComponent<BattleEvent>().FinishAnims(),
             doll.PlayOnceRoutine(),
             OnOpenRoutine(pc),
         });

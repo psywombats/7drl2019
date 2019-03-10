@@ -7,6 +7,7 @@ public class GenerationTable : ScriptableObject {
     public int baseDanger;
     public int dangerPerLevel;
     public int itemsLow, itemsHigh;
+    public int enemiesLow, enemiesHigh;
     public List<int> firstLevelDangerOverrides;
     public List<int> firstLevelItemCountOverrides;
 
@@ -29,7 +30,7 @@ public class GenerationTable : ScriptableObject {
 
         List<Encounter> results = new List<Encounter>();
         int added = 0;
-        int target = Random.Range(9, 11);
+        int target = Random.Range(enemiesLow, enemiesHigh);
         while (results.Count < target) {
             RandUtils.Shuffle(encounters);
             Encounter toAdd = null;

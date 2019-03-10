@@ -4,8 +4,7 @@ using System.Collections.Generic;
 
 public class AIController {
 
-    private const float PathingCutoffInt = 5;
-    private const float WanderCutoffInt = 5;
+    public const int WanderCutoffInt = 5;
 
     public BattleUnit unit { get; private set; }
     public BattleEvent battler { get { return unit.battler; } }
@@ -15,7 +14,7 @@ public class AIController {
     public AIController leaderAI { get { return leaderUnit.ai; } }
 
     public BattleEvent leader { get; set; }
-
+    
     private short[,] seenMap;
     private int turnsHunting;
 
@@ -24,9 +23,9 @@ public class AIController {
         seenMap = new short[battle.map.size.x, battle.map.size.y];
     }
 
-    public IEnumerator TakeTurnRoutine() {
+    public void TakeTurn() {
         if (pc.IsDead() || unit.IsDead()) {
-            return null;
+            return ;
         }
 
         int intel = (int)unit.Get(StatTag.INTELLIGENCE);
@@ -46,13 +45,13 @@ public class AIController {
             turnsHunting = intel;
         }
         if (turnsHunting > 0 || (HasLeader() && leaderAI.turnsHunting > 0)) {
-            if (intel >= PathingCutoffInt) {
-                List<Vector2Int> path = battle.map.FindPath(battler.GetComponent<MapEvent>(), pc.location, intel);
-                if (path != null && path.Count > 0) {
-                    return battler.StepOrAttackRoutine(battler.GetComponent<MapEvent>().DirectionTo(path[0]), result);
-                }
+            List<Vector2Int> path = battle.map.FindPath(battler.GetComponent<MapEvent>(), pc.location, intel);
+            if (path != null && path.Count > 0) {
+                battler.StepOrAttack(battler.GetComponent<MapEvent>().DirectionTo(path[0]), result);
+                return;
             } else {
-                return battler.StepOrAttackRoutine(battler.GetComponent<MapEvent>().DirectionTo(pc.location), result);
+                battler.StepOrAttack(battler.GetComponent<MapEvent>().DirectionTo(pc.location), result);
+                return;
             }
         }
 
@@ -81,16 +80,8 @@ public class AIController {
                 }
             }
         }
-        return battler.StepOrAttackRoutine(bestDir, result);
-    }
-
-    public IEnumerator CheckIfKilledPC() {
-        if (pc.IsDead()) {
-            var ui = Object.FindObjectOfType<RogueUI>();
-            return ui.PostMortemRoutine(unit);
-        } else {
-            return null;
-        }
+        battler.StepOrAttack(bestDir, result);
+        return;
     }
 
     private bool HasLeader() {

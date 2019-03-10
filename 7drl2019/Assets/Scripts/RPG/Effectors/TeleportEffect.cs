@@ -20,8 +20,8 @@ public class TeleportEffect : Effector {
     }
 
     public override IEnumerator ExecuteCellsRoutine(List<Vector2Int> locations) {
-        yield return battler.PlayAnimationRoutine(fadeoutAnim);
+        yield return battler.SyncPlayAnim(fadeoutAnim);
         actorEvent.SetLocation(locations[Random.Range(0, locations.Count)]);
-        yield return battler.PlayAnimationRoutine(fadeinAnim);
+        yield return battler.SyncPlayAnim(fadeinAnim);
     }
 }

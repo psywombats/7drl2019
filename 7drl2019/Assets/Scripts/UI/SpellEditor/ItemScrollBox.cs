@@ -67,6 +67,7 @@ public class ItemScrollBox : MonoBehaviour, InputListener {
             case InputManager.Command.CutPage:
             case InputManager.Command.ErasePage:
             case InputManager.Command.AddPage:
+            case InputManager.Command.View:
                 awaitingResult.value = command;
                 EndAwait();
                 break;

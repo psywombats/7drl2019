@@ -63,7 +63,7 @@ public class RogueUI : MonoBehaviour, InputListener {
             case InputManager.Command.UpRight:
                 EightDir dir = EightDirExtensions.FromCommand(command);
                 Global.Instance().Input.RemoveListener(this);
-                StartCoroutine(unit.battler.StepOrAttackRoutine(dir, executeResult));
+                unit.battler.StepOrAttack(dir, executeResult);
                 break;
             case InputManager.Command.Wait:
                 Global.Instance().Input.RemoveListener(this);
@@ -132,7 +132,7 @@ public class RogueUI : MonoBehaviour, InputListener {
         yield return fader.FadeRoutine(fader.startFade, false);
 
         LuaScript script = new LuaScript(GetComponent<LuaContext>(), killer.unit.luaOnDefeat);
-        GetComponent<LuaContext>().SetGlobal("name", unit.ToString());
+        GetComponent<LuaContext>().SetGlobal("name", killer.ToString());
         yield return script.RunRoutine();
         rightDisplayEnabled = false;
         postMortem.text = "Made it to floor " + pc.battle.map.GetComponent<MapGenerator>().level +

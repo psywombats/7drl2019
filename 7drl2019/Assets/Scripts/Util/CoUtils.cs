@@ -16,8 +16,10 @@ public class CoUtils {
     }
 
     public static IEnumerator RunParallel(IEnumerator[] coroutines, MonoBehaviour runner) {
-        int running = coroutines.Length;
+        int running = 0;
         foreach (IEnumerator coroutine in coroutines) {
+            if (coroutine == null) continue;
+            running += 1;
             runner.StartCoroutine(RunWithCallback(coroutine, () => {
                 running -= 1;
             }));

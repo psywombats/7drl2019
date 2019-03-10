@@ -119,7 +119,7 @@ public class BattleController : MonoBehaviour {
             }
 
             foreach (BattleUnit unit in units) {
-                yield return unit.OnNewTurnRoutine();
+                unit.OnNewTurn();
             }
         }
     }
@@ -127,7 +127,7 @@ public class BattleController : MonoBehaviour {
     private IEnumerator PlayNextHumanActionRoutine() {
         Result<bool> executeResult = new Result<bool>();
         yield return ui.PlayNextCommandRoutine(executeResult);
-        if (!executeResult.canceled) {
+        if (!executeResult.canceled && executeResult.value) {
             if (!cleared) {
                 foreach (BattleUnit unit in new List<BattleUnit>(units)) {
                     if (unit == pc) {
@@ -136,8 +136,11 @@ public class BattleController : MonoBehaviour {
                         if (unit.isRecovering) {
                             unit.isRecovering = false;
                         } else {
-                            yield return unit.ai.TakeTurnRoutine();
-                            yield return unit.ai.CheckIfKilledPC();
+                            unit.ai.TakeTurn();
+                            if (pc.IsDead()) {
+                                StartCoroutine(ui.PostMortemRoutine(unit));
+                                break;
+                            }
                         }
                     }
                 }
@@ -146,9 +149,16 @@ public class BattleController : MonoBehaviour {
                 foreach (BattleUnit unit in new List<BattleUnit>(units)) {
                     if (unit.canActAgain) {
                         unit.canActAgain = false;
-                        yield return unit.ai.TakeTurnRoutine();
-                        yield return unit.ai.CheckIfKilledPC();
+                        unit.ai.TakeTurn();
+                        if (pc.IsDead()) {
+                            StartCoroutine(ui.PostMortemRoutine(unit));
+                            break;
+                        }
                     }
+                }
+
+                foreach (BattleUnit unit in new List<BattleUnit>(units)) {
+                    unit.canActAgain = false;
                 }
             }
         }

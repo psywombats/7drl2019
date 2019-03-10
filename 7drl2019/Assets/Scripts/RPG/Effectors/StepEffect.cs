@@ -12,7 +12,7 @@ public class StepEffect : Effector {
     }
 
     public override IEnumerator ExecuteDirectionRoutine(EightDir dir) {
-        yield return battler.PlayAnimationRoutine(skill.castAnim);
-        actorEvent.StartCoroutine(actorEvent.StepRoutine(dir));
+        yield return battler.SyncPlayAnim(skill.castAnim);
+        actorEvent.GetComponent<CharaEvent>().PerformWhenDoneAnimating(actorEvent.StepRoutine(dir));
     }
 }

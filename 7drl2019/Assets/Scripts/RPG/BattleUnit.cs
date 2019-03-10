@@ -82,8 +82,8 @@ public class BattleUnit {
 
     // === ACTIONS =================================================================================
 
-    public IEnumerator MeleeAttackRoutine(BattleUnit other) {
-        yield return battler.AnimateAttackRoutine();
+    public void MeleeAttack(BattleUnit other) {
+        battler.AnimateAttack();
 
         int dmg = 0;
         if (RandUtils.Chance(Get(StatTag.ACC) / 100.0f)) {
@@ -92,30 +92,32 @@ public class BattleUnit {
             battle.Log(this + " attacked " + other + " for " + dmg + " damage.");
             if (Get(StatTag.ATTACKS) < 1) {
                 isRecovering = true;
+            } else if (Get(StatTag.ATTACKS) > 1) {
+                canActAgain = true;
             }
         } else {
             battle.Log(this + " missed " + other + ".");
         }
 
         if (dmg > 0) {
-            yield return other.TakeDamageRoutine(dmg, battler.damageAnimation);
+            other.TakeDamage(dmg, battler.damageAnimation);
         }
     }
 
-    public IEnumerator TakeDamageRoutine(int damage, LuaAnimation damageAnimation) {
+    public void TakeDamage(int damage, LuaAnimation damageAnimation) {
         if (!IsDead()) {
             unit.stats.Sub(StatTag.HP, damage);
             if (!tookDamageThisTurn) {
-                yield return battler.PlayAnimationRoutine(damageAnimation);
+                battler.PlayAnimation(damageAnimation);
             }
             tookDamageThisTurn = true;
             if (IsDead()) {
-                yield return DieRoutine();
+                Die();
             }
         }
     }
 
-    public IEnumerator DieRoutine() {
+    public void Die() {
         // 7drl hack
         if (this != battle.pc && battle.pc.Get(StatTag.CD) > 0) {
             battle.pc.unit.stats.Sub(StatTag.CD, 1);
@@ -124,14 +126,11 @@ public class BattleUnit {
         string flight = unit.flightMessages[Random.Range(0, unit.flightMessages.Count)];
         battle.Log(this + flight);
         battle.RemoveUnit(this);
-        return battler.AnimateDieAction();
+        battler.AnimateDie();
     }
 
-    // === STATE MACHINE ===========================================================================
-
-    public IEnumerator OnNewTurnRoutine() {
+    public void OnNewTurn() {
         tookDamageThisTurn = false;
-        yield return null;
     }
 
     // === UTIL ====================================================================================

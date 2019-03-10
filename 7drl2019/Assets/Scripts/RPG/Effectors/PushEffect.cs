@@ -8,7 +8,7 @@ public class PushEffect : Effector {
     public int knockbackMax;
 
     public override IEnumerator ExecuteCellsRoutine(List<Vector2Int> locations) {
-        yield return battler.PlayAnimationRoutine(skill.castAnim);
+        yield return battler.SyncPlayAnim(skill.castAnim);
 
         foreach (Vector2Int location in locations) {
             BattleEvent target = map.GetEventAt<BattleEvent>(location);
@@ -21,7 +21,8 @@ public class PushEffect : Effector {
             EightDir dir = battler.GetComponent<MapEvent>().DirectionTo(other.battler.GetComponent<MapEvent>());
             int power = Mathf.RoundToInt(Random.Range(knockbackMin, knockbackMax));
 
-            yield return other.battler.KnockbackRoutine(dir, power);
+            other.battler.Knockback(dir, power);
+            yield return CoUtils.Wait(0.2f);
         }
     }
 }
