@@ -6,6 +6,8 @@ public class MapManager : MonoBehaviour {
 
     private static readonly string DefaultTransitionTag = "default";
 
+    public static bool seenTutorial;
+
     public Map activeMap { get; set; }
     public PCEvent pc { get; set; }
     public SceneBlendController blendController { get; set; }
@@ -53,7 +55,8 @@ public class MapManager : MonoBehaviour {
 
         RogueUI ui = FindObjectOfType<RogueUI>();
         ui.narrator.Clear();
-        if (level == 0) {
+        if (level == 0 && !seenTutorial) {
+            seenTutorial = true;
             yield return ui.TutorialRoutine();
         }
         yield return ui.EditSpellsRoutine();

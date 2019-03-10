@@ -129,7 +129,7 @@ public class GenerationTable : ScriptableObject {
     }
 
     private Item GeneratePickup(int level) {
-        if (level < 4) {
+        if (level < 2) {
             return null;
         }
         if (RandUtils.Chance(0.7f)) {

@@ -17,6 +17,8 @@ public class RogueUI : MonoBehaviour, InputListener {
     public Text postMortem;
     [TextArea(3, 6)] public string luaTutorial;
 
+    public bool halting;
+
     public PCEvent pc { get; private set; }
     public BattleUnit unit {
         get {
@@ -49,7 +51,7 @@ public class RogueUI : MonoBehaviour, InputListener {
     }
 
     public bool OnCommand(InputManager.Command command, InputManager.Event eventType) {
-        if (eventType != InputManager.Event.Up) {
+        if (eventType != InputManager.Event.Up || halting) {
             return true;
         }
         switch (command) {
@@ -122,9 +124,10 @@ public class RogueUI : MonoBehaviour, InputListener {
     }
 
     public IEnumerator PostMortemRoutine(BattleUnit killer) {
+        halting = true;
         pc.unit.unit.stats.Set(StatTag.HP, 0);
         Populate();
-        yield return PrepareTalkRoutine(unit);
+        yield return PrepareTalkRoutine(killer);
         face2.Populate(killer);
 
         rightDisplayEnabled = true;

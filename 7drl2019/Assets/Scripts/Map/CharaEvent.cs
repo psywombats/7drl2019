@@ -259,7 +259,6 @@ public class CharaEvent : MonoBehaviour {
             yield return null;
         }
         jumping = false;
-        parent.SetScreenPositionToMatchTilePosition();
     }
 
     private bool IsSteppingThisFrame() {

@@ -195,8 +195,8 @@ public class BattleEvent : MonoBehaviour {
             if (!me.CanPassAt(to) || toHeight > height) {
                 break;
             }
-            me.location = to;
             chara.PerformWhenDoneAnimating(GetComponent<CharaEvent>().StepRoutine(location, to, false));
+            me.location = to;
             if (toHeight < height) {
                 float delta = height - toHeight;
                 if (delta > unit.GetMaxDescent()) {
