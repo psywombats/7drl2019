@@ -269,20 +269,21 @@ public class CharaEvent : MonoBehaviour {
 
     private void LoadSpritesheetData() {
         string path = GetComponent<MapEvent3D>() == null ? DefaultMaterial2DPath : DefaultMaterial3DPath;
-        foreach (SpriteRenderer renderer in renderers) {
-            if (Application.isPlaying) {
-                if (renderer.material == null) {
-                    renderer.material = Resources.Load<Material>(path);
-                }
-            } else {
-                if (renderer.sharedMaterial == null) {
-                    renderer.sharedMaterial = Resources.Load<Material>(path);
-                }
-            }
-        }
+        //foreach (SpriteRenderer renderer in renderers) {
+        //    if (Application.isPlaying) {
+        //        if (renderer.material == null) {
+        //            renderer.material = Resources.Load<Material>(path);
+        //        }
+        //    } else {
+        //        if (renderer.sharedMaterial == null) {
+        //            renderer.sharedMaterial = Resources.Load<Material>(path);
+        //        }
+        //    }
+        //}
 
         sprites = new Dictionary<string, Sprite>();
-        path = AssetDatabase.GetAssetPath(spritesheet);
+        // path = AssetDatabase.GetAssetPath(spritesheet);
+        path = "Sprites/Charas/" + spritesheet.name;
         if (path.StartsWith("Assets/Resources/")) {
             path = path.Substring("Assets/Resources/".Length);
         }

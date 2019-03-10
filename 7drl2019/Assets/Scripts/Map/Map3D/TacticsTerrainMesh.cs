@@ -84,11 +84,11 @@ public class TacticsTerrainMesh : MonoBehaviour, ISerializationCallbackReceiver 
         MeshFilter filter = GetComponent<MeshFilter>();
         
         if (!Application.isPlaying) {
-            if (filter.sharedMesh == null) {
-                filter.sharedMesh = new Mesh();
-                AssetDatabase.CreateAsset(filter.sharedMesh,
-                    "Assets/Resources/TacticsMaps/Meshes/" + gameObject.name + ".asset");
-            }
+            //if (filter.sharedMesh == null) {
+            //    filter.sharedMesh = new Mesh();
+            //    AssetDatabase.CreateAsset(filter.sharedMesh,
+            //        "Assets/Resources/TacticsMaps/Meshes/" + gameObject.name + ".asset");
+            //}
         } else {
             if (filter.mesh == null) {
                 filter.mesh = new Mesh();

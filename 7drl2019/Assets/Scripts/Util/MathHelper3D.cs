@@ -96,29 +96,30 @@ public class MathHelper3D {
     }
 
     public static float GetHeightAtMouse(TerrainQuad relativeToQuad) {
-        Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-        Vector3 midpoint = relativeToQuad.pos + new Vector3(0.5f, 0.0f, 0.5f);
-        Plane plane = new Plane(-1.0f * Camera.current.transform.forward, midpoint);
-        plane.Raycast(ray, out float enter);
+        //Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+        //Vector3 midpoint = relativeToQuad.pos + new Vector3(0.5f, 0.0f, 0.5f);
+        //Plane plane = new Plane(-1.0f * Camera.current.transform.forward, midpoint);
+        //plane.Raycast(ray, out float enter);
 
-        Vector3 hit = ray.GetPoint(enter);
-        float height = Mathf.Round(hit.y * 2.0f) / 2.0f;
-        return height > 0 ? height : 0;
+        //Vector3 hit = ray.GetPoint(enter);
+        //float height = Mathf.Round(hit.y * 2.0f) / 2.0f;
+        //return height > 0 ? height : 0;
+        return 0.0f;
     }
 
     public static void DrawQuads(List<TerrainQuad> selectedQuads, Color color) {
-        foreach (TerrainQuad quad in selectedQuads) {
-            Vector3 mid = quad.pos + new Vector3(0.5f, -0.25f, 0.5f) + new Vector3(
-                quad.normal.x * 0.5f,
-                quad.normal.y * 0.25f,
-                quad.normal.z * 0.5f);
-            Vector3 size = new Vector3(
-                1.01f - Mathf.Abs(quad.normal.x),
-                0.51f - (Mathf.Abs(quad.normal.y) * 0.5f),
-                1.01f - Mathf.Abs(quad.normal.z));
-            Handles.color = color;
-            Handles.DrawWireCube(mid, size);
-        }
+        //foreach (TerrainQuad quad in selectedQuads) {
+        //    Vector3 mid = quad.pos + new Vector3(0.5f, -0.25f, 0.5f) + new Vector3(
+        //        quad.normal.x * 0.5f,
+        //        quad.normal.y * 0.25f,
+        //        quad.normal.z * 0.5f);
+        //    Vector3 size = new Vector3(
+        //        1.01f - Mathf.Abs(quad.normal.x),
+        //        0.51f - (Mathf.Abs(quad.normal.y) * 0.5f),
+        //        1.01f - Mathf.Abs(quad.normal.z));
+        //    Handles.color = color;
+        //    Handles.DrawWireCube(mid, size);
+        //}
     }
 
     public static List<TerrainQuad> GetQuadsAroundQuad(Dictionary<Vector3, Dictionary<Vector3, TerrainQuad>> quads, 

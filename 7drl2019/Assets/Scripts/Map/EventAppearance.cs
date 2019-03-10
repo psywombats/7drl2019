@@ -16,9 +16,9 @@ public class EventAppearance : MonoBehaviour {
     }
 
     public void SetAppearance(string spriteName) {
-        Sprite sprite;
+        Sprite sprite = null;
         if (Application.isEditor) {
-            sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Resources/Sprites/" + spriteName + ".png");
+            //sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Resources/Sprites/" + spriteName + ".png");
         } else {
             sprite = Resources.Load<Sprite>("Sprites/" + spriteName);
         }
