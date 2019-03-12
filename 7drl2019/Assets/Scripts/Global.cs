@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using MoonSharp.Interpreter;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 public class Global : MonoBehaviour {
 
@@ -23,6 +26,17 @@ public class Global : MonoBehaviour {
 
     public static Global Instance() {
         if (instance == null) {
+            Dictionary<string, string> scripts = new Dictionary<string, string>();
+
+            object[] result = Resources.LoadAll("Lua", typeof(TextAsset));
+
+            foreach (TextAsset ta in result.OfType<TextAsset>()) {
+                scripts.Add(ta.name, ta.text);
+            }
+
+            Script.DefaultOptions.ScriptLoader = new MoonSharp.Interpreter.Loaders.UnityAssetsScriptLoader(scripts);
+
+
             GameObject globalObject = new GameObject("Globals");
             // debug-ish and we don't serialize scenes
             // globalObject.hideFlags = HideFlags.HideAndDontSave;

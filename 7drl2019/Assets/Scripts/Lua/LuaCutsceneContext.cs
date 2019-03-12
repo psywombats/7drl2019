@@ -20,7 +20,30 @@ public class LuaCutsceneContext : LuaContext {
 
     public override void Awake() {
         base.Awake();
-        LoadDefines(DefinesPath);
+        lua.DoString("function teleportCoords(mapName, x, y)\n" +
+"    cs_teleportCoords(mapName, x, y)\n" +
+"    await()\n" +
+"end\n" +
+"function teleport(mapName, eventName)\n" +
+"    cs_teleport(mapName, eventName)\n" +
+"    await()\n" +
+"end\n" +
+"function fadeOutBGM(seconds)\n" +
+"    cs_fadeOutBGM(seconds)\n" +
+"    await()\n" +
+"end\n" +
+"function speak(speaker, line)\n" +
+"    cs_speak(speaker, line)\n" +
+"    await()\n" +
+"end\n" +
+"function speak2(speaker, faceNo, line)\n" +
+"    cs_speak2(speaker, faceNo, line)\n" +
+"    await()\n" +
+"end\n" +
+"function nextMap()\n" +
+"    cs_nextMap()\n" +
+"    await()\n" +
+"end\n");
     }
 
     public override void RunRoutineFromLua(IEnumerator routine) {

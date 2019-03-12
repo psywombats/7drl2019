@@ -40,17 +40,18 @@ public class MapManager : MonoBehaviour {
         pc.GetComponent<MapEvent>().SetLocation(new Vector2Int(0, 0));
         activeMap.GetComponent<BattleController>().Clear();
 
-        MapGenerator oldMap = activeMap.GetComponent<MapGenerator>();
-        int level = oldMap.level;
+        MapGenerator oldGen = activeMap.GetComponent<MapGenerator>();
+        Map oldMap = activeMap;
+        int level = oldGen.level;
         MapGenerator newGen = activeMap.gameObject.AddComponent<MapGenerator>();
-        newGen.GenerateMesh(oldMap);
-        Destroy(oldMap);
+        newGen.GenerateMesh(oldGen);
+        Destroy(oldGen);
         activeMap.GetComponent<LineOfSightEffect>().Erase();
 
         if (activeMap != oldMap) {
             swapped = true;
             pc.GetComponent<CharaEvent>().facing = EightDir.N;
-            Destroy(oldMap.gameObject);
+            Destroy(oldGen.gameObject);
             activeMap.AddEvent(pc.GetComponent<MapEvent>());
         }
 

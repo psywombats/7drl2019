@@ -108,9 +108,14 @@ public class LuaContext : MonoBehaviour {
     }
 
     protected void LoadDefines(string path) {
-        StreamReader reader = new StreamReader(path);
-        lua.DoStream(reader.BaseStream);
-        reader.Close();
+        lua.DoString("function await ()\n" +
+            "coroutine.yield()\n" +
+            "end\n" +
+
+            "function wait(seconds)\n" +
+            "cs_wait(seconds)\n" +
+            "await()\n" +
+            "end");
     }
 
     // === LUA CALLABLE ============================================================================
